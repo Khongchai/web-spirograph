@@ -1,18 +1,36 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import Cycloid from "./classes/Cycloid";
 import setCanvasSize from "./setCanvasSize";
+import CycloidParams from "./types/cycloidParams";
 import { Vector2 } from "./types/vector2";
+
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  pointToTrace: React.MutableRefObject<Vector2>
+  pointToTrace: React.MutableRefObject<Vector2>,
+  cycloidParams = {
+    animationSpeed: 0.7,
+    rodLengthScale: 1,
+    cycloidPosition: "inside",
+  } as CycloidParams,
+  clearCanvasToggle: boolean
 ) {
-  const cycloidRef = useRef(
-    new Cycloid(100, { x: 0, y: 0 }, { x: 0, y: 0 }, "inside")
-  );
-  cycloidRef.current.setOuterCircleRadius(300);
-  cycloidRef.current.scaleRodLength(1);
+  const cycloid = useMemo(() => {
+    return new Cycloid(
+      100,
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+      cycloidParams.cycloidPosition
+    );
+  }, []);
 
   useEffect(() => {
+    cycloid.rod.scaleLength(cycloidParams.rodLengthScale);
+    cycloid.setCycloidPosition(cycloidParams.cycloidPosition);
+  }, [clearCanvasToggle]);
+
+  useEffect(() => {
+    cycloid.setOuterCircleRadius(300);
+
     if (canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d")!;
@@ -20,7 +38,7 @@ export default function useDrawCanvas(
       let dx = 0;
 
       setCanvasSize(canvas, () => {
-        cycloidRef.current.setBoundary({
+        cycloid.setBoundary({
           x: canvas.clientWidth,
           y: canvas.clientHeight,
         });
@@ -29,26 +47,22 @@ export default function useDrawCanvas(
       const draw = () => {
         ctx.lineWidth = 1;
         // ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-        ctx.fillStyle = "rgba(43, 30, 57, 0.5)";
+        ctx.fillStyle = "rgba(43, 30, 57, 0.8)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        dx = dx + 0.7;
+        dx += cycloidParams.animationSpeed;
 
-        cycloidRef.current.setDx(dx);
-        cycloidRef.current.move();
+        cycloid.setDx(dx);
+        cycloid.move();
 
         //visual
-        cycloidRef.current.showTheCircumferencePlease(ctx);
-        cycloidRef.current.showRodPlease(ctx);
-        // cycloidRef.current.showBoundingCircle(ctx);
+        cycloid.showTheCircumferencePlease(ctx);
+        cycloid.showRodPlease(ctx);
+        cycloid.showBoundingCirclePlease(ctx);
+        cycloid.showPointPlease(ctx);
 
-        const point: Vector2 = { ...cycloidRef.current.getPoint() };
-        pointToTrace.current.x = point.x;
-        pointToTrace.current.y = point.y;
-
-        ctx.fillStyle = "rgba(232,121,249,1)";
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-        ctx.fill();
+        const pointPos = cycloid.point;
+        pointToTrace.current.x = pointPos.x;
+        pointToTrace.current.y = pointPos.y;
 
         requestAnimationFrame(draw);
       };

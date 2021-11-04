@@ -1,14 +1,16 @@
 export default class Rod {
   private length: number;
+  private readonly originalLenght: number;
 
   constructor(length: number) {
     this.length = length;
+    this.originalLenght = this.length;
   }
 
   getLength = () => this.length;
 
   scaleLength(scalar: number) {
-    this.length *= scalar;
+    this.length = this.originalLenght * scalar;
   }
 
   drawRodPlease(

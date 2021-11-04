@@ -1,37 +1,43 @@
+import colors from "../../constants/colors";
+import { CycloidPosition } from "../types/cycloidPosition";
 import Rod from "./Rod";
 
 export default class Cycloid {
   private radius: number;
-  private point: { x: number; y: number };
+  readonly point: { x: number; y: number };
   //basically cannot go beyond this value -- something % limit
   private dx: number = 0;
-  private boundary: { x: number; y: number };
+  private screenSize: { x: number; y: number };
 
-  private rod: Rod;
+  readonly rod: Rod;
 
   private outerCircleRadius: number = 0;
 
-  private insideOrOutsideBounding: "inside" | "outside";
+  private insideOrOutsideAnotherCircle: CycloidPosition;
 
   constructor(
     radius: number,
     point: { x: number; y: number },
     boundary: { x: number; y: number },
-    insideOrOutsideBoudning: "inside" | "outside"
+    insideOrOutsideAnotherCircle: CycloidPosition
   ) {
     this.radius = radius;
     this.point = point;
-    this.boundary = boundary;
+    this.screenSize = boundary;
 
     this.rod = new Rod(this.radius);
 
     this.outerCircleRadius = this.radius * 2;
 
-    this.insideOrOutsideBounding = insideOrOutsideBoudning;
+    this.insideOrOutsideAnotherCircle = insideOrOutsideAnotherCircle;
   }
 
   setDx(dx: number) {
     this.dx = dx;
+  }
+
+  setCycloidPosition(newPos: CycloidPosition) {
+    this.insideOrOutsideAnotherCircle = newPos;
   }
 
   private getCircumference() {
@@ -64,17 +70,17 @@ export default class Cycloid {
 
       Think of a physical spirograph and how the cog moves the circle inside and outside. That's your answer.
     */
-    let canvasCenter = { x: this.boundary.x / 2, y: this.boundary.y / 2 };
+    let canvasCenter = { x: this.screenSize.x / 2, y: this.screenSize.y / 2 };
     //Angle 0
     let beginningPosInsideAnotherCircle = this.outerCircleRadius - this.radius;
     let dx = this.getdxAsRadians();
     let change =
-      this.insideOrOutsideBounding === "inside"
+      this.insideOrOutsideAnotherCircle === "inside"
         ? {
-            dx: Math.sin(dx * 1.2),
-            dy: Math.cos(dx * 1.2),
+            dx: Math.sin(dx * 0.7),
+            dy: Math.cos(dx * 0.7),
           }
-        : { dx: Math.cos(dx), dy: Math.sin(dx) };
+        : { dx: Math.cos(dx * 0.7), dy: Math.sin(dx * 0.7) };
     let pos = {
       x: beginningPosInsideAnotherCircle * change.dx,
       y: beginningPosInsideAnotherCircle * change.dy,
@@ -83,21 +89,6 @@ export default class Cycloid {
     let x = canvasCenter.x + pos.x;
     let y = canvasCenter.y + pos.y;
 
-    /*
-        Outside another circle
-      */
-    // const radiusScale = 105;
-    // const outerCircleSpeedScale = 1.2;
-    // let { x, y } = {
-    //   x:
-    //     //Get pathcovered in radians
-    //     Math.cos(this.getdxAsRadians() * outerCircleSpeedScale) * radiusScale +
-    //     this.boundary.x / 2,
-    //   y:
-    //     Math.sin(this.getdxAsRadians() * outerCircleSpeedScale) * radiusScale +
-    //     this.boundary.y / 2,
-    // };
-
     return {
       x,
       y,
@@ -105,32 +96,8 @@ export default class Cycloid {
   }
 
   setBoundary(boundary: { x: number; y: number }) {
-    this.boundary.x = boundary.x;
-    this.boundary.y = boundary.y;
-  }
-
-  getPoint() {
-    return { x: this.point.x, y: this.point.y };
-  }
-
-  showBoundingCircle(context: CanvasRenderingContext2D, radius?: number) {
-    const x = this.boundary.x / 2;
-    const y = this.boundary.y / 2;
-
-    this.outerCircleRadius = radius || this.outerCircleRadius;
-
-    context.beginPath();
-    context.strokeStyle = "rgba(232, 121, 249, 1)";
-    context.arc(x, y, this.outerCircleRadius, 0, Math.PI * 2);
-    context.stroke();
-  }
-
-  showTheCircumferencePlease(context: CanvasRenderingContext2D) {
-    const { x, y } = this.getCenter();
-    context.beginPath();
-    context.strokeStyle = "rgba(232, 121, 249, 1)";
-    context.arc(x, y, this.radius, 0, Math.PI * 2);
-    context.stroke();
+    this.screenSize.x = boundary.x;
+    this.screenSize.y = boundary.y;
   }
 
   move() {
@@ -149,9 +116,38 @@ export default class Cycloid {
     this.point.y =
       Math.sin(theta * innerRotationSpeed) * this.rod.getLength() + path.y;
   }
+  showBoundingCirclePlease(context: CanvasRenderingContext2D) {
+    const x = this.screenSize.x / 2;
+    const y = this.screenSize.y / 2;
 
-  scaleRodLength(scalar: number) {
-    this.rod.scaleLength(scalar);
+    context.beginPath();
+    context.strokeStyle = colors.purple.light;
+
+    if (this.insideOrOutsideAnotherCircle === "outside") {
+      const innerCircleRadius = Math.abs(
+        this.outerCircleRadius - this.radius * 2
+      );
+      context.arc(x, y, innerCircleRadius, 0, Math.PI * 2);
+    } else {
+      context.arc(x, y, this.outerCircleRadius, 0, Math.PI * 2);
+    }
+
+    context.stroke();
+  }
+
+  showTheCircumferencePlease(context: CanvasRenderingContext2D) {
+    const { x, y } = this.getCenter();
+    context.beginPath();
+    context.strokeStyle = colors.purple.light;
+    context.arc(x, y, this.radius, 0, Math.PI * 2);
+    context.stroke();
+  }
+
+  showPointPlease(context: CanvasRenderingContext2D) {
+    context.fillStyle = colors.purple.light;
+    context.beginPath();
+    context.arc(this.point.x, this.point.y, 5, 0, Math.PI * 2);
+    context.fill();
   }
 
   showRodPlease(context: CanvasRenderingContext2D) {

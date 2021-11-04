@@ -1,14 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import colors from "../constants/colors";
 import setCanvasSize from "./setCanvasSize";
 import { Vector2 } from "./types/vector2";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  pointToTrace: React.MutableRefObject<Vector2>
+  pointToTrace: React.MutableRefObject<Vector2>,
+  clearCanvasToggle: boolean
 ) {
-  const lastPoint = useRef<Vector2>({ x: 0, y: 0 });
+  const lastPoint: Vector2 = { x: 0, y: 0 };
   const currentPoint = pointToTrace;
-  const firstTime = useRef(true);
+  const firstTimeRef = useRef(true);
+
+  useEffect(() => {
+    firstTimeRef.current = true;
+  }, [clearCanvasToggle]);
+
+  window.onresize = () => (firstTimeRef.current = true);
+
   useEffect(() => {
     if (canvasRef.current) {
       const canvas = canvasRef.current;
@@ -17,28 +26,24 @@ export default function useTraceCycloidPath(
       setCanvasSize(canvas);
 
       const draw = () => {
-        const { x: lx, y: ly } = lastPoint.current;
+        const { x: lx, y: ly } = lastPoint;
         const { x: cx, y: cy } = currentPoint.current;
 
-        /*
-          If difference is more than half the canvas, something probably happened
-          and the path tracing jumped, not checking this will result in a straight line
-        */
-        const jump =
-          Math.max(lx, cx) - Math.min(lx, cx) > canvas.width * 0.5 ||
-          Math.max(ly, cy) - Math.min(ly, cy) > canvas.height * 0.5;
-        if (!firstTime.current && !jump) {
-          ctx.strokeStyle = "rgba(232,121,249,1)";
+        if (!firstTimeRef.current) {
+          ctx.strokeStyle = "#E2C6FF";
+          ctx.shadowColor = colors.purple.vivid;
+          ctx.shadowBlur = 10;
+          ctx.lineWidth = 2.5;
           ctx.beginPath();
           ctx.moveTo(lx, ly);
           ctx.lineTo(cx, cy);
           ctx.stroke();
         } else {
-          firstTime.current = false;
+          firstTimeRef.current = false;
         }
 
-        lastPoint.current.x = cx;
-        lastPoint.current.y = cy;
+        lastPoint.x = cx;
+        lastPoint.y = cy;
 
         requestAnimationFrame(draw);
       };
