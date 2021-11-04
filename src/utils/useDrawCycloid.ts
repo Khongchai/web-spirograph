@@ -7,25 +7,32 @@ import { Vector2 } from "./types/vector2";
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointToTrace: React.MutableRefObject<Vector2>,
-  cycloidParams = {
-    animationSpeed: 0.7,
-    rodLengthScale: 1,
-    cycloidPosition: "inside",
-  } as CycloidParams,
+  cycloidParams: CycloidParams,
   clearCanvasToggle: boolean
 ) {
   const cycloid = useMemo(() => {
     return new Cycloid(
-      100,
+      cycloidParams.cycloidRadius,
       { x: 0, y: 0 },
       { x: 0, y: 0 },
-      cycloidParams.cycloidPosition
+      cycloidParams.cycloidRotationDirection,
+      cycloidParams.boundingCircleRadius
     );
   }, []);
 
   useEffect(() => {
-    cycloid.rod.scaleLength(cycloidParams.rodLengthScale);
-    cycloid.setCycloidPosition(cycloidParams.cycloidPosition);
+    const {
+      rodLengthScale,
+      cycloidRotationDirection,
+      boundingCircleRadius,
+      cycloidRadius,
+      cycloidSpeedRatio: rodRotationRatio,
+    } = cycloidParams;
+    cycloid.rod.scaleLength(rodLengthScale);
+    cycloid.setCycloidRotationDirection(cycloidRotationDirection);
+    cycloid.setRadius(cycloidRadius);
+    cycloid.setOuterCircleRadius(boundingCircleRadius);
+    cycloid.setRodRotationSpeedRatio(rodRotationRatio);
   }, [clearCanvasToggle]);
 
   useEffect(() => {

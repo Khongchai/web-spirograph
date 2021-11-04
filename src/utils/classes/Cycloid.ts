@@ -1,5 +1,5 @@
 import colors from "../../constants/colors";
-import { CycloidPosition } from "../types/cycloidPosition";
+import { CycloidRotationDirection } from "../types/cycloidPosition";
 import Rod from "./Rod";
 
 export default class Cycloid {
@@ -8,18 +8,21 @@ export default class Cycloid {
   //basically cannot go beyond this value -- something % limit
   private dx: number = 0;
   private screenSize: { x: number; y: number };
+  private boundingCircleRadius: number = 0;
+  private insideOrOutsideAnotherCircle: CycloidRotationDirection;
+
+  /*
+    1 means the rod rotates at the same speed as the circle
+  */
+  private rodRotationSpeedRatio = 1;
 
   readonly rod: Rod;
-
-  private outerCircleRadius: number = 0;
-
-  private insideOrOutsideAnotherCircle: CycloidPosition;
-
   constructor(
     radius: number,
     point: { x: number; y: number },
     boundary: { x: number; y: number },
-    insideOrOutsideAnotherCircle: CycloidPosition
+    insideOrOutsideAnotherCircle: CycloidRotationDirection,
+    outerCircleRadius: number
   ) {
     this.radius = radius;
     this.point = point;
@@ -27,7 +30,7 @@ export default class Cycloid {
 
     this.rod = new Rod(this.radius);
 
-    this.outerCircleRadius = this.radius * 2;
+    this.boundingCircleRadius = outerCircleRadius;
 
     this.insideOrOutsideAnotherCircle = insideOrOutsideAnotherCircle;
   }
@@ -36,7 +39,7 @@ export default class Cycloid {
     this.dx = dx;
   }
 
-  setCycloidPosition(newPos: CycloidPosition) {
+  setCycloidRotationDirection(newPos: CycloidRotationDirection) {
     this.insideOrOutsideAnotherCircle = newPos;
   }
 
@@ -44,8 +47,16 @@ export default class Cycloid {
     return 2 * Math.PI * this.radius;
   }
 
+  setRodRotationSpeedRatio(ratio: number) {
+    this.rodRotationSpeedRatio = ratio;
+  }
+
   setOuterCircleRadius(radius: number) {
-    this.outerCircleRadius = radius;
+    this.boundingCircleRadius = radius;
+  }
+
+  setRadius(radius: number) {
+    this.radius = radius;
   }
 
   private getdxAsRadians() {
@@ -72,15 +83,19 @@ export default class Cycloid {
     */
     let canvasCenter = { x: this.screenSize.x / 2, y: this.screenSize.y / 2 };
     //Angle 0
-    let beginningPosInsideAnotherCircle = this.outerCircleRadius - this.radius;
+    let beginningPosInsideAnotherCircle =
+      this.boundingCircleRadius - this.radius;
     let dx = this.getdxAsRadians();
     let change =
-      this.insideOrOutsideAnotherCircle === "inside"
+      this.insideOrOutsideAnotherCircle === "clockwise"
         ? {
-            dx: Math.sin(dx * 0.7),
-            dy: Math.cos(dx * 0.7),
+            dx: Math.sin(dx * this.rodRotationSpeedRatio),
+            dy: Math.cos(dx * this.rodRotationSpeedRatio),
           }
-        : { dx: Math.cos(dx * 0.7), dy: Math.sin(dx * 0.7) };
+        : {
+            dx: Math.cos(dx * this.rodRotationSpeedRatio),
+            dy: Math.sin(dx * this.rodRotationSpeedRatio),
+          };
     let pos = {
       x: beginningPosInsideAnotherCircle * change.dx,
       y: beginningPosInsideAnotherCircle * change.dy,
@@ -123,13 +138,13 @@ export default class Cycloid {
     context.beginPath();
     context.strokeStyle = colors.purple.light;
 
-    if (this.insideOrOutsideAnotherCircle === "outside") {
+    if (this.insideOrOutsideAnotherCircle === "counterClockwise") {
       const innerCircleRadius = Math.abs(
-        this.outerCircleRadius - this.radius * 2
+        this.boundingCircleRadius - this.radius * 2
       );
       context.arc(x, y, innerCircleRadius, 0, Math.PI * 2);
     } else {
-      context.arc(x, y, this.outerCircleRadius, 0, Math.PI * 2);
+      context.arc(x, y, this.boundingCircleRadius, 0, Math.PI * 2);
     }
 
     context.stroke();

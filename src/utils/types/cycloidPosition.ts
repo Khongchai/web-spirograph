@@ -1,1 +1,1 @@
-export type CycloidPosition = "outside" | "inside";
+export type CycloidRotationDirection = "counterClockwise" | "clockwise";
