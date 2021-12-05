@@ -1,9 +1,10 @@
 import guify from "guify";
 import { useEffect, useMemo, useRef } from "react";
-import CycloidParams from "./types/cycloidParams";
-import { CycloidRotationDirection } from "./types/cycloidPosition";
+import CycloidParams from "../types/cycloidParams";
+import { CycloidPosition } from "../types/cycloidPosition";
 
 import * as dat from "dat.gui";
+import { CycloidDirection } from "../types/cycloidDirection";
 
 const gui = new dat.GUI();
 
@@ -15,8 +16,9 @@ export default function useGetControlledCycloidParams(
       ({
         animationSpeed: 0.7,
         rodLengthScale: 0.5,
-        cycloidRotationDirection: "clockwise",
+        cycloidPosition: "inside",
         boundingCircleRadius: 300,
+        cycloidDirection: "clockwise",
         cycloidRadius: 200,
         cycloidSpeedRatio: 0.5,
       } as CycloidParams),
@@ -46,15 +48,11 @@ export default function useGetControlledCycloidParams(
       });
 
     const cycloidFolder = gui.addFolder("Cycloid Properties");
+
     cycloidFolder
-      .add(cycloidParams, "cycloidRotationDirection", [
-        "clockwise (inside)",
-        "counterClockwise (outside)",
-      ])
-      .onChange((newPos: CycloidRotationDirection) => {
-        cycloidParams.cycloidRotationDirection = newPos.split(
-          " "
-        )[0] as CycloidRotationDirection;
+      .add(cycloidParams, "cycloidDirection", ["clockwise", "counterclockwise"])
+      .onChange((newDirection: CycloidDirection) => {
+        cycloidParams.cycloidDirection = newDirection;
         clearCanvasToggle((toggle) => !toggle);
       });
 
@@ -62,6 +60,7 @@ export default function useGetControlledCycloidParams(
       .add(cycloidParams, "cycloidRadius", 0, 1000, 0.5)
       .onChange((newRadius: number) => {
         cycloidParams.cycloidRadius = newRadius;
+
         clearCanvasToggle((toggle) => !toggle);
       });
 

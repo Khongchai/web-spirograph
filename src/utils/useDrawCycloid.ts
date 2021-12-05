@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import Cycloid from "./classes/Cycloid";
 import setCanvasSize from "./setCanvasSize";
-import CycloidParams from "./types/cycloidParams";
-import { Vector2 } from "./types/vector2";
+import CycloidParams from "../types/cycloidParams";
+import { Vector2 } from "../types/vector2";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -15,7 +15,7 @@ export default function useDrawCanvas(
       cycloidParams.cycloidRadius,
       { x: 0, y: 0 },
       { x: 0, y: 0 },
-      cycloidParams.cycloidRotationDirection,
+      cycloidParams.cycloidDirection,
       cycloidParams.boundingCircleRadius
     );
   }, []);
@@ -23,14 +23,14 @@ export default function useDrawCanvas(
   useEffect(() => {
     const {
       rodLengthScale,
-      cycloidRotationDirection,
       boundingCircleRadius,
       cycloidRadius,
+      cycloidDirection,
       cycloidSpeedRatio: rodRotationRatio,
     } = cycloidParams;
     cycloid.rod.scaleLength(rodLengthScale);
-    cycloid.setCycloidRotationDirection(cycloidRotationDirection);
     cycloid.setRadius(cycloidRadius);
+    cycloid.setRotationDirection(cycloidDirection);
     cycloid.setOuterCircleRadius(boundingCircleRadius);
     cycloid.setRodRotationSpeedRatio(rodRotationRatio);
   }, [clearCanvasToggle]);

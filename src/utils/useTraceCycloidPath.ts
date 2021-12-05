@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import colors from "../constants/colors";
 import setCanvasSize from "./setCanvasSize";
-import { Vector2 } from "./types/vector2";
+import { Vector2 } from "../types/vector2";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Cycloid from "../../utils/classes/Cycloid";
-import CycloidParams from "../../utils/types/cycloidParams";
-import { Vector2 } from "../../utils/types/vector2";
+import CycloidParams from "../../types/cycloidParams";
+import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/useDrawCycloid";
 import useTraceCycloidPath from "../../utils/useTraceCycloidPath";
 

@@ -1,9 +1,10 @@
-import { CycloidRotationDirection } from "./cycloidPosition";
+import { CycloidDirection } from "./cycloidDirection";
+import { CycloidPosition } from "./cycloidPosition";
 
 export default interface CycloidParams {
   animationSpeed: number;
   rodLengthScale: number;
-  cycloidRotationDirection: CycloidRotationDirection;
+  cycloidDirection: CycloidDirection;
   cycloidRadius: number;
   boundingCircleRadius: number;
   cycloidSpeedRatio: number;
