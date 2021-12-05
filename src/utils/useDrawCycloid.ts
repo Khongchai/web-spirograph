@@ -3,7 +3,7 @@ import Cycloid from "./classes/Cycloid";
 import setCanvasSize from "./setCanvasSize";
 import CycloidParams from "../types/cycloidParams";
 import { Vector2 } from "../types/vector2";
-import BoundingCircle from "./classes/OuterMostBoundingCircle";
+import BoundingCircle from "./classes/BoundingCircle";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,

@@ -1,7 +1,7 @@
 import colors from "../../constants/colors";
 import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
 import { Vector2 } from "../../types/vector2";
-import BoundingCircle from "./OuterMostBoundingCircle";
+import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
 
 export default class Cycloid extends BoundingCircle {
