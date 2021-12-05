@@ -8,4 +8,4 @@ Allow dragging
 
 Instant draw
 
-Defautl value for dat.gui
+Note: To allow for nested cycloids, each cycloid must have not be responsible for drawing their parent cycloid

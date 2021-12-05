@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import Cycloid from "./classes/Cycloid";
 import setCanvasSize from "./setCanvasSize";
 import CycloidParams from "../types/cycloidParams";
@@ -8,7 +8,12 @@ export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointToTrace: React.MutableRefObject<Vector2>,
   cycloidParams: CycloidParams,
-  clearCanvasToggle: boolean
+  clearCanvasToggle: boolean,
+  showStructure: MutableRefObject<boolean>,
+  /*
+    How many nested cycloids to draw
+  */
+  nestedLeve = 1
 ) {
   const cycloid = useMemo(() => {
     return new Cycloid(
@@ -62,10 +67,12 @@ export default function useDrawCanvas(
         cycloid.move();
 
         //visual
-        cycloid.showTheCircumferencePlease(ctx);
-        cycloid.showRodPlease(ctx);
-        cycloid.showBoundingCirclePlease(ctx);
-        cycloid.showPointPlease(ctx);
+        if (showStructure.current) {
+          cycloid.showTheCircumferencePlease(ctx);
+          cycloid.showRodPlease(ctx);
+          cycloid.showBoundingCirclePlease(ctx);
+          cycloid.showPointPlease(ctx);
+        }
 
         const pointPos = cycloid.point;
         pointToTrace.current.x = pointPos.x;

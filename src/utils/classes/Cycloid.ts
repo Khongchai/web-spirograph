@@ -1,6 +1,5 @@
 import colors from "../../constants/colors";
 import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
-import { CycloidPosition } from "../../types/cycloidPosition";
 import Rod from "./Rod";
 
 export default class Cycloid {

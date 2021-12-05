@@ -57,7 +57,7 @@ export default function useGetControlledCycloidParams(
       });
 
     cycloidFolder
-      .add(cycloidParams, "cycloidRadius", 0, 1000, 0.5)
+      .add(cycloidParams, "cycloidRadius", 0, 600, 0.5)
       .onChange((newRadius: number) => {
         cycloidParams.cycloidRadius = newRadius;
 
@@ -65,7 +65,7 @@ export default function useGetControlledCycloidParams(
       });
 
     cycloidFolder
-      .add(cycloidParams, "boundingCircleRadius", 0, 1000, 0.5)
+      .add(cycloidParams, "boundingCircleRadius", 0, 600, 0.5)
       .onChange((newRadius: number) => {
         cycloidParams.boundingCircleRadius = newRadius;
         clearCanvasToggle((toggle) => !toggle);
