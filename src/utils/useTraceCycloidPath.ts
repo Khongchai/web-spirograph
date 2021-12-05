@@ -6,18 +6,11 @@ import { Vector2 } from "../types/vector2";
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointToTrace: React.MutableRefObject<Vector2>,
-  clearCanvasToggle: boolean,
-  //TODO => temporary
-  pointToTrace2: React.MutableRefObject<Vector2>
+  clearCanvasToggle: boolean
 ) {
   const lastPoint: Vector2 = { x: 0, y: 0 };
   const currentPoint = pointToTrace;
   const firstTimeRef = useRef(true);
-
-  //TODO => temp
-  const lastPoint2: Vector2 = { x: 0, y: 0 };
-  const currentPoint2 = pointToTrace;
-  const firstTimeRef2 = useRef(true);
 
   useEffect(() => {
     firstTimeRef.current = true;
@@ -36,10 +29,6 @@ export default function useTraceCycloidPath(
         const { x: lx, y: ly } = lastPoint;
         const { x: cx, y: cy } = currentPoint.current;
 
-        //TODO => temporary
-        const { x: lx2, y: ly2 } = lastPoint2;
-        const { x: cx2, y: cy2 } = pointToTrace2.current;
-
         if (!firstTimeRef.current) {
           ctx.strokeStyle = "#E2C6FF";
           ctx.shadowColor = colors.purple.vivid;
@@ -52,18 +41,14 @@ export default function useTraceCycloidPath(
           ctx.closePath();
 
           ctx.beginPath();
-          ctx.moveTo(lx2, ly2);
-          ctx.lineTo(cx2, cy2);
+
           ctx.stroke();
         } else {
           firstTimeRef.current = false;
-          firstTimeRef2.current = false;
         }
 
         lastPoint.x = cx;
         lastPoint.y = cy;
-        lastPoint2.x = cx2;
-        lastPoint2.y = cy2;
 
         requestAnimationFrame(draw);
       };

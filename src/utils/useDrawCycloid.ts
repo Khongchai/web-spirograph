@@ -11,7 +11,6 @@ export default function useDrawCanvas(
     TODO, refactor pointToTrace to a generator function that generates as many traces as needed
   */
   pointToTrace: React.MutableRefObject<Vector2>,
-  pointToTrace2: React.MutableRefObject<Vector2>,
   cycloidParams: CycloidParams,
   clearCanvasToggle: boolean,
   showStructure: MutableRefObject<boolean>,
@@ -76,10 +75,6 @@ export default function useDrawCanvas(
           x: outerMostBoundingCircle.getX(),
           y: outerMostBoundingCircle.getY(),
         });
-        cycloid2.setParentMiddle({
-          x: outerMostBoundingCircle.getX(),
-          y: outerMostBoundingCircle.getY(),
-        });
       });
 
       const draw = () => {
@@ -92,19 +87,11 @@ export default function useDrawCanvas(
         cycloid1.setDx(dx);
         cycloid1.move();
 
-        cycloid2.setDx(dx * 0.4);
-        cycloid2.setParentMiddle(cycloid1.getCenter());
-        cycloid2.move();
-
         //visual
         if (showStructure.current) {
           cycloid1.showTheCircumferencePlease(ctx);
           cycloid1.showRodPlease(ctx);
           cycloid1.showPointPlease(ctx);
-
-          cycloid2.showTheCircumferencePlease(ctx);
-          cycloid2.showRodPlease(ctx);
-          cycloid2.showPointPlease(ctx);
 
           outerMostBoundingCircle.drawCircumference(ctx);
         }
@@ -112,10 +99,6 @@ export default function useDrawCanvas(
         const pointPos = cycloid1.getDrawPoint();
         pointToTrace.current.x = pointPos.x;
         pointToTrace.current.y = pointPos.y;
-
-        const pointPos2 = cycloid2.getDrawPoint();
-        pointToTrace2.current.x = pointPos2.x;
-        pointToTrace2.current.y = pointPos2.y;
 
         requestAnimationFrame(draw);
       };

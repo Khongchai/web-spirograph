@@ -19,7 +19,7 @@ export default function useGetControlledCycloidParams(
         cycloidPosition: "inside",
         boundingCircleRadius: 300,
         cycloidDirection: "clockwise",
-        cycloidRadius: 200,
+        cycloidRadius: 100,
         cycloidSpeedRatio: 0.5,
       } as CycloidParams),
     []

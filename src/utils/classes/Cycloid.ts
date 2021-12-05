@@ -7,8 +7,11 @@ export default class Cycloid {
   private drawPoint: { x: number; y: number };
   //basically cannot go beyond this value -- something % limit
   private dx: number = 0;
+
+  //TODO => variables to be extracted once refactored
   private parentMiddle: { x: number; y: number };
   private boundingCircleRadius: number = 0;
+
   private rotationDirection: CycloidRotationDirection;
 
   /*
@@ -22,7 +25,8 @@ export default class Cycloid {
     point: { x: number; y: number },
     boundary: { x: number; y: number },
     rotationDirection: CycloidRotationDirection,
-    outerCircleRadius: number
+    outerCircleRadius: number,
+    offsetToOutside = false
   ) {
     this.radius = radius;
     this.drawPoint = point;
@@ -30,7 +34,8 @@ export default class Cycloid {
 
     this.rod = new Rod(this.radius);
 
-    this.boundingCircleRadius = outerCircleRadius;
+    const offset = offsetToOutside ? this.radius * 2 : 0;
+    this.boundingCircleRadius = outerCircleRadius + offset;
 
     this.rotationDirection = rotationDirection;
   }
