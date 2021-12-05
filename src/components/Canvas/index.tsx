@@ -24,17 +24,25 @@ const Canvas: React.FC<CanvasProps> = ({
     Cycloids are drawn on one canvas and their paths are traced on another.
   */
   const pointToTrace = useRef<Vector2>({ x: 0, y: 0 });
+  //TODO temporary
+  const pointToTrace2 = useRef<Vector2>({ x: 0, y: 0 });
 
   const drawCanvasRef = useRef<HTMLCanvasElement | null>(null);
   useDrawCycloid(
     drawCanvasRef,
     pointToTrace,
+    pointToTrace2,
     cycloidParams,
     clearCanvasToggle,
     showStructure
   );
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  useTraceCycloidPath(traceCanvasRef, pointToTrace, clearCanvasToggle);
+  useTraceCycloidPath(
+    traceCanvasRef,
+    pointToTrace,
+    clearCanvasToggle,
+    pointToTrace2
+  );
 
   useEffect(() => {
     drawCanvasRef.current

@@ -4,10 +4,10 @@ import Rod from "./Rod";
 
 export default class Cycloid {
   private radius: number;
-  readonly point: { x: number; y: number };
+  private drawPoint: { x: number; y: number };
   //basically cannot go beyond this value -- something % limit
   private dx: number = 0;
-  private screenSize: { x: number; y: number };
+  private parentMiddle: { x: number; y: number };
   private boundingCircleRadius: number = 0;
   private rotationDirection: CycloidRotationDirection;
 
@@ -25,8 +25,8 @@ export default class Cycloid {
     outerCircleRadius: number
   ) {
     this.radius = radius;
-    this.point = point;
-    this.screenSize = boundary;
+    this.drawPoint = point;
+    this.parentMiddle = boundary;
 
     this.rod = new Rod(this.radius);
 
@@ -35,48 +35,18 @@ export default class Cycloid {
     this.rotationDirection = rotationDirection;
   }
 
-  setDx(dx: number) {
-    this.dx = dx;
-  }
-
-  setRotationDirection(direction: CycloidRotationDirection) {
-    this.rotationDirection = direction;
-  }
-
-  private getCircumference() {
-    return 2 * Math.PI * this.radius;
-  }
-
-  setRodRotationSpeedRatio(ratio: number) {
-    this.rodRotationSpeedRatio = ratio;
-  }
-
-  setOuterCircleRadius(radius: number) {
-    this.boundingCircleRadius = radius;
-  }
-
-  setRadius(radius: number) {
-    this.radius = radius;
-  }
-
   private getdxAsRadians() {
     return this.dx * 6 * (Math.PI / 180);
-  }
-
-  private getPathCovered() {
-    // one rotation within 60 dx
-    const cycloidRotationSpeedScale = 1;
-    let pathCovered = (this.dx * this.getCircumference()) / 60;
-    pathCovered *= cycloidRotationSpeedScale;
-
-    return pathCovered;
   }
 
   /*
     How much the circle moves depends on the circumference
   */
-  private getCenter() {
-    let canvasCenter = { x: this.screenSize.x / 2, y: this.screenSize.y / 2 };
+  getCenter() {
+    let canvasCenter = {
+      x: this.parentMiddle.x,
+      y: this.parentMiddle.y,
+    };
     //Angle 0
     let beginningPos = this.boundingCircleRadius - this.radius;
     let dx = this.getdxAsRadians();
@@ -104,11 +74,6 @@ export default class Cycloid {
     };
   }
 
-  setBoundary(boundary: { x: number; y: number }) {
-    this.screenSize.x = boundary.x;
-    this.screenSize.y = boundary.y;
-  }
-
   move() {
     let { x, y } = this.getCenter();
 
@@ -120,14 +85,14 @@ export default class Cycloid {
       y,
     };
 
-    this.point.x =
+    this.drawPoint.x =
       Math.cos(theta * innerRotationSpeed) * this.rod.getLength() + path.x;
-    this.point.y =
+    this.drawPoint.y =
       Math.sin(theta * innerRotationSpeed) * this.rod.getLength() + path.y;
   }
   showBoundingCirclePlease(context: CanvasRenderingContext2D) {
-    const x = this.screenSize.x / 2;
-    const y = this.screenSize.y / 2;
+    const x = this.parentMiddle.x;
+    const y = this.parentMiddle.y;
 
     context.beginPath();
     context.strokeStyle = colors.purple.light;
@@ -148,7 +113,7 @@ export default class Cycloid {
   showPointPlease(context: CanvasRenderingContext2D) {
     context.fillStyle = colors.purple.light;
     context.beginPath();
-    context.arc(this.point.x, this.point.y, 5, 0, Math.PI * 2);
+    context.arc(this.drawPoint.x, this.drawPoint.y, 5, 0, Math.PI * 2);
     context.fill();
   }
 
@@ -161,9 +126,30 @@ export default class Cycloid {
         y,
       },
       {
-        x: this.point.x,
-        y: this.point.y,
+        x: this.drawPoint.x,
+        y: this.drawPoint.y,
       }
     );
   }
+
+  getDrawPoint = () => this.drawPoint;
+
+  setParentMiddle(parentMiddle: { x: number; y: number }) {
+    this.parentMiddle.x = parentMiddle.x;
+    this.parentMiddle.y = parentMiddle.y;
+  }
+
+  setPoint = (point: { x: number; y: number }) => (this.drawPoint = point);
+
+  getRadius = () => this.radius;
+
+  setDx = (dx: number) => (this.dx = dx);
+
+  setRotationDirection = (direction: CycloidRotationDirection) =>
+    (this.rotationDirection = direction);
+
+  setRodRotationSpeedRatio = (ratio: number) =>
+    (this.rodRotationSpeedRatio = ratio);
+
+  setRadius = (radius: number) => (this.radius = radius);
 }
