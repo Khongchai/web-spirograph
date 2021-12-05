@@ -1,16 +1,16 @@
 import colors from "../../constants/colors";
 import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
+import { Vector2 } from "../../types/vector2";
+import BoundingCircle from "./OuterMostBoundingCircle";
 import Rod from "./Rod";
 
-export default class Cycloid {
-  private radius: number;
-  private drawPoint: { x: number; y: number };
-  //basically cannot go beyond this value -- something % limit
-  private dx: number = 0;
+export default class Cycloid extends BoundingCircle {
+  private drawPoint: Vector2;
 
-  //TODO => variables to be extracted once refactored
-  private parentMiddle: { x: number; y: number };
-  private boundingCircleRadius: number = 0;
+  //basically cannot go beyond this value -- something % limit
+  private animationSpeed: number = 0;
+
+  private parentBounding: BoundingCircle;
 
   private rotationDirection: CycloidRotationDirection;
 
@@ -19,42 +19,44 @@ export default class Cycloid {
   */
   private rodRotationSpeedRatio = 1;
 
+  private outsideBounding: boolean;
+
   readonly rod: Rod;
+
   constructor(
     radius: number,
-    point: { x: number; y: number },
-    boundary: { x: number; y: number },
     rotationDirection: CycloidRotationDirection,
-    outerCircleRadius: number,
-    offsetToOutside = false
+    parentBounding: BoundingCircle,
+    outsideBounding = false
   ) {
-    this.radius = radius;
-    this.drawPoint = point;
-    this.parentMiddle = boundary;
+    super({ x: 0, y: 0 }, radius);
 
-    this.rod = new Rod(this.radius);
+    this.outsideBounding = outsideBounding;
 
-    const offset = offsetToOutside ? this.radius * 2 : 0;
-    this.boundingCircleRadius = outerCircleRadius + offset;
+    this.drawPoint = { x: 0, y: 0 };
+
+    this.rod = new Rod(radius);
+
+    this.parentBounding = parentBounding;
 
     this.rotationDirection = rotationDirection;
   }
 
-  private getdxAsRadians() {
-    return this.dx * 6 * (Math.PI / 180);
+  private animationSpeedAsRadians() {
+    return this.animationSpeed * 6 * (Math.PI / 180);
   }
 
   /*
     How much the circle moves depends on the circumference
   */
-  getCenter() {
-    let canvasCenter = {
-      x: this.parentMiddle.x,
-      y: this.parentMiddle.y,
-    };
-    //Angle 0
-    let beginningPos = this.boundingCircleRadius - this.radius;
-    let dx = this.getdxAsRadians();
+  private calculateCenter() {
+    const parentCenter = this.parentBounding.getCenterPoint();
+
+    //At angle 0
+    const offset = this.outsideBounding ? this.radius : -this.radius;
+    let beginningPos = this.parentBounding.getRadius() + offset;
+
+    let dx = this.animationSpeedAsRadians();
     let change =
       this.rotationDirection === "clockwise"
         ? {
@@ -70,8 +72,10 @@ export default class Cycloid {
       y: beginningPos * change.dy,
     };
 
-    let x = canvasCenter.x + pos.x;
-    let y = canvasCenter.y + pos.y;
+    let x = parentCenter.x + pos.x;
+    let y = parentCenter.y + pos.y;
+
+    this.centerPoint = { x, y };
 
     return {
       x,
@@ -80,9 +84,11 @@ export default class Cycloid {
   }
 
   move() {
-    let { x, y } = this.getCenter();
+    let { x, y } = this.calculateCenter();
 
-    const theta = this.getdxAsRadians();
+    const theta = this.animationSpeedAsRadians();
+
+    //TODO => what's this?
     const innerRotationSpeed = 1;
 
     const path = {
@@ -95,35 +101,16 @@ export default class Cycloid {
     this.drawPoint.y =
       Math.sin(theta * innerRotationSpeed) * this.rod.getLength() + path.y;
   }
-  showBoundingCirclePlease(context: CanvasRenderingContext2D) {
-    const x = this.parentMiddle.x;
-    const y = this.parentMiddle.y;
 
-    context.beginPath();
-    context.strokeStyle = colors.purple.light;
-
-    context.arc(x, y, this.boundingCircleRadius, 0, Math.PI * 2);
-
-    context.stroke();
-  }
-
-  showTheCircumferencePlease(context: CanvasRenderingContext2D) {
-    const { x, y } = this.getCenter();
-    context.beginPath();
-    context.strokeStyle = colors.purple.light;
-    context.arc(x, y, this.radius, 0, Math.PI * 2);
-    context.stroke();
-  }
-
-  showPointPlease(context: CanvasRenderingContext2D) {
+  showPoint(context: CanvasRenderingContext2D) {
     context.fillStyle = colors.purple.light;
     context.beginPath();
     context.arc(this.drawPoint.x, this.drawPoint.y, 5, 0, Math.PI * 2);
     context.fill();
   }
 
-  showRodPlease(context: CanvasRenderingContext2D) {
-    const { x, y } = this.getCenter();
+  showRod(context: CanvasRenderingContext2D) {
+    const { x, y } = this.calculateCenter();
     this.rod.drawRodPlease(
       context,
       {
@@ -139,16 +126,11 @@ export default class Cycloid {
 
   getDrawPoint = () => this.drawPoint;
 
-  setParentMiddle(parentMiddle: { x: number; y: number }) {
-    this.parentMiddle.x = parentMiddle.x;
-    this.parentMiddle.y = parentMiddle.y;
-  }
-
   setPoint = (point: { x: number; y: number }) => (this.drawPoint = point);
 
   getRadius = () => this.radius;
 
-  setDx = (dx: number) => (this.dx = dx);
+  setDx = (dx: number) => (this.animationSpeed = dx);
 
   setRotationDirection = (direction: CycloidRotationDirection) =>
     (this.rotationDirection = direction);

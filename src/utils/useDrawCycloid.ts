@@ -20,33 +20,18 @@ export default function useDrawCanvas(
   nestedLevel = 1
 ) {
   const outerMostBoundingCircle = new BoundingCircle(
-    window.innerWidth / 2,
-    window.innerHeight / 2,
+    { x: window.innerWidth / 2, y: window.innerHeight / 2 },
     300
   );
 
   const cycloid1 = useMemo(() => {
     return new Cycloid(
       cycloidParams.cycloidRadius,
-      //beginning pos doesn't matter
-      { x: 0, y: 0 },
-      { x: 0, y: 0 },
       cycloidParams.cycloidDirection,
-      outerMostBoundingCircle.getRadius()
+      outerMostBoundingCircle,
+      true
     );
   }, []);
-
-  const cycloid2 = useMemo(() => {
-    return new Cycloid(
-      //temporary
-      cycloidParams.cycloidRadius * 0.5,
-      { x: 0, y: 0 },
-      { x: 0, y: 0 },
-      cycloidParams.cycloidDirection,
-      cycloid1.getRadius()
-    );
-  }, []);
-  cycloid2.rod.scaleLength(2);
 
   //TODO
   useEffect(() => {
@@ -69,18 +54,18 @@ export default function useDrawCanvas(
 
       let dx = 0;
 
+      //TODO do we do this?
       setCanvasSize(canvas, () => {
-        //Set center for the parent as well.
-        cycloid1.setParentMiddle({
-          x: outerMostBoundingCircle.getX(),
-          y: outerMostBoundingCircle.getY(),
-        });
+        // cycloid1.setCenterPoint({
+        //   x: outerMostBoundingCircle.getX(),
+        //   y: outerMostBoundingCircle.getY(),
+        // });
       });
 
       const draw = () => {
         ctx.lineWidth = 1;
-        // ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
-        ctx.fillStyle = "rgba(43, 30, 57, 0.8)";
+
+        ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         dx += cycloidParams.animationSpeed;
 
@@ -89,11 +74,11 @@ export default function useDrawCanvas(
 
         //visual
         if (showStructure.current) {
-          cycloid1.showTheCircumferencePlease(ctx);
-          cycloid1.showRodPlease(ctx);
-          cycloid1.showPointPlease(ctx);
+          cycloid1.showBounding(ctx);
+          cycloid1.showRod(ctx);
+          cycloid1.showPoint(ctx);
 
-          outerMostBoundingCircle.drawCircumference(ctx);
+          outerMostBoundingCircle.showBounding(ctx);
         }
 
         const pointPos = cycloid1.getDrawPoint();

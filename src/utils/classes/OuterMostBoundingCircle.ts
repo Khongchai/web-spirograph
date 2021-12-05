@@ -1,31 +1,24 @@
 import colors from "../../constants/colors";
+import { Vector2 } from "../../types/vector2";
 
 export default class BoundingCircle {
-  private x: number;
-  private y: number;
-  private radius: number;
+  protected centerPoint: Vector2;
+  protected radius: number;
 
-  constructor(x: number, y: number, radius: number) {
-    this.x = x;
-    this.y = y;
+  constructor(centerPoint: Vector2, radius: number) {
+    this.centerPoint = centerPoint;
     this.radius = radius;
   }
 
-  //getters for all variables
-  getX(): number {
-    return this.x;
-  }
-  getY(): number {
-    return this.y;
-  }
-  getRadius(): number {
-    return this.radius;
-  }
+  getCenterPoint = () => this.centerPoint;
 
-  drawCircumference(ctx: CanvasRenderingContext2D) {
+  getRadius = () => this.radius;
+
+  setCenterPoint = (centerPoint: Vector2) => (this.centerPoint = centerPoint);
+
+  showBounding(ctx: CanvasRenderingContext2D) {
     //Draw outer bounding circle
-    const x = this.x;
-    const y = this.y;
+    const { x, y } = this.centerPoint;
 
     ctx.beginPath();
     ctx.strokeStyle = colors.purple.light;
