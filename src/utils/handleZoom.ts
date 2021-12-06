@@ -18,10 +18,10 @@ export default function handleZoomAndDrag(
       const delta = Math.max(-1, Math.min(1, e.deltaY));
       if (delta === 1) {
         zoomLevel = Math.min(1.0, zoomLevel);
-        zoomLevel -= 0.001;
+        zoomLevel -= 0.008;
       } else if (delta === -1) {
         zoomLevel = Math.max(1.0, zoomLevel);
-        zoomLevel += 0.001;
+        zoomLevel += 0.008;
       }
 
       for (let i = 0; i < canvases.length; i++) {
@@ -35,15 +35,15 @@ export default function handleZoomAndDrag(
           const translateOriginY = canvas.height;
           const compensateX = canvas.width * zoomLevel;
           const compensateY = canvas.height * zoomLevel;
-          const translateX =
-            translateOriginX -
-            compensateX -
-            remap(mousePos.x, 0, canvas.width, -3, 3);
-          const translateY =
-            translateOriginY -
-            compensateY -
-            remap(mousePos.y, 0, canvas.height, -3, 3);
-          ctx.translate(translateX / 2, translateY / 2);
+          const translateX = translateOriginX - compensateX;
+          const translateY = translateOriginY - compensateY;
+          const cursorOffsetX = remap(mousePos.x, 0, canvas.width, -20, 20);
+          const cursorOffsetY = remap(mousePos.y, 0, canvas.width, -20, 20);
+          console.log(cursorOffsetX, cursorOffsetY);
+          ctx.translate(
+            translateX / 2 - cursorOffsetX,
+            translateY / 2 - cursorOffsetY
+          );
         }
       }
     },
