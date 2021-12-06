@@ -7,16 +7,14 @@ import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
-  cycloidControls: CycloidControls;
+  cycloidControls: MutableRefObject<CycloidControls>;
   clearCanvasToggle: boolean;
-  showStructure: MutableRefObject<boolean>;
   parent: MutableRefObject<HTMLElement | null>;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
   cycloidControls,
   clearCanvasToggle,
-  showStructure,
   parent,
 }) => {
   const [mode, setMode] = useState<"animate" | "instant">("animate");
@@ -35,7 +33,6 @@ const Canvas: React.FC<CanvasProps> = ({
     pointToTrace,
     cycloidControls,
     clearCanvasToggle,
-    showStructure,
     parent as MutableRefObject<HTMLElement>
   );
 

@@ -18,3 +18,5 @@ Canvas // eventlistener multi-threading for better performance. Watch out for no
 https://medium.com/techtrument/multithreading-javascript-46156179cf9a
 
 Handle pan with lerp
+
+The ability to change colors

@@ -1,4 +1,4 @@
-import SelectionButton from "./button";
+import SelectionButton from "./SelectionButton";
 
 const ContentArray: React.FC<{
   paramName: string;

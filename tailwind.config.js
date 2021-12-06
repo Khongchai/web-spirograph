@@ -15,9 +15,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     colors,
+    "w-fit": "fit-content",
   },
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ["active"],
+    },
   },
   plugins: [],
 };

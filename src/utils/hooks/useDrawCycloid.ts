@@ -9,11 +9,9 @@ import CycloidControls from "../../types/cycloidControls";
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointToTrace: React.MutableRefObject<Vector2>,
-  cycloidControls: CycloidControls,
+  cycloidControls: MutableRefObject<CycloidControls>,
   clearCanvasToggle: boolean,
-  showStructure: MutableRefObject<boolean>,
-  parent: MutableRefObject<HTMLElement>,
-  nestedLevel = 1
+  parent: MutableRefObject<HTMLElement>
 ) {
   useEffect(() => {
     let outerMostBoundingCircle = new BoundingCircle(
@@ -25,8 +23,8 @@ export default function useDrawCanvas(
     );
 
     let cycloid1 = new Cycloid(
-      cycloidControls.cycloids[0].cycloidRadius,
-      cycloidControls.cycloids[0].rotationDirection,
+      cycloidControls.current.cycloids[0].cycloidRadius,
+      cycloidControls.current.cycloids[0].rotationDirection,
       outerMostBoundingCircle,
       false
     );
@@ -36,7 +34,7 @@ export default function useDrawCanvas(
       cycloidRadius,
       rotationDirection: cycloidDirection,
       animationSpeedScale: rodRotationRatio,
-    } = cycloidControls.cycloids[0];
+    } = cycloidControls.current.cycloids[0];
     cycloid1.rod.scaleLength(rodLengthScale);
     cycloid1.setRadius(cycloidRadius);
     cycloid1.setRotationDirection(cycloidDirection);
@@ -61,13 +59,13 @@ export default function useDrawCanvas(
 
         ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        dx += cycloidControls.animationSpeed;
+        dx += cycloidControls.current.animationSpeed;
 
         cycloid1.setDx(dx);
         cycloid1.move();
 
         //visual
-        if (showStructure.current) {
+        if (cycloidControls.current.scaffold === "Show") {
           cycloid1.showBounding(ctx);
           cycloid1.showRod(ctx);
           cycloid1.showPoint(ctx);
