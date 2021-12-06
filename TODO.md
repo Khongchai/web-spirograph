@@ -17,4 +17,4 @@ Note: To allow for nested cycloids, each cycloid must have not be responsible fo
 Canvas // eventlistener multi-threading for better performance. Watch out for non-atomic operations.
 https://medium.com/techtrument/multithreading-javascript-46156179cf9a
 
-Zoom & pan
+Handle pan with lerp

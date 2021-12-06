@@ -1,11 +1,14 @@
+import BoundingCircle from "../classes/BoundingCircle";
 import { CycloidDirection } from "./cycloidDirection";
-import { CycloidPosition } from "./cycloidPosition";
 
 export default interface CycloidParams {
-  animationSpeed: number;
   rodLengthScale: number;
-  cycloidDirection: CycloidDirection;
+  rotationDirection: CycloidDirection;
   cycloidRadius: number;
+  animationSpeedScale: number;
+  moveOutSideOfParent: boolean;
+
+  //For referencing programmatically, not meant to be used by the user
   boundingCircleRadius: number;
-  cycloidSpeedRatio: number;
+  boundingCircle?: BoundingCircle;
 }

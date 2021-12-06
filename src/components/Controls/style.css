@@ -1,0 +1,11 @@
+.content-container > * + * {
+  margin-top: 8px;
+}
+
+.all-container > * + * {
+  margin-top: 47px;
+}
+
+.hover-no-blur:hover {
+  filter: blur(0) !important;
+}

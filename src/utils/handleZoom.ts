@@ -6,8 +6,7 @@ import { remap } from "./remap";
     zooming and panning doesn't happen on everyframe, so putting it in a separate file makes sense
 */
 let zoomLevel = 1;
-let mouseDownCoord: Vector2 | null;
-const mousePos: Vector2 = { x: 0, y: 0 };
+const mouseCurrentPos: Vector2 = { x: 0, y: 0 };
 export default function handleZoomAndDrag(
   canvases: MutableRefObject<HTMLCanvasElement | null>[]
 ) {
@@ -37,9 +36,20 @@ export default function handleZoomAndDrag(
           const compensateY = canvas.height * zoomLevel;
           const translateX = translateOriginX - compensateX;
           const translateY = translateOriginY - compensateY;
-          const cursorOffsetX = remap(mousePos.x, 0, canvas.width, -20, 20);
-          const cursorOffsetY = remap(mousePos.y, 0, canvas.width, -20, 20);
-          console.log(cursorOffsetX, cursorOffsetY);
+          const cursorOffsetX = remap(
+            mouseCurrentPos.x,
+            0,
+            canvas.width,
+            -20,
+            20
+          );
+          const cursorOffsetY = remap(
+            mouseCurrentPos.y,
+            0,
+            canvas.width,
+            -20,
+            20
+          );
           ctx.translate(
             translateX / 2 - cursorOffsetX,
             translateY / 2 - cursorOffsetY
@@ -50,21 +60,8 @@ export default function handleZoomAndDrag(
 
     { passive: false }
   );
-
-  document.addEventListener(
-    "mousedown",
-    (e) => (mouseDownCoord = { x: e.clientX, y: e.clientY })
-  );
-  document.addEventListener("mouseup", () => (mouseDownCoord = null));
   document.addEventListener("mousemove", (e) => {
-    mousePos.x = e.clientX;
-    mousePos.y = e.clientY;
-    if (mouseDownCoord) {
-      const offset = {
-        x: mousePos.x - mouseDownCoord?.x,
-        y: mousePos.y - mouseDownCoord?.y,
-      };
-      //TODO, move logic
-    }
+    mouseCurrentPos.x = e.clientX;
+    mouseCurrentPos.y = e.clientY;
   });
 }

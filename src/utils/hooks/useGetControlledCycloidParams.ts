@@ -8,20 +8,20 @@ import { CycloidDirection } from "../../types/cycloidDirection";
 
 const gui = new dat.GUI();
 
-//TODO, create custom control interface
+//TODO => remove
 export default function useGetControlledCycloidParams(
   clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>
 ) {
   const cycloidParams = useMemo(
     () =>
       ({
-        animationSpeed: 0.7,
         rodLengthScale: 0.5,
         cycloidPosition: "inside",
         boundingCircleRadius: 300,
-        cycloidDirection: "clockwise",
+        rotationDirection: "clockwise",
         cycloidRadius: 100,
-        cycloidSpeedRatio: 0.5,
+        animationSpeedScale: 0.5,
+        moveOutSideOfParent: false,
       } as CycloidParams),
     []
   );
@@ -30,7 +30,7 @@ export default function useGetControlledCycloidParams(
     gui
       .add(cycloidParams, "animationSpeed", 0, 3, 0.001)
       .onChange((newSpeed: number) => {
-        cycloidParams.animationSpeed = newSpeed;
+        cycloidParams.animationSpeedScale = newSpeed;
       });
 
     const rodFolder = gui.addFolder("Rod Properties");
@@ -44,7 +44,7 @@ export default function useGetControlledCycloidParams(
     rodFolder
       .add(cycloidParams, "cycloidSpeedRatio", 0, 5, 0.1)
       .onChange((ratio: number) => {
-        cycloidParams.cycloidSpeedRatio = ratio;
+        cycloidParams.animationSpeedScale = ratio;
         clearCanvasToggle((toggle) => !toggle);
       });
 
@@ -53,7 +53,7 @@ export default function useGetControlledCycloidParams(
     cycloidFolder
       .add(cycloidParams, "cycloidDirection", ["clockwise", "counterclockwise"])
       .onChange((newDirection: CycloidDirection) => {
-        cycloidParams.cycloidDirection = newDirection;
+        cycloidParams.rotationDirection = newDirection;
         clearCanvasToggle((toggle) => !toggle);
       });
 

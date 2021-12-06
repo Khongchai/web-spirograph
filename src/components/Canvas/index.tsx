@@ -1,4 +1,5 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import CycloidControls from "../../types/cycloidControls";
 import CycloidParams from "../../types/cycloidParams";
 import { Vector2 } from "../../types/vector2";
 import handleZoomAndDrag from "../../utils/handleZoom";
@@ -6,15 +7,17 @@ import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
-  cycloidParams: CycloidParams;
+  cycloidControls: CycloidControls;
   clearCanvasToggle: boolean;
   showStructure: MutableRefObject<boolean>;
+  parent: MutableRefObject<HTMLElement | null>;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
-  cycloidParams,
+  cycloidControls,
   clearCanvasToggle,
   showStructure,
+  parent,
 }) => {
   const [mode, setMode] = useState<"animate" | "instant">("animate");
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
@@ -30,9 +33,10 @@ const Canvas: React.FC<CanvasProps> = ({
   useDrawCycloid(
     drawCanvasRef,
     pointToTrace,
-    cycloidParams,
+    cycloidControls,
     clearCanvasToggle,
-    showStructure
+    showStructure,
+    parent as MutableRefObject<HTMLElement>
   );
 
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -43,26 +47,36 @@ const Canvas: React.FC<CanvasProps> = ({
   useEffect(() => {
     drawCanvasRef.current
       ?.getContext("2d")
-      ?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
     traceCanvasRef.current
       ?.getContext("2d")
-      ?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
   }, [clearCanvasToggle]);
 
   if (mode === "animate") {
     return (
-      <div>
+      <>
         <canvas
           id="animation-draw-canvas"
           ref={drawCanvasRef}
-          className="w-full h-full fixed"
+          className="absolute"
         ></canvas>
         <canvas
           id="animation-trace-canvas"
           ref={traceCanvasRef}
-          className="w-full h-full fixed opacity-50"
+          className="absolute opacity-50"
         ></canvas>
-      </div>
+      </>
     );
   } else {
     return <div>Instant thing</div>;
