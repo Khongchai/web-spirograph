@@ -1,13 +1,14 @@
 import guify from "guify";
 import { useEffect, useMemo, useRef } from "react";
-import CycloidParams from "../types/cycloidParams";
-import { CycloidPosition } from "../types/cycloidPosition";
+import CycloidParams from "../../types/cycloidParams";
+import { CycloidPosition } from "../../types/cycloidPosition";
 
 import * as dat from "dat.gui";
-import { CycloidDirection } from "../types/cycloidDirection";
+import { CycloidDirection } from "../../types/cycloidDirection";
 
 const gui = new dat.GUI();
 
+//TODO, create custom control interface
 export default function useGetControlledCycloidParams(
   clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>
 ) {

@@ -1,8 +1,9 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import CycloidParams from "../../types/cycloidParams";
 import { Vector2 } from "../../types/vector2";
-import useDrawCycloid from "../../utils/useDrawCycloid";
-import useTraceCycloidPath from "../../utils/useTraceCycloidPath";
+import handleZoomAndDrag from "../../utils/handleZoom";
+import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
+import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
   cycloidParams: CycloidParams;
@@ -33,8 +34,11 @@ const Canvas: React.FC<CanvasProps> = ({
     clearCanvasToggle,
     showStructure
   );
+
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
   useTraceCycloidPath(traceCanvasRef, pointToTrace, clearCanvasToggle);
+
+  handleZoomAndDrag([drawCanvasRef, traceCanvasRef]);
 
   useEffect(() => {
     drawCanvasRef.current

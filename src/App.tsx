@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import Canvas from "./components/Canvas";
 import "./index.css";
-import useGetControlledCycloidParams from "./utils/useGetControlledCycloidParams";
+import useGetControlledCycloidParams from "./utils/hooks/useGetControlledCycloidParams";
 
 function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
