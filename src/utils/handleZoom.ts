@@ -6,6 +6,7 @@ import { Vector2 } from "../types/vector2";
 */
 let zoomLevel = 1;
 let mouseDownCoord: Vector2 | null;
+const mousePos: Vector2 = { x: 0, y: 0 };
 export default function handleZoomAndDrag(
   canvases: MutableRefObject<HTMLCanvasElement | null>[]
 ) {
@@ -15,8 +16,10 @@ export default function handleZoomAndDrag(
       e.preventDefault();
       const delta = Math.max(-1, Math.min(1, e.deltaY));
       if (delta === 1) {
+        zoomLevel = Math.min(1.0, zoomLevel);
         zoomLevel -= 0.001;
       } else if (delta === -1) {
+        zoomLevel = Math.max(1.0, zoomLevel);
         zoomLevel += 0.001;
       }
 
@@ -39,10 +42,12 @@ export default function handleZoomAndDrag(
   );
   document.addEventListener("mouseup", () => (mouseDownCoord = null));
   document.addEventListener("mousemove", (e) => {
+    mousePos.x = e.clientX;
+    mousePos.y = e.clientY;
     if (mouseDownCoord) {
       const offset = {
-        x: e.clientX - mouseDownCoord?.x,
-        y: e.clientY - mouseDownCoord?.y,
+        x: mousePos.x - mouseDownCoord?.x,
+        y: mousePos.y - mouseDownCoord?.y,
       };
       //TODO, move logic
     }
