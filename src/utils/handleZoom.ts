@@ -1,5 +1,6 @@
 import { MutableRefObject } from "react";
 import { Vector2 } from "../types/vector2";
+import { remap } from "./remap";
 
 /*
     zooming and panning doesn't happen on everyframe, so putting it in a separate file makes sense
@@ -29,6 +30,20 @@ export default function handleZoomAndDrag(
           var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.scale(zoomLevel, zoomLevel);
+
+          const translateOriginX = canvas.width;
+          const translateOriginY = canvas.height;
+          const compensateX = canvas.width * zoomLevel;
+          const compensateY = canvas.height * zoomLevel;
+          const translateX =
+            translateOriginX -
+            compensateX -
+            remap(mousePos.x, 0, canvas.width, -3, 3);
+          const translateY =
+            translateOriginY -
+            compensateY -
+            remap(mousePos.y, 0, canvas.height, -3, 3);
+          ctx.translate(translateX / 2, translateY / 2);
         }
       }
     },
