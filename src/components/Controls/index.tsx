@@ -13,7 +13,6 @@ interface ControlsProps {
 /*
   Everything should be ref to avoid re-rendering.
 */
-//TODO => split all three control sections into their own file
 const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];

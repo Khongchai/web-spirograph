@@ -1,11 +1,8 @@
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
 import Canvas from "./components/Canvas";
 import Controls from "./components/Controls";
 import "./index.css";
 import CycloidControls from "./types/cycloidControls";
-import CycloidsParams from "./types/cycloidControls";
-import CycloidParams from "./types/cycloidParams";
-import useGetControlledCycloidParams from "./utils/hooks/useGetControlledCycloidParams";
 
 function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
@@ -34,7 +31,8 @@ function App() {
     currentCycloid: 0,
     mode: "Animated",
     nestedLevel: 1,
-    scaffold: "Show",
+    scaffold: "Showing",
+    animationState: "Playing",
   });
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
@@ -54,7 +52,7 @@ function App() {
             />
           </div>
         </div>
-        <div style={{ flex: 0.5 }}>
+        <div style={{ flex: 0.4 }}>
           <Controls cycloidControls={cycloidControls} />
         </div>
       </div>

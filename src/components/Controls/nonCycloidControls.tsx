@@ -39,19 +39,20 @@ const NonCycloidControls: React.FC<miscProps> = ({ cycloidControls }) => {
       <ContentContainer>
         <Heading>Show Scaffold</Heading>
         <SelectionButton
-          blur={cycloidControls.scaffold !== "Show"}
+          blur={cycloidControls.scaffold !== "Showing"}
           onClick={() => {
-            cycloidControls.scaffold = "Show";
-          }}
-          innerHTML="Show"
-        />
-        <SelectionButton
-          blur={cycloidControls.scaffold !== "Hide"}
-          onClick={() => {
-            cycloidControls.scaffold = "Hide";
+            cycloidControls.scaffold = "Showing";
             forceUpdate();
           }}
-          innerHTML="Hide"
+          innerHTML={"Showing"}
+        />
+        <SelectionButton
+          blur={cycloidControls.scaffold !== "Hidden"}
+          onClick={() => {
+            cycloidControls.scaffold = "Hidden";
+            forceUpdate();
+          }}
+          innerHTML={"Hidden"}
         />
       </ContentContainer>
     </ControlSection>

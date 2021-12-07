@@ -65,7 +65,7 @@ export default function useDrawCanvas(
         cycloid1.move();
 
         //visual
-        if (cycloidControls.current.scaffold === "Show") {
+        if (cycloidControls.current.scaffold === "Showing") {
           cycloid1.showBounding(ctx);
           cycloid1.showRod(ctx);
           cycloid1.showPoint(ctx);

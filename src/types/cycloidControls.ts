@@ -6,5 +6,6 @@ export default interface CycloidControls {
   nestedLevel: number;
   currentCycloid: number;
   mode: "Animated" | "Instant";
-  scaffold: "Show" | "Hide";
+  scaffold: "Showing" | "Hidden";
+  animationState: "Playing" | "Paused";
 }
