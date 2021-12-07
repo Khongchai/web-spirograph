@@ -1,6 +1,9 @@
-This is just a small, simple canvas practice project.
+A spirograph generator that allows some wacky params.
 
-For serious stuff I recommend:
+This is a work in progress; more info will be added to this readme incrementally.
 
-- http://htmlspirograph.com/#0,50,0,1,1,-1.44,30,-700,1174,2.5,120,860,-3.6,100,1050,75,0,0,1,1064
-- https://nathanfriend.io/inspiral-web/
+# Examples
+
+![Example 1](example-images/ex1.png)
+![Example 2](example-images/ex2.png)
+![Example 3](example-images/ex3.png)
