@@ -41,15 +41,20 @@ function App() {
 
   return (
     <div className="bg-purple-dark text-purple-light h-full w-full">
-      <div className="w-full h-full relative flex">
-        <div style={{ flex: 0.6 }} ref={allCanvasContainer as any}>
-          <Canvas
-            clearCanvasToggle={clearCanvasToggle}
-            cycloidControls={cycloidControls}
-            parent={allCanvasContainer}
-          />
+      <div className="w-full h-full relative flex md:flex-row sm:flex-col">
+        <div style={{ flex: 0.6 }} className="relative ">
+          <div
+            ref={allCanvasContainer as any}
+            className="w-full h-full absolute"
+          >
+            <Canvas
+              clearCanvasToggle={clearCanvasToggle}
+              cycloidControls={cycloidControls}
+              parent={allCanvasContainer}
+            />
+          </div>
         </div>
-        <div style={{ flex: 0.4 }}>
+        <div style={{ flex: 0.5 }}>
           <Controls cycloidControls={cycloidControls} />
         </div>
       </div>

@@ -9,7 +9,12 @@ const ContentArray: React.FC<{
     <h2 className="font-bold text-base mr-1.5">{paramName}: </h2>
     <div className="flex mt-2">
       {values.map((value, i) => (
-        <SelectionButton blur={i !== index} innerHTML={value.toString()} />
+        <SelectionButton
+          onClick={() => {}}
+          key={value}
+          blur={i !== index}
+          innerHTML={value.toString()}
+        />
       ))}
     </div>
   </div>
