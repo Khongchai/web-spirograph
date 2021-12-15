@@ -17,13 +17,18 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];
 
+  const forceUpdate = useForceUpdate();
+
   return (
     <div
       className="all-container"
       style={{ paddingTop: "75px", paddingLeft: "75px" }}
     >
       <Local cycloid={cycloid} />
-      <Global cycloid={cycloid} cycloidControls={cycloidControls.current} />
+      <Global
+        forceParentUpdate={forceUpdate}
+        cycloidControls={cycloidControls.current}
+      />
       <NonCycloidControls cycloidControls={cycloidControls.current} />
     </div>
   );

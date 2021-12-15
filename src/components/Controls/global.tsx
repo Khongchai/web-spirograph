@@ -9,20 +9,21 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 
 interface globalProps {
-  cycloid: CycloidParams;
   cycloidControls: CycloidControls;
+  forceParentUpdate: () => void;
 }
 
-const Global: React.FC<globalProps> = ({ cycloid, cycloidControls }) => {
-  const forceUpdate = useForceUpdate();
-
+const Global: React.FC<globalProps> = ({
+  forceParentUpdate,
+  cycloidControls,
+}) => {
   return (
     <ControlSection>
       <Heading>Global</Heading>
       <ContentContainer>
         <Content
           paramName={"Animation Speed Scale"}
-          value={cycloid.animationSpeedScale}
+          value={cycloidControls.animationSpeed}
         ></Content>
         <Content
           paramName={"Nested Level"}
@@ -34,7 +35,7 @@ const Global: React.FC<globalProps> = ({ cycloid, cycloidControls }) => {
           index={cycloidControls.currentCycloid}
           onClick={(newIndex: number) => {
             cycloidControls.currentCycloid = newIndex;
-            forceUpdate();
+            forceParentUpdate();
           }}
         ></ContentArray>
       </ContentContainer>
