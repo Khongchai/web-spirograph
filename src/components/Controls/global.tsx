@@ -23,11 +23,17 @@ const Global: React.FC<globalProps> = ({
       <ContentContainer>
         <Content
           paramName={"Animation Speed Scale"}
-          value={cycloidControls.animationSpeed}
+          numberValue={cycloidControls.animationSpeed}
+          onDrag={(newValue: number) =>
+            (cycloidControls.animationSpeed = newValue)
+          }
         ></Content>
         <Content
+          onDrag={(newValue: number) =>
+            (cycloidControls.animationSpeed = newValue)
+          }
           paramName={"Nested Level"}
-          value={cycloidControls.nestedLevel}
+          numberValue={cycloidControls.nestedLevel}
         ></Content>
         <ContentArray
           paramName={"Current Cycloid"}

@@ -1,13 +1,36 @@
-const Content: React.FC<{ paramName: string; value: number | boolean }> = ({
-  paramName,
-  value,
-}) => (
-  //Different switches for number and boolean values
+import DraggableValue from "./DraggableValue";
 
+type ContentType = {
+  paramName: string;
+} & (
+  | {
+      numberValue: number;
+      onDrag: (newValue: number) => void;
+      booleanValue?: never;
+      onClick?: never;
+    }
+  | {
+      numberValue?: never;
+      onDrag?: never;
+      booleanValue: boolean;
+      onClick: (newValue: boolean) => void;
+    }
+);
+
+const Content: React.FC<ContentType> = ({
+  paramName,
+  numberValue,
+  booleanValue,
+  onDrag,
+}) => (
   <div className="flex flex-row">
     <h2 className="font-bold text-base mr-1.5">{paramName}: </h2>
     <div>
-      <h3 className="text-white">{value.toString()}</h3>
+      {booleanValue ? (
+        <h3 className="text-white">{booleanValue.toString()}</h3>
+      ) : (
+        <DraggableValue onDrag={onDrag!} value={numberValue!} />
+      )}
     </div>
   </div>
 );

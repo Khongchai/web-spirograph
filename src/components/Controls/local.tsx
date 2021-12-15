@@ -15,15 +15,22 @@ const Local: React.FC<{ cycloid: CycloidParams }> = ({ cycloid }) => {
       <ContentContainer>
         <Content
           paramName={"Rod Length Scale"}
-          value={cycloid.rodLengthScale}
+          numberValue={cycloid.rodLengthScale}
+          onDrag={(newValue: number) => (cycloid.rodLengthScale = newValue)}
         ></Content>
         <Content
           paramName={"Cycloid Speed Scale"}
-          value={cycloid.animationSpeedScale}
+          onDrag={(newValue: number) =>
+            (cycloid.animationSpeedScale = newValue)
+          }
+          numberValue={cycloid.animationSpeedScale}
         ></Content>
         <Content
           paramName={"Move Outside of Parent"}
-          value={cycloid.moveOutSideOfParent}
+          booleanValue={cycloid.moveOutSideOfParent}
+          onClick={(newValue: boolean) =>
+            (cycloid.moveOutSideOfParent = newValue)
+          }
         />
         {/* TODO refactor this into content? */}
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>

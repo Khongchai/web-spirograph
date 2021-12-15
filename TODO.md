@@ -20,3 +20,5 @@ https://medium.com/techtrument/multithreading-javascript-46156179cf9a
 Handle pan with lerp
 
 The ability to change colors
+
+Manage Draggable settings + pass in the steps to increment by
