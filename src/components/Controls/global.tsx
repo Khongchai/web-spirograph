@@ -1,6 +1,7 @@
 import React from "react";
 import CycloidControls from "../../types/cycloidControls";
 import CycloidParams from "../../types/cycloidParams";
+import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import Content from "./shared/content";
 import ContentArray from "./shared/contentArray";
 import ContentContainer from "./shared/ContentContainer";
@@ -13,6 +14,8 @@ interface globalProps {
 }
 
 const Global: React.FC<globalProps> = ({ cycloid, cycloidControls }) => {
+  const forceUpdate = useForceUpdate();
+
   return (
     <ControlSection>
       <Heading>Global</Heading>
@@ -29,6 +32,10 @@ const Global: React.FC<globalProps> = ({ cycloid, cycloidControls }) => {
           paramName={"Current Cycloid"}
           values={cycloidControls.cycloids.map((_, i) => i)}
           index={cycloidControls.currentCycloid}
+          onClick={(newIndex: number) => {
+            cycloidControls.currentCycloid = newIndex;
+            forceUpdate();
+          }}
         ></ContentArray>
       </ContentContainer>
     </ControlSection>

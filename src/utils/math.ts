@@ -5,6 +5,7 @@ export function lerp(value: number, min: number, max: number): number {
 export function inverseLerp(value: number, min: number, max: number): number {
   return (value - min) / (max - min);
 }
+
 export function remap(
   value: number,
   min1: number,
