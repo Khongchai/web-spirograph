@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import useDragValue from "./utils/useDragValue";
 
 interface DraggableValueProps {
   value: number;
@@ -12,7 +13,7 @@ interface DraggableValueProps {
   the value will be updated by 0.1 and passed to the onDrag callback.
 */
 const DraggableValue: React.FC<DraggableValueProps> = ({ value, onDrag }) => {
-  const [dragValue, setDragValue] = useState(value);
+  const [dragValue, setDragValue] = useDragValue(value);
   //For using outside of React
   const pointerDownPos = useRef(0);
 

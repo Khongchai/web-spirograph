@@ -10,9 +10,6 @@ interface ControlsProps {
   cycloidControls: MutableRefObject<CycloidControls>;
 }
 
-/*
-  Everything should be ref to avoid re-rendering.
-*/
 const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];
