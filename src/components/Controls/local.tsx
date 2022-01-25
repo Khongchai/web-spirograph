@@ -1,7 +1,7 @@
 import CycloidParams from "../../types/cycloidParams";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
-import Content from "./shared/content";
-import ContentContainer from "./shared/ContentContainer";
+import Control from "./shared/control";
+import ControlContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
@@ -12,20 +12,22 @@ const Local: React.FC<{ cycloid: CycloidParams }> = ({ cycloid }) => {
   return (
     <ControlSection>
       <Heading>Local</Heading>
-      <ContentContainer>
-        <Content
+      <ControlContainer>
+        <Control
           paramName={"Rod Length Scale"}
           numberValue={cycloid.rodLengthScale}
-          onDrag={(newValue: number) => (cycloid.rodLengthScale = newValue)}
-        ></Content>
-        <Content
+          onDrag={(newValue: number) => {
+            cycloid.rodLengthScale = newValue;
+          }}
+        ></Control>
+        <Control
           paramName={"Cycloid Speed Scale"}
           onDrag={(newValue: number) =>
             (cycloid.animationSpeedScale = newValue)
           }
           numberValue={cycloid.animationSpeedScale}
-        ></Content>
-        <Content
+        ></Control>
+        <Control
           paramName={"Move Outside of Parent"}
           booleanValue={cycloid.moveOutSideOfParent}
           onClick={(newValue: boolean) =>
@@ -52,7 +54,7 @@ const Local: React.FC<{ cycloid: CycloidParams }> = ({ cycloid }) => {
             }}
           />
         </div>
-      </ContentContainer>
+      </ControlContainer>
     </ControlSection>
   );
 };
