@@ -29,7 +29,7 @@ const Content: React.FC<ContentType> = ({
     <div className="flex flex-row">
       <h2 className="font-bold text-base mr-1.5">{paramName}: </h2>
       <div>
-        {booleanValue ? (
+        {booleanValue != undefined ? (
           <BooleanValueControl value={booleanValue} onClick={onClick!} />
         ) : (
           <DraggableValue onDrag={onDrag!} value={numberValue!} />

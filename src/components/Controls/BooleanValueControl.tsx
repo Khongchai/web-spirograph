@@ -15,8 +15,9 @@ const BooleanValueControl: React.FC<BooleanValueControlProps> = ({
     <h3
       className="text-whit cursor-pointer select-none"
       onClick={() => {
-        setNewValue(!newValue);
-        onClick(newValue);
+        const _newValue = !newValue;
+        setNewValue(_newValue);
+        onClick(_newValue);
       }}
     >
       {newValue.toString()}
