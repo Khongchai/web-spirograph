@@ -30,9 +30,9 @@ const Local: React.FC<{ cycloid: CycloidParams }> = ({ cycloid }) => {
         <Control
           paramName={"Move Outside of Parent"}
           booleanValue={cycloid.moveOutSideOfParent}
-          onClick={(newValue: boolean) =>
-            (cycloid.moveOutSideOfParent = newValue)
-          }
+          onClick={(newValue: boolean) => {
+            cycloid.moveOutSideOfParent = newValue;
+          }}
         />
         {/* TODO refactor this into content? */}
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>
