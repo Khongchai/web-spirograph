@@ -13,33 +13,51 @@ export default function useDrawCanvas(
   clearCanvasToggle: boolean,
   parent: MutableRefObject<HTMLElement>
 ) {
-  useEffect(() => {
-    let outerMostBoundingCircle = new BoundingCircle(
-      {
-        x: parent.current.clientWidth / 2,
-        y: window.innerHeight / 2,
-      },
-      300
-    );
+  let outerMostBoundingCircle = useMemo(
+    () =>
+      new BoundingCircle(
+        {
+          x: 0,
+          y: 0,
+        },
+        300
+      ),
+    []
+  );
 
-    let cycloid1 = new Cycloid(
-      cycloidControls.current.cycloids[0].cycloidRadius,
-      cycloidControls.current.cycloids[0].rotationDirection,
+  let cycloid = useMemo(() => {
+    let currentCycloidIndex = cycloidControls.current.currentCycloid;
+    let cycloid = new Cycloid(
+      cycloidControls.current.cycloids[currentCycloidIndex].cycloidRadius,
+      cycloidControls.current.cycloids[currentCycloidIndex].rotationDirection,
       outerMostBoundingCircle,
       false
     );
 
+    return cycloid;
+  }, []);
+
+  useEffect(() => {
     const {
       rodLengthScale,
       cycloidRadius,
       rotationDirection: cycloidDirection,
       animationSpeedScale: rodRotationRatio,
     } = cycloidControls.current.cycloids[0];
-    cycloid1.rod.scaleLength(rodLengthScale);
-    cycloid1.setRadius(cycloidRadius);
-    cycloid1.setRotationDirection(cycloidDirection);
-    cycloid1.setRodRotationSpeedRatio(rodRotationRatio);
 
+    cycloid.rod.scaleLength(rodLengthScale);
+    cycloid.setRadius(cycloidRadius);
+    cycloid.setRotationDirection(cycloidDirection);
+    cycloid.setRodRotationSpeedRatio(rodRotationRatio);
+
+    outerMostBoundingCircle.setCenterPoint({
+      x: parent.current.clientWidth / 2,
+      y: window.innerHeight / 2,
+    });
+    outerMostBoundingCircle.setRadius(300);
+  }, [clearCanvasToggle]);
+
+  useEffect(() => {
     if (canvasRef.current && parent.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d")!;
@@ -61,19 +79,19 @@ export default function useDrawCanvas(
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         dx += cycloidControls.current.animationSpeed;
 
-        cycloid1.setDx(dx);
-        cycloid1.move();
+        cycloid.setDx(dx);
+        cycloid.move();
 
         //visual
         if (cycloidControls.current.scaffold === "Showing") {
-          cycloid1.showBounding(ctx);
-          cycloid1.showRod(ctx);
-          cycloid1.showPoint(ctx);
+          cycloid.showBounding(ctx);
+          cycloid.showRod(ctx);
+          cycloid.showPoint(ctx);
 
           outerMostBoundingCircle.showBounding(ctx);
         }
 
-        const pointPos = cycloid1.getDrawPoint();
+        const pointPos = cycloid.getDrawPoint();
         pointToTrace.current.x = pointPos.x;
         pointToTrace.current.y = pointPos.y;
 
@@ -82,5 +100,5 @@ export default function useDrawCanvas(
 
       draw();
     }
-  }, [clearCanvasToggle]);
+  }, []);
 }

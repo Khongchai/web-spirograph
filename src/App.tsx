@@ -53,7 +53,10 @@ function App() {
           </div>
         </div>
         <div style={{ flex: 0.4 }}>
-          <Controls cycloidControls={cycloidControls} />
+          <Controls
+            cycloidControls={cycloidControls}
+            clearCanvasToggle={setClearCanvasToggle}
+          />
         </div>
       </div>
     </div>

@@ -8,9 +8,13 @@ import "./style.css";
 
 interface ControlsProps {
   cycloidControls: MutableRefObject<CycloidControls>;
+  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
+const Controls: React.FC<ControlsProps> = ({
+  cycloidControls,
+  clearCanvasToggle,
+}) => {
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];
 
@@ -24,11 +28,13 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
       <Local
         cycloid={cycloid}
         tooltipText="This controls cycloid-specific settings."
+        clearCanvasToggle={clearCanvasToggle}
       />
       <Global
         forceParentUpdate={forceUpdate}
         cycloidControls={cycloidControls.current}
         tooltipText="This controls the global values, and unlike the cycloid-specific controls, these do not change with each cycloid."
+        clearCanvasToggle={clearCanvasToggle}
       />
       <NonCycloidControls
         modeTooltipText="Controls the animation mode of the cycloid. 
@@ -36,6 +42,7 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
         instant mode draws a cycloid based on the given parameters instantly."
         showScaffoldTooltipText="When off, only the traced path will be shown."
         cycloidControls={cycloidControls.current}
+        clearCanvasToggle={clearCanvasToggle}
       />
     </div>
   );

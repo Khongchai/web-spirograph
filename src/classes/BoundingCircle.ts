@@ -16,6 +16,8 @@ export default class BoundingCircle {
 
   setCenterPoint = (centerPoint: Vector2) => (this.centerPoint = centerPoint);
 
+  setRadius = (radius: number) => (this.radius = radius);
+
   showBounding(ctx: CanvasRenderingContext2D) {
     //Draw outer bounding circle
     const { x, y } = this.centerPoint;

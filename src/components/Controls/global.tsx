@@ -12,12 +12,14 @@ interface globalProps {
   cycloidControls: CycloidControls;
   forceParentUpdate: () => void;
   tooltipText: string;
+  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Global: React.FC<globalProps> = ({
   forceParentUpdate,
   cycloidControls,
   tooltipText,
+  clearCanvasToggle,
 }) => {
   return (
     <ControlSection>

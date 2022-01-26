@@ -6,10 +6,11 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
 
-const Local: React.FC<{ cycloid: CycloidParams; tooltipText: string }> = ({
-  cycloid,
-  tooltipText,
-}) => {
+const Local: React.FC<{
+  cycloid: CycloidParams;
+  tooltipText: string;
+  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ cycloid, tooltipText, clearCanvasToggle }) => {
   const forceUpdate = useForceUpdate();
 
   return (
@@ -21,6 +22,7 @@ const Local: React.FC<{ cycloid: CycloidParams; tooltipText: string }> = ({
           numberValue={cycloid.rodLengthScale}
           onDrag={(newValue: number) => {
             cycloid.rodLengthScale = newValue;
+            clearCanvasToggle((toggle) => !toggle);
           }}
         ></Control>
         <Control

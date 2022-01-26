@@ -58,7 +58,7 @@ const Canvas: React.FC<CanvasProps> = ({
         parent.current!.clientWidth,
         parent.current!.clientHeight
       );
-  }, [clearCanvasToggle]);
+  }, []);
 
   if (mode === "animate") {
     return (
