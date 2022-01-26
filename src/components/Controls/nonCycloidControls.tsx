@@ -8,17 +8,23 @@ import SelectionButton from "./shared/SelectionButton";
 
 interface miscProps {
   cycloidControls: CycloidControls;
+  modeTooltipText: string;
+  showScaffoldTooltipText: string;
 }
 
 /*
     Control non-cycloid related params like animated or not and show or not show the scaffold.
 */
-const NonCycloidControls: React.FC<miscProps> = ({ cycloidControls }) => {
+const NonCycloidControls: React.FC<miscProps> = ({
+  cycloidControls,
+  modeTooltipText,
+  showScaffoldTooltipText,
+}) => {
   const forceUpdate = useForceUpdate();
   return (
     <ControlSection>
       <ContentContainer>
-        <Heading>Mode</Heading>
+        <Heading tooltipText={modeTooltipText}>Mode</Heading>
         <SelectionButton
           blur={cycloidControls.mode !== "Animated"}
           innerHTML="Animated"
@@ -37,7 +43,7 @@ const NonCycloidControls: React.FC<miscProps> = ({ cycloidControls }) => {
         />
       </ContentContainer>
       <ContentContainer>
-        <Heading>Show Scaffold</Heading>
+        <Heading tooltipText={showScaffoldTooltipText}>Show Scaffold</Heading>
         <SelectionButton
           blur={cycloidControls.scaffold !== "Showing"}
           onClick={() => {

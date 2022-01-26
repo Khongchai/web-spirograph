@@ -11,15 +11,17 @@ import Heading from "./shared/heading";
 interface globalProps {
   cycloidControls: CycloidControls;
   forceParentUpdate: () => void;
+  tooltipText: string;
 }
 
 const Global: React.FC<globalProps> = ({
   forceParentUpdate,
   cycloidControls,
+  tooltipText,
 }) => {
   return (
     <ControlSection>
-      <Heading>Global</Heading>
+      <Heading tooltipText={tooltipText}>Global</Heading>
       <ContentContainer>
         <Content
           paramName={"Animation Speed Scale"}
@@ -30,7 +32,7 @@ const Global: React.FC<globalProps> = ({
         ></Content>
         <Content
           onDrag={(newValue: number) =>
-            (cycloidControls.animationSpeed = newValue)
+            (cycloidControls.nestedLevel = newValue)
           }
           paramName={"Nested Level"}
           numberValue={cycloidControls.nestedLevel}

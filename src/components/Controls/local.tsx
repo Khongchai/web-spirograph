@@ -6,12 +6,15 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
 
-const Local: React.FC<{ cycloid: CycloidParams }> = ({ cycloid }) => {
+const Local: React.FC<{ cycloid: CycloidParams; tooltipText: string }> = ({
+  cycloid,
+  tooltipText,
+}) => {
   const forceUpdate = useForceUpdate();
 
   return (
     <ControlSection>
-      <Heading>Local</Heading>
+      <Heading tooltipText={tooltipText}>Local</Heading>
       <ControlContainer>
         <Control
           paramName={"Rod Length Scale"}
