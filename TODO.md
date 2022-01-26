@@ -2,6 +2,10 @@ Pause + continue
 
 reset canvas
 
+Draw with dotted lines
+
+Refactor tooltip out as a wrapper so that you can use it with anything.
+
 turn somthing on or off
 
 Allow dragging

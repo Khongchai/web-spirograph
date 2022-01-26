@@ -8,4 +8,6 @@ export default interface CycloidControls {
   mode: "Animated" | "Instant";
   scaffold: "Showing" | "Hidden";
   animationState: "Playing" | "Paused";
+  clearTracedPathOnParamsChange: boolean;
+  registerChangeOnlyOnMouseUp: boolean;
 }

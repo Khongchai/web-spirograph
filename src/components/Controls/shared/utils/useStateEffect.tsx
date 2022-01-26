@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 */
 export default function useStateEffect<T>(
   value: T
-): [T, (newValue: T) => void] {
+): [T, React.Dispatch<React.SetStateAction<T>>] {
   useEffect(() => {
     setDragValue(value);
   }, [value]);

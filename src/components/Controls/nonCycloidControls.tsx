@@ -5,12 +5,14 @@ import ContentContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
+import Control from "./shared/control";
 
 interface miscProps {
   cycloidControls: CycloidControls;
   modeTooltipText: string;
   showScaffoldTooltipText: string;
-  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  clearCanvasTooltipText: string;
+  clearCanvasToggle: () => void;
 }
 
 /*
@@ -20,6 +22,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
   cycloidControls,
   modeTooltipText,
   showScaffoldTooltipText,
+  clearCanvasTooltipText,
   clearCanvasToggle,
 }) => {
   const forceUpdate = useForceUpdate();

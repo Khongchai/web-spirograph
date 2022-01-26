@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Canvas from "./components/Canvas";
 import Controls from "./components/Controls";
 import "./index.css";
@@ -33,7 +33,13 @@ function App() {
     nestedLevel: 1,
     scaffold: "Showing",
     animationState: "Playing",
+    clearTracedPathOnParamsChange: true,
+    registerChangeOnlyOnMouseUp: false,
   });
+
+  const handleClearCanvasToggle = useCallback(() => {
+    setClearCanvasToggle((toggle) => !toggle);
+  }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
 
@@ -55,7 +61,7 @@ function App() {
         <div style={{ flex: 0.4 }}>
           <Controls
             cycloidControls={cycloidControls}
-            clearCanvasToggle={setClearCanvasToggle}
+            clearCanvasToggle={handleClearCanvasToggle}
           />
         </div>
       </div>

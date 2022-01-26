@@ -12,7 +12,7 @@ interface globalProps {
   cycloidControls: CycloidControls;
   forceParentUpdate: () => void;
   tooltipText: string;
-  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  clearCanvasToggle: () => void;
 }
 
 const Global: React.FC<globalProps> = ({
@@ -31,14 +31,30 @@ const Global: React.FC<globalProps> = ({
           onDrag={(newValue: number) =>
             (cycloidControls.animationSpeed = newValue)
           }
-        ></Content>
+          registerChangeOnlyOnMouseUp={false}
+        />
         <Content
           onDrag={(newValue: number) =>
             (cycloidControls.nestedLevel = newValue)
           }
           paramName={"Nested Level"}
           numberValue={cycloidControls.nestedLevel}
-        ></Content>
+          registerChangeOnlyOnMouseUp={false}
+        />
+        <Content
+          onClick={(newValue) =>
+            (cycloidControls.clearTracedPathOnParamsChange = newValue)
+          }
+          paramName="Clear Traced Path on Params Change"
+          booleanValue={cycloidControls.clearTracedPathOnParamsChange}
+        />
+        <Content
+          onClick={(newValue) =>
+            (cycloidControls.registerChangeOnlyOnMouseUp = newValue)
+          }
+          paramName="Register Change only on MouseUp"
+          booleanValue={cycloidControls.registerChangeOnlyOnMouseUp}
+        />
         <ContentArray
           paramName={"Current Cycloid"}
           values={cycloidControls.cycloids.map((_, i) => i)}
@@ -47,7 +63,7 @@ const Global: React.FC<globalProps> = ({
             cycloidControls.currentCycloid = newIndex;
             forceParentUpdate();
           }}
-        ></ContentArray>
+        />
       </ContentContainer>
     </ControlSection>
   );

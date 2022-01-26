@@ -9,7 +9,7 @@ import SelectionButton from "./shared/SelectionButton";
 const Local: React.FC<{
   cycloid: CycloidParams;
   tooltipText: string;
-  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  clearCanvasToggle: () => void;
 }> = ({ cycloid, tooltipText, clearCanvasToggle }) => {
   const forceUpdate = useForceUpdate();
 
@@ -22,16 +22,19 @@ const Local: React.FC<{
           numberValue={cycloid.rodLengthScale}
           onDrag={(newValue: number) => {
             cycloid.rodLengthScale = newValue;
-            clearCanvasToggle((toggle) => !toggle);
+            clearCanvasToggle();
           }}
-        ></Control>
+          registerChangeOnlyOnMouseUp={false}
+        />
         <Control
           paramName={"Cycloid Speed Scale"}
-          onDrag={(newValue: number) =>
-            (cycloid.animationSpeedScale = newValue)
-          }
+          onDrag={(newValue: number) => {
+            cycloid.animationSpeedScale = newValue;
+            clearCanvasToggle();
+          }}
           numberValue={cycloid.animationSpeedScale}
-        ></Control>
+          registerChangeOnlyOnMouseUp={false}
+        />
         <Control
           paramName={"Move Outside of Parent"}
           booleanValue={cycloid.moveOutSideOfParent}

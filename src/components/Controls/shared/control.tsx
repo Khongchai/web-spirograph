@@ -7,12 +7,14 @@ type ContentType = {
   | {
       numberValue: number;
       onDrag: (newValue: number) => void;
+      registerChangeOnlyOnMouseUp: boolean;
       booleanValue?: never;
       onClick?: never;
     }
   | {
       numberValue?: never;
       onDrag?: never;
+      registerChangeOnlyOnMouseUp?: never;
       booleanValue: boolean;
       onClick: (newValue: boolean) => void;
     }
@@ -24,6 +26,7 @@ const Content: React.FC<ContentType> = ({
   booleanValue,
   onDrag,
   onClick,
+  registerChangeOnlyOnMouseUp,
 }) => {
   return (
     <div className="flex flex-row">
@@ -32,7 +35,11 @@ const Content: React.FC<ContentType> = ({
         {booleanValue != undefined ? (
           <BooleanValueControl value={booleanValue} onClick={onClick!} />
         ) : (
-          <DraggableValue onDrag={onDrag!} value={numberValue!} />
+          <DraggableValue
+            registerChangeOnlyOnMouseUp={registerChangeOnlyOnMouseUp!}
+            onDrag={onDrag!}
+            value={numberValue!}
+          />
         )}
       </div>
     </div>

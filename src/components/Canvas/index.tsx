@@ -42,23 +42,25 @@ const Canvas: React.FC<CanvasProps> = ({
   useHandleZoom([drawCanvasRef, traceCanvasRef]);
 
   useEffect(() => {
-    drawCanvasRef.current
-      ?.getContext("2d")
-      ?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-    traceCanvasRef.current
-      ?.getContext("2d")
-      ?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-  }, []);
+    if (cycloidControls.current.clearTracedPathOnParamsChange) {
+      drawCanvasRef.current
+        ?.getContext("2d")
+        ?.clearRect(
+          0,
+          0,
+          parent.current!.clientWidth,
+          parent.current!.clientHeight
+        );
+      traceCanvasRef.current
+        ?.getContext("2d")
+        ?.clearRect(
+          0,
+          0,
+          parent.current!.clientWidth,
+          parent.current!.clientHeight
+        );
+    }
+  }, [clearCanvasToggle]);
 
   if (mode === "animate") {
     return (

@@ -4,6 +4,7 @@ import useStateEffect from "./utils/useStateEffect";
 interface DraggableValueProps {
   value: number;
   onDrag: (newValue: number) => void;
+  registerChangeOnlyOnMouseUp: boolean;
 }
 
 /*
@@ -12,7 +13,11 @@ interface DraggableValueProps {
   The provided value will be used as the starting value and when draggin,
   the value will be updated by 0.1 and passed to the onDrag callback.
 */
-const DraggableValue: React.FC<DraggableValueProps> = ({ value, onDrag }) => {
+const DraggableValue: React.FC<DraggableValueProps> = ({
+  value,
+  onDrag,
+  registerChangeOnlyOnMouseUp,
+}) => {
   const [dragValue, setDragValue] = useStateEffect(value);
   //For using outside of React
   const pointerDownPos = useRef(0);
@@ -20,11 +25,11 @@ const DraggableValue: React.FC<DraggableValueProps> = ({ value, onDrag }) => {
   const manageDrag = (e: PointerEvent) => {
     _manageDrag(e, pointerDownPos, dragValue, (newValue: number) => {
       setDragValue(newValue);
-      onDrag(newValue);
+      if (!registerChangeOnlyOnMouseUp) {
+        onDrag(newValue);
+      }
     });
   };
-  const cancelDrag = () =>
-    window.removeEventListener("pointermove", manageDrag);
 
   return (
     <div
@@ -35,9 +40,18 @@ const DraggableValue: React.FC<DraggableValueProps> = ({ value, onDrag }) => {
         document.body.style.cursor = "ew-resize";
         document.body.style.userSelect = "none";
         const pointerRef = function () {
-          cancelDrag();
+          if (registerChangeOnlyOnMouseUp) {
+            let newDragVal = 0;
+            setDragValue((value) => {
+              newDragVal = value;
+              return value;
+            });
+            onDrag(newDragVal);
+          }
+
           document.body.style.cursor = "auto";
           document.body.style.userSelect = "unset";
+          window.removeEventListener("pointermove", manageDrag);
           window.removeEventListener("pointerup", pointerRef);
         };
         window.addEventListener("pointerup", pointerRef);

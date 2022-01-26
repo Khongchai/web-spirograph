@@ -8,7 +8,7 @@ import "./style.css";
 
 interface ControlsProps {
   cycloidControls: MutableRefObject<CycloidControls>;
-  clearCanvasToggle: React.Dispatch<React.SetStateAction<boolean>>;
+  clearCanvasToggle: () => void;
 }
 
 const Controls: React.FC<ControlsProps> = ({
@@ -41,6 +41,7 @@ const Controls: React.FC<ControlsProps> = ({
         Animated mode will simulate a spinning cycloid at 60fps while the 
         instant mode draws a cycloid based on the given parameters instantly."
         showScaffoldTooltipText="When off, only the traced path will be shown."
+        clearCanvasTooltipText="Whether or not to clear the canvas when some params change. Switch this to true might give some interesting effects."
         cycloidControls={cycloidControls.current}
         clearCanvasToggle={clearCanvasToggle}
       />
