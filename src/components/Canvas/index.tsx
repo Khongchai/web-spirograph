@@ -1,9 +1,8 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import CycloidControls from "../../types/cycloidControls";
-import CycloidParams from "../../types/cycloidParams";
 import { Vector2 } from "../../types/vector2";
-import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
+import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {

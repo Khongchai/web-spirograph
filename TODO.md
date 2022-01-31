@@ -4,9 +4,15 @@ reset canvas
 
 Draw with dotted lines
 
+Clearing the canvas doesn't really clear everything
+
 Refactor tooltip out as a wrapper so that you can use it with anything.
 
+Settings for cycloid radius.
+
 turn somthing on or off
+
+New zoom in and out behavior
 
 Allow dragging
 

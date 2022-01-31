@@ -40,6 +40,7 @@ const Local: React.FC<{
           booleanValue={cycloid.moveOutSideOfParent}
           onClick={(newValue: boolean) => {
             cycloid.moveOutSideOfParent = newValue;
+            clearCanvasToggle();
           }}
         />
         {/* TODO refactor this into content? */}
@@ -51,6 +52,7 @@ const Local: React.FC<{
             onClick={() => {
               cycloid.rotationDirection = "clockwise";
               forceUpdate();
+              clearCanvasToggle();
             }}
           />
           <SelectionButton
@@ -59,6 +61,7 @@ const Local: React.FC<{
             onClick={() => {
               cycloid.rotationDirection = "counterclockwise";
               forceUpdate();
+              clearCanvasToggle();
             }}
           />
         </div>

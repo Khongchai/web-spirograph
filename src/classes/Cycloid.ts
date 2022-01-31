@@ -19,7 +19,7 @@ export default class Cycloid extends BoundingCircle {
   */
   private rodRotationSpeedRatio = 1;
 
-  private outsideBounding: boolean;
+  private isOutsideOfParent: boolean;
 
   readonly rod: Rod;
 
@@ -27,11 +27,11 @@ export default class Cycloid extends BoundingCircle {
     radius: number,
     rotationDirection: CycloidRotationDirection,
     parentBounding: BoundingCircle,
-    outsideBounding = false
+    moveOutsideOfParent = false
   ) {
     super({ x: 0, y: 0 }, radius);
 
-    this.outsideBounding = outsideBounding;
+    this.isOutsideOfParent = moveOutsideOfParent;
 
     this.drawPoint = { x: 0, y: 0 };
 
@@ -53,7 +53,7 @@ export default class Cycloid extends BoundingCircle {
     const parentCenter = this.parentBounding.getCenterPoint();
 
     //At angle 0
-    const offset = this.outsideBounding ? this.radius : -this.radius;
+    const offset = this.isOutsideOfParent ? this.radius : -this.radius;
     let beginningPos = this.parentBounding.getRadius() + offset;
 
     let dx = this.animationSpeedAsRadians();
@@ -139,4 +139,7 @@ export default class Cycloid extends BoundingCircle {
     (this.rodRotationSpeedRatio = ratio);
 
   setRadius = (radius: number) => (this.radius = radius);
+
+  setIsOutsideOfParent = (isOutside: boolean) =>
+    (this.isOutsideOfParent = isOutside);
 }

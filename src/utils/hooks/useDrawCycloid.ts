@@ -43,12 +43,16 @@ export default function useDrawCanvas(
       cycloidRadius,
       rotationDirection: cycloidDirection,
       animationSpeedScale: rodRotationRatio,
-    } = cycloidControls.current.cycloids[0];
+      moveOutSideOfParent,
+    } = cycloidControls.current.cycloids[
+      cycloidControls.current.currentCycloid
+    ];
 
     cycloid.rod.scaleLength(rodLengthScale);
     cycloid.setRadius(cycloidRadius);
     cycloid.setRotationDirection(cycloidDirection);
     cycloid.setRodRotationSpeedRatio(rodRotationRatio);
+    cycloid.setIsOutsideOfParent(moveOutSideOfParent);
 
     outerMostBoundingCircle.setCenterPoint({
       x: parent.current.clientWidth / 2,
