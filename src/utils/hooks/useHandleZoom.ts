@@ -29,32 +29,10 @@ export default function useHandleZoom(
             const canvas = canvases[i].current as HTMLCanvasElement;
             var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            ctx.scale(zoomLevel, zoomLevel);
 
-            const translateOriginX = canvas.width;
-            const translateOriginY = canvas.height;
-            const compensateX = canvas.width * zoomLevel;
-            const compensateY = canvas.height * zoomLevel;
-            const translateX = translateOriginX - compensateX;
-            const translateY = translateOriginY - compensateY;
-            const cursorOffsetX = remap(
-              mouseCurrentPos.x,
-              0,
-              canvas.width,
-              -20,
-              20
-            );
-            const cursorOffsetY = remap(
-              mouseCurrentPos.y,
-              0,
-              canvas.width,
-              -20,
-              20
-            );
-            ctx.translate(
-              translateX / 2 - cursorOffsetX,
-              translateY / 2 - cursorOffsetY
-            );
+            ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+            ctx.scale(zoomLevel, zoomLevel);
+            ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
           }
         }
       },
