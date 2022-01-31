@@ -2,6 +2,7 @@ import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import CycloidControls from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
+import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
@@ -9,12 +10,14 @@ interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControls>;
   clearCanvasToggle: boolean;
   parent: MutableRefObject<HTMLElement | null>;
+  parentWrapper: MutableRefObject<HTMLElement | null>;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
   cycloidControls,
   clearCanvasToggle,
   parent,
+  parentWrapper,
 }) => {
   const [mode, setMode] = useState<"animate" | "instant">("animate");
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
@@ -39,6 +42,7 @@ const Canvas: React.FC<CanvasProps> = ({
   useTraceCycloidPath(traceCanvasRef, pointToTrace, clearCanvasToggle);
 
   useHandleZoom([drawCanvasRef, traceCanvasRef]);
+  useHandlePan(parent, parentWrapper);
 
   useEffect(() => {
     if (cycloidControls.current.clearTracedPathOnParamsChange) {

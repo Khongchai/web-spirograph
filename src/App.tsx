@@ -42,19 +42,25 @@ function App() {
   }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
+  const canvasContainerFlexWrapper = useRef<null | HTMLElement>(null);
 
   return (
     <div className="bg-purple-dark text-purple-light h-full w-full">
       <div className="w-full h-full relative flex md:flex-row sm:flex-col">
-        <div style={{ flex: 0.6 }} className="relative ">
+        <div
+          style={{ flex: 0.6 }}
+          className="relative canvas-container-flex-wrapper"
+          ref={canvasContainerFlexWrapper as any}
+        >
           <div
             ref={allCanvasContainer as any}
-            className="w-full h-full absolute"
+            className="w-full h-full absolute canvas-container"
           >
             <Canvas
               clearCanvasToggle={clearCanvasToggle}
               cycloidControls={cycloidControls}
               parent={allCanvasContainer}
+              parentWrapper={canvasContainerFlexWrapper}
             />
           </div>
         </div>

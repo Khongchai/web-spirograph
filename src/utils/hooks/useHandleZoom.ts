@@ -1,7 +1,5 @@
 import { MutableRefObject, useEffect } from "react";
 import { Vector2 } from "../../types/vector2";
-import { remap } from "../math";
-
 /*
     zooming and panning doesn't happen on everyframe, so putting it in a separate file makes sense
 */
