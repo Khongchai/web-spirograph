@@ -3,7 +3,7 @@ import useStateEffect from "./utils/useStateEffect";
 
 interface DraggableValueProps {
   value: number;
-  steps: number;
+  step: number;
   onDrag: (newValue: number) => void;
   registerChangeOnlyOnMouseUp: boolean;
 }
@@ -17,7 +17,7 @@ interface DraggableValueProps {
 const DraggableValue: React.FC<DraggableValueProps> = ({
   value,
   onDrag,
-  steps,
+  step: steps,
   registerChangeOnlyOnMouseUp,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);

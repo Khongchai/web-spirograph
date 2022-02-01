@@ -36,7 +36,7 @@ const Global: React.FC<globalProps> = ({
             (cycloidControls.nestedLevel = newValue)
           }
           paramName={"Nested Level"}
-          steps={1}
+          step={1}
           numberValue={cycloidControls.nestedLevel}
           registerChangeOnlyOnMouseUp={false}
         />
