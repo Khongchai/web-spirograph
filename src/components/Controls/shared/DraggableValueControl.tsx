@@ -3,6 +3,7 @@ import useStateEffect from "./utils/useStateEffect";
 
 interface DraggableValueProps {
   value: number;
+  steps: number;
   onDrag: (newValue: number) => void;
   registerChangeOnlyOnMouseUp: boolean;
 }
@@ -16,6 +17,7 @@ interface DraggableValueProps {
 const DraggableValue: React.FC<DraggableValueProps> = ({
   value,
   onDrag,
+  steps,
   registerChangeOnlyOnMouseUp,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);
@@ -23,7 +25,7 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
   const pointerDownPos = useRef(0);
 
   const manageDrag = (e: PointerEvent) => {
-    _manageDrag(e, pointerDownPos, dragValue, (newValue: number) => {
+    _manageDrag(e, pointerDownPos, dragValue, steps, (newValue: number) => {
       setDragValue(newValue);
       if (!registerChangeOnlyOnMouseUp) {
         onDrag(newValue);
@@ -70,10 +72,22 @@ function _manageDrag(
   e: PointerEvent,
   pointerDownPos: React.MutableRefObject<number>,
   valueOnMouseDown: number,
+  steps: number,
   setDragValueCallback: (newValue: number) => void
 ) {
-  const difference = (e.clientX - pointerDownPos.current) * 0.1;
+  //This value is the actual step used
+  const trueStep = 0.1;
+
+  //This is the step that we kind of snap to when dragging
+  const snapStep = steps;
+
+  const difference = (e.clientX - pointerDownPos.current) * trueStep;
   const newValue = valueOnMouseDown + difference;
-  const newValueRounded = Math.round(newValue * 10) / 10;
-  setDragValueCallback(newValueRounded);
+  const newValueStepped = roundNearest(newValue, snapStep);
+  const newValueRoundedStepped = Math.round(newValueStepped * 10) / 10;
+  setDragValueCallback(newValueRoundedStepped);
+}
+
+function roundNearest(num: number, nearest: number) {
+  return Math.round(num / nearest) * nearest;
 }

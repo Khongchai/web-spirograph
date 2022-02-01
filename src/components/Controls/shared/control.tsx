@@ -7,6 +7,7 @@ type ContentType = {
   | {
       numberValue: number;
       onDrag: (newValue: number) => void;
+      steps?: number;
       registerChangeOnlyOnMouseUp: boolean;
       booleanValue?: never;
       onClick?: never;
@@ -14,6 +15,7 @@ type ContentType = {
   | {
       numberValue?: never;
       onDrag?: never;
+      steps?: never;
       registerChangeOnlyOnMouseUp?: never;
       booleanValue: boolean;
       onClick: (newValue: boolean) => void;
@@ -23,6 +25,7 @@ type ContentType = {
 const Content: React.FC<ContentType> = ({
   paramName,
   numberValue,
+  steps = 0.1,
   booleanValue,
   onDrag,
   onClick,
@@ -39,6 +42,7 @@ const Content: React.FC<ContentType> = ({
             registerChangeOnlyOnMouseUp={registerChangeOnlyOnMouseUp!}
             onDrag={onDrag!}
             value={numberValue!}
+            steps={steps}
           />
         )}
       </div>
