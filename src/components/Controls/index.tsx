@@ -1,6 +1,5 @@
 import React, { MutableRefObject } from "react";
 import CycloidControls from "../../types/cycloidControls";
-import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import Global from "./global";
 import Local from "./local";
 import NonCycloidControls from "./nonCycloidControls";
@@ -18,8 +17,6 @@ const Controls: React.FC<ControlsProps> = ({
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];
 
-  const forceUpdate = useForceUpdate();
-
   return (
     <div
       className="all-container"
@@ -31,7 +28,6 @@ const Controls: React.FC<ControlsProps> = ({
         clearCanvasToggle={clearCanvasToggle}
       />
       <Global
-        forceParentUpdate={forceUpdate}
         cycloidControls={cycloidControls.current}
         tooltipText="This controls the global values, and unlike the cycloid-specific controls, these do not change with each cycloid."
         clearCanvasToggle={clearCanvasToggle}

@@ -10,5 +10,10 @@ export default interface CycloidParams {
 
   //For referencing programmatically, not meant to be used by the user
   boundingCircleRadius: number;
-  boundingCircle?: BoundingCircle;
+
+  /*
+   * The parent element that the cycloid will be rendered inside or outside of,
+   * Null will default to the outermost parent element.
+   */
+  boundingCircle: BoundingCircle | null;
 }

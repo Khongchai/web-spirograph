@@ -9,7 +9,6 @@ function App() {
 
   const cycloidControls = useRef<CycloidControls>({
     cycloids: [
-      //Mock data
       {
         rodLengthScale: 0.8,
         boundingCircleRadius: 300,
@@ -17,6 +16,7 @@ function App() {
         cycloidRadius: 100,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: false,
+        boundingCircle: null,
       },
       {
         rodLengthScale: 0.5,
@@ -25,6 +25,7 @@ function App() {
         cycloidRadius: 50,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: true,
+        boundingCircle: null,
       },
     ],
     animationSpeed: 1,
@@ -35,6 +36,7 @@ function App() {
     animationState: "Playing",
     clearTracedPathOnParamsChange: true,
     registerChangeOnlyOnMouseUp: false,
+    showAllCycloids: false,
   });
 
   const handleClearCanvasToggle = useCallback(() => {

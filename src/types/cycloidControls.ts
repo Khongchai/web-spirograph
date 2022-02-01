@@ -10,4 +10,5 @@ export default interface CycloidControls {
   animationState: "Playing" | "Paused";
   clearTracedPathOnParamsChange: boolean;
   registerChangeOnlyOnMouseUp: boolean;
+  showAllCycloids: boolean;
 }

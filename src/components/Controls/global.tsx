@@ -8,13 +8,11 @@ import Heading from "./shared/heading";
 
 interface globalProps {
   cycloidControls: CycloidControls;
-  forceParentUpdate: () => void;
   tooltipText: string;
   clearCanvasToggle: () => void;
 }
 
 const Global: React.FC<globalProps> = ({
-  forceParentUpdate,
   cycloidControls,
   tooltipText,
   clearCanvasToggle,
@@ -54,13 +52,20 @@ const Global: React.FC<globalProps> = ({
           paramName="Register Change only on MouseUp"
           booleanValue={cycloidControls.registerChangeOnlyOnMouseUp}
         />
+        <Content
+          onClick={(newValue) => {
+            cycloidControls.showAllCycloids = newValue;
+            clearCanvasToggle();
+          }}
+          paramName="Show all cycloids"
+          booleanValue={cycloidControls.showAllCycloids}
+        />
         <ContentArray
           paramName={"Current Cycloid"}
           values={cycloidControls.cycloids.map((_, i) => i)}
           index={cycloidControls.currentCycloid}
           onClick={(newIndex: number) => {
             cycloidControls.currentCycloid = newIndex;
-            forceParentUpdate();
             clearCanvasToggle();
           }}
         />
