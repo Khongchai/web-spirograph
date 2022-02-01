@@ -24,6 +24,8 @@ const Canvas: React.FC<CanvasProps> = ({
     "auto"
   );
 
+  const panRef = useRef<Vector2>({ x: 0, y: 0 });
+
   /*
     Cycloids are drawn on one canvas and their paths are traced on another.
   */
@@ -35,14 +37,15 @@ const Canvas: React.FC<CanvasProps> = ({
     pointToTrace,
     cycloidControls,
     clearCanvasToggle,
-    parent as MutableRefObject<HTMLElement>
+    parent as MutableRefObject<HTMLElement>,
+    panRef
   );
 
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  useTraceCycloidPath(traceCanvasRef, pointToTrace, clearCanvasToggle);
+  useTraceCycloidPath(traceCanvasRef, pointToTrace, clearCanvasToggle, panRef);
 
   useHandleZoom([drawCanvasRef, traceCanvasRef]);
-  useHandlePan(parent, parentWrapper);
+  useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
 
   useEffect(() => {
     if (cycloidControls.current.clearTracedPathOnParamsChange) {

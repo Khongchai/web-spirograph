@@ -11,7 +11,8 @@ export default function useDrawCanvas(
   pointToTrace: React.MutableRefObject<Vector2>,
   cycloidControls: MutableRefObject<CycloidControls>,
   clearCanvasToggle: boolean,
-  parent: MutableRefObject<HTMLElement>
+  parent: MutableRefObject<HTMLElement>,
+  panRef: MutableRefObject<Vector2>
 ) {
   let outerMostBoundingCircle = useMemo(
     () =>
@@ -77,6 +78,9 @@ export default function useDrawCanvas(
       });
 
       const draw = () => {
+        ctx.save();
+
+        ctx.translate(panRef.current.x, panRef.current.y);
         ctx.lineWidth = 1;
 
         ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
@@ -99,6 +103,7 @@ export default function useDrawCanvas(
         pointToTrace.current.x = pointPos.x;
         pointToTrace.current.y = pointPos.y;
 
+        ctx.restore();
         requestAnimationFrame(draw);
       };
 
