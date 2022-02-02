@@ -49,22 +49,28 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useEffect(() => {
     if (cycloidControls.current.clearTracedPathOnParamsChange) {
-      drawCanvasRef.current
-        ?.getContext("2d")
-        ?.clearRect(
-          0,
-          0,
-          parent.current!.clientWidth,
-          parent.current!.clientHeight
-        );
-      traceCanvasRef.current
-        ?.getContext("2d")
-        ?.clearRect(
-          0,
-          0,
-          parent.current!.clientWidth,
-          parent.current!.clientHeight
-        );
+      const drawRef = drawCanvasRef.current?.getContext("2d");
+      const traceRef = traceCanvasRef.current?.getContext("2d");
+      drawRef?.save();
+      traceRef?.save();
+
+      drawRef?.setTransform(1, 0, 0, 1, 0, 0);
+      traceRef?.setTransform(1, 0, 0, 1, 0, 0);
+      drawRef?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
+      traceRef?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
+
+      drawRef?.restore();
+      traceRef?.restore();
     }
   }, [clearCanvasToggle]);
 

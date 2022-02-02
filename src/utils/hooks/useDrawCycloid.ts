@@ -83,8 +83,6 @@ export default function useDrawCanvas(
         ctx.translate(panRef.current.x, panRef.current.y);
         ctx.lineWidth = 1;
 
-        ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
         dx += cycloidControls.current.animationSpeed;
 
         cycloid.setDx(dx);
@@ -102,6 +100,10 @@ export default function useDrawCanvas(
         const pointPos = cycloid.getDrawPoint();
         pointToTrace.current.x = pointPos.x;
         pointToTrace.current.y = pointPos.y;
+
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.restore();
         requestAnimationFrame(draw);
