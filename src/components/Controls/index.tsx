@@ -1,5 +1,6 @@
 import React, { MutableRefObject } from "react";
 import CycloidControls from "../../types/cycloidControls";
+import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import Global from "./global";
 import Local from "./local";
 import NonCycloidControls from "./nonCycloidControls";
@@ -12,10 +13,19 @@ interface ControlsProps {
 
 const Controls: React.FC<ControlsProps> = ({
   cycloidControls,
+
+  /**
+   * Clear canvas toggle will clear everything, including this settings component
+   */
   clearCanvasToggle,
 }) => {
   const i = cycloidControls.current.currentCycloid;
   const cycloid = cycloidControls.current.cycloids[i];
+
+  /**
+   * This clears only this settings component tree.
+   */
+  const forceUpdateSettingsUI = useForceUpdate();
 
   return (
     <div
@@ -31,6 +41,7 @@ const Controls: React.FC<ControlsProps> = ({
         cycloidControls={cycloidControls.current}
         tooltipText="This controls the global values, and unlike the cycloid-specific controls, these do not change with each cycloid."
         clearCanvasToggle={clearCanvasToggle}
+        forceUpdateSettingsUI={forceUpdateSettingsUI}
       />
       <NonCycloidControls
         modeTooltipText="Controls the animation mode of the cycloid. 

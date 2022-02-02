@@ -1,10 +1,9 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef } from "react";
-import Cycloid from "../../classes/Cycloid";
-import setCanvasSize from "../setCanvasSize";
-import CycloidParams from "../../types/cycloidParams";
-import { Vector2 } from "../../types/vector2";
+import React, { MutableRefObject, useEffect, useMemo } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
+import Cycloid from "../../classes/Cycloid";
 import CycloidControls from "../../types/cycloidControls";
+import { Vector2 } from "../../types/vector2";
+import setCanvasSize from "../setCanvasSize";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,

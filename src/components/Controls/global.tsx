@@ -10,12 +10,14 @@ interface globalProps {
   cycloidControls: CycloidControls;
   tooltipText: string;
   clearCanvasToggle: () => void;
+  forceUpdateSettingsUI: () => void;
 }
 
 const Global: React.FC<globalProps> = ({
   cycloidControls,
   tooltipText,
   clearCanvasToggle,
+  forceUpdateSettingsUI,
 }) => {
   return (
     <ControlSection>
@@ -66,7 +68,13 @@ const Global: React.FC<globalProps> = ({
           index={cycloidControls.currentCycloid}
           onClick={(newIndex: number) => {
             cycloidControls.currentCycloid = newIndex;
-            clearCanvasToggle();
+            //If all are shown, there's no need to clear the canvas to repaint another one
+            //We'll just need to update the settings UI
+            if (!cycloidControls.showAllCycloids) {
+              clearCanvasToggle();
+            } else {
+              forceUpdateSettingsUI();
+            }
           }}
         />
       </ContentContainer>
