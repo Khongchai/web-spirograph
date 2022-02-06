@@ -4,6 +4,7 @@ import Cycloid from "../../classes/Cycloid";
 import CycloidControls from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
+import useGenerateCycloids from "./useGenerateCycloids";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -13,31 +14,8 @@ export default function useDrawCanvas(
   parent: MutableRefObject<HTMLElement>,
   panRef: MutableRefObject<Vector2>
 ) {
-  let outerMostBoundingCircle = useMemo(
-    () =>
-      new BoundingCircle(
-        {
-          x: 0,
-          y: 0,
-        },
-        300
-      ),
-    []
-  );
-
-  let cycloids = useMemo(() => {
-    let cycloids = [];
-    for (let i = 0; i < cycloidControls.current.cycloids.length; i++) {
-      let cycloid = new Cycloid(
-        cycloidControls.current.cycloids[i].cycloidRadius,
-        cycloidControls.current.cycloids[i].rotationDirection,
-        outerMostBoundingCircle,
-        false
-      );
-      cycloids.push(cycloid);
-    }
-    return cycloids;
-  }, []);
+  let { generatedCycloids: cycloids, outermostBoundingCircle } =
+    useGenerateCycloids(cycloidControls);
 
   useEffect(() => {
     cycloids.forEach((cycloid, i) => {
@@ -56,11 +34,11 @@ export default function useDrawCanvas(
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
     });
 
-    outerMostBoundingCircle.setCenterPoint({
+    outermostBoundingCircle.setCenterPoint({
       x: parent.current.clientWidth / 2,
       y: window.innerHeight / 2,
     });
-    outerMostBoundingCircle.setRadius(300);
+    outermostBoundingCircle.setRadius(300);
   }, [clearCanvasToggle]);
 
   useEffect(() => {
@@ -94,7 +72,7 @@ export default function useDrawCanvas(
               cycloid.showRod(ctx);
               cycloid.showPoint(ctx);
 
-              outerMostBoundingCircle.showBounding(ctx);
+              outermostBoundingCircle.showBounding(ctx);
             }
 
             const pointPos = cycloid.getDrawPoint();
