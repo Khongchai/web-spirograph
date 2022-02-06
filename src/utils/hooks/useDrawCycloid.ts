@@ -1,6 +1,4 @@
-import React, { MutableRefObject, useEffect, useMemo } from "react";
-import BoundingCircle from "../../classes/BoundingCircle";
-import Cycloid from "../../classes/Cycloid";
+import React, { MutableRefObject, useEffect } from "react";
 import CycloidControls from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
@@ -8,7 +6,7 @@ import useGenerateCycloids from "./useGenerateCycloids";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  pointToTrace: React.MutableRefObject<Vector2>,
+  pointsToTrace: React.MutableRefObject<Vector2[]>,
   cycloidControls: MutableRefObject<CycloidControls>,
   clearCanvasToggle: boolean,
   parent: MutableRefObject<HTMLElement>,
@@ -32,6 +30,11 @@ export default function useDrawCanvas(
       cycloid.setRotationDirection(cycloidDirection);
       cycloid.setRodRotationSpeedRatio(rodRotationRatio);
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
+
+      pointsToTrace.current.push({
+        x: 0,
+        y: 0,
+      });
     });
 
     outermostBoundingCircle.setCenterPoint({
@@ -76,8 +79,8 @@ export default function useDrawCanvas(
             }
 
             const pointPos = cycloid.getDrawPoint();
-            pointToTrace.current.x = pointPos.x;
-            pointToTrace.current.y = pointPos.y;
+            pointsToTrace.current[i].x = pointPos.x;
+            pointsToTrace.current[i].y = pointPos.y;
           }
         });
 

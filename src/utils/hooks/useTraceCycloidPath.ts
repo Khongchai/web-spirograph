@@ -1,16 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import colors from "../../constants/colors";
-import setCanvasSize from "../setCanvasSize";
 import { Vector2 } from "../../types/vector2";
+import setCanvasSize from "../setCanvasSize";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  pointToTrace: React.MutableRefObject<Vector2>,
+  pointsToTrace: React.MutableRefObject<Vector2[]>,
   clearCanvasToggle: boolean,
   panRef: React.MutableRefObject<Vector2>
 ) {
   const lastPoint: Vector2 = { x: 0, y: 0 };
-  const currentPoint = pointToTrace;
+  const currentPoints = pointsToTrace;
   const firstTimeRef = useRef(true);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function useTraceCycloidPath(
         ctx.translate(panRef.current.x, panRef.current.y);
 
         const { x: lx, y: ly } = lastPoint;
-        const { x: cx, y: cy } = currentPoint.current;
+        const { x: cx, y: cy } = currentPoints.current[0];
 
         if (!firstTimeRef.current) {
           ctx.strokeStyle = "#E2C6FF";
