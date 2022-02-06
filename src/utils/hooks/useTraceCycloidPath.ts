@@ -5,19 +5,29 @@ import setCanvasSize from "../setCanvasSize";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
+  /*
+    Points to be traced on the canvas.
+
+    This hook is not aware of any cycloid bodies outside, only what it should be tracing.
+  */
   pointsToTrace: React.MutableRefObject<Vector2[]>,
   clearCanvasToggle: boolean,
   panRef: React.MutableRefObject<Vector2>
 ) {
   const currentPoints = pointsToTrace;
   const lastPoints: Vector2[] = [...pointsToTrace.current];
-  const firstTimeRef = useRef(true);
+
+  /*
+    When is the first time, the path will not be traced on that frame. This prevents
+    line jumps when there are huge gaps in the current initial value and the immediate subsequent value.
+  */
+  const notFirstTime = useRef<boolean[]>([]);
 
   useEffect(() => {
-    firstTimeRef.current = true;
+    notFirstTime.current = [];
   }, [clearCanvasToggle]);
 
-  window.onresize = () => (firstTimeRef.current = true);
+  window.onresize = () => (notFirstTime.current = []);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -35,7 +45,7 @@ export default function useTraceCycloidPath(
 
           const { x: cx, y: cy } = currentPoints.current[i];
 
-          if (!firstTimeRef.current) {
+          if (notFirstTime.current[i]) {
             ctx.strokeStyle = "#E2C6FF";
             ctx.shadowColor = colors.purple.vivid;
             ctx.shadowBlur = 10;
@@ -50,7 +60,7 @@ export default function useTraceCycloidPath(
 
             ctx.stroke();
           } else {
-            firstTimeRef.current = false;
+            notFirstTime.current[i] = true;
           }
 
           lastPoints[i] = { x: cx, y: cy };

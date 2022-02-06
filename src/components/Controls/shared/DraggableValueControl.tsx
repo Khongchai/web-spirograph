@@ -75,17 +75,16 @@ function _manageDrag(
   steps: number,
   setDragValueCallback: (newValue: number) => void
 ) {
-  //This value is the actual step used
-  const trueStep = 0.1;
+  const maxDecimal = 0.001;
+  const maxDecimalPlaces = 100;
 
-  //This is the step that we kind of snap to when dragging
-  const snapStep = steps;
-
-  const difference = (e.clientX - pointerDownPos.current) * trueStep;
-  const newValue = valueOnMouseDown + difference;
-  const newValueStepped = roundNearest(newValue, snapStep);
-  const newValueRoundedStepped = Math.round(newValueStepped * 10) / 10;
-  setDragValueCallback(newValueRoundedStepped);
+  const difference = e.clientX - pointerDownPos.current;
+  const differenceStepped = difference * steps;
+  const newValue =
+    valueOnMouseDown + roundNearest(differenceStepped, maxDecimal);
+  const newValueRounded =
+    Math.round(newValue * maxDecimalPlaces) / maxDecimalPlaces;
+  setDragValueCallback(newValueRounded);
 }
 
 function roundNearest(num: number, nearest: number) {

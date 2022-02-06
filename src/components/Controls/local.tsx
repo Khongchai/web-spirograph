@@ -34,6 +34,7 @@ const Local: React.FC<{
           }}
           numberValue={cycloid.animationSpeedScale}
           registerChangeOnlyOnMouseUp={false}
+          step={0.01}
         />
         <Control
           paramName={"Move Outside of Parent"}
