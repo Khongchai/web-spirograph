@@ -23,4 +23,4 @@ https://medium.com/techtrument/multithreading-javascript-46156179cf9a
 
 The ability to change colors
 
-draw and trace all cycloids
+use another cycloid as the base for drawing.
