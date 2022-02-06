@@ -9,8 +9,8 @@ export default function useTraceCycloidPath(
   clearCanvasToggle: boolean,
   panRef: React.MutableRefObject<Vector2>
 ) {
-  const lastPoint: Vector2 = { x: 0, y: 0 };
   const currentPoints = pointsToTrace;
+  const lastPoints: Vector2[] = [...pointsToTrace.current];
   const firstTimeRef = useRef(true);
 
   useEffect(() => {
@@ -30,29 +30,31 @@ export default function useTraceCycloidPath(
         ctx.save();
         ctx.translate(panRef.current.x, panRef.current.y);
 
-        const { x: lx, y: ly } = lastPoint;
-        const { x: cx, y: cy } = currentPoints.current[0];
+        for (let i = 0; i < currentPoints.current.length; i++) {
+          const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };
 
-        if (!firstTimeRef.current) {
-          ctx.strokeStyle = "#E2C6FF";
-          ctx.shadowColor = colors.purple.vivid;
-          ctx.shadowBlur = 10;
-          ctx.lineWidth = 2.5;
-          ctx.beginPath();
-          ctx.moveTo(lx, ly);
-          ctx.lineTo(cx, cy);
-          ctx.stroke();
-          ctx.closePath();
+          const { x: cx, y: cy } = currentPoints.current[i];
 
-          ctx.beginPath();
+          if (!firstTimeRef.current) {
+            ctx.strokeStyle = "#E2C6FF";
+            ctx.shadowColor = colors.purple.vivid;
+            ctx.shadowBlur = 10;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(lx, ly);
+            ctx.lineTo(cx, cy);
+            ctx.stroke();
+            ctx.closePath();
 
-          ctx.stroke();
-        } else {
-          firstTimeRef.current = false;
+            ctx.beginPath();
+
+            ctx.stroke();
+          } else {
+            firstTimeRef.current = false;
+          }
+
+          lastPoints[i] = { x: cx, y: cy };
         }
-
-        lastPoint.x = cx;
-        lastPoint.y = cy;
 
         ctx.restore();
         requestAnimationFrame(draw);

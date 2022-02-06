@@ -30,11 +30,6 @@ export default function useDrawCanvas(
       cycloid.setRotationDirection(cycloidDirection);
       cycloid.setRodRotationSpeedRatio(rodRotationRatio);
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
-
-      pointsToTrace.current.push({
-        x: 0,
-        y: 0,
-      });
     });
 
     outermostBoundingCircle.setCenterPoint({
@@ -65,6 +60,7 @@ export default function useDrawCanvas(
           const drawCurrentCycloid =
             cycloidControls.current.showAllCycloids ||
             i == cycloidControls.current.currentCycloid;
+
           if (drawCurrentCycloid) {
             cycloid.setDx(dx);
             cycloid.move();
@@ -79,8 +75,7 @@ export default function useDrawCanvas(
             }
 
             const pointPos = cycloid.getDrawPoint();
-            pointsToTrace.current[i].x = pointPos.x;
-            pointsToTrace.current[i].y = pointPos.y;
+            pointsToTrace.current[i] = { x: pointPos.x, y: pointPos.y };
           }
         });
 
