@@ -30,7 +30,7 @@ export default interface CycloidParams {
 
   /*
    * The parent element that the cycloid will be rendered inside or outside of,
-   * Null will default to the outermost parent element.
+   * -1 will default to the outermost parent element.
    */
-  boundingCircle: BoundingCircle | null;
+  boundingCircleIndex: number;
 }

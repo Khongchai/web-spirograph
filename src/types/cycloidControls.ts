@@ -1,6 +1,11 @@
+import BoundingCircle from "../classes/BoundingCircle";
 import CycloidParams from "./cycloidParams";
 
 export default interface CycloidControls {
+  /*
+   * Base parent of all cycloids.
+   */
+  outerMostBoundingCircle: BoundingCircle;
   /*
    * All drawable cycloids.
    */

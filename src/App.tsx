@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
 import Controls from "./components/Controls";
 import "./index.css";
@@ -8,6 +9,13 @@ function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
 
   const cycloidControls = useRef<CycloidControls>({
+    outerMostBoundingCircle: new BoundingCircle(
+      {
+        x: 0,
+        y: 0,
+      },
+      300
+    ),
     cycloids: [
       {
         rodLengthScale: 0.8,
@@ -16,7 +24,7 @@ function App() {
         cycloidRadius: 100,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: false,
-        boundingCircle: null,
+        boundingCircleIndex: -1,
       },
       {
         rodLengthScale: 0.5,
@@ -25,7 +33,7 @@ function App() {
         cycloidRadius: 50,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: true,
-        boundingCircle: null,
+        boundingCircleIndex: -1,
       },
     ],
     animationSpeed: 1,

@@ -12,17 +12,7 @@ import GeneratedCycloidData from "../../types/generatedCycloidData";
 export default function useGenerateCycloids(
   cycloidControls: MutableRefObject<CycloidControls>
 ): GeneratedCycloidData {
-  let outerMostBoundingCircle = useMemo(
-    () =>
-      new BoundingCircle(
-        {
-          x: 0,
-          y: 0,
-        },
-        300
-      ),
-    []
-  );
+  let outerMostBoundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
   let cycloids = useMemo(() => {
     let cycloids = [];

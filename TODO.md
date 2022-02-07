@@ -24,3 +24,5 @@ https://medium.com/techtrument/multithreading-javascript-46156179cf9a
 The ability to change colors
 
 use another cycloid as the base for drawing.
+
+Think about using nodes as a control later, for now, just use the basic control to get it working first. << tis a pretty cool feature though.

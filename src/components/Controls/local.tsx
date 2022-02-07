@@ -1,5 +1,6 @@
 import CycloidParams from "../../types/cycloidParams";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
+import ContentArray from "./shared/contentArray";
 import Control from "./shared/control";
 import ControlContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
@@ -44,7 +45,17 @@ const Local: React.FC<{
             clearCanvasToggle();
           }}
         />
-        {/* TODO refactor this into content? */}
+        {/* TODO: temporary control*/}
+        <Control
+          paramName={"Current parent"}
+          numberValue={cycloid.boundingCircleIndex}
+          onDrag={(newValue: number) => {
+            cycloid.boundingCircleIndex = newValue;
+            clearCanvasToggle();
+          }}
+          registerChangeOnlyOnMouseUp={false}
+          step={1}
+        />
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>
         <div className="flex">
           <SelectionButton
