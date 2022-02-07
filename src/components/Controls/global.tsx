@@ -32,27 +32,11 @@ const Global: React.FC<globalProps> = ({
           registerChangeOnlyOnMouseUp={false}
         />
         <Content
-          onDrag={(newValue: number) =>
-            (cycloidControls.nestedLevel = newValue)
-          }
-          paramName={"Nested Level"}
-          step={1}
-          numberValue={cycloidControls.nestedLevel}
-          registerChangeOnlyOnMouseUp={false}
-        />
-        <Content
           onClick={(newValue) =>
             (cycloidControls.clearTracedPathOnParamsChange = newValue)
           }
           paramName="Clear Traced Path on Params Change"
           booleanValue={cycloidControls.clearTracedPathOnParamsChange}
-        />
-        <Content
-          onClick={(newValue) =>
-            (cycloidControls.registerChangeOnlyOnMouseUp = newValue)
-          }
-          paramName="Register Change only on MouseUp"
-          booleanValue={cycloidControls.registerChangeOnlyOnMouseUp}
         />
         <Content
           onClick={(newValue) => {

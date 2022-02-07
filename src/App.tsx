@@ -31,11 +31,9 @@ function App() {
     animationSpeed: 1,
     currentCycloid: 0,
     mode: "Animated",
-    nestedLevel: 1,
     scaffold: "Showing",
     animationState: "Playing",
     clearTracedPathOnParamsChange: true,
-    registerChangeOnlyOnMouseUp: false,
     showAllCycloids: false,
   });
 

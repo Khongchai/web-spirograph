@@ -26,6 +26,7 @@ export default function useGenerateCycloids(
 
   let cycloids = useMemo(() => {
     let cycloids = [];
+
     for (let i = 0; i < cycloidControls.current.cycloids.length; i++) {
       let cycloid = new Cycloid(
         cycloidControls.current.cycloids[i].cycloidRadius,

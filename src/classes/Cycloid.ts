@@ -50,6 +50,9 @@ export default class Cycloid extends BoundingCircle {
     How much the circle moves depends on the circumference
   */
   private calculateCenter() {
+    // Get the center point of parent,
+    // this abstraction allows us to obtain the center point of the parent,
+    // regardless of whether that parent is static or moving.
     const parentCenter = this.parentBounding.getCenterPoint();
 
     //At angle 0
