@@ -35,6 +35,9 @@ export default function useHandlePan(
       { passive: false }
     );
     parentWrapper.current?.addEventListener("mousedown", (e) => {
+      const leftMouseButton = 0;
+      if (e.button !== leftMouseButton) return;
+
       mouseDownPos.x = e.clientX;
       mouseDownPos.y = e.clientY;
       mouseDown = true;
