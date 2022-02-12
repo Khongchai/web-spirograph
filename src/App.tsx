@@ -33,7 +33,7 @@ function App() {
         cycloidRadius: 50,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: true,
-        boundingCircleIndex: -1,
+        boundingCircleIndex: 0,
       },
     ],
     animationSpeed: 1,

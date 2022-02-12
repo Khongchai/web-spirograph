@@ -61,16 +61,19 @@ export default function useDrawCanvas(
             cycloidControls.current.showAllCycloids ||
             i == cycloidControls.current.currentCycloid;
 
-          if (drawCurrentCycloid) {
-            cycloid.setDx(dx);
-            cycloid.move();
+          // Keep updating the position even if the cycloid is not being drawn
+          // This allows the child cycloids to be drawn in the correct position
+          cycloid.setDx(dx);
+          cycloid.move();
 
+          if (drawCurrentCycloid) {
             //visual
             if (cycloidControls.current.scaffold === "Showing") {
               cycloid.showBounding(ctx);
               cycloid.showRod(ctx);
               cycloid.showPoint(ctx);
 
+              // This one gets set multiple time but it's ok.
               outermostBoundingCircle.showBounding(ctx);
             }
 

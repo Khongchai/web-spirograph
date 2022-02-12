@@ -145,4 +145,6 @@ export default class Cycloid extends BoundingCircle {
 
   setIsOutsideOfParent = (isOutside: boolean) =>
     (this.isOutsideOfParent = isOutside);
+
+  setParent = (bounding: BoundingCircle) => (this.parentBounding = bounding);
 }
