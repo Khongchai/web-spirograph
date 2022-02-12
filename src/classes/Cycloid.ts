@@ -133,6 +133,8 @@ export default class Cycloid extends BoundingCircle {
 
   getRadius = () => this.radius;
 
+  getParent = () => this.parentBounding;
+
   setDx = (dx: number) => (this.animationSpeed = dx);
 
   setRotationDirection = (direction: CycloidRotationDirection) =>
@@ -146,5 +148,5 @@ export default class Cycloid extends BoundingCircle {
   setIsOutsideOfParent = (isOutside: boolean) =>
     (this.isOutsideOfParent = isOutside);
 
-  setParent = (bounding: BoundingCircle) => (this.parentBounding = bounding);
+  setParent = (parent: BoundingCircle) => (this.parentBounding = parent);
 }

@@ -3,6 +3,8 @@ import CycloidControls from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
 import useGenerateCycloids from "./useGenerateCycloids";
+import useLoadCycloidParams from "./useLoadCycloidParams";
+import useSetOutermostBoundingCirclePosition from "./useSetOutermostBoundingCirclePosition";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -15,29 +17,19 @@ export default function useDrawCanvas(
   let { generatedCycloids: cycloids, outermostBoundingCircle } =
     useGenerateCycloids(cycloidControls);
 
-  useEffect(() => {
-    cycloids.forEach((cycloid, i) => {
-      const {
-        rodLengthScale,
-        cycloidRadius,
-        rotationDirection: cycloidDirection,
-        animationSpeedScale: rodRotationRatio,
-        moveOutSideOfParent,
-      } = cycloidControls.current.cycloids[i];
+  useLoadCycloidParams(
+    cycloids,
+    outermostBoundingCircle,
+    cycloidControls.current.cycloids,
+    clearCanvasToggle
+  );
 
-      cycloid.rod.scaleLength(rodLengthScale);
-      cycloid.setRadius(cycloidRadius);
-      cycloid.setRotationDirection(cycloidDirection);
-      cycloid.setRodRotationSpeedRatio(rodRotationRatio);
-      cycloid.setIsOutsideOfParent(moveOutSideOfParent);
-    });
-
-    outermostBoundingCircle.setCenterPoint({
-      x: parent.current.clientWidth / 2,
-      y: window.innerHeight / 2,
-    });
-    outermostBoundingCircle.setRadius(300);
-  }, [clearCanvasToggle]);
+  useSetOutermostBoundingCirclePosition(
+    outermostBoundingCircle,
+    parent,
+    300,
+    clearCanvasToggle
+  );
 
   useEffect(() => {
     if (canvasRef.current && parent.current) {
