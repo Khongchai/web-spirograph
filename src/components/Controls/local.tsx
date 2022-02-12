@@ -25,7 +25,6 @@ const Local: React.FC<{
             cycloid.rodLengthScale = newValue;
             clearCanvasToggle();
           }}
-          registerChangeOnlyOnMouseUp={false}
         />
         <Control
           paramName={"Cycloid Speed Scale"}
@@ -34,7 +33,6 @@ const Local: React.FC<{
             clearCanvasToggle();
           }}
           numberValue={cycloid.animationSpeedScale}
-          registerChangeOnlyOnMouseUp={false}
           step={0.01}
         />
         <Control
@@ -48,7 +46,6 @@ const Local: React.FC<{
         <Control
           paramName={"Radius"}
           numberValue={cycloid.radius}
-          registerChangeOnlyOnMouseUp={false}
           constraints={{ min: 10, max: Infinity }}
           step={1}
           onDrag={(newValue: number) => {

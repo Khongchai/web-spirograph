@@ -24,12 +24,7 @@ export default function useDrawCanvas(
     clearCanvasToggle
   );
 
-  useSetOutermostBoundingCirclePosition(
-    outermostBoundingCircle,
-    parent,
-    300,
-    clearCanvasToggle
-  );
+  useSetOutermostBoundingCirclePosition(outermostBoundingCircle, parent, 300);
 
   useEffect(() => {
     if (canvasRef.current && parent.current) {

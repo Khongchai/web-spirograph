@@ -5,7 +5,6 @@ interface DraggableValueProps {
   value: number;
   step: number;
   onDrag: (newValue: number) => void;
-  registerChangeOnlyOnMouseUp: boolean;
   constraints?: { min: number; max: number };
 }
 
@@ -19,7 +18,6 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
   value,
   onDrag,
   step: steps,
-  registerChangeOnlyOnMouseUp,
   constraints,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);
@@ -34,9 +32,7 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
       steps,
       (newValue: number) => {
         setDragValue(newValue);
-        if (!registerChangeOnlyOnMouseUp) {
-          onDrag(newValue);
-        }
+        onDrag(newValue);
       },
       constraints
     );
@@ -51,15 +47,6 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
         document.body.style.cursor = "ew-resize";
         document.body.style.userSelect = "none";
         const pointerRef = function () {
-          if (registerChangeOnlyOnMouseUp) {
-            let newDragVal = 0;
-            setDragValue((value) => {
-              newDragVal = value;
-              return value;
-            });
-            onDrag(newDragVal);
-          }
-
           document.body.style.cursor = "auto";
           document.body.style.userSelect = "unset";
           window.removeEventListener("pointermove", manageDrag);

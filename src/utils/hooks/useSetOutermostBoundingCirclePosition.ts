@@ -4,8 +4,7 @@ import BoundingCircle from "../../classes/BoundingCircle";
 export default function useSetOutermostBoundingCirclePosition(
   outermostBoundingCircle: BoundingCircle,
   parent: MutableRefObject<HTMLElement>,
-  radius: number,
-  clearCanvasToggle: boolean
+  radius: number
 ) {
   useEffect(() => {
     outermostBoundingCircle.setCenterPoint({
@@ -13,5 +12,5 @@ export default function useSetOutermostBoundingCirclePosition(
       y: window.innerHeight / 2,
     });
     outermostBoundingCircle.setRadius(radius);
-  }, [clearCanvasToggle]);
+  }, []);
 }

@@ -9,7 +9,6 @@ type ContentType = {
       onDrag: (newValue: number) => void;
       constraints?: { min: number; max: number };
       step?: number;
-      registerChangeOnlyOnMouseUp: boolean;
       booleanValue?: never;
       onClick?: never;
     }
@@ -18,7 +17,6 @@ type ContentType = {
       constraints?: never;
       onDrag?: never;
       step?: never;
-      registerChangeOnlyOnMouseUp?: never;
       booleanValue: boolean;
       onClick: (newValue: boolean) => void;
     }
@@ -31,7 +29,6 @@ const Content: React.FC<ContentType> = ({
   booleanValue,
   onDrag,
   onClick,
-  registerChangeOnlyOnMouseUp,
   constraints,
 }) => {
   return (
@@ -42,7 +39,6 @@ const Content: React.FC<ContentType> = ({
           <BooleanValueControl value={booleanValue} onClick={onClick!} />
         ) : (
           <DraggableValue
-            registerChangeOnlyOnMouseUp={registerChangeOnlyOnMouseUp!}
             onDrag={onDrag!}
             value={numberValue!}
             step={step}

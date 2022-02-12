@@ -29,7 +29,6 @@ const Global: React.FC<globalProps> = ({
           onDrag={(newValue: number) =>
             (cycloidControls.animationSpeed = newValue)
           }
-          registerChangeOnlyOnMouseUp={false}
         />
         <Content
           onClick={(newValue) =>
@@ -37,6 +36,14 @@ const Global: React.FC<globalProps> = ({
           }
           paramName="Clear Traced Path on Params Change"
           booleanValue={cycloidControls.clearTracedPathOnParamsChange}
+        />
+        <Content
+          onDrag={(newValue: number) => {
+            cycloidControls.outerMostBoundingCircle.setRadius(newValue);
+            clearCanvasToggle();
+          }}
+          numberValue={cycloidControls.outerMostBoundingCircle.getRadius()}
+          paramName="Outer Bounding Circle Radius"
         />
         <Content
           onClick={(newValue) => {

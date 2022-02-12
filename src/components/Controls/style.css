@@ -2,6 +2,11 @@
   margin-top: 8px;
 }
 
+.all-container {
+  height: 100%;
+  overflow-y: auto;
+}
+
 .all-container > * + * {
   margin-top: 47px;
 }
