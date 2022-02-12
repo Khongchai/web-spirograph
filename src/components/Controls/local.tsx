@@ -45,18 +45,7 @@ const Local: React.FC<{
             clearCanvasToggle();
           }}
         />
-        {/* TODO: temporary control*/}
-        {/* -1 means the outermost cycloid while 
-        <Control
-          paramName={"Current parent"}
-          numberValue={cycloid.boundingCircleIndex}
-          onDrag={(newValue: number) => {
-            cycloid.boundingCircleIndex = newValue;
-            clearCanvasToggle();
-          }}
-          registerChangeOnlyOnMouseUp={false}
-          step={1}
-        /> */}
+
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>
         <div className="flex">
           <SelectionButton

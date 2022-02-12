@@ -48,6 +48,8 @@ export default function useDrawCanvas(
 
         dx += cycloidControls.current.animationSpeed;
 
+        pointsToTrace.current = [];
+
         cycloids.forEach((cycloid, i) => {
           const drawCurrentCycloid =
             cycloidControls.current.showAllCycloids ||
@@ -70,7 +72,7 @@ export default function useDrawCanvas(
             }
 
             const pointPos = cycloid.getDrawPoint();
-            pointsToTrace.current[i] = { x: pointPos.x, y: pointPos.y };
+            pointsToTrace.current.push({ x: pointPos.x, y: pointPos.y });
           }
         });
 
