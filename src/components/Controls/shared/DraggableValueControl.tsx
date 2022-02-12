@@ -6,6 +6,7 @@ interface DraggableValueProps {
   step: number;
   onDrag: (newValue: number) => void;
   registerChangeOnlyOnMouseUp: boolean;
+  constraints?: { min: number; max: number };
 }
 
 /*
@@ -19,18 +20,26 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
   onDrag,
   step: steps,
   registerChangeOnlyOnMouseUp,
+  constraints,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);
   //For using outside of React
   const pointerDownPos = useRef(0);
 
   const manageDrag = (e: PointerEvent) => {
-    _manageDrag(e, pointerDownPos, dragValue, steps, (newValue: number) => {
-      setDragValue(newValue);
-      if (!registerChangeOnlyOnMouseUp) {
-        onDrag(newValue);
-      }
-    });
+    _manageDrag(
+      e,
+      pointerDownPos,
+      dragValue,
+      steps,
+      (newValue: number) => {
+        setDragValue(newValue);
+        if (!registerChangeOnlyOnMouseUp) {
+          onDrag(newValue);
+        }
+      },
+      constraints
+    );
   };
 
   return (
@@ -73,7 +82,8 @@ function _manageDrag(
   pointerDownPos: React.MutableRefObject<number>,
   valueOnMouseDown: number,
   steps: number,
-  setDragValueCallback: (newValue: number) => void
+  setDragValueCallback: (newValue: number) => void,
+  constraints?: { min: number; max: number }
 ) {
   const maxDecimal = 0.001;
   const maxDecimalPlaces = 100;
@@ -84,7 +94,13 @@ function _manageDrag(
     valueOnMouseDown + roundNearest(differenceStepped, maxDecimal);
   const newValueRounded =
     Math.round(newValue * maxDecimalPlaces) / maxDecimalPlaces;
-  setDragValueCallback(newValueRounded);
+  if (constraints) {
+    setDragValueCallback(
+      Math.max(constraints.min, Math.min(constraints.max, newValueRounded))
+    );
+  } else {
+    setDragValueCallback(newValueRounded);
+  }
 }
 
 function roundNearest(num: number, nearest: number) {

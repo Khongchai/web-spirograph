@@ -35,7 +35,7 @@ export default function useLoadCycloidParams(
     generatedCycloids.forEach((cycloid, i) => {
       const {
         rodLengthScale,
-        cycloidRadius,
+        radius: cycloidRadius,
         rotationDirection: cycloidDirection,
         animationSpeedScale: rodRotationRatio,
         moveOutSideOfParent,

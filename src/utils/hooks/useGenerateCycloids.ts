@@ -21,7 +21,7 @@ export default function useGenerateCycloids(
       const cycloidParams = cycloidControls.current.cycloids;
 
       let cycloid = new Cycloid(
-        cycloidParams[i].cycloidRadius,
+        cycloidParams[i].radius,
         cycloidParams[i].rotationDirection,
         //Use this for now, will reassign later
         outerMostBoundingCircle,

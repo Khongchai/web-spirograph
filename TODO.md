@@ -16,6 +16,10 @@ turn somthing on or off
 
 Instant draw
 
+Color for each cycloid
+
+Ability to add or remove cycloid
+
 Note: To allow for nested cycloids, each cycloid must have not be responsible for drawing their parent cycloid. Make a class for circles and then extend drawing and moving abilitites from a shared mixin.
 
 Canvas // eventlistener multi-threading for better performance. Watch out for non-atomic operations.
@@ -25,4 +29,4 @@ The ability to change colors
 
 use another cycloid as the base for drawing.
 
-Think about using nodes as a control later, for now, just use the basic control to get it working first. << tis a pretty cool feature though.
+Node as control for cycloid relationship.

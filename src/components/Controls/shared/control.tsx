@@ -7,6 +7,7 @@ type ContentType = {
   | {
       numberValue: number;
       onDrag: (newValue: number) => void;
+      constraints?: { min: number; max: number };
       step?: number;
       registerChangeOnlyOnMouseUp: boolean;
       booleanValue?: never;
@@ -14,6 +15,7 @@ type ContentType = {
     }
   | {
       numberValue?: never;
+      constraints?: never;
       onDrag?: never;
       step?: never;
       registerChangeOnlyOnMouseUp?: never;
@@ -30,6 +32,7 @@ const Content: React.FC<ContentType> = ({
   onDrag,
   onClick,
   registerChangeOnlyOnMouseUp,
+  constraints,
 }) => {
   return (
     <div className="flex flex-row">
@@ -43,6 +46,7 @@ const Content: React.FC<ContentType> = ({
             onDrag={onDrag!}
             value={numberValue!}
             step={step}
+            constraints={constraints}
           />
         )}
       </div>

@@ -11,7 +11,7 @@ export default interface CycloidParams {
    */
   rotationDirection: CycloidDirection;
 
-  cycloidRadius: number;
+  radius: number;
 
   /*
    *  Local animation speed scale. This affect only the current cycloid.
@@ -22,11 +22,6 @@ export default interface CycloidParams {
    * Whether or not to move outside of the current bounding circle.
    */
   moveOutSideOfParent: boolean;
-
-  /*
-   * For referencing programmatically, not meant to be used by the user
-   */
-  boundingCircleRadius: number;
 
   /*
    * The parent element that the cycloid will be rendered inside or outside of,

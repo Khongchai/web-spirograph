@@ -45,7 +45,17 @@ const Local: React.FC<{
             clearCanvasToggle();
           }}
         />
-
+        <Control
+          paramName={"Radius"}
+          numberValue={cycloid.radius}
+          registerChangeOnlyOnMouseUp={false}
+          constraints={{ min: 10, max: Infinity }}
+          step={1}
+          onDrag={(newValue: number) => {
+            cycloid.radius = newValue;
+            clearCanvasToggle();
+          }}
+        />
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>
         <div className="flex">
           <SelectionButton
