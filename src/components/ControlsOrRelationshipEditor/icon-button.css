@@ -1,0 +1,11 @@
+.icon-button {
+  border-bottom: 4px rgba(153, 107, 201, 10) solid;
+  padding: 0.45rem;
+  height: fit-content;
+  border-radius: 7px;
+  width: 3.5rem;
+  height: 3.5rem;
+}
+.icon-button:active {
+  border-bottom: 1px rgba(153, 107, 201, 10) solid;
+}

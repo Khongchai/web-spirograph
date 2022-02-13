@@ -28,10 +28,7 @@ const Controls: React.FC<ControlsProps> = ({
   const forceUpdateSettingsUI = useForceUpdate();
 
   return (
-    <div
-      className="all-container"
-      style={{ paddingTop: "75px", paddingLeft: "75px" }}
-    >
+    <div className="all-container">
       <Local
         cycloid={cycloid}
         tooltipText="This controls cycloid-specific settings."

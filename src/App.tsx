@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
 import Controls from "./components/Controls";
+import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
 import "./index.css";
 import CycloidControls from "./types/cycloidControls";
 
@@ -78,10 +79,18 @@ function App() {
             />
           </div>
         </div>
-        <div style={{ flex: 0.4 }}>
-          <Controls
-            cycloidControls={cycloidControls}
+        {/* Make a component for toggling between the control and the relationship editor */}
+        <div
+          style={{
+            paddingTop: "75px",
+            paddingLeft: "75px",
+            paddingRight: "75px",
+            flex: 0.4,
+          }}
+        >
+          <ControlsOrRelationshipEditor
             clearCanvasToggle={handleClearCanvasToggle}
+            cycloidControls={cycloidControls}
           />
         </div>
       </div>
