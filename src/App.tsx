@@ -82,9 +82,8 @@ function App() {
         {/* Make a component for toggling between the control and the relationship editor */}
         <div
           style={{
-            paddingTop: "75px",
-            paddingLeft: "75px",
-            paddingRight: "75px",
+            padding: "75px",
+            overflow: "auto",
             flex: 0.4,
           }}
         >
