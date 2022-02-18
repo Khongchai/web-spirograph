@@ -11,7 +11,7 @@ export default function useHandlePan(
   canvases: MutableRefObject<HTMLCanvasElement | null>[]
 ) {
   useEffect(() => {
-    document.addEventListener(
+    parentWrapper.current?.addEventListener(
       "mousemove",
       (e) => {
         if (!mouseDown) return;
@@ -42,7 +42,7 @@ export default function useHandlePan(
       mouseDownPos.y = e.clientY;
       mouseDown = true;
     });
-    document.addEventListener("mouseup", (e) => {
+    parentWrapper.current?.addEventListener("mouseup", (e) => {
       if (mouseDown) {
         const newMousePos = getMousePositionMoved({ x: e.x, y: e.y });
         const newCanvasPos = getTranslatedCanvasPosition(newMousePos);

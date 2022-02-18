@@ -44,7 +44,7 @@ const Canvas: React.FC<CanvasProps> = ({
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
   useTraceCycloidPath(traceCanvasRef, pointsToTrace, clearCanvasToggle, panRef);
 
-  useHandleZoom([drawCanvasRef, traceCanvasRef]);
+  useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
   useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
 
   useEffect(() => {

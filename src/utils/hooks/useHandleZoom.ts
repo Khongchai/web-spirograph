@@ -1,3 +1,4 @@
+import { log } from "console";
 import { MutableRefObject, useEffect } from "react";
 import { Vector2 } from "../../types/vector2";
 /*
@@ -6,10 +7,12 @@ import { Vector2 } from "../../types/vector2";
 let zoomLevel = 1;
 const mouseCurrentPos: Vector2 = { x: 0, y: 0 };
 export default function useHandleZoom(
-  canvases: MutableRefObject<HTMLCanvasElement | null>[]
+  canvases: MutableRefObject<HTMLCanvasElement | null>[],
+  // Parent wrapper is solely for listening to events in lieu of document.addEventListener
+  parentWrapper: MutableRefObject<HTMLElement | null>,
 ) {
   useEffect(() => {
-    document.addEventListener(
+    parentWrapper.current?.addEventListener(
       "wheel",
       (e) => {
         e.preventDefault();
@@ -40,7 +43,7 @@ export default function useHandleZoom(
 
       { passive: false }
     );
-    document.addEventListener("mousemove", (e) => {
+    parentWrapper.current?.addEventListener("mousemove", (e) => {
       mouseCurrentPos.x = e.clientX;
       mouseCurrentPos.y = e.clientY;
     });
