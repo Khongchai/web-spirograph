@@ -3,6 +3,7 @@ import CycloidParams from "../../../types/cycloidParams";
 import { DrawNode } from "../types";
 import drawCircle from "./drawCircle";
 import extractNodeData from "./extractNodeData";
+import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
@@ -58,6 +59,7 @@ export default function generateNodes(
 
   const svgElems: JSX.IntrinsicElements["circle"][] = [];
   levels.forEach((l, i) => {
+    organizeNodesPositionOnLevel(levels, i);
     l.forEach((node, j) => {
       svgElems.push(
         drawCircle({
