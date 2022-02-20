@@ -1,4 +1,5 @@
 import { Vector2 } from "../../../types/vector2";
+import scaleDrawRadius from "./scaleDrawRadius";
 
 export default function drawCircle({
   radius,
@@ -16,7 +17,7 @@ export default function drawCircle({
   return (
     <circle
       key={key}
-      r={scaleRadius(radius)}
+      r={scaleDrawRadius(radius)}
       cx={centerPoint.x}
       cy={centerPoint.y}
       fill="transparent"
@@ -24,13 +25,4 @@ export default function drawCircle({
       stroke={color ?? "rgba(191, 134, 252, 99)"}
     />
   );
-}
-
-/*
-    Scale radius with min of 20
-*/
-const radiusScale = 0.2;
-const minRadius = 20;
-function scaleRadius(radius: number) {
-  return Math.min(radius * radiusScale, minRadius);
 }

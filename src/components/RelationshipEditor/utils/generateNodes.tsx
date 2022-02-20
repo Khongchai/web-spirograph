@@ -2,6 +2,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNode } from "../types";
 import drawCircle from "./drawCircle";
+import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
  *  For generating the tree graph for the relationship editor
@@ -27,23 +28,37 @@ export default function generateNodes(
   levels[0] = [
     {
       parentIndex: 0,
-      pos: boundingCircle.getCenterPoint(),
+      pos: initialNodePosition,
       radius: boundingCircle.getRadius(),
     },
   ];
   for (let i = 0; i < cycloidParams.length; i++) {
     // We start at 1 because the first level is the bounding circle
     // All children of bounding circle stays at level 0 + 1, and so on.
-    const index = cycloidParams[i].boundingCircleIndex + 1;
-    if (!levels[index]) {
-      levels[index] = [];
+
+    const levelIndex = cycloidParams[i].boundingCircleIndex + 1;
+    if (!levels[levelIndex]) {
+      levels[levelIndex] = [];
     }
-    levels[index].push({
-      parentIndex: index,
+
+    const parentIndex = cycloidParams[i].boundingCircleIndex;
+    const parentRadius = scaleDrawRadius(
+      parentIndex == -1
+        ? boundingCircle.getRadius()
+        : cycloidParams[parentIndex].radius
+    );
+    const thisRadius = scaleDrawRadius(cycloidParams[i].radius);
+
+    levels[levelIndex].push({
+      parentIndex: levelIndex,
       //TODO calculate the new x later, for now just get y to work
       pos: {
         x: initialNodePosition.x,
-        y: initialNodePosition.y + i * childAndParentYGap,
+        y:
+          initialNodePosition.y +
+          (i + 1) * childAndParentYGap +
+          parentRadius +
+          thisRadius,
       },
       radius: cycloidParams[i].radius,
     });
