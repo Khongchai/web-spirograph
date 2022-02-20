@@ -8,6 +8,7 @@ import CycloidControlsData from "./types/cycloidControls";
 function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
 
+  // Huge mistake to be separating bounding circle from everything else....may require a huge refactor later on.
   const cycloidControls = useRef<CycloidControlsData>({
     outerMostBoundingCircle: new BoundingCircle(
       {
@@ -25,14 +26,14 @@ function App() {
         moveOutSideOfParent: false,
         boundingCircleIndex: -1,
       },
-      // {
-      //   rodLengthScale: 0.5,
-      //   rotationDirection: "clockwise",
-      //   radius: 50,
-      //   animationSpeedScale: 0.7,
-      //   moveOutSideOfParent: false,
-      //   boundingCircleIndex: 0,
-      // },
+      {
+        rodLengthScale: 0.5,
+        rotationDirection: "clockwise",
+        radius: 50,
+        animationSpeedScale: 0.7,
+        moveOutSideOfParent: false,
+        boundingCircleIndex: -1,
+      },
       // {
       //   rodLengthScale: 0.5,
       //   rotationDirection: "clockwise",

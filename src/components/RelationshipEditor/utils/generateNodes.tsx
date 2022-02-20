@@ -2,6 +2,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNode } from "../types";
 import drawCircle from "./drawCircle";
+import getCurrentDrawLevel from "./getCurrentDrawLevel";
 import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
@@ -33,30 +34,36 @@ export default function generateNodes(
     },
   ];
   for (let i = 0; i < cycloidParams.length; i++) {
-    // We start at 1 because the first level is the bounding circle
-    // All children of bounding circle stays at level 0 + 1, and so on.
-
-    const levelIndex = cycloidParams[i].boundingCircleIndex + 1;
-    if (!levels[levelIndex]) {
-      levels[levelIndex] = [];
-    }
+    // To obtain the current level, we need to recursively go through each level of parent
+    // until we reach the outerBoundingCircle -- boundingCircleIndex === -1;
+    //
+    //  If the grandparent node is the bounding circle (-1),
+    // the current level should be 1
 
     const parentIndex = cycloidParams[i].boundingCircleIndex;
+    const parentIsBounding = parentIndex === -1;
+
+    const currentDrawLevel = getCurrentDrawLevel(i, cycloidParams, 1);
+
     const parentRadius = scaleDrawRadius(
-      parentIndex == -1
+      parentIsBounding
         ? boundingCircle.getRadius()
         : cycloidParams[parentIndex].radius
     );
     const thisRadius = scaleDrawRadius(cycloidParams[i].radius);
 
-    levels[levelIndex].push({
-      parentIndex: levelIndex,
+    if (!levels[currentDrawLevel]) {
+      levels[currentDrawLevel] = [];
+    }
+
+    levels[currentDrawLevel].push({
+      parentIndex: currentDrawLevel,
       //TODO calculate the new x later, for now just get y to work
       pos: {
         x: initialNodePosition.x,
         y:
-          initialNodePosition.y +
-          (i + 1) * childAndParentYGap +
+          initialNodePosition.y * currentDrawLevel +
+          childAndParentYGap +
           parentRadius +
           thisRadius,
       },
