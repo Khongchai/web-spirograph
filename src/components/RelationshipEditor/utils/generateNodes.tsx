@@ -34,13 +34,7 @@ export default function generateNodes(
     },
   ];
   for (let i = 0; i < cycloidParams.length; i++) {
-    // To obtain the current level, we need to recursively go through each level of parent
-    // until we reach the outerBoundingCircle -- boundingCircleIndex === -1;
-    //
-    //  If the grandparent node is the bounding circle (-1),
-    // the current level should be 1
-
-    const { currentDrawLevel, parentRadius, thisRadius } = extractNodeData(
+    const { currentDrawLevel } = extractNodeData(
       i,
       cycloidParams,
       boundingCircle
@@ -56,10 +50,7 @@ export default function generateNodes(
       pos: {
         x: initialNodePosition.x,
         y:
-          initialNodePosition.y * currentDrawLevel +
-          childAndParentYGap +
-          parentRadius +
-          thisRadius,
+          (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
       },
       radius: cycloidParams[i].radius,
     });

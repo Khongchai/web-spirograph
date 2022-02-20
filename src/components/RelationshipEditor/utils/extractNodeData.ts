@@ -26,6 +26,13 @@ export default function extractNodeData(
   };
 }
 
+/**
+ * To obtain the current level, we need to recursively go through each level of parent
+ * until we reach the outerBoundingCircle -- boundingCircleIndex === -1;
+
+ * If the grandparent node is the bounding circle (-1),
+ * the current level should be 1
+ */
 function getCurrentDrawLevel(
   parentIndex: number,
   cycloidParams: CycloidParams[],
