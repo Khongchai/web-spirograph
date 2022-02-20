@@ -2,7 +2,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNode } from "../types";
 import drawCircle from "./drawCircle";
-import getCurrentDrawLevel from "./getCurrentDrawLevel";
+import extractNodeData from "./extractNodeData";
 import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
@@ -40,17 +40,11 @@ export default function generateNodes(
     //  If the grandparent node is the bounding circle (-1),
     // the current level should be 1
 
-    const parentIndex = cycloidParams[i].boundingCircleIndex;
-    const parentIsBounding = parentIndex === -1;
-
-    const currentDrawLevel = getCurrentDrawLevel(i, cycloidParams, 1);
-
-    const parentRadius = scaleDrawRadius(
-      parentIsBounding
-        ? boundingCircle.getRadius()
-        : cycloidParams[parentIndex].radius
+    const { currentDrawLevel, parentRadius, thisRadius } = extractNodeData(
+      i,
+      cycloidParams,
+      boundingCircle
     );
-    const thisRadius = scaleDrawRadius(cycloidParams[i].radius);
 
     if (!levels[currentDrawLevel]) {
       levels[currentDrawLevel] = [];
