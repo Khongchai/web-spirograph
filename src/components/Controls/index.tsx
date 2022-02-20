@@ -1,5 +1,5 @@
 import React, { MutableRefObject } from "react";
-import CycloidControls from "../../types/cycloidControls";
+import CycloidControlsData from "../../types/cycloidControls";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import Global from "./global";
 import Local from "./local";
@@ -7,7 +7,7 @@ import NonCycloidControls from "./nonCycloidControls";
 import "./style.css";
 
 interface ControlsProps {
-  cycloidControls: MutableRefObject<CycloidControls>;
+  cycloidControls: MutableRefObject<CycloidControlsData>;
   clearCanvasToggle: () => void;
 }
 

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import CycloidControls from "../../types/cycloidControls";
+import React, { useRef, useState } from "react";
+import CycloidControlsData from "../../types/cycloidControls";
 import Controls from "../Controls";
 import RelationShipEditor from "../RelationshipEditor";
 import IconButton from "./IconButton";
 
 interface ControlsOrRelationshipEditorProps {
-  cycloidControls: React.MutableRefObject<CycloidControls>;
+  cycloidControls: React.MutableRefObject<CycloidControlsData>;
   clearCanvasToggle: () => void;
 }
 
@@ -14,16 +14,23 @@ const ControlsOrRelationshipEditor: React.FC<
 > = ({ cycloidControls, clearCanvasToggle }) => {
   const [controlsOrRelationshipEditor, setControlsOrRelationshipEditor] =
     useState<"controls" | "relationship-editor">("controls");
+  const wrapperRef = useRef<any>();
 
   return (
-    <div className="flex justify-between  align-top">
+    <div
+      ref={wrapperRef}
+      className="flex justify-between align-top h-full w-full"
+    >
       {controlsOrRelationshipEditor === "controls" ? (
         <Controls
           cycloidControls={cycloidControls}
           clearCanvasToggle={clearCanvasToggle}
         />
       ) : (
-        <RelationShipEditor />
+        <RelationShipEditor
+          cycloidControlsData={cycloidControls}
+          wrapperRef={wrapperRef}
+        />
       )}
       <div
         style={{ height: "fit-content" }}

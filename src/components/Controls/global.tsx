@@ -1,5 +1,5 @@
 import React from "react";
-import CycloidControls from "../../types/cycloidControls";
+import CycloidControlsData from "../../types/cycloidControls";
 import ContentArray from "./shared/contentArray";
 import Content from "./shared/control";
 import ContentContainer from "./shared/ControlContainer";
@@ -7,7 +7,7 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 
 interface globalProps {
-  cycloidControls: CycloidControls;
+  cycloidControls: CycloidControlsData;
   tooltipText: string;
   clearCanvasToggle: () => void;
   forceUpdateSettingsUI: () => void;

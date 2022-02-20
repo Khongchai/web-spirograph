@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControls from "../../types/cycloidControls";
+import CycloidControlsData from "../../types/cycloidControls";
 import CycloidParams from "../../types/cycloidParams";
 
 /*

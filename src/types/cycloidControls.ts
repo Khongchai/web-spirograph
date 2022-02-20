@@ -1,7 +1,7 @@
 import BoundingCircle from "../classes/BoundingCircle";
 import CycloidParams from "./cycloidParams";
 
-export default interface CycloidControls {
+export default interface CycloidControlsData {
   /*
    * Base parent of all cycloids.
    */

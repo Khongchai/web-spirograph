@@ -1,7 +1,7 @@
 import { MutableRefObject, useMemo } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControls from "../../types/cycloidControls";
+import CycloidControlsData from "../../types/cycloidControls";
 import CycloidParams from "../../types/cycloidParams";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 
@@ -9,7 +9,7 @@ import GeneratedCycloidData from "../../types/generatedCycloidData";
     This hook encapsulate the generation of cycloids from information within the controls.
 */
 export default function useGenerateCycloids(
-  cycloidControls: MutableRefObject<CycloidControls>
+  cycloidControls: MutableRefObject<CycloidControlsData>
 ): GeneratedCycloidData {
   let outerMostBoundingCircle = cycloidControls.current.outerMostBoundingCircle;
 

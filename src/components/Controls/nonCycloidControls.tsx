@@ -1,5 +1,5 @@
 import React from "react";
-import CycloidControls from "../../types/cycloidControls";
+import CycloidControlsData from "../../types/cycloidControls";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import ContentContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
@@ -8,7 +8,7 @@ import SelectionButton from "./shared/SelectionButton";
 import Control from "./shared/control";
 
 interface miscProps {
-  cycloidControls: CycloidControls;
+  cycloidControls: CycloidControlsData;
   modeTooltipText: string;
   showScaffoldTooltipText: string;
   clearCanvasTooltipText: string;

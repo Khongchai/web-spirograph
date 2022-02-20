@@ -1,15 +1,14 @@
 import { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
-import Controls from "./components/Controls";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
 import "./index.css";
-import CycloidControls from "./types/cycloidControls";
+import CycloidControlsData from "./types/cycloidControls";
 
 function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
 
-  const cycloidControls = useRef<CycloidControls>({
+  const cycloidControls = useRef<CycloidControlsData>({
     outerMostBoundingCircle: new BoundingCircle(
       {
         x: 0,
@@ -79,10 +78,9 @@ function App() {
             />
           </div>
         </div>
-        {/* Make a component for toggling between the control and the relationship editor */}
         <div
           style={{
-            padding: "75px",
+            padding: "75px 75px 20px 75px",
             overflow: "auto",
             flex: 0.4,
           }}
