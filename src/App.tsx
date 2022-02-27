@@ -32,7 +32,7 @@ function App() {
         radius: 50,
         animationSpeedScale: 0.7,
         moveOutSideOfParent: false,
-        boundingCircleIndex: 0,
+        boundingCircleIndex: -1,
       },
       {
         rodLengthScale: 0.5,
@@ -40,7 +40,7 @@ function App() {
         radius: 10,
         animationSpeedScale: 0.3,
         moveOutSideOfParent: true,
-        boundingCircleIndex: 0,
+        // boundingCircleIndex: -1,
       },
     ],
     animationSpeed: 1,

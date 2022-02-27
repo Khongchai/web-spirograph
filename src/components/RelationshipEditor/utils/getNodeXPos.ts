@@ -3,6 +3,10 @@ import { DrawNode } from "../types";
 // We snap the node to the grid based on the length of the member in each level.
 export default function organizeNodesPositionOnLevel(
   levels: DrawNode[][],
+
+  /**
+   * The index of the level to be organized.
+   */
   currentLevelIndex: number
 ) {
   const currentLevel = levels[currentLevelIndex];
@@ -13,10 +17,14 @@ export default function organizeNodesPositionOnLevel(
     return currentLevel[0].pos;
   }
 
+  const gap = 100;
   currentLevel.forEach((node, i) => {
-    const newX = currentLevel[i].pos.x;
+    const xPos = node.pos.x + gap * i;
+    const xOffset = (gap / 2) * (currentLevelLength - 1);
+    const finalX = xPos - xOffset;
+
     node.pos = {
-      x: newX,
+      x: finalX,
       y: currentLevel[i].pos.y,
     };
   });
