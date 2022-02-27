@@ -2,7 +2,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNodeLevel } from "../types";
 import drawCircle from "./drawCircle";
-import extractNodeData from "./extractNodeData";
+import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 
 /**
@@ -35,11 +35,7 @@ export default function generateNodes(
     },
   };
   for (let i = 0; i < cycloidParams.length; i++) {
-    const { currentDrawLevel } = extractNodeData(
-      i,
-      cycloidParams,
-      boundingCircle
-    );
+    const currentDrawLevel = getDrawLevel(i, cycloidParams);
 
     // First assignment for that level, if undefined
     if (levels[currentDrawLevel] === undefined) {

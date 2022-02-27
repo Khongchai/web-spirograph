@@ -1,4 +1,3 @@
-import { Vector2 } from "../../../types/vector2";
 import { DrawNode, DrawNodeLevel } from "../types";
 
 /**

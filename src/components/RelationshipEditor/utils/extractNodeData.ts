@@ -1,29 +1,14 @@
-import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
-import scaleDrawRadius from "./scaleDrawRadius";
 
 export default function extractNodeData(
   currentIndex: number,
-  cycloidParams: CycloidParams[],
-  outermostBoundingCircle: BoundingCircle
+  cycloidParams: CycloidParams[]
 ) {
   const parentIndex = cycloidParams[currentIndex].boundingCircleIndex;
-  const parentIsBounding = parentIndex === -1;
 
   const currentDrawLevel = getCurrentDrawLevel(parentIndex, cycloidParams, 1);
 
-  const parentRadius = scaleDrawRadius(
-    parentIsBounding
-      ? outermostBoundingCircle.getRadius()
-      : cycloidParams[parentIndex].radius
-  );
-  const thisRadius = scaleDrawRadius(cycloidParams[currentIndex].radius);
-
-  return {
-    currentDrawLevel,
-    parentRadius,
-    thisRadius,
-  };
+  return currentDrawLevel;
 }
 
 /**
