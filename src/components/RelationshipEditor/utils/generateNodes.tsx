@@ -1,6 +1,6 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
-import { DrawNode, DrawNodeLevel } from "../types";
+import { DrawNodeLevel } from "../types";
 import drawCircle from "./drawCircle";
 import extractNodeData from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";

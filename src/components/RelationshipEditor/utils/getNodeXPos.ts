@@ -1,7 +1,9 @@
 import { Vector2 } from "../../../types/vector2";
 import { DrawNode, DrawNodeLevel } from "../types";
 
-// We snap the node to the grid based on the length of the member in each level.
+/**
+ * We snap the node to the grid based on the length of the member in each level.
+ */
 export default function organizeNodesPositionOnLevel(
   levels: DrawNodeLevel,
 
@@ -16,6 +18,8 @@ export default function organizeNodesPositionOnLevel(
 
   const gap = 100;
 
+  const shouldOffsetX = determineShouldOffsetX(nodesOnLevel);
+
   for (let i = 0; i < currentLevelLength; i++) {
     const node = nodesOnLevel[i];
     if (!node.parentDrawNode) {
@@ -23,7 +27,7 @@ export default function organizeNodesPositionOnLevel(
     }
 
     const parentXPosition = node.parentDrawNode!.pos.x;
-    const parentXOffset = node.pos.x - parentXPosition;
+    const parentXOffset = shouldOffsetX ? node.pos.x - parentXPosition : 0;
 
     const xPos = node.pos.x + gap * i + parentXOffset;
     const xOffset = (gap / 2) * (currentLevelLength - 1);
@@ -34,4 +38,24 @@ export default function organizeNodesPositionOnLevel(
       y: node.pos.y,
     };
   }
+}
+
+/**
+ * Determine if we should offset the X in order to center our nodes by checking if
+ * everything in the level shares the same parent.
+ * If not, we offset the X to center the nodes.
+ * else, there's no need to center it as it's better visually to let the nodes flow naturally.
+ *
+ */
+function determineShouldOffsetX(nodes: DrawNode[]): boolean {
+  let firstNodeParent = nodes[0].parentDrawNode;
+  for (let i = 1, length = nodes.length; i < length; i++) {
+    const node = nodes[i];
+    const hasSameParent = node.parentDrawNode === firstNodeParent;
+    if (!hasSameParent) {
+      return false;
+    }
+  }
+
+  return true;
 }
