@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 
 const TooltipWrapper: React.FC<{
   tooltipText: string;
-  //
   wrapperType?: string;
   wrapperProps?: any;
 }> = ({ children, tooltipText, wrapperType, wrapperProps }) => {

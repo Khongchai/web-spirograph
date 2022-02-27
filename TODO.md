@@ -1,4 +1,6 @@
-Priority: cycloids relationship editor => Fix x position
+Priority: cycloids relationship editor => Draw lines + drag & drop
+Also, when click on cycloids relationship editor, stop the animation and show all cycloids.
+Look for TODO in generateNodes.tsx
 
 Pause + continue
 

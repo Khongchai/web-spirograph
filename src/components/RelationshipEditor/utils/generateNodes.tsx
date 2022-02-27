@@ -77,5 +77,7 @@ export default function generateNodes(
     });
   });
 
+  // TODO
+  // Instead of returning just circle elements, return also the line elements.
   return svgElems;
 }
