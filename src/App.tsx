@@ -40,7 +40,7 @@ function App() {
         radius: 10,
         animationSpeedScale: 0.3,
         moveOutSideOfParent: true,
-        // boundingCircleIndex: -1,
+        boundingCircleIndex: 1,
       },
     ],
     animationSpeed: 1,

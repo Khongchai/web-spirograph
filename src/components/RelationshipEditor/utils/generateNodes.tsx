@@ -1,10 +1,9 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
-import { DrawNode } from "../types";
+import { DrawNode, DrawNodeLevel } from "../types";
 import drawCircle from "./drawCircle";
 import extractNodeData from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
-import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
  *  For generating the tree graph for the relationship editor
@@ -24,16 +23,17 @@ export default function generateNodes(
 
   // Assign what to draw based on the level
   // 0 is the bounding circle's level
-  const levels: DrawNode[][] = [];
+  const levels: DrawNodeLevel = [];
 
   // Push the bounding circle to the top most level
-  levels[0] = [
-    {
-      parentIndex: 0,
+  levels[0] = {
+    "-1": {
+      currentDrawLevel: 0,
       pos: initialNodePosition,
       radius: boundingCircle.getRadius(),
+      parentDrawNode: null,
     },
-  ];
+  };
   for (let i = 0; i < cycloidParams.length; i++) {
     const { currentDrawLevel } = extractNodeData(
       i,
@@ -41,26 +41,31 @@ export default function generateNodes(
       boundingCircle
     );
 
-    if (!levels[currentDrawLevel]) {
-      levels[currentDrawLevel] = [];
+    // First assignment for that level, if undefined
+    if (levels[currentDrawLevel] === undefined) {
+      levels[currentDrawLevel] = {};
     }
 
-    levels[currentDrawLevel].push({
-      parentIndex: currentDrawLevel,
-      //TODO calculate the new x later, for now just get y to work
-      pos: {
-        x: initialNodePosition.x,
-        y:
-          (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
-      },
+    // For offsetting the node to be below the parent node
+    const previousLevel = currentDrawLevel - 1;
+    const parentKey = cycloidParams[i].boundingCircleIndex.toString();
+    const nodeRelativePos = {
+      x: initialNodePosition.x,
+      y: (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
+    };
+
+    levels[currentDrawLevel][i.toString()] = {
+      currentDrawLevel,
+      parentDrawNode: levels[previousLevel][parentKey],
+      pos: nodeRelativePos,
       radius: cycloidParams[i].radius,
-    });
+    };
   }
 
   const svgElems: JSX.IntrinsicElements["circle"][] = [];
   levels.forEach((l, i) => {
     organizeNodesPositionOnLevel(levels, i);
-    l.forEach((node, j) => {
+    Object.values(l).forEach((node, j) => {
       svgElems.push(
         drawCircle({
           centerPoint: node.pos,

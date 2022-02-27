@@ -1,7 +1,5 @@
 Priority: cycloids relationship editor.
 
-- Think about how to distribute X
-
 Pause + continue
 
 A better folder structure, please.
