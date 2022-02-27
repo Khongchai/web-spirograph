@@ -1,6 +1,5 @@
 import CycloidParams from "../../types/cycloidParams";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
-import ContentArray from "./shared/contentArray";
 import Control from "./shared/control";
 import ControlContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";

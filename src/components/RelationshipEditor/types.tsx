@@ -26,6 +26,14 @@ export type DrawNode = {
 
   color?: string;
   thickness?: number;
+
+  meta?: NodeMetaData;
+};
+
+// Index from the cycloidParams array
+export type NodeMetaData = {
+  index: number;
+  parentIndex: number;
 };
 
 export type DrawEdge = {

@@ -1,5 +1,6 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
+import TooltipWrapper from "../../Shared/TooltipWrapper";
 import { DrawNodeLevel } from "../types";
 import drawCircle from "./drawCircle";
 import getDrawLevel from "./extractNodeData";
@@ -55,6 +56,10 @@ export default function generateNodes(
       parentDrawNode: levels[previousLevel][parentKey],
       pos: nodeRelativePos,
       radius: cycloidParams[i].radius,
+      meta: {
+        index: i,
+        parentIndex: cycloidParams[i].boundingCircleIndex,
+      },
     };
   }
 

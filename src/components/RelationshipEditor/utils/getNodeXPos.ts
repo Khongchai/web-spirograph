@@ -28,7 +28,7 @@ export default function organizeNodesPositionOnLevel(
     const parentXPosition = node.parentDrawNode!.pos.x;
     const parentXOffset = shouldOffsetX ? node.pos.x - parentXPosition : 0;
 
-    const xPos = node.pos.x + gap * i + parentXOffset;
+    const xPos = node.pos.x + gap * i - parentXOffset;
     const xOffset = (gap / 2) * (currentLevelLength - 1);
     const finalX = xPos - xOffset;
 

@@ -1,4 +1,4 @@
-Priority: cycloids relationship editor.
+Priority: cycloids relationship editor => Fix x position
 
 Pause + continue
 

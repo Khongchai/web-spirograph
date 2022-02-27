@@ -29,7 +29,7 @@ function App() {
       {
         rodLengthScale: 0.5,
         rotationDirection: "clockwise",
-        radius: 50,
+        radius: 150,
         animationSpeedScale: 0.7,
         moveOutSideOfParent: false,
         boundingCircleIndex: -1,
