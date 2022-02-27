@@ -1,0 +1,8 @@
+.cycloid-svg-node:hover {
+  stroke: whitesmoke;
+  cursor: pointer;
+}
+
+.cycloid-svg-node {
+  transition: stroke 0.3s;
+}

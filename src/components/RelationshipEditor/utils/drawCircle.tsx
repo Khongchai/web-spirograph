@@ -1,5 +1,6 @@
 import { Vector2 } from "../../../types/vector2";
 import scaleDrawRadius from "./scaleDrawRadius";
+import "./cycloid-svg-node.css";
 
 export default function drawCircle({
   radius,
@@ -16,6 +17,7 @@ export default function drawCircle({
 }): JSX.IntrinsicElements["circle"] {
   return (
     <circle
+      className="cycloid-svg-node"
       key={key}
       r={scaleDrawRadius(radius)}
       cx={centerPoint.x}
