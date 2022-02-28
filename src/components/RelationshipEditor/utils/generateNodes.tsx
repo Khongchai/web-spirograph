@@ -83,6 +83,7 @@ export default function generateNodes(
         })
       );
 
+      //TODO refactor to drawLine()
       if (node.parentDrawNode !== null) {
         const { x: x1, y: y1 } = node.pos;
         const r1 = scaleDrawRadius(node.radius);
@@ -90,10 +91,16 @@ export default function generateNodes(
         const { x: x2, y: y2 } = node.parentDrawNode.pos;
         const r2 = scaleDrawRadius(node.parentDrawNode.radius);
 
+        const xOffsetScale = 3;
+        const xOffset = (x2 - x1) / xOffsetScale;
+
+        // TODO => maybe this is the solution https://www.youtube.com/watch?v=pvimAM_SLic&t=185s
+        const yOffset = 0;
+
         svgLines.push(
           <path
             key={key}
-            d={`M${x1} ${y1 - r1} L${x2} ${y2 + r2}`}
+            d={`M${x1} ${y1 - r1} L${x2 - xOffset} ${y2 + r2}`}
             stroke="rgba(191, 134, 252, 99)"
             strokeWidth={1}
           />
