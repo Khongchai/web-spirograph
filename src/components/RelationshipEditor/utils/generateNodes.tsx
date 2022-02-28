@@ -1,10 +1,10 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
-import TooltipWrapper from "../../Shared/TooltipWrapper";
 import { DrawNodeLevel } from "../types";
 import drawCircle from "./drawCircle";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
+import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
  *  For generating the tree graph for the relationship editor
@@ -13,7 +13,10 @@ export default function generateNodes(
   boundingCircle: BoundingCircle,
   cycloidParams: CycloidParams[],
   containerSize: { width: number; height: number }
-): JSX.IntrinsicElements["circle"][] {
+): {
+  svgCircles: JSX.IntrinsicElements["circle"][];
+  svgLines: JSX.IntrinsicElements["line"][];
+} {
   const initialNodePosition = {
     //Arbitrary numbers that looks good.
     x: containerSize.width / 2,
@@ -56,28 +59,51 @@ export default function generateNodes(
       parentDrawNode: levels[previousLevel][parentKey],
       pos: nodeRelativePos,
       radius: cycloidParams[i].radius,
-      meta: {
+      indices: {
         index: i,
         parentIndex: cycloidParams[i].boundingCircleIndex,
       },
     };
   }
 
-  const svgElems: JSX.IntrinsicElements["circle"][] = [];
-  levels.forEach((l, i) => {
-    organizeNodesPositionOnLevel(levels, i);
-    Object.values(l).forEach((node, j) => {
-      svgElems.push(
+  const svgCircles: JSX.IntrinsicElements["circle"][] = [];
+  const svgLines: JSX.IntrinsicElements["line"][] = [];
+
+  levels.forEach((l, levelIndex) => {
+    organizeNodesPositionOnLevel(levels, levelIndex);
+
+    Object.values(l).forEach((node, nodeIndex) => {
+      const key = `${node.currentDrawLevel}-${nodeIndex}`;
+
+      svgCircles.push(
         drawCircle({
           centerPoint: node.pos,
-          radius: node.radius,
-          key: i + " " + j,
+          radius: scaleDrawRadius(node.radius),
+          key: key,
         })
       );
+
+      if (node.parentDrawNode !== null) {
+        const { x: x1, y: y1 } = node.pos;
+        const r1 = scaleDrawRadius(node.radius);
+
+        const { x: x2, y: y2 } = node.parentDrawNode.pos;
+        const r2 = scaleDrawRadius(node.parentDrawNode.radius);
+
+        svgLines.push(
+          <path
+            key={key}
+            d={`M${x1} ${y1 - r1} L${x2} ${y2 + r2}`}
+            stroke="rgba(191, 134, 252, 99)"
+            strokeWidth={1}
+          />
+        );
+      }
     });
   });
 
-  // TODO
-  // Instead of returning just circle elements, return also the line elements.
-  return svgElems;
+  return {
+    svgCircles,
+    svgLines,
+  };
 }

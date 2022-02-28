@@ -24,7 +24,8 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
 
   return (
     <svg width={width} height={height}>
-      {drawnCircles}
+      {drawnCircles.svgCircles}
+      {drawnCircles.svgLines}
     </svg>
   );
 };

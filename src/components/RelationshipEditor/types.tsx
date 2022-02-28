@@ -27,7 +27,19 @@ export type DrawNode = {
   color?: string;
   thickness?: number;
 
-  meta?: NodeMetaData;
+  /**
+   * The indices of the node and its parent in the cycloidParams array.
+   */
+  indices?: {
+    /**
+     * This element's index in the cycloidParams array.
+     */
+    index: number;
+    /**
+     * The parent's index in the cycloidParams array.
+     */
+    parentIndex: number;
+  };
 };
 
 // Index from the cycloidParams array

@@ -1,5 +1,4 @@
 import { Vector2 } from "../../../types/vector2";
-import scaleDrawRadius from "./scaleDrawRadius";
 import "./cycloid-svg-node.css";
 
 export default function drawCircle({
@@ -19,7 +18,7 @@ export default function drawCircle({
     <circle
       className="cycloid-svg-node"
       key={key}
-      r={scaleDrawRadius(radius)}
+      r={radius}
       cx={centerPoint.x}
       cy={centerPoint.y}
       fill="transparent"
