@@ -1,20 +1,38 @@
-import { Vector2 } from "../../../types/vector2";
+import { DrawNode } from "../types";
+import scaleDrawRadius from "./scaleDrawRadius";
 
-export default function drawLine({
-  startPoint,
-  endPoint,
+/**
+ * 1 is the child and 2 is the parent
+ */
+export default function drawLineFromNodeToParent({
+  node,
+  key,
 }: {
-  startPoint: Vector2;
-  endPoint: Vector2;
+  key: any;
+  node: DrawNode;
 }) {
+  const { x: x1, y: y1 } = node.pos;
+  const r1 = scaleDrawRadius(node.radius);
+
+  const { x: x2, y: y2 } = node.parentDrawNode!.pos;
+  const r2 = scaleDrawRadius(node.parentDrawNode!.radius);
+
+  const xOffsetScale = 3.5;
+  const xOffset = (x2 - x1) / xOffsetScale;
+
+  const finalX = x2 - xOffset;
+  // Just the circle equation
+  const finalY =
+    Math.sqrt(
+      Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
+    ) + y2;
+
   return (
-    <line
-      x1={startPoint.x}
-      y1={startPoint.y}
-      x2={endPoint.x}
-      y2={endPoint.y}
+    <path
+      key={key}
+      d={`M${x1} ${y1 - r1} L${finalX} ${finalY}`}
+      stroke="rgba(191, 134, 252, 99)"
       strokeWidth={1}
-      stroke={"rgba(231, 210, 253, 99)"}
     />
   );
 }

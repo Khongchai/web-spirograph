@@ -1,7 +1,8 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNodeLevel } from "../types";
-import drawCircle from "./drawCircle";
+import drawNode from "./drawCircle";
+import drawLineFromNodeToParent from "./drawLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
@@ -76,7 +77,7 @@ export default function generateNodes(
       const key = `${node.currentDrawLevel}-${nodeIndex}`;
 
       svgCircles.push(
-        drawCircle({
+        drawNode({
           centerPoint: node.pos,
           radius: scaleDrawRadius(node.radius),
           key: key,
@@ -84,32 +85,11 @@ export default function generateNodes(
       );
 
       if (node.parentDrawNode !== null) {
-        const { x: x1, y: y1 } = node.pos;
-        const r1 = scaleDrawRadius(node.radius);
-
-        const { x: x2, y: y2 } = node.parentDrawNode.pos;
-        const r2 = scaleDrawRadius(node.parentDrawNode.radius);
-
-        const xOffsetScale = 3.5;
-        const xOffset = (x2 - x1) / xOffsetScale;
-
-        const finalX = x2 - xOffset;
-        // Just the circle equation
-        const finalY =
-          Math.sqrt(
-            Math.pow(r2, 2) -
-              Math.pow(finalX, 2) +
-              2 * x2 * finalX -
-              Math.pow(x2, 2)
-          ) + y2;
-
         svgLines.push(
-          <path
-            key={key}
-            d={`M${x1} ${y1 - r1} L${finalX} ${finalY}`}
-            stroke="rgba(191, 134, 252, 99)"
-            strokeWidth={1}
-          />
+          drawLineFromNodeToParent({
+            key: key,
+            node,
+          })
         );
       }
     });
