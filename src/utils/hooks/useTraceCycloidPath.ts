@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import colors from "../../constants/colors";
+import CycloidControlsData from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
 
@@ -12,7 +13,10 @@ export default function useTraceCycloidPath(
   */
   pointsToTrace: React.MutableRefObject<Vector2[]>,
   clearCanvasToggle: boolean,
-  panRef: React.MutableRefObject<Vector2>
+  panRef: React.MutableRefObject<Vector2>,
+
+  // Currently using this just for the trace bool.
+  cycloidControls: React.MutableRefObject<CycloidControlsData>
 ) {
   const currentPoints = pointsToTrace;
   const lastPoints: Vector2[] = [...pointsToTrace.current];
@@ -37,36 +41,38 @@ export default function useTraceCycloidPath(
       setCanvasSize(canvas);
 
       const draw = () => {
-        ctx.save();
-        ctx.translate(panRef.current.x, panRef.current.y);
+        if (cycloidControls.current.tracePath) {
+          ctx.save();
+          ctx.translate(panRef.current.x, panRef.current.y);
 
-        for (let i = 0; i < currentPoints.current.length; i++) {
-          const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };
+          for (let i = 0; i < currentPoints.current.length; i++) {
+            const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };
 
-          const { x: cx, y: cy } = currentPoints.current[i];
+            const { x: cx, y: cy } = currentPoints.current[i];
 
-          if (notFirstTime.current[i]) {
-            ctx.strokeStyle = "#E2C6FF";
-            ctx.shadowColor = colors.purple.vivid;
-            ctx.shadowBlur = 10;
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(lx, ly);
-            ctx.lineTo(cx, cy);
-            ctx.stroke();
-            ctx.closePath();
+            if (notFirstTime.current[i]) {
+              ctx.strokeStyle = "#E2C6FF";
+              ctx.shadowColor = colors.purple.vivid;
+              ctx.shadowBlur = 10;
+              ctx.lineWidth = 2.5;
+              ctx.beginPath();
+              ctx.moveTo(lx, ly);
+              ctx.lineTo(cx, cy);
+              ctx.stroke();
+              ctx.closePath();
 
-            ctx.beginPath();
+              ctx.beginPath();
 
-            ctx.stroke();
-          } else {
-            notFirstTime.current[i] = true;
+              ctx.stroke();
+            } else {
+              notFirstTime.current[i] = true;
+            }
+
+            lastPoints[i] = { x: cx, y: cy };
           }
 
-          lastPoints[i] = { x: cx, y: cy };
+          ctx.restore();
         }
-
-        ctx.restore();
         requestAnimationFrame(draw);
       };
 

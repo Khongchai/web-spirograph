@@ -1,4 +1,5 @@
 import React, { MutableRefObject, useEffect } from "react";
+import CycloidControlsData from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 
 const mouseDownPos: Vector2 = { x: 0, y: 0 };

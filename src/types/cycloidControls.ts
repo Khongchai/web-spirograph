@@ -1,6 +1,9 @@
 import BoundingCircle from "../classes/BoundingCircle";
 import CycloidParams from "./cycloidParams";
 
+/**
+ * Interface for all animation params
+ */
 export default interface CycloidControlsData {
   /*
    * Base parent of all cycloids.
@@ -45,4 +48,9 @@ export default interface CycloidControlsData {
    * Pretty self-explanatory.
    */
   showAllCycloids: boolean;
+
+  /*
+   * Whether or not to show the traced path.
+   */
+  tracePath: boolean;
 }

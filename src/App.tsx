@@ -59,6 +59,7 @@ function App() {
     animationState: "Playing",
     clearTracedPathOnParamsChange: true,
     showAllCycloids: false,
+    tracePath: true,
   });
 
   const handleClearCanvasToggle = useCallback(() => {
@@ -74,6 +75,8 @@ function App() {
     let change = animSpeed * 0.05;
 
     cycloidControls.current.showAllCycloids = true;
+    cycloidControls.current.tracePath = false;
+    handleClearCanvasToggle();
     function slowDown() {
       animSpeed -= change;
       if (animSpeed > 0) {
@@ -90,8 +93,9 @@ function App() {
     let animSpeed = defaultGlobalAnimationSpeed;
     let change = animSpeed * 0.05;
 
-    //TODO need return to the previously set value
     cycloidControls.current.showAllCycloids = false;
+    cycloidControls.current.tracePath = true;
+    handleClearCanvasToggle();
     function speedUp() {
       animSpeed += change;
       if (animSpeed < 1) {
