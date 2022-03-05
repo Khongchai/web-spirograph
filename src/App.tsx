@@ -65,23 +65,15 @@ function App() {
     setClearCanvasToggle((toggle) => !toggle);
   }, []);
 
-  //TODO maybe delete
-  const changeAnimSpeed = useCallback(
-    (initialSpeed: number, changeRatio: number, speedUpOrSlowdown: 1 | -1) => {
-      let animSpeed = initialSpeed;
-      const change = animSpeed * changeRatio * speedUpOrSlowdown;
-      function changeSpeed() {
-        animSpeed += change;
-      }
-    },
-    []
-  );
-
   // TODO refactor into a slowdown / speedup hook with the function being passed to the requestAnimationFrame saved in a ref
   // TODO so that we can cancelAnimationFrame with the correct callback.
+
+  // TODO also needs to disable drawing
   const handleOnRelationshipEditorToggle = useCallback(() => {
     let animSpeed = cycloidControls.current.animationSpeed;
     let change = animSpeed * 0.05;
+
+    cycloidControls.current.showAllCycloids = true;
     function slowDown() {
       animSpeed -= change;
       if (animSpeed > 0) {
@@ -97,12 +89,16 @@ function App() {
   const handleOnControlsToggle = useCallback(() => {
     let animSpeed = defaultGlobalAnimationSpeed;
     let change = animSpeed * 0.05;
+
+    //TODO need return to the previously set value
+    cycloidControls.current.showAllCycloids = false;
     function speedUp() {
       animSpeed += change;
       if (animSpeed < 1) {
         cycloidControls.current.animationSpeed = animSpeed;
         requestAnimationFrame(speedUp);
       } else {
+        //TODO needs to return to the original speed
         cycloidControls.current.animationSpeed = 1;
       }
     }
