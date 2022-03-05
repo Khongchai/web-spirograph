@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
@@ -66,51 +66,13 @@ function App() {
     setClearCanvasToggle((toggle) => !toggle);
   }, []);
 
-  // TODO refactor into a slowdown / speedup hook with the function being passed to the requestAnimationFrame saved in a ref
-  // TODO so that we can cancelAnimationFrame with the correct callback.
-
-  // TODO also needs to disable drawing
-  const handleOnRelationshipEditorToggle = useCallback(() => {
-    let animSpeed = cycloidControls.current.animationSpeed;
-    let change = animSpeed * 0.05;
-
-    cycloidControls.current.showAllCycloids = true;
-    cycloidControls.current.tracePath = false;
-    handleClearCanvasToggle();
-    function slowDown() {
-      animSpeed -= change;
-      if (animSpeed > 0) {
-        cycloidControls.current.animationSpeed = animSpeed;
-        requestAnimationFrame(slowDown);
-      } else {
-        cycloidControls.current.animationSpeed = 0;
-      }
-    }
-    slowDown();
-  }, []);
-
-  const handleOnControlsToggle = useCallback(() => {
-    let animSpeed = defaultGlobalAnimationSpeed;
-    let change = animSpeed * 0.05;
-
-    cycloidControls.current.showAllCycloids = false;
-    cycloidControls.current.tracePath = true;
-    handleClearCanvasToggle();
-    function speedUp() {
-      animSpeed += change;
-      if (animSpeed < 1) {
-        cycloidControls.current.animationSpeed = animSpeed;
-        requestAnimationFrame(speedUp);
-      } else {
-        //TODO needs to return to the original speed
-        cycloidControls.current.animationSpeed = 1;
-      }
-    }
-    speedUp();
-  }, []);
-
   const allCanvasContainer = useRef<null | HTMLElement>(null);
   const canvasContainerFlexWrapper = useRef<null | HTMLElement>(null);
+
+  const { handleOnControlsToggle, handleOnRelationshipEditorToggle } =
+    useMenuToggle(cycloidControls, () => {
+      handleClearCanvasToggle();
+    });
 
   return (
     <div className="bg-purple-dark text-purple-light h-full w-full">
@@ -152,3 +114,64 @@ function App() {
 }
 
 export default App;
+
+function useMenuToggle(
+  cycloidControls: React.MutableRefObject<CycloidControlsData>,
+  rerender: () => void
+) {
+  const originalSpeedRef = useRef(cycloidControls.current.animationSpeed);
+
+  const handleOnRelationshipEditorToggle = useCallback(() => {
+    let animateSpeed = cycloidControls.current.animationSpeed;
+    // Set the animation speed that we can later revert to.
+    originalSpeedRef.current = animateSpeed;
+    let change = animateSpeed * 0.05;
+
+    cycloidControls.current.showAllCycloids = true;
+    cycloidControls.current.tracePath = false;
+
+    rerender();
+
+    function slowDown() {
+      animateSpeed -= change;
+      if (animateSpeed > 0) {
+        cycloidControls.current.animationSpeed = animateSpeed;
+        requestAnimationFrame(slowDown);
+      } else {
+        cycloidControls.current.animationSpeed = 0;
+        rerender();
+      }
+    }
+
+    slowDown();
+  }, []);
+
+  const handleOnControlsToggle = useCallback(() => {
+    let animateSpeed = 0;
+    let change = originalSpeedRef.current * 0.05;
+
+    cycloidControls.current.showAllCycloids = false;
+    cycloidControls.current.tracePath = true;
+
+    function speedUp() {
+      animateSpeed += change;
+      if (animateSpeed < originalSpeedRef.current) {
+        cycloidControls.current.animationSpeed = parseFloat(
+          animateSpeed.toFixed(1)
+        );
+        rerender();
+        requestAnimationFrame(speedUp);
+      } else {
+        cycloidControls.current.animationSpeed = originalSpeedRef.current;
+        rerender();
+      }
+    }
+
+    speedUp();
+  }, []);
+
+  return {
+    handleOnControlsToggle,
+    handleOnRelationshipEditorToggle,
+  };
+}
