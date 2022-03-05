@@ -21,7 +21,7 @@ export default function drawLineFromNodeToParent({
   const xOffset = (x2 - x1) / xOffsetScale;
 
   const finalX = x2 - xOffset;
-  // Just the circle equation
+  // Just the circle equation, but solve for y
   const finalY =
     Math.sqrt(
       Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)

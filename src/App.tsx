@@ -5,6 +5,7 @@ import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEdi
 import "./index.css";
 import CycloidControlsData from "./types/cycloidControls";
 
+const defaultGlobalAnimationSpeed = 1;
 function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
 
@@ -51,7 +52,7 @@ function App() {
         boundingCircleIndex: 2,
       },
     ],
-    animationSpeed: 1,
+    animationSpeed: defaultGlobalAnimationSpeed,
     currentCycloid: 0,
     mode: "Animated",
     scaffold: "Showing",
@@ -62,6 +63,50 @@ function App() {
 
   const handleClearCanvasToggle = useCallback(() => {
     setClearCanvasToggle((toggle) => !toggle);
+  }, []);
+
+  //TODO maybe delete
+  const changeAnimSpeed = useCallback(
+    (initialSpeed: number, changeRatio: number, speedUpOrSlowdown: 1 | -1) => {
+      let animSpeed = initialSpeed;
+      const change = animSpeed * changeRatio * speedUpOrSlowdown;
+      function changeSpeed() {
+        animSpeed += change;
+      }
+    },
+    []
+  );
+
+  // TODO refactor into a slowdown / speedup hook with the function being passed to the requestAnimationFrame saved in a ref
+  // TODO so that we can cancelAnimationFrame with the correct callback.
+  const handleOnRelationshipEditorToggle = useCallback(() => {
+    let animSpeed = cycloidControls.current.animationSpeed;
+    let change = animSpeed * 0.05;
+    function slowDown() {
+      animSpeed -= change;
+      if (animSpeed > 0) {
+        cycloidControls.current.animationSpeed = animSpeed;
+        requestAnimationFrame(slowDown);
+      } else {
+        cycloidControls.current.animationSpeed = 0;
+      }
+    }
+    slowDown();
+  }, []);
+
+  const handleOnControlsToggle = useCallback(() => {
+    let animSpeed = defaultGlobalAnimationSpeed;
+    let change = animSpeed * 0.05;
+    function speedUp() {
+      animSpeed += change;
+      if (animSpeed < 1) {
+        cycloidControls.current.animationSpeed = animSpeed;
+        requestAnimationFrame(speedUp);
+      } else {
+        cycloidControls.current.animationSpeed = 1;
+      }
+    }
+    speedUp();
   }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
@@ -95,6 +140,8 @@ function App() {
           }}
         >
           <ControlsOrRelationshipEditor
+            onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
+            onControlsToggle={handleOnControlsToggle}
             clearCanvasToggle={handleClearCanvasToggle}
             cycloidControls={cycloidControls}
           />

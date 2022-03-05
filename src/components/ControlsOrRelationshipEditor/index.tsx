@@ -7,11 +7,18 @@ import IconButton from "./IconButton";
 interface ControlsOrRelationshipEditorProps {
   cycloidControls: React.MutableRefObject<CycloidControlsData>;
   clearCanvasToggle: () => void;
+  onRelationshipEditorToggle: () => void;
+  onControlsToggle: () => void;
 }
 
 const ControlsOrRelationshipEditor: React.FC<
   ControlsOrRelationshipEditorProps
-> = ({ cycloidControls, clearCanvasToggle }) => {
+> = ({
+  cycloidControls,
+  clearCanvasToggle,
+  onRelationshipEditorToggle,
+  onControlsToggle,
+}) => {
   const [controlsOrRelationshipEditor, setControlsOrRelationshipEditor] =
     useState<"controls" | "relationship-editor">("controls");
   const wrapperRef = useRef<any>();
@@ -35,13 +42,16 @@ const ControlsOrRelationshipEditor: React.FC<
       <div
         style={{ height: "fit-content" }}
         className="hover:rotate-2 cursor-pointer"
-        onClick={() =>
-          setControlsOrRelationshipEditor(
-            controlsOrRelationshipEditor === "controls"
-              ? "relationship-editor"
-              : "controls"
-          )
-        }
+        onClick={() => {
+          const isControls = controlsOrRelationshipEditor === "controls";
+          if (isControls) {
+            onRelationshipEditorToggle();
+            setControlsOrRelationshipEditor("relationship-editor");
+          } else {
+            onControlsToggle();
+            setControlsOrRelationshipEditor("controls");
+          }
+        }}
       >
         {controlsOrRelationshipEditor === "controls" ? (
           <IconButton
