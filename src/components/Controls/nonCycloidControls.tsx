@@ -11,8 +11,6 @@ interface miscProps {
   cycloidControls: CycloidControlsData;
   modeTooltipText: string;
   showScaffoldTooltipText: string;
-  clearCanvasTooltipText: string;
-  clearCanvasToggle: () => void;
 }
 
 /*
@@ -22,8 +20,6 @@ const NonCycloidControls: React.FC<miscProps> = ({
   cycloidControls,
   modeTooltipText,
   showScaffoldTooltipText,
-  clearCanvasTooltipText,
-  clearCanvasToggle,
 }) => {
   const forceUpdate = useForceUpdate();
   return (

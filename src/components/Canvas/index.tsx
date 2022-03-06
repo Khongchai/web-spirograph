@@ -1,4 +1,11 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, {
+  MutableRefObject,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
@@ -8,14 +15,12 @@ import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
-  clearCanvasToggle: boolean;
   parent: MutableRefObject<HTMLElement | null>;
   parentWrapper: MutableRefObject<HTMLElement | null>;
 }
 
 const Canvas: React.FC<CanvasProps> = ({
   cycloidControls,
-  clearCanvasToggle,
   parent,
   parentWrapper,
 }) => {
@@ -23,6 +28,8 @@ const Canvas: React.FC<CanvasProps> = ({
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
     "auto"
   );
+
+  const rerender = useContext(Rerender);
 
   const panRef = useRef<Vector2>({ x: 0, y: 0 });
 
@@ -36,19 +43,12 @@ const Canvas: React.FC<CanvasProps> = ({
     drawCanvasRef,
     pointsToTrace,
     cycloidControls,
-    clearCanvasToggle,
     parent as MutableRefObject<HTMLElement>,
     panRef
   );
 
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  useTraceCycloidPath(
-    traceCanvasRef,
-    pointsToTrace,
-    clearCanvasToggle,
-    panRef,
-    cycloidControls
-  );
+  useTraceCycloidPath(traceCanvasRef, pointsToTrace, panRef, cycloidControls);
 
   useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
   useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
@@ -78,7 +78,7 @@ const Canvas: React.FC<CanvasProps> = ({
       drawRef?.restore();
       traceRef?.restore();
     }
-  }, [clearCanvasToggle]);
+  }, [rerender]);
 
   if (mode === "animate") {
     return (

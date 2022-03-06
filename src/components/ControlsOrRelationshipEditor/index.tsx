@@ -6,19 +6,13 @@ import IconButton from "./IconButton";
 
 interface ControlsOrRelationshipEditorProps {
   cycloidControls: React.MutableRefObject<CycloidControlsData>;
-  clearCanvasToggle: () => void;
   onRelationshipEditorToggle: () => void;
   onControlsToggle: () => void;
 }
 
 const ControlsOrRelationshipEditor: React.FC<
   ControlsOrRelationshipEditorProps
-> = ({
-  cycloidControls,
-  clearCanvasToggle,
-  onRelationshipEditorToggle,
-  onControlsToggle,
-}) => {
+> = ({ cycloidControls, onRelationshipEditorToggle, onControlsToggle }) => {
   const [controlsOrRelationshipEditor, setControlsOrRelationshipEditor] =
     useState<"controls" | "relationship-editor">("controls");
   const wrapperRef = useRef<any>();
@@ -29,10 +23,7 @@ const ControlsOrRelationshipEditor: React.FC<
       className="flex justify-between align-top h-full w-full"
     >
       {controlsOrRelationshipEditor === "controls" ? (
-        <Controls
-          cycloidControls={cycloidControls}
-          clearCanvasToggle={clearCanvasToggle}
-        />
+        <Controls cycloidControls={cycloidControls} />
       ) : (
         <RelationShipEditor
           cycloidControlsData={cycloidControls}

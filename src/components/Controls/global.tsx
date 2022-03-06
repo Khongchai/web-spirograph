@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { RerenderToggle } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../types/cycloidControls";
 import ContentArray from "./shared/contentArray";
 import Content from "./shared/control";
@@ -9,16 +10,15 @@ import Heading from "./shared/heading";
 interface globalProps {
   cycloidControls: CycloidControlsData;
   tooltipText: string;
-  clearCanvasToggle: () => void;
   forceUpdateSettingsUI: () => void;
 }
 
 const Global: React.FC<globalProps> = ({
   cycloidControls,
   tooltipText,
-  clearCanvasToggle,
   forceUpdateSettingsUI,
 }) => {
+  const rerenderToggle = useContext(RerenderToggle);
   return (
     <ControlSection>
       <Heading tooltipText={tooltipText}>Global</Heading>
@@ -40,7 +40,7 @@ const Global: React.FC<globalProps> = ({
         <Content
           onDrag={(newValue: number) => {
             cycloidControls.outerMostBoundingCircle.setRadius(newValue);
-            clearCanvasToggle();
+            rerenderToggle();
           }}
           numberValue={cycloidControls.outerMostBoundingCircle.getRadius()}
           paramName="Outer Bounding Circle Radius"
@@ -48,7 +48,7 @@ const Global: React.FC<globalProps> = ({
         <Content
           onClick={(newValue) => {
             cycloidControls.showAllCycloids = newValue;
-            clearCanvasToggle();
+            rerenderToggle();
           }}
           paramName="Show all cycloids"
           booleanValue={cycloidControls.showAllCycloids}
@@ -62,7 +62,7 @@ const Global: React.FC<globalProps> = ({
             //If all are shown, there's no need to clear the canvas to repaint another one
             //We'll just need to update the settings UI
             if (!cycloidControls.showAllCycloids) {
-              clearCanvasToggle();
+              rerenderToggle();
             } else {
               forceUpdateSettingsUI();
             }

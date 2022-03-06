@@ -3,12 +3,13 @@ import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
 import colors from "./constants/colors";
+import { Rerender, RerenderToggle } from "./contexts/rerenderToggle";
 import "./index.css";
 import CycloidControlsData from "./types/cycloidControls";
 
 const defaultGlobalAnimationSpeed = 1;
 function App() {
-  const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
+  const [rerender, setRerender] = useState(false);
 
   // Huge mistake to be separating bounding circle from everything else....may require a huge refactor later on.
 
@@ -75,59 +76,61 @@ function App() {
   });
 
   const handleClearCanvasToggle = useCallback(() => {
-    setClearCanvasToggle((toggle) => !toggle);
+    setRerender((toggle) => !toggle);
   }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
   const canvasContainerFlexWrapper = useRef<null | HTMLElement>(null);
 
   const { handleOnControlsToggle, handleOnRelationshipEditorToggle } =
-    useMenuToggle(cycloidControls, () => {
+    useAnimateMenuToggling(cycloidControls, () => {
       handleClearCanvasToggle();
     });
 
   return (
-    <div className="bg-purple-dark text-purple-light h-full w-full">
-      <div className="w-full h-full relative flex md:flex-row sm:flex-col">
-        <div
-          style={{ flex: 0.6 }}
-          className="relative canvas-container-flex-wrapper"
-          ref={canvasContainerFlexWrapper as any}
-        >
-          <div
-            ref={allCanvasContainer as any}
-            className="w-full h-full absolute canvas-container"
-          >
-            <Canvas
-              clearCanvasToggle={clearCanvasToggle}
-              cycloidControls={cycloidControls}
-              parent={allCanvasContainer}
-              parentWrapper={canvasContainerFlexWrapper}
-            />
+    <Rerender.Provider value={rerender}>
+      <RerenderToggle.Provider value={handleClearCanvasToggle}>
+        <div className="bg-purple-dark text-purple-light h-full w-full">
+          <div className="w-full h-full relative flex md:flex-row sm:flex-col">
+            <div
+              style={{ flex: 0.6 }}
+              className="relative canvas-container-flex-wrapper"
+              ref={canvasContainerFlexWrapper as any}
+            >
+              <div
+                ref={allCanvasContainer as any}
+                className="w-full h-full absolute canvas-container"
+              >
+                <Canvas
+                  cycloidControls={cycloidControls}
+                  parent={allCanvasContainer}
+                  parentWrapper={canvasContainerFlexWrapper}
+                />
+              </div>
+            </div>
+            <div
+              style={{
+                padding: "75px 75px 20px 75px",
+                overflow: "auto",
+                flex: 0.4,
+              }}
+            >
+              <ControlsOrRelationshipEditor
+                onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
+                onControlsToggle={handleOnControlsToggle}
+                cycloidControls={cycloidControls}
+              />
+            </div>
           </div>
         </div>
-        <div
-          style={{
-            padding: "75px 75px 20px 75px",
-            overflow: "auto",
-            flex: 0.4,
-          }}
-        >
-          <ControlsOrRelationshipEditor
-            onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
-            onControlsToggle={handleOnControlsToggle}
-            clearCanvasToggle={handleClearCanvasToggle}
-            cycloidControls={cycloidControls}
-          />
-        </div>
-      </div>
-    </div>
+      </RerenderToggle.Provider>
+    </Rerender.Provider>
   );
 }
 
 export default App;
 
-function useMenuToggle(
+function useAnimateMenuToggling(
   cycloidControls: React.MutableRefObject<CycloidControlsData>,
   rerender: () => void
 ) {

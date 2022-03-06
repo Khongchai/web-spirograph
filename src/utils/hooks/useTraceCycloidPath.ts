@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import colors from "../../constants/colors";
+import { Rerender } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
@@ -12,12 +13,12 @@ export default function useTraceCycloidPath(
     This hook is not aware of any cycloid bodies outside, only what it should be tracing.
   */
   pointsToTrace: React.MutableRefObject<Vector2[]>,
-  clearCanvasToggle: boolean,
   panRef: React.MutableRefObject<Vector2>,
 
   // Currently using this just for the trace bool.
   cycloidControls: React.MutableRefObject<CycloidControlsData>
 ) {
+  const rerender = useContext(Rerender);
   const currentPoints = pointsToTrace;
   const lastPoints: Vector2[] = [...pointsToTrace.current];
 
@@ -29,7 +30,7 @@ export default function useTraceCycloidPath(
 
   useEffect(() => {
     notFirstTime.current = [];
-  }, [clearCanvasToggle]);
+  }, [rerender]);
 
   window.onresize = () => (notFirstTime.current = []);
 

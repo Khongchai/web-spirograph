@@ -1,4 +1,5 @@
-import React, { MutableRefObject, useEffect } from "react";
+import React, { MutableRefObject, useContext, useEffect } from "react";
+import { Rerender } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../types/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
@@ -10,10 +11,10 @@ export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointsToTrace: React.MutableRefObject<Vector2[]>,
   cycloidControls: MutableRefObject<CycloidControlsData>,
-  clearCanvasToggle: boolean,
   parent: MutableRefObject<HTMLElement>,
   panRef: MutableRefObject<Vector2>
 ) {
+  const rerender = useContext(Rerender);
   let { generatedCycloids: cycloids, outermostBoundingCircle } =
     useGenerateCycloids(cycloidControls);
 
@@ -21,7 +22,7 @@ export default function useDrawCanvas(
     cycloids,
     outermostBoundingCircle,
     cycloidControls.current.cycloids,
-    clearCanvasToggle
+    rerender
   );
 
   useSetOutermostBoundingCirclePosition(outermostBoundingCircle, parent, 300);
