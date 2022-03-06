@@ -1,9 +1,15 @@
 import { useContext, useRef, useState } from "react";
 import { RerenderToggle } from "../../contexts/rerenderToggle";
 import { Vector2 } from "../../types/vector2";
+import DrawNodeLevel from "./classes/drawNodeLevel";
 import "./cycloid-svg-node.css";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
 
+/**
+ * A moveable svg circle. Calls an onOverNeighbor callback when it is over another node
+ *
+ * It knows that it is over another node based on the provided DrawNode[] information
+ */
 export default function SvgCircle({
   radius,
   centerPoint,
@@ -14,6 +20,8 @@ export default function SvgCircle({
   onPointerOut,
   onPointerMove,
   onPointerDown,
+  onOverNeighbor,
+  otherCirclesData,
 }: {
   radius: number;
   centerPoint: Vector2;
@@ -24,12 +32,16 @@ export default function SvgCircle({
   onPointerOut?: VoidFunction;
   onPointerMove?: (event: PointerEvent) => void;
   onPointerDown?: VoidFunction;
+  onOverNeighbor?: VoidFunction;
+  otherCirclesData?: DrawNodeLevel;
 }): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
   const svgRef = useRef<SVGCircleElement>(null);
 
-  useGlobalPointerMove(setIsPointerDown, isPointerDown, onPointerMove);
+  useGlobalPointerMove(setIsPointerDown, isPointerDown, (e) => {
+    onPointerMove?.(e);
+  });
 
   const handlePointerDown = (pointerDown: boolean) => {
     setIsPointerDown(pointerDown);

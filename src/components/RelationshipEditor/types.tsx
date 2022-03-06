@@ -1,10 +1,5 @@
 import { Vector2 } from "../../types/vector2";
 
-/**
- * The number is the index assigned initially in the cycloidparmas array.
- */
-export type DrawNodeLevel = Record<string, DrawNode>[];
-
 // A draw node that keeps track of its parent's position;
 export type DrawNode = {
   /**

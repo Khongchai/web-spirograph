@@ -2,8 +2,8 @@ import React from "react";
 import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
-import { DrawNodeLevel } from "../types";
-import SvgCircle from "../svgCircle";
+import DrawNodeLevel from "../classes/drawNodeLevel";
+import MoveableSvgCircle from "../svgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
@@ -30,13 +30,15 @@ export default function generateNodes(
 
   // Assign what to draw based on the level
   // 0 is the bounding circle's level
-  const levels: DrawNodeLevel = [];
+  const levels = new DrawNodeLevel();
 
   const cycloidParams = cycloidControls.current.cycloids;
 
   // Push the bounding circle to the top most level
-  levels[0] = {
-    "-1": {
+  levels.setNode({
+    key: "-1",
+    level: 0,
+    drawNode: {
       currentDrawLevel: 0,
       pos: initialNodePosition,
       radius: boundingCircle.getRadius(),
@@ -45,14 +47,9 @@ export default function generateNodes(
         parentIndex: undefined,
       },
     },
-  };
+  });
   for (let i = 0; i < cycloidParams.length; i++) {
     const currentDrawLevel = getDrawLevel(i, cycloidParams);
-
-    // First assignment for that level, if undefined
-    if (levels[currentDrawLevel] === undefined) {
-      levels[currentDrawLevel] = {};
-    }
 
     // For offsetting the node to be below the parent node
     const previousLevel = currentDrawLevel - 1;
@@ -62,16 +59,23 @@ export default function generateNodes(
       y: (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
     };
 
-    levels[currentDrawLevel][i.toString()] = {
-      currentDrawLevel,
-      parentDrawNode: levels[previousLevel][parentKey],
-      pos: nodeRelativePos,
-      radius: cycloidParams[i].radius,
-      indices: {
-        index: i,
-        parentIndex: cycloidParams[i].boundingCircleIndex,
+    levels.setNode({
+      key: i.toString(),
+      level: currentDrawLevel,
+      drawNode: {
+        currentDrawLevel,
+        parentDrawNode: levels.retrieveNode({
+          key: parentKey,
+          level: previousLevel,
+        }),
+        pos: nodeRelativePos,
+        radius: cycloidParams[i].radius,
+        indices: {
+          index: i,
+          parentIndex: cycloidParams[i].boundingCircleIndex,
+        },
       },
-    };
+    });
   }
 
   const nodesAndLines = getPositionedNodesAndLines(levels, cycloidControls);
@@ -89,7 +93,7 @@ function getPositionedNodesAndLines(
   const svgCircles: JSX.IntrinsicElements["circle"][] = [];
   const svgLines: JSX.IntrinsicElements["line"][] = [];
 
-  levels.forEach((l, levelIndex) => {
+  levels.getAllLevels().forEach((l, levelIndex) => {
     organizeNodesPositionOnLevel(levels, levelIndex);
 
     Object.values(l).forEach((node, nodeIndex) => {
@@ -100,7 +104,7 @@ function getPositionedNodesAndLines(
       const isBoundingCircle = paramIndex === -1;
 
       svgCircles.push(
-        SvgCircle({
+        MoveableSvgCircle({
           centerPoint: node.pos,
           radius: scaleDrawRadius(node.radius),
           key: key,

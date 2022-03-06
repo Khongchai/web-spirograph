@@ -1,4 +1,5 @@
-import { DrawNode, DrawNodeLevel } from "../types";
+import DrawNodeLevel from "../classes/drawNodeLevel";
+import { DrawNode } from "../types";
 
 /**
  * We snap the node to the grid based on the length of the member in each level.
@@ -11,7 +12,7 @@ export default function organizeNodesPositionOnLevel(
    */
   currentLevelIndex: number
 ): void {
-  const currentLevel = levels[currentLevelIndex];
+  const currentLevel = levels.getLevel(currentLevelIndex);
   const nodesOnLevel = Object.values(currentLevel);
   const currentLevelLength = nodesOnLevel.length;
 
