@@ -3,7 +3,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
 import { DrawNodeLevel } from "../types";
-import drawNode from "../svgCircle";
+import SvgCircle from "../svgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
@@ -74,7 +74,9 @@ export default function generateNodes(
     };
   }
 
-  return getPositionedNodesAndLines(levels, cycloidControls);
+  const nodesAndLines = getPositionedNodesAndLines(levels, cycloidControls);
+
+  return nodesAndLines;
 }
 
 function getPositionedNodesAndLines(
@@ -98,7 +100,7 @@ function getPositionedNodesAndLines(
       const isBoundingCircle = paramIndex === -1;
 
       svgCircles.push(
-        drawNode({
+        SvgCircle({
           centerPoint: node.pos,
           radius: scaleDrawRadius(node.radius),
           key: key,
@@ -127,6 +129,12 @@ function getPositionedNodesAndLines(
           onPointerMove: (e) => {
             //TODO
             console.log("hello world");
+          },
+          onPointerDown: () => {
+            if (isBoundingCircle) {
+              alert("Moving the bounding circle is not allowed");
+              return;
+            }
           },
         })
       );

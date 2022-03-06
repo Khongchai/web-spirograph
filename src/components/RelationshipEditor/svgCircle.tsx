@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
+import { RerenderToggle } from "../../contexts/rerenderToggle";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
@@ -12,6 +13,7 @@ export default function SvgCircle({
   onPointerEnter,
   onPointerOut,
   onPointerMove,
+  onPointerDown,
 }: {
   radius: number;
   centerPoint: Vector2;
@@ -21,6 +23,7 @@ export default function SvgCircle({
   onPointerEnter?: VoidFunction;
   onPointerOut?: VoidFunction;
   onPointerMove?: (event: PointerEvent) => void;
+  onPointerDown?: VoidFunction;
 }): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
@@ -30,12 +33,6 @@ export default function SvgCircle({
 
   const handlePointerDown = (pointerDown: boolean) => {
     setIsPointerDown(pointerDown);
-
-    if (pointerDown) {
-      svgRef.current!.setAttribute("r", `${radius + 10}`);
-    } else {
-      svgRef.current!.setAttribute("r", `${radius}`);
-    }
   };
 
   return (
@@ -43,7 +40,11 @@ export default function SvgCircle({
       ref={svgRef}
       onPointerEnter={onPointerEnter}
       onPointerOut={onPointerOut}
-      onPointerDown={() => handlePointerDown(true)}
+      onPointerDown={(e) => {
+        e.preventDefault();
+        onPointerDown?.();
+        handlePointerDown(true);
+      }}
       onPointerUp={() => handlePointerDown(false)}
       onPointerCancel={() => {
         setIsPointerDown(false);
