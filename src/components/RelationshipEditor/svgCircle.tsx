@@ -1,8 +1,8 @@
-import { useContext, useRef, useState } from "react";
-import { RerenderToggle } from "../../contexts/rerenderToggle";
+import { useRef, useState } from "react";
 import { Vector2 } from "../../types/vector2";
-import DrawNodeLevel from "./classes/drawNodeLevel";
 import "./cycloid-svg-node.css";
+import { DrawNode } from "./types";
+import circleCircleCollision from "./utils/circleCircleCollision";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
 
 /**
@@ -32,8 +32,8 @@ export default function SvgCircle({
   onPointerOut?: VoidFunction;
   onPointerMove?: (event: PointerEvent) => void;
   onPointerDown?: VoidFunction;
-  onOverNeighbor?: VoidFunction;
-  otherCirclesData?: DrawNodeLevel;
+  onOverNeighbor?: (neighbor: DrawNode) => void;
+  otherCirclesData?: DrawNode[];
 }): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
@@ -41,6 +41,13 @@ export default function SvgCircle({
 
   useGlobalPointerMove(setIsPointerDown, isPointerDown, (e) => {
     onPointerMove?.(e);
+    const thisCircle = { radius: radius, x: centerPoint.x, y: centerPoint.y };
+    otherCirclesData?.forEach((c) => {
+      const neighbor = { radius: c.radius, x: c.pos.x, y: c.pos.y };
+      if (circleCircleCollision(thisCircle, neighbor)) {
+        onOverNeighbor?.(c);
+      }
+    });
   });
 
   const handlePointerDown = (pointerDown: boolean) => {

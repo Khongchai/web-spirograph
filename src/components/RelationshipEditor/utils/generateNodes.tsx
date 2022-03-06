@@ -48,6 +48,7 @@ export default function generateNodes(
       },
     },
   });
+
   for (let i = 0; i < cycloidParams.length; i++) {
     const currentDrawLevel = getDrawLevel(i, cycloidParams);
 
@@ -131,8 +132,7 @@ function getPositionedNodesAndLines(
             }
           },
           onPointerMove: (e) => {
-            //TODO
-            console.log("hello world");
+            //TODO?
           },
           onPointerDown: () => {
             if (isBoundingCircle) {
@@ -140,6 +140,7 @@ function getPositionedNodesAndLines(
               return;
             }
           },
+          otherCirclesData: levels.getAllNodesExceptThis(node.indices.index),
         })
       );
 

@@ -4,6 +4,9 @@ export default class DrawNodeLevel {
   private levels: Record<string, DrawNode>[] = [];
   /**
    * Gets updated everytime a node is set.
+   *
+   * A list of pointer back to the original DrawNode objects so
+   * space is still O(n)
    */
   private allNodes: DrawNode[] = [];
 
@@ -20,6 +23,10 @@ export default class DrawNodeLevel {
 
   getAllNodes = () => this.allNodes;
 
+  getAllNodesExceptThis = (nodeIndex: number) => {
+    return this.allNodes.filter((node) => node.indices.index !== nodeIndex);
+  };
+
   setNode = ({
     level: levelIndex,
     drawNode,
@@ -32,6 +39,7 @@ export default class DrawNodeLevel {
     if (!this.levels[levelIndex]) {
       this.levels[levelIndex] = {};
     }
+
     this.levels[levelIndex][key] = drawNode;
     this.allNodes.push(drawNode);
   };

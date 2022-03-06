@@ -1,11 +1,11 @@
 Priority: cycloids relationship editor => Draw lines + drag & drop
 Also, when click on cycloids relationship editor, stop the animation and show all cycloids.
 
-Write tests for the generateNodes -- kinda complicate
+Move nodes => continue in svgCircle.tsx
+
+Write tests for the generateNodes -- kinda complicated
 
 Make the rerender toggle global.
-
-Pause + continue
 
 A better folder structure, please.
 
@@ -15,11 +15,7 @@ Draw with dotted lines
 
 Refactor tooltip out as a wrapper so that you can use it with anything.
 
-turn somthing on or off
-
 Instant draw
-
-Color for each cycloid
 
 Ability to add or remove cycloid
 

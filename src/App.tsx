@@ -134,13 +134,16 @@ function useAnimateMenuToggling(
   cycloidControls: React.MutableRefObject<CycloidControlsData>,
   rerender: () => void
 ) {
-  const originalSpeedRef = useRef(cycloidControls.current.animationSpeed);
+  const originalSpeedRef = useRef<number | undefined>(undefined);
+  const originalShowCycloid = useRef<boolean | undefined>(undefined);
 
   const handleOnRelationshipEditorToggle = useCallback(() => {
     let animateSpeed = cycloidControls.current.animationSpeed;
+    let change = animateSpeed * 0.05;
+
     // Set the animation speed that we can later revert to.
     originalSpeedRef.current = animateSpeed;
-    let change = animateSpeed * 0.05;
+    originalShowCycloid.current = cycloidControls.current.showAllCycloids;
 
     cycloidControls.current.showAllCycloids = true;
     cycloidControls.current.programOnly.tracePath = false;
@@ -162,22 +165,27 @@ function useAnimateMenuToggling(
   }, []);
 
   const handleOnControlsToggle = useCallback(() => {
-    let animateSpeed = 0;
-    let change = originalSpeedRef.current * 0.05;
+    /**
+     * This toggle is guaranteed to be toggled after the other one.
+     * So no worries about any of them being undefined.
+     */
 
-    cycloidControls.current.showAllCycloids = false;
+    let animateSpeed = 0;
+    let change = originalSpeedRef.current! * 0.05;
+
+    cycloidControls.current.showAllCycloids = originalShowCycloid.current!;
     cycloidControls.current.programOnly.tracePath = true;
 
     function speedUp() {
       animateSpeed += change;
-      if (animateSpeed < originalSpeedRef.current) {
+      if (animateSpeed < originalSpeedRef.current!) {
         cycloidControls.current.animationSpeed = parseFloat(
           animateSpeed.toFixed(1)
         );
         rerender();
         requestAnimationFrame(speedUp);
       } else {
-        cycloidControls.current.animationSpeed = originalSpeedRef.current;
+        cycloidControls.current.animationSpeed = originalSpeedRef.current!;
         rerender();
       }
     }
