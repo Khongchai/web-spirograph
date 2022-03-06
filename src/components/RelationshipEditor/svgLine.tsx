@@ -1,5 +1,5 @@
-import { DrawNode } from "../types";
-import scaleDrawRadius from "./scaleDrawRadius";
+import { DrawNode } from "./types";
+import scaleDrawRadius from "./utils/scaleDrawRadius";
 
 /**
  * 1 is the child and 2 is the parent

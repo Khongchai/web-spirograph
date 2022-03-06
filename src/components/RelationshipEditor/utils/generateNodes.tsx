@@ -3,8 +3,8 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
 import { DrawNodeLevel } from "../types";
-import drawNode from "./svgCircle";
-import SvgLineFromNodeToParent from "./svgLine";
+import drawNode from "../svgCircle";
+import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
@@ -125,6 +125,7 @@ function getPositionedNodesAndLines(
             }
           },
           onPointerMove: (e) => {
+            //TODO
             console.log("hello world");
           },
         })

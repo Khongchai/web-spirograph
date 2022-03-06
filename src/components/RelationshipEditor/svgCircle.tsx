@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { Vector2 } from "../../../types/vector2";
+import { useCallback, useEffect, useState } from "react";
+import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
+import useGlobalPointerMove from "./utils/useGlobalPointerMove";
 
 export default function SvgCircle({
   radius,
@@ -21,29 +22,18 @@ export default function SvgCircle({
   onPointerOut?: VoidFunction;
   onPointerMove?: (event: PointerEvent) => void;
 }): JSX.IntrinsicElements["circle"] {
-  const [isOverObject, setIsOverObject] = useState(false);
+  const [isPointerDown, setIsPointerDown] = useState(false);
 
-  const handlePointerMove = (e: PointerEvent) => {
-    onPointerMove?.(e);
-  };
-
-  useEffect(() => {
-    if (isOverObject) {
-      onPointerEnter?.();
-      document.addEventListener("pointermove", handlePointerMove);
-    } else {
-      onPointerOut?.();
-      document.removeEventListener("pointermove", handlePointerMove);
-    }
-  }, [isOverObject]);
+  useGlobalPointerMove(setIsPointerDown, isPointerDown, onPointerMove);
 
   return (
     <circle
-      onPointerEnter={() => {
-        setIsOverObject(true);
-      }}
-      onPointerOut={() => {
-        setIsOverObject(false);
+      onPointerEnter={onPointerEnter}
+      onPointerOut={onPointerOut}
+      onPointerDown={() => setIsPointerDown(true)}
+      onPointerUp={() => setIsPointerDown(false)}
+      onPointerCancel={() => {
+        setIsPointerDown(false);
       }}
       className="cycloid-svg-node"
       key={key}
