@@ -20,6 +20,9 @@ export default class BoundingCircle {
 
   setRadius = (radius: number) => (this.radius = radius);
 
+  setBoundingColor = (boundingColor: string) =>
+    (this.boundingColor = boundingColor);
+
   showBounding(ctx: CanvasRenderingContext2D, boundingColor?: string) {
     this.boundingColor = boundingColor || this.boundingColor;
     //Draw outer bounding circle

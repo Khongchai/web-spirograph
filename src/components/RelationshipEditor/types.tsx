@@ -19,7 +19,7 @@ export type DrawNode = {
    *
    * If the node has no parent, then null (base bounding circle has no parents).
    */
-  parentDrawNode: DrawNode | null;
+  parentDrawNode?: DrawNode;
 
   pos: Vector2;
   radius: number;
@@ -30,7 +30,7 @@ export type DrawNode = {
   /**
    * The indices of the node and its parent in the cycloidParams array.
    */
-  indices?: {
+  indices: {
     /**
      * This element's index in the cycloidParams array.
      */
@@ -38,7 +38,7 @@ export type DrawNode = {
     /**
      * The parent's index in the cycloidParams array.
      */
-    parentIndex: number;
+    parentIndex?: number;
   };
 };
 

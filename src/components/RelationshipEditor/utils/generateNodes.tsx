@@ -40,7 +40,10 @@ export default function generateNodes(
       currentDrawLevel: 0,
       pos: initialNodePosition,
       radius: boundingCircle.getRadius(),
-      parentDrawNode: null,
+      indices: {
+        index: -1,
+        parentIndex: undefined,
+      },
     },
   };
   for (let i = 0; i < cycloidParams.length; i++) {
@@ -81,7 +84,8 @@ export default function generateNodes(
       const key = `${node.currentDrawLevel}-${nodeIndex}`;
 
       // The index for accessing the cycloidParams object directly
-      const paramIndex = node.indices?.index;
+      const paramIndex = node.indices.index;
+      const isBoundingCircle = paramIndex === -1;
 
       svgCircles.push(
         drawNode({
@@ -89,13 +93,21 @@ export default function generateNodes(
           radius: scaleDrawRadius(node.radius),
           key: key,
           onPointerEnter: () => {
-            if (paramIndex) {
+            if (isBoundingCircle) {
+              cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
+                colors.purple.dull
+              );
+            } else {
               cycloidControls.current.cycloids[paramIndex].boundingColor =
                 colors.purple.dull;
             }
           },
           onPointerOut: () => {
-            if (paramIndex) {
+            if (isBoundingCircle) {
+              cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
+                colors.purple.light
+              );
+            } else {
               cycloidControls.current.cycloids[paramIndex].boundingColor =
                 colors.purple.light;
             }
@@ -103,7 +115,7 @@ export default function generateNodes(
         })
       );
 
-      if (node.parentDrawNode !== null) {
+      if (node.parentDrawNode) {
         svgLines.push(
           drawLineFromNodeToParent({
             key: key,
