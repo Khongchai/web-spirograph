@@ -4,7 +4,7 @@ import scaleDrawRadius from "./scaleDrawRadius";
 /**
  * 1 is the child and 2 is the parent
  */
-export default function drawLineFromNodeToParent({
+export default function SvgLineFromNodeToParent({
   node,
   key,
 }: {

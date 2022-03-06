@@ -1,10 +1,10 @@
+import React from "react";
 import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
-import CycloidParams from "../../../types/cycloidParams";
 import { DrawNodeLevel } from "../types";
-import drawNode from "./drawCircle";
-import drawLineFromNodeToParent from "./drawLine";
+import drawNode from "./svgCircle";
+import SvgLineFromNodeToParent from "./svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
@@ -74,6 +74,16 @@ export default function generateNodes(
     };
   }
 
+  return getPositionedNodesAndLines(levels, cycloidControls);
+}
+
+function getPositionedNodesAndLines(
+  levels: DrawNodeLevel,
+  cycloidControls: React.MutableRefObject<CycloidControlsData>
+): {
+  svgCircles: JSX.IntrinsicElements["circle"][];
+  svgLines: JSX.IntrinsicElements["line"][];
+} {
   const svgCircles: JSX.IntrinsicElements["circle"][] = [];
   const svgLines: JSX.IntrinsicElements["line"][] = [];
 
@@ -93,31 +103,36 @@ export default function generateNodes(
           radius: scaleDrawRadius(node.radius),
           key: key,
           onPointerEnter: () => {
+            const enterColor = colors.yellow;
             if (isBoundingCircle) {
               cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
-                colors.purple.dull
+                enterColor
               );
             } else {
               cycloidControls.current.cycloids[paramIndex].boundingColor =
-                colors.purple.dull;
+                enterColor;
             }
           },
           onPointerOut: () => {
+            const outColor = colors.purple.light;
             if (isBoundingCircle) {
               cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
-                colors.purple.light
+                outColor
               );
             } else {
               cycloidControls.current.cycloids[paramIndex].boundingColor =
-                colors.purple.light;
+                outColor;
             }
+          },
+          onPointerMove: (e) => {
+            console.log("hello world");
           },
         })
       );
 
       if (node.parentDrawNode) {
         svgLines.push(
-          drawLineFromNodeToParent({
+          SvgLineFromNodeToParent({
             key: key,
             node,
           })

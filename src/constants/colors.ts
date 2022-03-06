@@ -6,6 +6,7 @@ const colors = {
     grey: "rgba(114, 104, 125, 49)",
     dull: "rgba(153, 107, 201, 79)",
   },
+  yellow: "rgba(255, 255, 0, 99)",
   white: "#fff",
   black: "#000",
 };
