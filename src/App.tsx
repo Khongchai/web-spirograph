@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
 import Canvas from "./components/Canvas";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
+import colors from "./constants/colors";
 import "./index.css";
 import CycloidControlsData from "./types/cycloidControls";
 
@@ -10,13 +11,18 @@ function App() {
   const [clearCanvasToggle, setClearCanvasToggle] = useState(false);
 
   // Huge mistake to be separating bounding circle from everything else....may require a huge refactor later on.
+
+  /**
+   * To be referenced by anything that would like to read from or write to the draw data.
+   */
   const cycloidControls = useRef<CycloidControlsData>({
     outerMostBoundingCircle: new BoundingCircle(
       {
         x: 0,
         y: 0,
       },
-      300
+      300,
+      colors.purple.light
     ),
     cycloids: [
       {
@@ -26,6 +32,7 @@ function App() {
         animationSpeedScale: 0.5,
         moveOutSideOfParent: false,
         boundingCircleIndex: -1,
+        boundingColor: colors.purple.light,
       },
       {
         rodLengthScale: 0.5,
@@ -34,6 +41,7 @@ function App() {
         animationSpeedScale: 0.7,
         moveOutSideOfParent: false,
         boundingCircleIndex: -1,
+        boundingColor: colors.purple.light,
       },
       {
         rodLengthScale: 0.5,
@@ -42,6 +50,7 @@ function App() {
         animationSpeedScale: 0.3,
         moveOutSideOfParent: true,
         boundingCircleIndex: -1,
+        boundingColor: colors.purple.light,
       },
       {
         rodLengthScale: 0.5,
@@ -50,6 +59,7 @@ function App() {
         animationSpeedScale: 0.3,
         moveOutSideOfParent: true,
         boundingCircleIndex: 2,
+        boundingColor: colors.purple.light,
       },
     ],
     animationSpeed: defaultGlobalAnimationSpeed,
@@ -59,7 +69,9 @@ function App() {
     animationState: "Playing",
     clearTracedPathOnParamsChange: true,
     showAllCycloids: false,
-    tracePath: true,
+    programOnly: {
+      tracePath: true,
+    },
   });
 
   const handleClearCanvasToggle = useCallback(() => {
@@ -128,7 +140,7 @@ function useMenuToggle(
     let change = animateSpeed * 0.05;
 
     cycloidControls.current.showAllCycloids = true;
-    cycloidControls.current.tracePath = false;
+    cycloidControls.current.programOnly.tracePath = false;
 
     rerender();
 
@@ -151,7 +163,7 @@ function useMenuToggle(
     let change = originalSpeedRef.current * 0.05;
 
     cycloidControls.current.showAllCycloids = false;
-    cycloidControls.current.tracePath = true;
+    cycloidControls.current.programOnly.tracePath = true;
 
     function speedUp() {
       animateSpeed += change;

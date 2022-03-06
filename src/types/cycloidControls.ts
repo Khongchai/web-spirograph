@@ -49,8 +49,13 @@ export default interface CycloidControlsData {
    */
   showAllCycloids: boolean;
 
-  /*
-   * Whether or not to show the traced path.
+  /**
+   * Not for users to use.
    */
-  tracePath: boolean;
+  programOnly: {
+    /*
+     * Whether or not to show the traced path.
+     */
+    tracePath: boolean;
+  };
 }

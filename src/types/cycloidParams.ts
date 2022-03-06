@@ -1,4 +1,4 @@
-import BoundingCircle from "../classes/BoundingCircle";
+import colors from "../constants/colors";
 import { CycloidDirection } from "./cycloidDirection";
 
 export default interface CycloidParams {
@@ -6,9 +6,7 @@ export default interface CycloidParams {
    * Rod length's scale. This allows the rod to be scaled out of physical possibility, zum Beispiel, out of the cycloid.
    */
   rodLengthScale: number;
-  /*
-   * TODO
-   */
+
   rotationDirection: CycloidDirection;
 
   radius: number;
@@ -28,4 +26,6 @@ export default interface CycloidParams {
    * -1 will default to the outermost parent element.
    */
   boundingCircleIndex: number;
+
+  boundingColor: string;
 }

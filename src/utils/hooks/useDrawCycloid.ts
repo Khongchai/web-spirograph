@@ -39,7 +39,7 @@ export default function useDrawCanvas(
         ctx.save();
 
         ctx.translate(panRef.current.x, panRef.current.y);
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 1.5;
 
         dx += cycloidControls.current.animationSpeed;
 
@@ -58,7 +58,10 @@ export default function useDrawCanvas(
           if (drawCurrentCycloid) {
             //visual
             if (cycloidControls.current.scaffold === "Showing") {
-              cycloid.showBounding(ctx);
+              cycloid.showBounding(
+                ctx,
+                cycloidControls.current.cycloids[i].boundingColor
+              );
               cycloid.showRod(ctx);
               cycloid.showPoint(ctx);
 

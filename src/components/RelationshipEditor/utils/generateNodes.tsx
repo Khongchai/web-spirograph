@@ -1,4 +1,6 @@
 import BoundingCircle from "../../../classes/BoundingCircle";
+import colors from "../../../constants/colors";
+import CycloidControlsData from "../../../types/cycloidControls";
 import CycloidParams from "../../../types/cycloidParams";
 import { DrawNodeLevel } from "../types";
 import drawNode from "./drawCircle";
@@ -12,7 +14,7 @@ import scaleDrawRadius from "./scaleDrawRadius";
  */
 export default function generateNodes(
   boundingCircle: BoundingCircle,
-  cycloidParams: CycloidParams[],
+  cycloidControls: React.MutableRefObject<CycloidControlsData>,
   containerSize: { width: number; height: number }
 ): {
   svgCircles: JSX.IntrinsicElements["circle"][];
@@ -29,6 +31,8 @@ export default function generateNodes(
   // Assign what to draw based on the level
   // 0 is the bounding circle's level
   const levels: DrawNodeLevel = [];
+
+  const cycloidParams = cycloidControls.current.cycloids;
 
   // Push the bounding circle to the top most level
   levels[0] = {
@@ -76,11 +80,26 @@ export default function generateNodes(
     Object.values(l).forEach((node, nodeIndex) => {
       const key = `${node.currentDrawLevel}-${nodeIndex}`;
 
+      // The index for accessing the cycloidParams object directly
+      const paramIndex = node.indices?.index;
+
       svgCircles.push(
         drawNode({
           centerPoint: node.pos,
           radius: scaleDrawRadius(node.radius),
           key: key,
+          onPointerEnter: () => {
+            if (paramIndex) {
+              cycloidControls.current.cycloids[paramIndex].boundingColor =
+                colors.purple.dull;
+            }
+          },
+          onPointerOut: () => {
+            if (paramIndex) {
+              cycloidControls.current.cycloids[paramIndex].boundingColor =
+                colors.purple.light;
+            }
+          },
         })
       );
 

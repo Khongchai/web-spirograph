@@ -41,7 +41,7 @@ export default function useTraceCycloidPath(
       setCanvasSize(canvas);
 
       const draw = () => {
-        if (cycloidControls.current.tracePath) {
+        if (cycloidControls.current.programOnly.tracePath) {
           ctx.save();
           ctx.translate(panRef.current.x, panRef.current.y);
 

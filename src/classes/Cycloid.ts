@@ -27,9 +27,10 @@ export default class Cycloid extends BoundingCircle {
     radius: number,
     rotationDirection: CycloidRotationDirection,
     parentBounding: BoundingCircle,
-    moveOutsideOfParent = false
+    moveOutsideOfParent = false,
+    boundingColor: string
   ) {
-    super({ x: 0, y: 0 }, radius);
+    super({ x: 0, y: 0 }, radius, boundingColor);
 
     this.isOutsideOfParent = moveOutsideOfParent;
 
@@ -106,7 +107,7 @@ export default class Cycloid extends BoundingCircle {
   }
 
   showPoint(context: CanvasRenderingContext2D) {
-    context.fillStyle = colors.purple.light;
+    context.fillStyle = this.boundingColor;
     context.beginPath();
     context.arc(this.drawPoint.x, this.drawPoint.y, 5, 0, Math.PI * 2);
     context.fill();

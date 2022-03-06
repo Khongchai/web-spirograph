@@ -14,21 +14,19 @@ export default function useGenerateCycloids(
   let outerMostBoundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
   let cycloids = useMemo(() => {
-    const cycloids = [];
-    const cycloidLength = cycloidControls.current.cycloids.length;
+    const cycloids: Cycloid[] = [];
 
-    for (let i = 0; i < cycloidLength; i++) {
-      const cycloidParams = cycloidControls.current.cycloids;
-
+    cycloidControls.current.cycloids.forEach((c) => {
       let cycloid = new Cycloid(
-        cycloidParams[i].radius,
-        cycloidParams[i].rotationDirection,
+        c.radius,
+        c.rotationDirection,
         //Use this for now, will reassign later
         outerMostBoundingCircle,
-        false
+        false,
+        c.boundingColor
       );
       cycloids.push(cycloid);
-    }
+    });
 
     return cycloids;
   }, []);

@@ -7,15 +7,21 @@ export default function drawCircle({
   color,
   thickness,
   key,
+  onPointerEnter,
+  onPointerOut,
 }: {
   radius: number;
   centerPoint: Vector2;
   color?: string;
   thickness?: number;
   key: any;
+  onPointerEnter?: VoidFunction;
+  onPointerOut?: VoidFunction;
 }): JSX.IntrinsicElements["circle"] {
   return (
     <circle
+      onPointerEnter={onPointerEnter}
+      onPointerOut={onPointerOut}
       className="cycloid-svg-node"
       key={key}
       r={radius}
