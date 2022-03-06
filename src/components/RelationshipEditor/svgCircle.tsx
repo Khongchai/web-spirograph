@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
@@ -24,14 +24,27 @@ export default function SvgCircle({
 }): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
+  const svgRef = useRef<SVGCircleElement>(null);
+
   useGlobalPointerMove(setIsPointerDown, isPointerDown, onPointerMove);
+
+  const handlePointerDown = (pointerDown: boolean) => {
+    setIsPointerDown(pointerDown);
+
+    if (pointerDown) {
+      svgRef.current!.setAttribute("r", `${radius + 10}`);
+    } else {
+      svgRef.current!.setAttribute("r", `${radius}`);
+    }
+  };
 
   return (
     <circle
+      ref={svgRef}
       onPointerEnter={onPointerEnter}
       onPointerOut={onPointerOut}
-      onPointerDown={() => setIsPointerDown(true)}
-      onPointerUp={() => setIsPointerDown(false)}
+      onPointerDown={() => handlePointerDown(true)}
+      onPointerUp={() => handlePointerDown(false)}
       onPointerCancel={() => {
         setIsPointerDown(false);
       }}

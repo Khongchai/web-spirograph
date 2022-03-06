@@ -4,5 +4,5 @@
 }
 
 .cycloid-svg-node {
-  transition: stroke 0.3s;
+  transition: stroke 0.3s r 0.3s;
 }
