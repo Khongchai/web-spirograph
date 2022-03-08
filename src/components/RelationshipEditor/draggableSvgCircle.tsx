@@ -1,9 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
 import useCheckCircleCircleCollision from "./utils/useCheckCircleCircleCollision";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
+
+interface DraggableSvgCircleInterface {
+  radius: number;
+  centerPoint: Vector2;
+  color?: string;
+  thickness?: number;
+  key: any;
+  onPointerEnter?: VoidFunction;
+  onPointerOut?: VoidFunction;
+  onPointerMove?: (event: PointerEvent) => void;
+  onPointerDown?: VoidFunction;
+  onOverNeighbor?: (neighbor: DrawNode) => void;
+  otherCirclesData?: DrawNode[];
+  isMoveable?: boolean;
+}
 
 /**
  * A moveable svg circle. Calls an onOverNeighbor callback when it is over another node
@@ -22,19 +37,8 @@ export default function DraggableSvgCircle({
   onPointerDown,
   onOverNeighbor,
   otherCirclesData = [],
-}: {
-  radius: number;
-  centerPoint: Vector2;
-  color?: string;
-  thickness?: number;
-  key: any;
-  onPointerEnter?: VoidFunction;
-  onPointerOut?: VoidFunction;
-  onPointerMove?: (event: PointerEvent) => void;
-  onPointerDown?: VoidFunction;
-  onOverNeighbor?: (neighbor: DrawNode) => void;
-  otherCirclesData?: DrawNode[];
-}): JSX.IntrinsicElements["circle"] {
+  isMoveable = true,
+}: DraggableSvgCircleInterface): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
   const initialCirclePosRef = useRef<Vector2>(centerPoint);
@@ -81,9 +85,11 @@ export default function DraggableSvgCircle({
     pointerDown: boolean
   ) => {
     onPointerDown?.();
-    setIsPointerDown(pointerDown);
-    pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
-    initialCirclePosRef.current = thisCirclePosition;
+    if (isMoveable) {
+      setIsPointerDown(pointerDown);
+      pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+      initialCirclePosRef.current = thisCirclePosition;
+    }
   };
 
   return (

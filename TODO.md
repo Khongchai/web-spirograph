@@ -1,7 +1,7 @@
 Priority: cycloids relationship editor => Draw lines + drag & drop
 Also, when click on cycloids relationship editor, stop the animation and show all cycloids.
 
-Move nodes => continue in svgCircle.tsx
+Move nodes => continue in svgCircle.tsx // on rerender, circles do not rerender, but lines do...
 
 Write tests for the generateNodes -- kinda complicated
 

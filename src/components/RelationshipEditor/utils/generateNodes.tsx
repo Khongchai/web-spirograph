@@ -127,7 +127,7 @@ function getPositionedNodesAndLines(
               thisCycloid.boundingColor = outColor;
             }
           },
-          onPointerMove: (e) => {},
+          onPointerMove: (_) => {},
           onPointerDown: () => {
             if (isBoundingCircle) {
               alert("Moving the bounding circle is not allowed");
@@ -135,6 +135,7 @@ function getPositionedNodesAndLines(
             }
           },
           otherCirclesData: levels.getAllNodesExceptThis(node.indices.index),
+          isMoveable: !isBoundingCircle,
         })
       );
 
