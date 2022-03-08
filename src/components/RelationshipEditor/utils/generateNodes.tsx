@@ -3,7 +3,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
 import DrawNodeLevel from "../classes/drawNodeLevel";
-import MoveableSvgCircle from "../svgCircle";
+import MoveableSvgCircle from "../draggableSvgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
@@ -103,6 +103,8 @@ function getPositionedNodesAndLines(
       // The index for accessing the cycloidParams object directly
       const paramIndex = node.indices.index;
       const isBoundingCircle = paramIndex === -1;
+      const thisCycloid = cycloidControls.current.cycloids[paramIndex];
+      const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
       svgCircles.push(
         MoveableSvgCircle({
@@ -112,28 +114,20 @@ function getPositionedNodesAndLines(
           onPointerEnter: () => {
             const enterColor = colors.yellow;
             if (isBoundingCircle) {
-              cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
-                enterColor
-              );
+              boundingCircle.setBoundingColor(enterColor);
             } else {
-              cycloidControls.current.cycloids[paramIndex].boundingColor =
-                enterColor;
+              thisCycloid.boundingColor = enterColor;
             }
           },
           onPointerOut: () => {
             const outColor = colors.purple.light;
             if (isBoundingCircle) {
-              cycloidControls.current.outerMostBoundingCircle.setBoundingColor(
-                outColor
-              );
+              boundingCircle.setBoundingColor(outColor);
             } else {
-              cycloidControls.current.cycloids[paramIndex].boundingColor =
-                outColor;
+              thisCycloid.boundingColor = outColor;
             }
           },
-          onPointerMove: (e) => {
-            //TODO?
-          },
+          onPointerMove: (e) => {},
           onPointerDown: () => {
             if (isBoundingCircle) {
               alert("Moving the bounding circle is not allowed");
