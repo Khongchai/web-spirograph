@@ -5,6 +5,8 @@ Move nodes => continue in svgCircle.tsx // on rerender, circles do not rerender,
 
 Write tests for the generateNodes -- kinda complicated
 
+Current cycloid should be multi-selection
+
 Make the rerender toggle global.
 
 A better folder structure, please.
