@@ -23,8 +23,11 @@ export default class DrawNodeLevel {
 
   getAllNodes = () => this.allNodes;
 
-  getAllNodesExceptThis = (nodeIndex: number) => {
-    return this.allNodes.filter((node) => node.indices.index !== nodeIndex);
+  getAllNodesExceptThis = (thisNodeIndex: number) => {
+    const otherNodes = this.allNodes.filter(
+      (node) => node.indices.index !== thisNodeIndex
+    );
+    return otherNodes;
   };
 
   setNode = ({
