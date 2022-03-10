@@ -41,8 +41,9 @@ export default function DraggableSvgCircle({
 }: DraggableSvgCircleInterface): JSX.IntrinsicElements["circle"] {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
-  const initialCirclePosRef = useRef<Vector2>(centerPoint);
+  const circlePosOnPointerDownRef = useRef<Vector2>(centerPoint);
   const pointerDownPosRef = useRef<Vector2>(centerPoint);
+  const hoveredNeighborRef = useRef<DrawNode>();
 
   /**
    * Using state for this because we need to rerender everytime the circle is moved
@@ -55,7 +56,7 @@ export default function DraggableSvgCircle({
   useGlobalPointerMove(setIsPointerDown, isPointerDown, (e) => {
     onPointerMove?.(e);
 
-    const initialCirclePos = initialCirclePosRef.current;
+    const initialCirclePos = circlePosOnPointerDownRef.current;
 
     const currentPointerPos = { x: e.x, y: e.y };
     const pointerPosDiff = {
@@ -76,19 +77,26 @@ export default function DraggableSvgCircle({
     radius,
     otherCirclesData,
     (neighbor) => {
-      onOverNeighbor?.(neighbor);
+      hoveredNeighborRef.current = neighbor;
     }
   );
 
-  const handlePointerDown = (
+  const handlePointerDownOrUp = (
     e: React.PointerEvent<SVGCircleElement>,
     pointerDown: boolean
   ) => {
-    onPointerDown?.();
+    if (pointerDown) {
+      onPointerDown?.();
+    } else {
+      if (hoveredNeighborRef.current) {
+        onOverNeighbor?.(hoveredNeighborRef.current);
+      }
+    }
+
     if (isMoveable) {
       setIsPointerDown(pointerDown);
       pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
-      initialCirclePosRef.current = thisCirclePosition;
+      circlePosOnPointerDownRef.current = thisCirclePosition;
     }
   };
 
@@ -99,11 +107,11 @@ export default function DraggableSvgCircle({
       onPointerOut={onPointerOut}
       onPointerDown={(e) => {
         e.preventDefault();
-        handlePointerDown(e, true);
+        handlePointerDownOrUp(e, true);
       }}
-      onPointerUp={(e) => handlePointerDown(e, false)}
+      onPointerUp={(e) => handlePointerDownOrUp(e, false)}
       onPointerCancel={(e) => {
-        handlePointerDown(e, false);
+        handlePointerDownOrUp(e, false);
       }}
       className="cycloid-svg-node"
       key={key}

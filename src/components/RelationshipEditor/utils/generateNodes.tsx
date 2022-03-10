@@ -134,6 +134,12 @@ function getPositionedNodesAndLines(
               return;
             }
           },
+          onOverNeighbor: (neighbor) => {
+            const isBoundingCircleIndex = neighbor.indices.index !== -1;
+            if (isBoundingCircleIndex) {
+              thisCycloid.boundingCircleIndex = neighbor.indices.index;
+            }
+          },
           otherCirclesData: levels.getAllNodesExceptThis(node.indices.index),
           isMoveable: !isBoundingCircle,
         })
