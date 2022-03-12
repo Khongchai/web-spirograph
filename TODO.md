@@ -1,5 +1,6 @@
-Priority: cycloids relationship editor => Draw lines + drag & drop
-Also, when click on cycloids relationship editor, stop the animation and show all cycloids.
+TODO: make test cases for the relationship controller first <<<< priority
+
+Can now drag and drop but circles still won't rerender
 
 Remove the bounding circle from the node list to check for collision
 
