@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
@@ -80,24 +80,24 @@ export default function DraggableSvgCircle({
     }
   );
 
-  const handlePointerDownOrUp = (
-    e: React.PointerEvent<SVGCircleElement>,
-    pointerDown: boolean
-  ) => {
-    if (pointerDown) {
-      onPointerDown?.();
-    }
-    // Call the onOverNeighbor callback if the circle is over another node
-    else if (hoveredNeighborRef.current) {
-      onOverNeighbor?.(hoveredNeighborRef.current);
-    }
+  const handlePointerDownOrUp = useCallback(
+    (e: React.PointerEvent<SVGCircleElement>, pointerDown: boolean) => {
+      if (pointerDown) {
+        onPointerDown?.();
+      }
+      // Call the onOverNeighbor callback if the circle is over another node
+      else if (hoveredNeighborRef.current) {
+        onOverNeighbor?.(hoveredNeighborRef.current);
+      }
 
-    if (isMoveable) {
-      setIsPointerDown(pointerDown);
-      pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
-      circlePosOnPointerDownRef.current = thisCirclePosition;
-    }
-  };
+      if (isMoveable) {
+        setIsPointerDown(pointerDown);
+        pointerDownPosRef.current = { x: e.clientX, y: e.clientY };
+        circlePosOnPointerDownRef.current = thisCirclePosition;
+      }
+    },
+    [thisCirclePosition]
+  );
 
   return (
     <circle

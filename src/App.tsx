@@ -32,7 +32,7 @@ function App() {
         radius: 100,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: false,
-        boundingCircleIndex: -1,
+        boundingCircleIndex: 1,
         boundingColor: colors.purple.light,
       },
       {
@@ -86,6 +86,10 @@ function App() {
     useAnimateMenuToggling(cycloidControls, () => {
       handleClearCanvasToggle();
     });
+
+  cycloidControls.current.cycloids.sort(
+    (a, b) => a.boundingCircleIndex - b.boundingCircleIndex
+  );
 
   return (
     <Rerender.Provider value={rerender}>

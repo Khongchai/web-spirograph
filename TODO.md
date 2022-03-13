@@ -1,8 +1,6 @@
-TODO: make test cases for the relationship controller first <<<< priority
-
 Can now drag and drop but circles still won't rerender
 
-Remove the bounding circle from the node list to check for collision
+BoundingCircle should be able to be used as the parent, but not child
 
 Move nodes => continue in svgCircle.tsx // on rerender, circles do not rerender, but lines do...
 
