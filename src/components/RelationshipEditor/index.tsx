@@ -1,6 +1,6 @@
 import React from "react";
 import CycloidControlsData from "../../types/cycloidControls";
-import generateNodes from "./utils/generateNodes";
+import useGenerateNodes from "./utils/generateNodes";
 
 interface RelationShipEditorProps {
   cycloidControlsData: React.MutableRefObject<CycloidControlsData>;
@@ -16,7 +16,7 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
 
   const boundingCircle = cycloidControlsData.current.outerMostBoundingCircle;
 
-  const drawnCircles = generateNodes(
+  const drawnCircles = useGenerateNodes(
     boundingCircle,
     cycloidControlsData,
     {

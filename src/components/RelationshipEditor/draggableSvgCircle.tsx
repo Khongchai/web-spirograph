@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
@@ -41,11 +42,16 @@ export default function DraggableSvgCircle({
   const pointerDownPosRef = useRef<Vector2>(centerPoint);
   const hoveredNeighborRef = useRef<DrawNode | null>(null);
 
+  const rerenderToggle = useContext(RerenderToggle);
+
   /**
    * Using state for this because we need to rerender everytime the circle is moved
    */
   const [thisCirclePosition, setThisCirclePosition] =
     useState<Vector2>(centerPoint);
+  useEffect(() => {
+    setThisCirclePosition(centerPoint);
+  }, [centerPoint]);
 
   const svgRef = useRef<SVGCircleElement>(null);
 
@@ -86,6 +92,7 @@ export default function DraggableSvgCircle({
       // Call the onOverNeighbor callback if the circle is over another node
       else if (hoveredNeighborRef.current) {
         onOverNeighbor?.(hoveredNeighborRef.current);
+        rerenderToggle();
       }
 
       if (isMoveable) {
