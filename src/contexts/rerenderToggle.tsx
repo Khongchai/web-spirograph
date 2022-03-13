@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 
 // A toggle to be used to clear the canvas.
 export const RerenderToggle = createContext(() => {});

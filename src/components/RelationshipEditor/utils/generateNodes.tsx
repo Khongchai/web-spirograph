@@ -15,7 +15,8 @@ import scaleDrawRadius from "./scaleDrawRadius";
 export default function generateNodes(
   boundingCircle: BoundingCircle,
   cycloidControls: React.MutableRefObject<CycloidControlsData>,
-  containerSize: { width: number; height: number }
+  containerSize: { width: number; height: number },
+  childAndParentYGap: number
 ): {
   svgCircles: JSX.IntrinsicElements["circle"][];
   svgLines: JSX.IntrinsicElements["line"][];
@@ -25,8 +26,6 @@ export default function generateNodes(
     x: containerSize.width / 2,
     y: containerSize.height * 0.1,
   };
-
-  const childAndParentYGap = 30;
 
   // Assign what to draw based on the level
   // 0 is the bounding circle's level
@@ -127,7 +126,6 @@ function getPositionedNodesAndLines(
               thisCycloid.boundingColor = outColor;
             }
           },
-          onPointerMove: (_) => {},
           onPointerDown: () => {
             if (isBoundingCircle) {
               alert("Moving the bounding circle is not allowed");

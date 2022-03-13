@@ -7,9 +7,12 @@ export default function useCheckCircleCircleCollision(
   thisCirclePosition: Vector2,
   thisCircleRadius: number,
   otherCircleData: DrawNode[],
-  onCollide: (otherCircle: DrawNode) => void
+  onCollide: (otherCircle: DrawNode) => void,
+  onNotCollide: VoidFunction
 ) {
   useEffect(() => {
+    let collidedCircle: DrawNode | undefined;
+
     otherCircleData?.forEach((c) => {
       const neighbor = { radius: c.radius, x: c.pos.x, y: c.pos.y };
       if (
@@ -18,9 +21,15 @@ export default function useCheckCircleCircleCollision(
           neighbor
         )
       ) {
-        onCollide?.(c);
+        collidedCircle = c;
       }
     });
+
+    if (collidedCircle) {
+      onCollide(collidedCircle);
+    } else {
+      onNotCollide();
+    }
   }, [thisCirclePosition, thisCircleRadius]);
 }
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Vector2 } from "../../types/vector2";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
@@ -13,7 +13,6 @@ interface DraggableSvgCircleInterface {
   key: any;
   onPointerEnter?: VoidFunction;
   onPointerOut?: VoidFunction;
-  onPointerMove?: (event: PointerEvent) => void;
   onPointerDown?: VoidFunction;
   onOverNeighbor?: (neighbor: DrawNode) => void;
   otherCirclesData?: DrawNode[];
@@ -33,7 +32,6 @@ export default function DraggableSvgCircle({
   key,
   onPointerEnter,
   onPointerOut,
-  onPointerMove,
   onPointerDown,
   onOverNeighbor,
   otherCirclesData = [],
@@ -43,7 +41,7 @@ export default function DraggableSvgCircle({
 
   const circlePosOnPointerDownRef = useRef<Vector2>(centerPoint);
   const pointerDownPosRef = useRef<Vector2>(centerPoint);
-  const hoveredNeighborRef = useRef<DrawNode>();
+  const hoveredNeighborRef = useRef<DrawNode | null>(null);
 
   /**
    * Using state for this because we need to rerender everytime the circle is moved
@@ -54,8 +52,6 @@ export default function DraggableSvgCircle({
   const svgRef = useRef<SVGCircleElement>(null);
 
   useGlobalPointerMove(setIsPointerDown, isPointerDown, (e) => {
-    onPointerMove?.(e);
-
     const initialCirclePos = circlePosOnPointerDownRef.current;
 
     const currentPointerPos = { x: e.x, y: e.y };
@@ -78,6 +74,9 @@ export default function DraggableSvgCircle({
     otherCirclesData,
     (neighbor) => {
       hoveredNeighborRef.current = neighbor;
+    },
+    () => {
+      hoveredNeighborRef.current = null;
     }
   );
 
@@ -87,10 +86,10 @@ export default function DraggableSvgCircle({
   ) => {
     if (pointerDown) {
       onPointerDown?.();
-    } else {
-      if (hoveredNeighborRef.current) {
-        onOverNeighbor?.(hoveredNeighborRef.current);
-      }
+    }
+    // Call the onOverNeighbor callback if the circle is over another node
+    else if (hoveredNeighborRef.current) {
+      onOverNeighbor?.(hoveredNeighborRef.current);
     }
 
     if (isMoveable) {

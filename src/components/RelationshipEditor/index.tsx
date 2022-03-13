@@ -16,10 +16,15 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
 
   const boundingCircle = cycloidControlsData.current.outerMostBoundingCircle;
 
-  const drawnCircles = generateNodes(boundingCircle, cycloidControlsData, {
-    height,
-    width,
-  });
+  const drawnCircles = generateNodes(
+    boundingCircle,
+    cycloidControlsData,
+    {
+      height,
+      width,
+    },
+    30
+  );
 
   return (
     <svg width={width} height={height}>
