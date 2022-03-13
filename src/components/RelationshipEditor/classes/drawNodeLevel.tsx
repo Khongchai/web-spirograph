@@ -33,17 +33,17 @@ export default class DrawNodeLevel {
   setNode = ({
     level: levelIndex,
     drawNode,
-    key,
+    levelKey,
   }: {
     level: number;
     drawNode: DrawNode;
-    key: string;
+    levelKey: string;
   }) => {
     if (!this.levels[levelIndex]) {
       this.levels[levelIndex] = {};
     }
 
-    this.levels[levelIndex][key] = drawNode;
+    this.levels[levelIndex][levelKey] = drawNode;
     this.allNodes.push(drawNode);
   };
 }

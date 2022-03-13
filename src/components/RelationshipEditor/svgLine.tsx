@@ -4,13 +4,7 @@ import scaleDrawRadius from "./utils/scaleDrawRadius";
 /**
  * 1 is the child and 2 is the parent
  */
-export default function SvgLineFromNodeToParent({
-  node,
-  key,
-}: {
-  key: any;
-  node: DrawNode;
-}) {
+export default function SvgLineFromNodeToParent({ node }: { node: DrawNode }) {
   const { x: x1, y: y1 } = node.pos;
   const r1 = scaleDrawRadius(node.radius);
 
@@ -29,7 +23,6 @@ export default function SvgLineFromNodeToParent({
 
   return (
     <path
-      key={key}
       d={`M${x1} ${y1 - r1} L${finalX} ${finalY}`}
       stroke="rgba(191, 134, 252, 99)"
       strokeWidth={1}

@@ -10,7 +10,6 @@ interface DraggableSvgCircleInterface {
   centerPoint: Vector2;
   color?: string;
   thickness?: number;
-  key: any;
   onPointerEnter?: VoidFunction;
   onPointerOut?: VoidFunction;
   onPointerDown?: VoidFunction;
@@ -29,14 +28,13 @@ export default function DraggableSvgCircle({
   centerPoint,
   color,
   thickness,
-  key,
   onPointerEnter,
   onPointerOut,
   onPointerDown,
   onOverNeighbor,
   otherCirclesData = [],
   isMoveable = true,
-}: DraggableSvgCircleInterface): JSX.IntrinsicElements["circle"] {
+}: DraggableSvgCircleInterface) {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
   const circlePosOnPointerDownRef = useRef<Vector2>(centerPoint);
@@ -113,7 +111,6 @@ export default function DraggableSvgCircle({
         handlePointerDownOrUp(e, false);
       }}
       className="cycloid-svg-node"
-      key={key}
       r={radius}
       cx={thisCirclePosition.x}
       cy={thisCirclePosition.y}

@@ -3,7 +3,7 @@ import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import CycloidControlsData from "../../../types/cycloidControls";
 import DrawNodeLevel from "../classes/drawNodeLevel";
-import MoveableSvgCircle from "../draggableSvgCircle";
+import DraggableSvgCircle from "../draggableSvgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./extractNodeData";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
@@ -35,7 +35,7 @@ export default function generateNodes(
 
   // Push the bounding circle to the top most level
   levels.setNode({
-    key: "-1",
+    levelKey: "-1",
     level: 0,
     drawNode: {
       currentDrawLevel: 0,
@@ -47,6 +47,8 @@ export default function generateNodes(
       },
     },
   });
+
+  // cycloidParams.sort((a, b) => a.boundingCircleIndex - b.boundingCircleIndex);
 
   for (let i = 0; i < cycloidParams.length; i++) {
     const currentDrawLevel = getDrawLevel(i, cycloidParams);
@@ -60,7 +62,7 @@ export default function generateNodes(
     };
 
     levels.setNode({
-      key: i.toString(),
+      levelKey: i.toString(),
       level: currentDrawLevel,
       drawNode: {
         currentDrawLevel,
@@ -106,50 +108,45 @@ function getPositionedNodesAndLines(
       const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
       svgCircles.push(
-        MoveableSvgCircle({
-          centerPoint: node.pos,
-          radius: scaleDrawRadius(node.radius),
-          key: key,
-          onPointerEnter: () => {
+        <DraggableSvgCircle
+          centerPoint={node.pos}
+          radius={scaleDrawRadius(node.radius)}
+          key={key}
+          onPointerEnter={() => {
             const enterColor = colors.yellow;
             if (isBoundingCircle) {
               boundingCircle.setBoundingColor(enterColor);
             } else {
               thisCycloid.boundingColor = enterColor;
             }
-          },
-          onPointerOut: () => {
+          }}
+          onPointerOut={() => {
             const outColor = colors.purple.light;
             if (isBoundingCircle) {
               boundingCircle.setBoundingColor(outColor);
             } else {
               thisCycloid.boundingColor = outColor;
             }
-          },
-          onPointerDown: () => {
+          }}
+          onPointerDown={() => {
             if (isBoundingCircle) {
               alert("Moving the bounding circle is not allowed");
               return;
             }
-          },
-          onOverNeighbor: (neighbor) => {
+          }}
+          onOverNeighbor={(neighbor) => {
             const isBoundingCircleIndex = neighbor.indices.index !== -1;
             if (isBoundingCircleIndex) {
               thisCycloid.boundingCircleIndex = neighbor.indices.index;
             }
-          },
-          otherCirclesData: levels.getAllNodesExceptThis(node.indices.index),
-          isMoveable: !isBoundingCircle,
-        })
+          }}
+          otherCirclesData={levels.getAllNodesExceptThis(node.indices.index)}
+          isMoveable={!isBoundingCircle}
+        />
       );
 
       if (node.parentDrawNode) {
-        svgLines.push(
-          SvgLineFromNodeToParent({
-            key: key,
-            node,
-          })
-        );
+        svgLines.push(<SvgLineFromNodeToParent key={key} node={node} />);
       }
     });
   });

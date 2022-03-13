@@ -1,3 +1,5 @@
+Bug: try dragging the left circle to the right >> could be solved by instead of using the array position, use another property called cycloidIndex instead and turn the type into a class so that we can assign a static index for each of them.
+
 Can now drag and drop but circles still won't rerender
 
 BoundingCircle should be able to be used as the parent, but not child

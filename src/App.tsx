@@ -27,15 +27,6 @@ function App() {
     ),
     cycloids: [
       {
-        rodLengthScale: 0.8,
-        rotationDirection: "clockwise",
-        radius: 100,
-        animationSpeedScale: 0.5,
-        moveOutSideOfParent: false,
-        boundingCircleIndex: 1,
-        boundingColor: colors.purple.light,
-      },
-      {
         rodLengthScale: 0.5,
         rotationDirection: "clockwise",
         radius: 150,
@@ -51,6 +42,15 @@ function App() {
         animationSpeedScale: 0.3,
         moveOutSideOfParent: true,
         boundingCircleIndex: -1,
+        boundingColor: colors.purple.light,
+      },
+      {
+        rodLengthScale: 0.8,
+        rotationDirection: "clockwise",
+        radius: 100,
+        animationSpeedScale: 0.5,
+        moveOutSideOfParent: false,
+        boundingCircleIndex: 1,
         boundingColor: colors.purple.light,
       },
       // {
@@ -87,9 +87,10 @@ function App() {
       handleClearCanvasToggle();
     });
 
-  cycloidControls.current.cycloids.sort(
-    (a, b) => a.boundingCircleIndex - b.boundingCircleIndex
-  );
+  // TODO sort by a cycloidIndex property
+  // cycloidControls.current.cycloids.sort(
+  //   (a, b) => a.boundingCircleIndex - b.boundingCircleIndex
+  // );
 
   return (
     <Rerender.Provider value={rerender}>
