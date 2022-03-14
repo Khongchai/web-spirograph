@@ -143,6 +143,8 @@ function useAnimateMenuToggling(
   const originalShowCycloid = useRef<boolean | undefined>(undefined);
 
   const handleOnRelationshipEditorToggle = useCallback(() => {
+    cycloidControls.current.scaffold = "Showing";
+
     let animateSpeed = cycloidControls.current.animationSpeed;
     let change = animateSpeed * 0.05;
 
@@ -170,6 +172,8 @@ function useAnimateMenuToggling(
   }, []);
 
   const handleOnControlsToggle = useCallback(() => {
+    cycloidControls.current.scaffold = "Showing";
+
     /**
      * This toggle is guaranteed to be toggled after the other one.
      * So no worries about any of them being undefined.
