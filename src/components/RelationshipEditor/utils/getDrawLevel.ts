@@ -1,12 +1,12 @@
 import CycloidParams from "../../../types/cycloidParams";
 
-export default function extractNodeData(
+export default function getDrawLevel(
   currentIndex: number,
   cycloidParams: CycloidParams[]
 ) {
   const parentIndex = cycloidParams[currentIndex].boundingCircleIndex;
 
-  const currentDrawLevel = getCurrentDrawLevel(parentIndex, cycloidParams, 1);
+  const currentDrawLevel = _getCurrentDrawLevel(parentIndex, cycloidParams, 1);
 
   return currentDrawLevel;
 }
@@ -15,10 +15,11 @@ export default function extractNodeData(
  * To obtain the current level, we need to recursively go through each level of parent
  * until we reach the outerBoundingCircle -- boundingCircleIndex === -1;
 
+ * Ex:
  * If the grandparent node is the bounding circle (-1),
  * the current level should be 1
  */
-function getCurrentDrawLevel(
+function _getCurrentDrawLevel(
   parentIndex: number,
   cycloidParams: CycloidParams[],
   levelCounter: number
@@ -32,5 +33,13 @@ function getCurrentDrawLevel(
   const parentParams = cycloidParams[parentIndex];
   const grandParentIndex = parentParams.boundingCircleIndex;
 
-  return getCurrentDrawLevel(grandParentIndex, cycloidParams, levelCounter + 1);
+  if (parentIndex === grandParentIndex) {
+    throw new Error("The parent of a cycloid can't be itself !");
+  }
+
+  return _getCurrentDrawLevel(
+    grandParentIndex,
+    cycloidParams,
+    levelCounter + 1
+  );
 }

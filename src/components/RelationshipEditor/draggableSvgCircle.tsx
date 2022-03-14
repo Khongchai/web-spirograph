@@ -90,9 +90,13 @@ export default function DraggableSvgCircle({
         onPointerDown?.();
       }
       // Call the onOverNeighbor callback if the circle is over another node
-      else if (hoveredNeighborRef.current) {
-        onOverNeighbor?.(hoveredNeighborRef.current);
-        rerenderToggle();
+      else {
+        if (hoveredNeighborRef.current) {
+          onOverNeighbor?.(hoveredNeighborRef.current);
+          rerenderToggle();
+        } else {
+          setThisCirclePosition(centerPoint);
+        }
       }
 
       if (isMoveable) {
