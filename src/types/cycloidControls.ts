@@ -1,5 +1,5 @@
 import BoundingCircle from "../classes/BoundingCircle";
-import CycloidParams from "./cycloidParams";
+import CycloidParams from "../classes/CycloidParams";
 
 /**
  * Interface for all animation params

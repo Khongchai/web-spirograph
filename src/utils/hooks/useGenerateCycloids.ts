@@ -1,8 +1,6 @@
 import { MutableRefObject, useMemo } from "react";
-import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
 import CycloidControlsData from "../../types/cycloidControls";
-import CycloidParams from "../../types/cycloidParams";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 
 /*

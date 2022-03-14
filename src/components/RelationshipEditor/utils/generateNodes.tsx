@@ -57,14 +57,15 @@ export default function useGenerateNodes(
       },
     });
 
-    // cycloidParams.sort((a, b) => a.boundingCircleIndex - b.boundingCircleIndex);
+    cycloidParams.sort((a, b) => a.boundingCircleIndex - b.boundingCircleIndex);
 
     for (let i = 0; i < cycloidParams.length; i++) {
+      const thisCycloid = cycloidParams[i];
       const currentDrawLevel = getDrawLevel(i, cycloidParams);
 
       // For offsetting the node to be below the parent node
       const previousLevel = currentDrawLevel - 1;
-      const parentKey = cycloidParams[i].boundingCircleIndex.toString();
+      const parentKey = thisCycloid.boundingCircleIndex.toString();
       const nodeRelativePos = {
         x: initialNodePosition.x,
         y:
@@ -146,10 +147,7 @@ function getPositionedNodesAndLines(
             }
           }}
           onOverNeighbor={(neighbor) => {
-            const isBoundingCircleIndex = neighbor.indices.index !== -1;
-            if (isBoundingCircleIndex) {
-              thisCycloid.boundingCircleIndex = neighbor.indices.index;
-            }
+            thisCycloid.boundingCircleIndex = neighbor.indices.index;
           }}
           otherCirclesData={levels.getAllNodesExceptThis(node.indices.index)}
           isMoveable={!isBoundingCircle}

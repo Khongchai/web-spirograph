@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControlsData from "../../types/cycloidControls";
-import CycloidParams from "../../types/cycloidParams";
+import CycloidParams from "../../classes/CycloidParams";
 
 /*
     After the cycloids are generated, load the params from cycloidParams object for each cycloid

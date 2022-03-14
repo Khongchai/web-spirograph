@@ -1,6 +1,6 @@
 import { useContext } from "react";
+import CycloidParams from "../../classes/CycloidParams";
 import { RerenderToggle } from "../../contexts/rerenderToggle";
-import CycloidParams from "../../types/cycloidParams";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import Control from "./shared/control";
 import ControlContainer from "./shared/ControlContainer";

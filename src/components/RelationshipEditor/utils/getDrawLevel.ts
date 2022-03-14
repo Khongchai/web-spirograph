@@ -1,4 +1,4 @@
-import CycloidParams from "../../../types/cycloidParams";
+import CycloidParams from "../../../classes/CycloidParams";
 
 export default function getDrawLevel(
   currentIndex: number,
@@ -6,7 +6,12 @@ export default function getDrawLevel(
 ) {
   const parentIndex = cycloidParams[currentIndex].boundingCircleIndex;
 
-  const currentDrawLevel = _getCurrentDrawLevel(parentIndex, cycloidParams, 1);
+  const cycloidParamsCopy = [...cycloidParams];
+  const currentDrawLevel = _getCurrentDrawLevel(
+    parentIndex,
+    cycloidParamsCopy,
+    1
+  );
 
   return currentDrawLevel;
 }
@@ -30,8 +35,21 @@ function _getCurrentDrawLevel(
 
   if (parentIndex === -1) return levelCounter;
 
-  const parentParams = cycloidParams[parentIndex];
-  const grandParentIndex = parentParams.boundingCircleIndex;
+  // const parentParams = cycloidParams[parentIndex];
+
+  let parentParams: CycloidParams | undefined;
+  for (let i = 0, length = cycloidParams.length; i < length; i++) {
+    if (cycloidParams[i].index === parentIndex) {
+      parentParams = cycloidParams.splice(i, 1)[0];
+      break;
+    }
+  }
+
+  if (!parentParams) {
+    throw new Error("Cannot find parent");
+  }
+
+  const grandParentIndex = parentParams!.boundingCircleIndex;
 
   if (parentIndex === grandParentIndex) {
     throw new Error("The parent of a cycloid can't be itself !");

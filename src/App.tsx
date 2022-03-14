@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
+import CycloidParams from "./classes/CycloidParams";
 import Canvas from "./components/Canvas";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
 import colors from "./constants/colors";
@@ -26,33 +27,36 @@ function App() {
       colors.purple.light
     ),
     cycloids: [
-      {
+      new CycloidParams({
         rodLengthScale: 0.5,
         rotationDirection: "clockwise",
         radius: 150,
         animationSpeedScale: 0.7,
         moveOutSideOfParent: false,
-        boundingCircleIndex: -1,
         boundingColor: colors.purple.light,
-      },
-      {
+        index: 0,
+        boundingCircleIndex: 1,
+      }),
+      new CycloidParams({
         rodLengthScale: 0.8,
         rotationDirection: "clockwise",
         radius: 100,
         animationSpeedScale: 0.5,
         moveOutSideOfParent: false,
-        boundingCircleIndex: 0,
         boundingColor: colors.purple.light,
-      },
-      // {
-      //   rodLengthScale: 0.5,
-      //   rotationDirection: "clockwise",
-      //   radius: 30,
-      //   animationSpeedScale: 0.3,
-      //   moveOutSideOfParent: true,
-      //   boundingCircleIndex: -1,
-      //   boundingColor: colors.purple.light,
-      // },
+        index: 1,
+        boundingCircleIndex: -1,
+      }),
+      new CycloidParams({
+        rodLengthScale: 0.5,
+        rotationDirection: "clockwise",
+        radius: 30,
+        animationSpeedScale: 0.3,
+        moveOutSideOfParent: true,
+        boundingColor: colors.purple.light,
+        index: 2,
+        boundingCircleIndex: 1,
+      }),
 
       // {
       //   rodLengthScale: 0.5,
