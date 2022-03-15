@@ -9,6 +9,7 @@ export default class DrawNodeLevel {
    * space is still O(n)
    */
   private allNodes: DrawNode[] = [];
+  private allNodesAsKeyValuePairs: Record<string, DrawNode> = {};
 
   constructor(levels?: Record<string, DrawNode>[]) {
     this.levels = levels ?? this.levels;
@@ -18,14 +19,17 @@ export default class DrawNodeLevel {
 
   getLevel = (levelIndex: number) => this.levels[levelIndex];
 
-  retrieveNode = ({ level, key }: { level: number; key: string }) =>
+  retrieveNodeFromLevel = ({ level, key }: { level: number; key: string }) =>
     this.levels[level][key];
+
+  retrieveSingleNode = ({ key }: { key: string }) =>
+    this.allNodesAsKeyValuePairs[key];
 
   getAllNodes = () => this.allNodes;
 
   getAllNodesExceptThis = (thisNodeIndex: number) => {
     const otherNodes = this.allNodes.filter(
-      (node) => node.indices.index !== thisNodeIndex
+      (node) => node.ids.thisNodeId !== thisNodeIndex
     );
     return otherNodes;
   };
@@ -33,7 +37,7 @@ export default class DrawNodeLevel {
   setNode = ({
     level: levelIndex,
     drawNode,
-    levelKey,
+    levelKey: nodeKey,
   }: {
     level: number;
     drawNode: DrawNode;
@@ -43,7 +47,9 @@ export default class DrawNodeLevel {
       this.levels[levelIndex] = {};
     }
 
-    this.levels[levelIndex][levelKey] = drawNode;
+    this.levels[levelIndex][nodeKey] = drawNode;
     this.allNodes.push(drawNode);
+
+    this.allNodesAsKeyValuePairs[nodeKey] = drawNode;
   };
 }

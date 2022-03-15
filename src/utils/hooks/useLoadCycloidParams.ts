@@ -46,7 +46,7 @@ export default function useLoadCycloidParams(
       cycloid.setRodRotationSpeedRatio(rodRotationRatio);
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
       cycloid.setParent(
-        getParent(cycloidParams[i].boundingCircleIndex, i, generatedCycloids)
+        getParent(cycloidParams[i].boundingCircleId, i, generatedCycloids)
       );
     });
   }, [clearCanvasToggle]);

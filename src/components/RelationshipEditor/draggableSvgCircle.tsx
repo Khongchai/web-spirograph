@@ -6,6 +6,18 @@ import { DrawNode } from "./types";
 import useCheckCircleCircleCollision from "./utils/useCheckCircleCircleCollision";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
 
+/**
+ * TODO:
+ *
+ * Cases to test:
+ *  - When the user drags the node, the node should move with the mouse.
+ *  - When the user drags the node and then release, but the onOverNeighbor is not called, the node should return to its original position.
+ *  - When the user drags the node and then release, onOverNeighbor is called, but that thing is the node's parent,the node should return to its original position.
+ *    and no changes should be made.
+ *  - When the user drags the node and then release, onOverNeighbor is called, but that thing is the node's child,the node should return to its original position.
+ *    and no changes should be made.
+ */
+
 interface DraggableSvgCircleInterface {
   radius: number;
   centerPoint: Vector2;

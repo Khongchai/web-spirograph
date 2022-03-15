@@ -1,6 +1,6 @@
 import React, { MutableRefObject, useContext, useEffect } from "react";
 import { Rerender } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../types/cycloidControls";
+import CycloidControlsData from "../../classes/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
 import useGenerateCycloids from "./useGenerateCycloids";

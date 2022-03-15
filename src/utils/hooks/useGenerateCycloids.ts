@@ -1,6 +1,6 @@
 import { MutableRefObject, useMemo } from "react";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControlsData from "../../types/cycloidControls";
+import CycloidControlsData from "../../classes/cycloidControls";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 
 /*
@@ -18,7 +18,7 @@ export default function useGenerateCycloids(
       let cycloid = new Cycloid(
         c.radius,
         c.rotationDirection,
-        //Use this for now, will reassign later
+        //Use this for now, will refactor later.
         outerMostBoundingCircle,
         false,
         c.boundingColor

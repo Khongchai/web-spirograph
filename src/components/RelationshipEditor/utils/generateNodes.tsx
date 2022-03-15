@@ -2,13 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import { Rerender } from "../../../contexts/rerenderToggle";
-import CycloidControlsData from "../../../types/cycloidControls";
+import CycloidControlsData from "../../../classes/cycloidControls";
 import DrawNodeLevel from "../classes/drawNodeLevel";
 import DraggableSvgCircle from "../draggableSvgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./getDrawLevel";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
+import CycloidParams from "../../../classes/CycloidParams";
 
 /**
  *  For generating the tree graph for the relationship editor
@@ -50,14 +51,12 @@ export default function useGenerateNodes(
         currentDrawLevel: 0,
         pos: initialNodePosition,
         radius: boundingCircle.getRadius(),
-        indices: {
-          index: -1,
+        ids: {
+          thisNodeId: -1,
           parentIndex: undefined,
         },
       },
     });
-
-    cycloidParams.sort((a, b) => a.boundingCircleIndex - b.boundingCircleIndex);
 
     for (let i = 0; i < cycloidParams.length; i++) {
       const thisCycloid = cycloidParams[i];
@@ -65,7 +64,7 @@ export default function useGenerateNodes(
 
       // For offsetting the node to be below the parent node
       const previousLevel = currentDrawLevel - 1;
-      const parentKey = thisCycloid.boundingCircleIndex.toString();
+      const parentId = thisCycloid.boundingCircleId.toString();
       const nodeRelativePos = {
         x: initialNodePosition.x,
         y:
@@ -73,19 +72,19 @@ export default function useGenerateNodes(
       };
 
       levels.setNode({
-        levelKey: i.toString(),
+        levelKey: thisCycloid.id.toString(),
         level: currentDrawLevel,
         drawNode: {
           currentDrawLevel,
-          parentDrawNode: levels.retrieveNode({
-            key: parentKey,
+          parentDrawNode: levels.retrieveNodeFromLevel({
+            key: parentId,
             level: previousLevel,
           }),
           pos: nodeRelativePos,
           radius: cycloidParams[i].radius,
-          indices: {
-            index: i,
-            parentIndex: cycloidParams[i].boundingCircleIndex,
+          ids: {
+            thisNodeId: i,
+            parentIndex: cycloidParams[i].boundingCircleId,
           },
         },
       });
@@ -114,7 +113,7 @@ function getPositionedNodesAndLines(
       const key = `${node.currentDrawLevel}-${nodeIndex}`;
 
       // The index for accessing the cycloidParams object directly
-      const paramIndex = node.indices.index;
+      const paramIndex = node.ids.thisNodeId;
       const isBoundingCircle = paramIndex === -1;
       const thisCycloid = cycloidControls.current.cycloids[paramIndex];
       const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
@@ -147,9 +146,32 @@ function getPositionedNodesAndLines(
             }
           }}
           onOverNeighbor={(neighbor) => {
-            thisCycloid.boundingCircleIndex = neighbor.indices.index;
+            // We must traverse the tree from the this cycloid to the bounding circle
+            // to see if they contain itself, if it does, do nothing.
+            let parentId = neighbor?.parentDrawNode?.ids.thisNodeId;
+            let thisNodeIsAnAncestorOfNeighbor = false;
+            while (true) {
+              const parentIsBoundingCircle = parentId === -1;
+              const hoveredNeighborIsBoundingCirlce = parentId == undefined;
+              if (parentIsBoundingCircle || hoveredNeighborIsBoundingCirlce) {
+                break;
+              }
+
+              if (parentId === thisCycloid.id) {
+                thisNodeIsAnAncestorOfNeighbor = true;
+                break;
+              }
+
+              parentId = levels.retrieveSingleNode({
+                key: parentId!.toString(),
+              })?.ids.parentIndex;
+            }
+            if (!thisNodeIsAnAncestorOfNeighbor) {
+              thisCycloid.boundingCircleId = neighbor.ids.thisNodeId;
+              cycloidControls.current.sortCycloidByBoundingPriority();
+            }
           }}
-          otherCirclesData={levels.getAllNodesExceptThis(node.indices.index)}
+          otherCirclesData={levels.getAllNodesExceptThis(node.ids.thisNodeId)}
           isMoveable={!isBoundingCircle}
         />
       );

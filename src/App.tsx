@@ -6,7 +6,8 @@ import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEdi
 import colors from "./constants/colors";
 import { Rerender, RerenderToggle } from "./contexts/rerenderToggle";
 import "./index.css";
-import CycloidControlsData from "./types/cycloidControls";
+import CycloidControlsData from "./classes/cycloidControls";
+import CycloidControls from "./classes/cycloidControls";
 
 const defaultGlobalAnimationSpeed = 1;
 function App() {
@@ -17,68 +18,73 @@ function App() {
   /**
    * To be referenced by anything that would like to read from or write to the draw data.
    */
-  const cycloidControls = useRef<CycloidControlsData>({
-    outerMostBoundingCircle: new BoundingCircle(
-      {
-        x: 0,
-        y: 0,
-      },
-      300,
-      colors.purple.light
-    ),
-    cycloids: [
-      new CycloidParams({
-        rodLengthScale: 0.5,
-        rotationDirection: "clockwise",
-        radius: 150,
-        animationSpeedScale: 0.7,
-        moveOutSideOfParent: false,
-        boundingColor: colors.purple.light,
-        index: 0,
-        boundingCircleIndex: 1,
-      }),
-      new CycloidParams({
-        rodLengthScale: 0.8,
-        rotationDirection: "clockwise",
-        radius: 100,
-        animationSpeedScale: 0.5,
-        moveOutSideOfParent: false,
-        boundingColor: colors.purple.light,
-        index: 1,
-        boundingCircleIndex: -1,
-      }),
-      new CycloidParams({
-        rodLengthScale: 0.5,
-        rotationDirection: "clockwise",
-        radius: 30,
-        animationSpeedScale: 0.3,
-        moveOutSideOfParent: true,
-        boundingColor: colors.purple.light,
-        index: 2,
-        boundingCircleIndex: 1,
-      }),
+  const cycloidControls = useRef<CycloidControlsData>(
+    new CycloidControls({
+      outerMostBoundingCircle: new BoundingCircle(
+        {
+          x: 0,
+          y: 0,
+        },
+        300,
+        colors.purple.light
+      ),
+      cycloids: [
+        new CycloidParams({
+          rodLengthScale: 0.5,
+          rotationDirection: "clockwise",
+          radius: 150,
+          animationSpeedScale: 0.7,
+          moveOutSideOfParent: false,
+          boundingColor: colors.purple.light,
+          id: 1,
+          boundingCircleId: 0,
+        }),
 
-      // {
-      //   rodLengthScale: 0.5,
-      //   rotationDirection: "clockwise",
-      //   radius: 10,
-      //   animationSpeedScale: 0.3,
-      //   moveOutSideOfParent: true,
-      //   boundingCircleIndex: 2,
-      //   boundingColor: colors.purple.light,
-      // },
-    ],
-    animationSpeed: defaultGlobalAnimationSpeed,
-    currentCycloid: 0,
-    mode: "Animated",
-    scaffold: "Showing",
-    animationState: "Playing",
-    clearTracedPathOnParamsChange: true,
-    showAllCycloids: false,
-    programOnly: {
-      tracePath: true,
-    },
-  });
+        new CycloidParams({
+          rodLengthScale: 0.8,
+          rotationDirection: "clockwise",
+          radius: 100,
+          animationSpeedScale: 0.5,
+          moveOutSideOfParent: false,
+          boundingColor: colors.purple.light,
+          id: 0,
+          boundingCircleId: -1,
+        }),
+
+        new CycloidParams({
+          rodLengthScale: 0.5,
+          rotationDirection: "clockwise",
+          radius: 30,
+          animationSpeedScale: 0.3,
+          moveOutSideOfParent: true,
+          boundingColor: colors.purple.light,
+          id: 2,
+          boundingCircleId: 0,
+        }),
+        {
+          rodLengthScale: 0.5,
+          rotationDirection: "clockwise",
+          radius: 10,
+          animationSpeedScale: 0.3,
+          id: 3,
+          moveOutSideOfParent: true,
+          boundingCircleId: 2,
+          boundingColor: colors.purple.light,
+        },
+      ],
+      animationSpeed: defaultGlobalAnimationSpeed,
+      currentCycloid: 0,
+      mode: "Animated",
+      scaffold: "Showing",
+      animationState: "Playing",
+      clearTracedPathOnParamsChange: true,
+      showAllCycloids: false,
+      programOnly: {
+        tracePath: true,
+      },
+    })
+  );
+  cycloidControls.current.sortCycloidByBoundingPriority();
 
   const handleClearCanvasToggle = useCallback(() => {
     setRerender((toggle) => !toggle);

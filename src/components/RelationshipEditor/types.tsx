@@ -25,11 +25,11 @@ export type DrawNode = {
   /**
    * The indices of the node and its parent in the cycloidParams array.
    */
-  indices: {
+  ids: {
     /**
      * This element's index in the cycloidParams array.
      */
-    index: number;
+    thisNodeId: number;
     /**
      * The parent's index in the cycloidParams array.
      */

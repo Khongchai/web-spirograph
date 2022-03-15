@@ -23,12 +23,12 @@ export default class CycloidParams {
   /*
    * The index of this element.
    */
-  index: number;
+  id: number;
   /*
    * The parent element that the cycloid will be rendered inside or outside of,
    * -1 will default to the outermost parent element.
    */
-  boundingCircleIndex: number;
+  boundingCircleId: number;
 
   boundingColor: string;
 
@@ -38,32 +38,32 @@ export default class CycloidParams {
     radius,
     animationSpeedScale,
     moveOutSideOfParent,
-    boundingCircleIndex,
+    boundingCircleId: boundingCircleIndex,
     boundingColor,
     /**
      * This is important, as it will be used to find this element even when the array is sorted.
      */
-    index,
+    id: index,
   }: {
     rodLengthScale: number;
     rotationDirection: RotationDirection;
     radius: number;
     animationSpeedScale: number;
     moveOutSideOfParent: boolean;
-    boundingCircleIndex: number;
+    boundingCircleId: number;
     boundingColor: string;
-    index: number;
+    id: number;
   }) {
     this.rodLengthScale = rodLengthScale;
     this.rotationDirection = rotationDirection;
     this.radius = radius;
     this.animationSpeedScale = animationSpeedScale;
     this.moveOutSideOfParent = moveOutSideOfParent;
-    this.index = index;
-    this.boundingCircleIndex = boundingCircleIndex;
+    this.id = index;
+    this.boundingCircleId = boundingCircleIndex;
     this.boundingColor = boundingColor;
 
-    if (this.index === this.boundingCircleIndex) {
+    if (this.id === this.boundingCircleId) {
       throw Error("The bounding circle cannot be itself");
     }
   }
