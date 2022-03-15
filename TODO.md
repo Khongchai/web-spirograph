@@ -1,4 +1,4 @@
-Bug: Run the app and you'll see the problem.
+Bug: Try dragging the left node to the right, or the bottom most one to the middle one...
 
 Can now drag and drop but circles still won't rerender
 
