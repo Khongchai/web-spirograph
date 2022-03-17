@@ -10,8 +10,6 @@ import getDrawLevel from "./getDrawLevel";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
 
-let overOnce = false;
-
 /**
  *  For generating the tree graph for the relationship editor
  */
@@ -82,9 +80,9 @@ export default function useGenerateNodes(
             level: previousLevel,
           }),
           pos: nodeRelativePos,
-          radius: cycloidParams[i].radius,
+          radius: thisCycloid.radius,
           ids: {
-            thisNodeId: i,
+            thisNodeId: thisCycloid.id,
             parentIndex: cycloidParams[i].boundingCircleId,
           },
         },
@@ -110,13 +108,19 @@ function getPositionedNodesAndLines(
   levels.getAllLevels().forEach((l, levelIndex) => {
     organizeNodesPositionOnLevel(levels, levelIndex);
 
-    Object.values(l).forEach((node, nodeIndex) => {
-      const key = `${node.currentDrawLevel}-${nodeIndex}`;
+    Object.values(l).forEach((node) => {
+      const key = `${node.currentDrawLevel}-${node.ids.thisNodeId}`;
 
       // The index for accessing the cycloidParams object directly
-      const paramIndex = node.ids.thisNodeId;
-      const isBoundingCircle = paramIndex === -1;
-      const thisCycloid = cycloidControls.current.cycloids[paramIndex];
+      const cycloidId = node.ids.thisNodeId;
+      const isBoundingCircle = cycloidId === -1;
+
+      // TODO turn cycloid controls into a class and have a method in there
+      // TODO that retrieves each circle at O(1).
+      const thisCycloid = cycloidControls.current.cycloids.filter(
+        (c) => c.id == cycloidId
+      )[0];
+
       const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
       svgCircles.push(
@@ -147,11 +151,11 @@ function getPositionedNodesAndLines(
             }
           }}
           onOverNeighbor={(neighbor) => {
-            overOnce = true;
             // We must traverse the tree from the this cycloid to the bounding circle
             // to see if they contain itself, if it does, do nothing.
             let parentId = neighbor?.parentDrawNode?.ids.thisNodeId;
             let thisNodeIsAnAncestorOfNeighbor = false;
+
             while (true) {
               const parentIsBoundingCircle = parentId === -1;
               const hoveredNeighborIsBoundingCirlce = parentId == undefined;

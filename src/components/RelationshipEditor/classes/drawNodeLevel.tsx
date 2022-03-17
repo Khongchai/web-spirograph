@@ -19,8 +19,20 @@ export default class DrawNodeLevel {
 
   getLevel = (levelIndex: number) => this.levels[levelIndex];
 
-  retrieveNodeFromLevel = ({ level, key }: { level: number; key: string }) =>
-    this.levels[level][key];
+  retrieveNodeFromLevel = ({ level, key }: { level: number; key: string }) => {
+    const thisLevel = this.levels[level];
+
+    if (!thisLevel) {
+      throw new Error(`Level ${level} does not exist yet`);
+    }
+
+    const thisNode = thisLevel[key];
+    if (!thisNode) {
+      throw new Error(`Node with the key of: ${key} does not exist`);
+    }
+
+    return thisNode;
+  };
 
   retrieveSingleNode = ({ key }: { key: string }) =>
     this.allNodesAsKeyValuePairs[key];

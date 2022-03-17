@@ -11,7 +11,7 @@ export default function SvgLineFromNodeToParent({ node }: { node: DrawNode }) {
   const { x: x2, y: y2 } = node.parentDrawNode!.pos;
   const r2 = scaleDrawRadius(node.parentDrawNode!.radius);
 
-  const xOffsetScale = 3.5;
+  const xOffsetScale = 5;
 
   const xOffset = (x2 - x1) / xOffsetScale;
 
