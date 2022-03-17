@@ -12,14 +12,18 @@ export default function SvgLineFromNodeToParent({ node }: { node: DrawNode }) {
   const r2 = scaleDrawRadius(node.parentDrawNode!.radius);
 
   const xOffsetScale = 3.5;
+
   const xOffset = (x2 - x1) / xOffsetScale;
 
-  const finalX = x2 - xOffset;
+  const finalX = Math.min(Math.max(x2 - xOffset, x2 - r2), x2 + r2);
   // Just the circle equation, but solve for y
-  const finalY =
-    Math.sqrt(
-      Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
-    ) + y2;
+
+  const k = Math.max(
+    0,
+    Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
+  );
+
+  const finalY = Math.sqrt(k) + y2;
 
   return (
     <path

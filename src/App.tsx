@@ -52,7 +52,7 @@ function App() {
         }),
 
         new CycloidParams({
-          rodLengthScale: 0.5,
+          rodLengthScale: 1.2,
           rotationDirection: "clockwise",
           radius: 30,
           animationSpeedScale: 0.3,
@@ -61,8 +61,8 @@ function App() {
           id: 2,
           boundingCircleId: 0,
         }),
-        {
-          rodLengthScale: 0.5,
+        new CycloidParams({
+          rodLengthScale: 3,
           rotationDirection: "clockwise",
           radius: 10,
           animationSpeedScale: 0.3,
@@ -70,7 +70,7 @@ function App() {
           moveOutSideOfParent: true,
           boundingCircleId: 2,
           boundingColor: colors.purple.light,
-        },
+        }),
       ],
       animationSpeed: defaultGlobalAnimationSpeed,
       currentCycloid: 0,

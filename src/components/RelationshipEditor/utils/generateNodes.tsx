@@ -9,7 +9,8 @@ import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./getDrawLevel";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
-import CycloidParams from "../../../classes/CycloidParams";
+
+let overOnce = false;
 
 /**
  *  For generating the tree graph for the relationship editor
@@ -146,6 +147,7 @@ function getPositionedNodesAndLines(
             }
           }}
           onOverNeighbor={(neighbor) => {
+            overOnce = true;
             // We must traverse the tree from the this cycloid to the bounding circle
             // to see if they contain itself, if it does, do nothing.
             let parentId = neighbor?.parentDrawNode?.ids.thisNodeId;
