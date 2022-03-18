@@ -11,6 +11,10 @@ export default class CycloidControls {
    * All drawable cycloids.
    */
   cycloids: CycloidParams[];
+  /**
+   * A map for the cycloids for O(1) retrieval.
+   */
+  private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams> = {};
 
   /*
    * The global animation speed.
@@ -92,13 +96,23 @@ export default class CycloidControls {
     this.clearTracedPathOnParamsChange = clearTracedPathOnParamsChange;
     this.showAllCycloids = showAllCycloids;
     this.programOnly = programOnly;
+
+    this.cycloids.forEach((c) => {
+      this.cycloidsIdMap[c.id] = c;
+    });
+    this.cycloidsIdMap["-1"] = this.outerMostBoundingCircle;
   }
 
   /**
    * This is required every time the relationship is reassigned.
-   *
    */
   sortCycloidByBoundingPriority() {
     this.cycloids.sort((a, b) => a.boundingCircleId - b.boundingCircleId);
+  }
+
+  getSingleCycloidParamFromId(id: string) {
+    const cycloid = this.cycloidsIdMap[id] as CycloidParams | undefined;
+
+    return cycloid;
   }
 }

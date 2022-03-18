@@ -104,6 +104,7 @@ function getPositionedNodesAndLines(
 } {
   const svgCircles: JSX.IntrinsicElements["circle"][] = [];
   const svgLines: JSX.IntrinsicElements["line"][] = [];
+  const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
   levels.getAllLevels().forEach((l, levelIndex) => {
     organizeNodesPositionOnLevel(levels, levelIndex);
@@ -115,13 +116,9 @@ function getPositionedNodesAndLines(
       const cycloidId = node.ids.thisNodeId;
       const isBoundingCircle = cycloidId === -1;
 
-      // TODO turn cycloid controls into a class and have a method in there
-      // TODO that retrieves each circle at O(1).
-      const thisCycloid = cycloidControls.current.cycloids.filter(
-        (c) => c.id == cycloidId
-      )[0];
-
-      const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
+      const thisCycloid = cycloidControls.current.getSingleCycloidParamFromId(
+        cycloidId.toString()
+      );
 
       svgCircles.push(
         <DraggableSvgCircle
@@ -133,7 +130,7 @@ function getPositionedNodesAndLines(
             if (isBoundingCircle) {
               boundingCircle.setBoundingColor(enterColor);
             } else {
-              thisCycloid.boundingColor = enterColor;
+              thisCycloid!.boundingColor = enterColor;
             }
           }}
           onPointerOut={() => {
@@ -141,7 +138,7 @@ function getPositionedNodesAndLines(
             if (isBoundingCircle) {
               boundingCircle.setBoundingColor(outColor);
             } else {
-              thisCycloid.boundingColor = outColor;
+              thisCycloid!.boundingColor = outColor;
             }
           }}
           onPointerDown={() => {
@@ -163,7 +160,7 @@ function getPositionedNodesAndLines(
                 break;
               }
 
-              if (parentId === thisCycloid.id) {
+              if (parentId === thisCycloid!.id) {
                 thisNodeIsAnAncestorOfNeighbor = true;
                 break;
               }
@@ -173,7 +170,7 @@ function getPositionedNodesAndLines(
               })?.ids.parentIndex;
             }
             if (!thisNodeIsAnAncestorOfNeighbor) {
-              thisCycloid.boundingCircleId = neighbor.ids.thisNodeId;
+              thisCycloid!.boundingCircleId = neighbor.ids.thisNodeId;
               cycloidControls.current.sortCycloidByBoundingPriority();
             }
           }}
