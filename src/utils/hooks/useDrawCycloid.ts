@@ -49,7 +49,8 @@ export default function useDrawCanvas(
         cycloids.forEach((cycloid, i) => {
           const drawCurrentCycloid =
             cycloidControls.current.showAllCycloids ||
-            i == cycloidControls.current.currentCycloid;
+            cycloidControls.current.cycloids[i].id ==
+              cycloidControls.current.currentCycloidId;
 
           // Keep updating the position even if the cycloid is not being drawn
           // This allows the child cycloids to be drawn in the correct position

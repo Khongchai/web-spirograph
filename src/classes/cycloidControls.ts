@@ -22,9 +22,9 @@ export default class CycloidControls {
   animationSpeed: number;
 
   /*
-   * The current cycloid that is being draw, or controlled.
+   * The id of the current cycloid that is being drawn.
    */
-  currentCycloid: number;
+  currentCycloidId: number;
 
   /*
    * Animation mode. Instant draws the cycloid instantly, while Animated tries draws the cycloid at 60 fps.
@@ -65,7 +65,7 @@ export default class CycloidControls {
     animationSpeed,
     animationState,
     clearTracedPathOnParamsChange,
-    currentCycloid,
+    currentCycloidId,
     cycloids,
     mode,
     outerMostBoundingCircle,
@@ -76,7 +76,7 @@ export default class CycloidControls {
     outerMostBoundingCircle: BoundingCircle;
     cycloids: CycloidParams[];
     animationSpeed: number;
-    currentCycloid: number;
+    currentCycloidId: number;
     mode: "Animated" | "Instant";
     scaffold: "Showing" | "Hidden";
     animationState: "Playing" | "Paused";
@@ -89,7 +89,7 @@ export default class CycloidControls {
     this.outerMostBoundingCircle = outerMostBoundingCircle;
     this.cycloids = cycloids;
     this.animationSpeed = animationSpeed;
-    this.currentCycloid = currentCycloid;
+    this.currentCycloidId = currentCycloidId;
     this.mode = mode;
     this.scaffold = scaffold;
     this.animationState = animationState;

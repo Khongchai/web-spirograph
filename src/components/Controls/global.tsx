@@ -6,6 +6,7 @@ import Content from "./shared/control";
 import ContentContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
+import CycloidParams from "../../classes/CycloidParams";
 
 interface globalProps {
   cycloidControls: CycloidControlsData;
@@ -55,10 +56,10 @@ const Global: React.FC<globalProps> = ({
         />
         <ContentArray
           paramName={"Current Cycloid"}
-          values={cycloidControls.cycloids.map((_, i) => i)}
-          index={cycloidControls.currentCycloid}
-          onClick={(newIndex: number) => {
-            cycloidControls.currentCycloid = newIndex;
+          values={cycloidControls.cycloids.map((cycloid) => cycloid.id)}
+          targetValue={cycloidControls.currentCycloidId}
+          onClick={(newId: number) => {
+            cycloidControls.currentCycloidId = newId;
             //If all are shown, there's no need to clear the canvas to repaint another one
             //We'll just need to update the settings UI
             if (!cycloidControls.showAllCycloids) {
