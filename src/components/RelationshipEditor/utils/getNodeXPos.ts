@@ -19,6 +19,9 @@ export default function organizeNodesPositionOnLevel(
   const gap = 100;
 
   const shouldOffsetX = determineShouldOffsetX(nodesOnLevel);
+  nodesOnLevel.sort(
+    (a, b) => (a.ids.parentIndex ?? -1) - (b.ids.parentIndex ?? -1)
+  );
 
   for (let i = 0; i < currentLevelLength; i++) {
     const node = nodesOnLevel[i];
