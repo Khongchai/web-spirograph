@@ -21,7 +21,7 @@ export default function useDrawCanvas(
   useLoadCycloidParams(
     cycloids,
     outermostBoundingCircle,
-    cycloidControls.current.cycloids,
+    cycloidControls,
     rerender
   );
 

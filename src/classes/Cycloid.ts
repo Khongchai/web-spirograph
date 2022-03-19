@@ -7,6 +7,9 @@ import Rod from "./Rod";
 export default class Cycloid extends BoundingCircle {
   private drawPoint: Vector2;
 
+  // The global reference id shared by CycloidControls and DrawNode
+  private id: number;
+
   //basically cannot go beyond this value -- something % limit
   private animationSpeed: number = 0;
 
@@ -28,7 +31,8 @@ export default class Cycloid extends BoundingCircle {
     rotationDirection: CycloidRotationDirection,
     parentBounding: BoundingCircle,
     moveOutsideOfParent = false,
-    boundingColor: string
+    boundingColor: string,
+    id: number
   ) {
     super({ x: 0, y: 0 }, radius, boundingColor);
 
@@ -41,6 +45,8 @@ export default class Cycloid extends BoundingCircle {
     this.parentBounding = parentBounding;
 
     this.rotationDirection = rotationDirection;
+
+    this.id = id;
   }
 
   private animationSpeedAsRadians() {
@@ -127,6 +133,8 @@ export default class Cycloid extends BoundingCircle {
       }
     );
   }
+
+  getId = () => this.id;
 
   getDrawPoint = () => this.drawPoint;
 

@@ -1,6 +1,5 @@
 Try writing tests for each of the utils as a start.
 
-Look for todo in generateNodes.tsx
 Bug: Left nodes can't be dragged to the right, while right nodes always can be dragged over the left ones.... << postion alignment problem
 
 Can now drag and drop but circles still won't rerender

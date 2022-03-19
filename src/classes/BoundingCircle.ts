@@ -1,4 +1,3 @@
-import colors from "../constants/colors";
 import { Vector2 } from "../types/vector2";
 
 export default class BoundingCircle {

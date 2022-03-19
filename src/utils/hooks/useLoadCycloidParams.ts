@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
+import CycloidControls from "../../classes/cycloidControls";
 import CycloidParams from "../../classes/CycloidParams";
 
 /*
@@ -9,45 +10,46 @@ import CycloidParams from "../../classes/CycloidParams";
 export default function useLoadCycloidParams(
   generatedCycloids: Cycloid[],
   outermostBoundingCircle: BoundingCircle,
-  cycloidParams: CycloidParams[],
+  cycloidControls: React.MutableRefObject<CycloidControls>,
   clearCanvasToggle: boolean
 ) {
-  useEffect(() => {
-    const getParent = (
-      parentIndex: number,
-      currentCycloidIndex: number,
-      cycloids: Cycloid[]
-    ) => {
-      const parentIsOuterCircle = parentIndex === -1;
-      const parentIsItself = parentIndex === currentCycloidIndex;
-      const parentDoesNotExist = parentIndex >= cycloids.length;
+  const getParent = useCallback(
+    (parentId: number, currentCycloidId: number, cycloids: Cycloid[]) => {
+      const parentIsOuterCircle = parentId === -1;
+      const parentIsItself = parentId === currentCycloidId;
+      const parentDoesNotExist = parentId >= cycloids.length;
       const useOuterAsParent =
         parentIsOuterCircle || parentIsItself || parentDoesNotExist;
 
       if (useOuterAsParent) {
         return outermostBoundingCircle;
       } else {
-        return cycloids[parentIndex];
+        return cycloids[parentId];
       }
-    };
+    },
+    []
+  );
 
-    generatedCycloids.forEach((cycloid, i) => {
+  useEffect(() => {
+    generatedCycloids.forEach((cycloid) => {
       const {
         rodLengthScale,
         radius: cycloidRadius,
         rotationDirection: cycloidDirection,
         animationSpeedScale: rodRotationRatio,
         moveOutSideOfParent,
-      } = cycloidParams[i];
+        id,
+        boundingCircleId,
+      } = cycloidControls.current.getSingleCycloidParamFromId(
+        cycloid.getId().toString()
+      )!;
 
       cycloid.rod.scaleLength(rodLengthScale);
       cycloid.setRadius(cycloidRadius);
       cycloid.setRotationDirection(cycloidDirection);
       cycloid.setRodRotationSpeedRatio(rodRotationRatio);
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
-      cycloid.setParent(
-        getParent(cycloidParams[i].boundingCircleId, i, generatedCycloids)
-      );
+      cycloid.setParent(getParent(boundingCircleId, id, generatedCycloids));
     });
   }, [clearCanvasToggle]);
 }

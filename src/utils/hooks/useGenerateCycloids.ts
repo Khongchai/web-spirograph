@@ -21,7 +21,8 @@ export default function useGenerateCycloids(
         //Use this for now, will refactor later.
         outerMostBoundingCircle,
         false,
-        c.boundingColor
+        c.boundingColor,
+        c.id
       );
       cycloids.push(cycloid);
     });

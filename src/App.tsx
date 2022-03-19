@@ -49,7 +49,6 @@ function App() {
           id: 1,
           boundingCircleId: 0,
         }),
-
         // new CycloidParams({
         //   rodLengthScale: 1.2,
         //   rotationDirection: "clockwise",
