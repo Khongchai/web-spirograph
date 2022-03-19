@@ -33,7 +33,7 @@ export type DrawNode = {
     /**
      * The parent's index in the cycloidParams array.
      */
-    parentIndex?: number;
+    parentId?: number;
   };
 };
 

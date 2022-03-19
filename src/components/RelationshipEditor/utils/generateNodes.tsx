@@ -52,7 +52,7 @@ export default function useGenerateNodes(
         radius: boundingCircle.getRadius(),
         ids: {
           thisNodeId: -1,
-          parentIndex: undefined,
+          parentId: undefined,
         },
       },
     });
@@ -84,7 +84,7 @@ export default function useGenerateNodes(
           radius: thisCycloid.radius,
           ids: {
             thisNodeId: thisCycloid.id,
-            parentIndex: cycloidParams[i].boundingCircleId,
+            parentId: cycloidParams[i].boundingCircleId,
           },
         },
       });
@@ -168,7 +168,7 @@ function getPositionedNodesAndLines(
 
               parentId = levels.retrieveSingleNode({
                 key: parentId!.toString(),
-              })?.ids.parentIndex;
+              })?.ids.parentId;
             }
             if (!thisNodeIsAnAncestorOfNeighbor) {
               thisCycloid!.boundingCircleId = neighbor.ids.thisNodeId;

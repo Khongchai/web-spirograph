@@ -19,9 +19,11 @@ export default function organizeNodesPositionOnLevel(
   const gap = 100;
 
   const shouldOffsetX = determineShouldOffsetX(nodesOnLevel);
-  nodesOnLevel.sort(
-    (a, b) => (a.ids.parentIndex ?? -1) - (b.ids.parentIndex ?? -1)
-  );
+
+  /**
+   * This is to make sure that nodes that have the same parent stay on the same side.
+   */
+  nodesOnLevel.sort((a, b) => (a.ids.parentId ?? -1) - (b.ids.parentId ?? -1));
 
   for (let i = 0; i < currentLevelLength; i++) {
     const node = nodesOnLevel[i];
@@ -51,10 +53,30 @@ export default function organizeNodesPositionOnLevel(
  *
  */
 function determineShouldOffsetX(nodes: DrawNode[]): boolean {
-  let firstNodeParent = nodes[0].parentDrawNode;
+  // let shouldOffsetX = false;
+  // const parentMap: Record<number, DrawNode | undefined> = {};
+
+  // nodes.forEach((node) => {
+  //   const parentId = node.ids.parentId;
+
+  //   if (!parentId) {
+  //     return;
+  //   }
+
+  //   const parent = parentMap[parentId!];
+  //   if (!parent) {
+  //     parentMap[parentId!] = node.parentDrawNode;
+  //   } else {
+  //     shouldOffsetX = true;
+  //   }
+  // });
+
+  // return shouldOffsetX;
+  const firstNodeParentId = nodes[0].ids.parentId;
+
   for (let i = 1, length = nodes.length; i < length; i++) {
     const node = nodes[i];
-    const hasSameParent = node.parentDrawNode === firstNodeParent;
+    const hasSameParent = node.ids.parentId === firstNodeParentId;
     if (!hasSameParent) {
       return false;
     }
