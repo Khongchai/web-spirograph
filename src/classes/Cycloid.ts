@@ -5,6 +5,8 @@ import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
 
 export default class Cycloid extends BoundingCircle {
+  private static allCycloids: Record<string, Cycloid> = {};
+
   private drawPoint: Vector2;
 
   // The global reference id shared by CycloidControls and DrawNode
@@ -47,7 +49,19 @@ export default class Cycloid extends BoundingCircle {
     this.rotationDirection = rotationDirection;
 
     this.id = id;
+
+    Cycloid.allCycloids[id] = this;
   }
+
+  static getCycloidFromId = (id: number) => {
+    const cycloid = Cycloid.allCycloids[id];
+
+    if (!cycloid) {
+      throw new Error(`No cycloid with the id of ${id}`);
+    }
+
+    return cycloid;
+  };
 
   private animationSpeedAsRadians() {
     return this.animationSpeed * 6 * (Math.PI / 180);

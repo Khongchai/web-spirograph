@@ -64,7 +64,9 @@ export default class CycloidParams {
     this.boundingColor = boundingColor;
 
     if (this.id === this.boundingCircleId) {
-      throw Error("The bounding circle cannot be itself");
+      throw Error(
+        "Either a cycloid has itself as its bounding circle or there is another cycloid with the same id"
+      );
     }
   }
 }
