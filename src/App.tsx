@@ -72,7 +72,6 @@ function App() {
       },
     })
   );
-  cycloidControls.current.sortCycloidByBoundingPriority();
 
   const handleClearCanvasToggle = useCallback(() => {
     setRerender((toggle) => !toggle);
@@ -85,11 +84,6 @@ function App() {
     useAnimateMenuToggling(cycloidControls, () => {
       handleClearCanvasToggle();
     });
-
-  // TODO sort by a cycloidIndex property
-  // cycloidControls.current.cycloids.sort(
-  //   (a, b) => a.boundingCircleIndex - b.boundingCircleIndex
-  // );
 
   return (
     <Rerender.Provider value={rerender}>

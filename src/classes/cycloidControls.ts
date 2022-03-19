@@ -119,12 +119,72 @@ export default class CycloidControls {
    *  [{boundingCircleId: -1, id: 2}, {boundingCircleId: 0, id: 1}, {boundingCircleId: 2, id: 0}]
    * ```
    *
-   * Algorithm O(n^2):
-   * - Find the outermost bounding circle, the one with -1 as the key.
-   * - TODO:
+   * Algorithm run time O(n + hlogh) where h is the height of the tree, or in this case, the number of DrawLevels.
+   * - Find an object with the highest boundingCircleId.
+   * - Trace back to the boundingCircle (-1), while storing everything along the path in an array.
+   * - Sort the array by the boundingCircleId.
+   * - Move the remaining objects, which can be in any order because all levels are guaranteed to have been created, to the sorted array.
+   * - ???
+   * - Profit.
    */
   sortCycloidByBoundingPriority() {
-    this.cycloids.sort((a, b) => a.boundingCircleId - b.boundingCircleId);
+    const cycloidWithHighestBoundingCircleId = this.cycloids.reduce(
+      (before, after) => {
+        return before.boundingCircleId > after.boundingCircleId
+          ? before
+          : after;
+      }
+    ).id;
+
+    const { objsAlongPath } = this.getTreeDistanceFromRoot(
+      cycloidWithHighestBoundingCircleId
+    );
+
+    this.cycloids = [
+      ...objsAlongPath,
+      ...this.cycloids.filter((c) => !objsAlongPath.includes(c)),
+    ];
+  }
+  /**
+   * Retrieve both the distance from the root and the objects that are in the path.
+   */
+  private getTreeDistanceFromRoot(
+    thisCycloidId: number | string,
+    distanceAsLevel = 0,
+    objsAlongPath: CycloidParams[] = []
+  ): { distanceAsLevel: number; objsAlongPath: CycloidParams[] } {
+    const cycloid = this.cycloidsIdMap[thisCycloidId] as
+      | CycloidParams
+      | undefined;
+
+    if (!cycloid) {
+      throw new Error("Cycloid not found");
+    }
+
+    const idIsRootId = thisCycloidId === -1;
+
+    if (idIsRootId) {
+      return {
+        distanceAsLevel: 0,
+        objsAlongPath: [],
+      };
+    }
+
+    const { boundingCircleId } = cycloid;
+    objsAlongPath.unshift(cycloid);
+
+    const parentIsBoundingCircle = cycloid.boundingCircleId === -1;
+    if (parentIsBoundingCircle)
+      return {
+        distanceAsLevel,
+        objsAlongPath,
+      };
+
+    return this.getTreeDistanceFromRoot(
+      boundingCircleId,
+      distanceAsLevel + 1,
+      objsAlongPath
+    );
   }
 
   getSingleCycloidParamFromId(id: number | string) {
