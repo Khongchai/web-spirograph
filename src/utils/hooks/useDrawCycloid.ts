@@ -37,20 +37,21 @@ export default function useDrawCanvas(
       setCanvasSize(canvas);
 
       const draw = () => {
+        const curControls = cycloidControls.current;
+
         ctx.save();
 
         ctx.translate(panRef.current.x, panRef.current.y);
         ctx.lineWidth = 1.5;
 
-        dx += cycloidControls.current.animationSpeed;
+        dx += curControls.animationSpeed;
 
         pointsToTrace.current = [];
 
-        cycloids.forEach((cycloid, i) => {
+        cycloids.forEach((cycloid) => {
           const drawCurrentCycloid =
-            cycloidControls.current.showAllCycloids ||
-            cycloidControls.current.cycloids[i].id ==
-              cycloidControls.current.currentCycloidId;
+            curControls.showAllCycloids ||
+            cycloid.getId() == curControls.currentCycloidId;
 
           // Keep updating the position even if the cycloid is not being drawn
           // This allows the child cycloids to be drawn in the correct position
@@ -62,7 +63,8 @@ export default function useDrawCanvas(
             if (cycloidControls.current.scaffold === "Showing") {
               cycloid.showBounding(
                 ctx,
-                cycloidControls.current.cycloids[i].boundingColor
+                curControls.getSingleCycloidParamFromId(cycloid.getId())
+                  ?.boundingColor
               );
               cycloid.showRod(ctx);
               cycloid.showPoint(ctx);

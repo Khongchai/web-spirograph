@@ -105,12 +105,29 @@ export default class CycloidControls {
 
   /**
    * This is required every time the relationship is reassigned.
+   *
+   * We cannot just sort by the boundingCircleId as the the ids do not
+   * refer to the position in the array.
+   *
+   * A naive sorting would be:
+   * ```js
+   *  this.cycloids.sort((a, b) => a.boundingCircleId - b.boundingCircleId);
+   * ```
+   * Which will not work when we have:
+   *
+   * ```js
+   *  [{boundingCircleId: -1, id: 2}, {boundingCircleId: 0, id: 1}, {boundingCircleId: 2, id: 0}]
+   * ```
+   *
+   * Algorithm O(n^2):
+   * - Find the outermost bounding circle, the one with -1 as the key.
+   * - TODO:
    */
   sortCycloidByBoundingPriority() {
     this.cycloids.sort((a, b) => a.boundingCircleId - b.boundingCircleId);
   }
 
-  getSingleCycloidParamFromId(id: string) {
+  getSingleCycloidParamFromId(id: number | string) {
     const cycloid = this.cycloidsIdMap[id] as CycloidParams | undefined;
 
     return cycloid;

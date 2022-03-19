@@ -105,6 +105,7 @@ export default function DraggableSvgCircle({
       else {
         if (hoveredNeighborRef.current) {
           onOverNeighbor?.(hoveredNeighborRef.current);
+          onPointerOut?.();
           rerenderToggle();
         } else {
           setThisCirclePosition(centerPoint);

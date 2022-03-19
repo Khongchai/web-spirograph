@@ -19,7 +19,13 @@ export default class DrawNodeLevel {
 
   getLevel = (levelIndex: number) => this.levels[levelIndex];
 
-  retrieveNodeFromLevel = ({ level, key }: { level: number; key: string }) => {
+  retrieveNodeFromLevel = ({
+    level,
+    key,
+  }: {
+    level: number;
+    key: string | number;
+  }) => {
     const thisLevel = this.levels[level];
 
     if (!thisLevel) {

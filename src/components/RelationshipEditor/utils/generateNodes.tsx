@@ -59,7 +59,7 @@ export default function useGenerateNodes(
 
     for (let i = 0; i < cycloidParams.length; i++) {
       const thisCycloid = cycloidParams[i];
-      const currentDrawLevel = getDrawLevel(i, cycloidParams);
+      const currentDrawLevel = getDrawLevel(thisCycloid.id, cycloidControls);
 
       // For offsetting the node to be below the parent node
       const previousLevel = currentDrawLevel - 1;
@@ -70,6 +70,7 @@ export default function useGenerateNodes(
           (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
       };
 
+      // console.log("drawLevel: " + currentDrawLevel +  ", " + "cycloid id: " +  thisCycloid.id);
       levels.setNode({
         levelKey: thisCycloid.id.toString(),
         level: currentDrawLevel,

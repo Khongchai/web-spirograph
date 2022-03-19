@@ -1,17 +1,16 @@
-import CycloidParams from "../../../classes/CycloidParams";
+import React from "react";
+import CycloidControls from "../../../classes/cycloidControls";
 
 export default function getDrawLevel(
-  currentIndex: number,
-  cycloidParams: CycloidParams[]
+  currentId: number,
+  cycloidControls: React.MutableRefObject<CycloidControls>
 ) {
-  const parentIndex = cycloidParams[currentIndex].boundingCircleId;
+  const parentId =
+    cycloidControls.current.getSingleCycloidParamFromId(
+      currentId
+    )!.boundingCircleId;
 
-  const cycloidParamsCopy = [...cycloidParams];
-  const currentDrawLevel = _getCurrentDrawLevel(
-    parentIndex,
-    cycloidParamsCopy,
-    1
-  );
+  const currentDrawLevel = getCurrentDrawLevel(parentId, cycloidControls, 1);
 
   return currentDrawLevel;
 }
@@ -22,28 +21,21 @@ export default function getDrawLevel(
 
  * Ex:
  * If the grandparent node is the bounding circle (-1),
- * the current level should be 1
+ * the current level should be 2
  */
-function _getCurrentDrawLevel(
-  parentIndex: number,
-  cycloidParams: CycloidParams[],
+function getCurrentDrawLevel(
+  parentId: number,
+  cycloidControls: React.MutableRefObject<CycloidControls>,
   levelCounter: number
 ): number {
   if (levelCounter < 1) {
     throw new Error("levelCounter starts from 1");
   }
 
-  if (parentIndex === -1) return levelCounter;
+  if (parentId === -1) return levelCounter;
 
-  // const parentParams = cycloidParams[parentIndex];
-
-  let parentParams: CycloidParams | undefined;
-  for (let i = 0, length = cycloidParams.length; i < length; i++) {
-    if (cycloidParams[i].id === parentIndex) {
-      parentParams = cycloidParams.splice(i, 1)[0];
-      break;
-    }
-  }
+  let parentParams =
+    cycloidControls.current.getSingleCycloidParamFromId(parentId);
 
   if (!parentParams) {
     throw new Error("Cannot find parent");
@@ -51,13 +43,13 @@ function _getCurrentDrawLevel(
 
   const grandParentIndex = parentParams!.boundingCircleId;
 
-  if (parentIndex === grandParentIndex) {
+  if (parentId === grandParentIndex) {
     throw new Error("The parent of a cycloid can't be itself !");
   }
 
-  return _getCurrentDrawLevel(
+  return getCurrentDrawLevel(
     grandParentIndex,
-    cycloidParams,
+    cycloidControls,
     levelCounter + 1
   );
 }
