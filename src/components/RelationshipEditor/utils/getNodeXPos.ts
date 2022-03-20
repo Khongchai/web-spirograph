@@ -18,8 +18,6 @@ export default function organizeNodesPositionOnLevel(
 
   const gap = 100;
 
-  const shouldOffsetX = determineShouldOffsetX(nodesOnLevel);
-
   /**
    * This is to make sure that nodes that have the same parent stay on the same side.
    */
@@ -31,8 +29,20 @@ export default function organizeNodesPositionOnLevel(
       break;
     }
 
+    const shouldOffsetX = determineShouldOffsetX(node, nodesOnLevel);
+
     const parentXPosition = node.parentDrawNode!.pos.x;
-    const parentXOffset = shouldOffsetX ? node.pos.x - parentXPosition : 0;
+
+    if (!shouldOffsetX) {
+      node.pos = {
+        x: parentXPosition,
+        y: node.pos.y,
+      };
+
+      continue;
+    }
+
+    const parentXOffset = node.pos.x - parentXPosition;
 
     const xPos = node.pos.x + gap * i - parentXOffset;
     const xOffset = (gap / 2) * (currentLevelLength - 1);
@@ -46,41 +56,25 @@ export default function organizeNodesPositionOnLevel(
 }
 
 /**
- * Determine if we should offset the X in order to center our nodes by checking if
- * everything in the level shares the same parent.
- * If not, we offset the X to center the nodes.
- * else, there's no need to center it as it's better visually to let the nodes flow naturally.
  *
+ * Right now, it's just a simple O(n) algo. We can optimize this later.
+ *
+ * Check if other nodes on this level have the same parent.
  */
-function determineShouldOffsetX(nodes: DrawNode[]): boolean {
-  // let shouldOffsetX = false;
-  // const parentMap: Record<number, DrawNode | undefined> = {};
+function determineShouldOffsetX(
+  nodeToCheck: DrawNode,
+  allNodesOnTheSameLevel: DrawNode[]
+): boolean {
+  let amountOfNodesThatHaveTheSameParent = 0;
 
-  // nodes.forEach((node) => {
-  //   const parentId = node.ids.parentId;
-
-  //   if (!parentId) {
-  //     return;
-  //   }
-
-  //   const parent = parentMap[parentId!];
-  //   if (!parent) {
-  //     parentMap[parentId!] = node.parentDrawNode;
-  //   } else {
-  //     shouldOffsetX = true;
-  //   }
-  // });
-
-  // return shouldOffsetX;
-  const firstNodeParentId = nodes[0].ids.parentId;
-
-  for (let i = 1, length = nodes.length; i < length; i++) {
-    const node = nodes[i];
-    const hasSameParent = node.ids.parentId === firstNodeParentId;
-    if (!hasSameParent) {
-      return false;
+  const nodeToCheckId = nodeToCheck.ids.parentId;
+  for (let i = 1, length = allNodesOnTheSameLevel.length; i < length; i++) {
+    const node = allNodesOnTheSameLevel[i];
+    const hasSameParent = node.ids.parentId === nodeToCheckId;
+    if (hasSameParent) {
+      amountOfNodesThatHaveTheSameParent++;
     }
   }
 
-  return true;
+  return amountOfNodesThatHaveTheSameParent > 1;
 }

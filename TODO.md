@@ -2,7 +2,7 @@ Try writing tests for each of the utils as a start.
 
 Bug: Left nodes can't be dragged to the right, while right nodes always can be dragged over the left ones.... << postion alignment problem
 
-Bug: Nodes position in relationshipManager bug.
+Bug: Nodes position in relationshipManager bug. Check to see if it is caused by the new sorting method.
 
 Can now drag and drop but circles still won't rerender
 

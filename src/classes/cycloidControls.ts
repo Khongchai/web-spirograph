@@ -119,7 +119,7 @@ export default class CycloidControls {
    *  [{boundingCircleId: -1, id: 2}, {boundingCircleId: 0, id: 1}, {boundingCircleId: 2, id: 0}]
    * ```
    *
-   * Algorithm run time O(n + hlogh) where h is the height of the tree, or in this case, the number of DrawLevels.
+   * Algorithm runtime O(n + hlogh) where h is the height of the tree, or in this case, the number of DrawLevels.
    * - Find an object with the highest boundingCircleId.
    * - Trace back to the boundingCircle (-1), while storing everything along the path in an array.
    * - Sort the array by the boundingCircleId.
