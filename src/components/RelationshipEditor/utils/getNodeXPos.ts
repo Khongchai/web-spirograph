@@ -68,13 +68,12 @@ function determineShouldOffsetX(
   let amountOfNodesThatHaveTheSameParent = 0;
 
   const nodeToCheckId = nodeToCheck.ids.parentId;
-  for (let i = 1, length = allNodesOnTheSameLevel.length; i < length; i++) {
-    const node = allNodesOnTheSameLevel[i];
-    const hasSameParent = node.ids.parentId === nodeToCheckId;
-    if (hasSameParent) {
+
+  allNodesOnTheSameLevel.forEach((node) => {
+    if (node.ids.parentId === nodeToCheckId) {
       amountOfNodesThatHaveTheSameParent++;
     }
-  }
+  });
 
   return amountOfNodesThatHaveTheSameParent > 1;
 }
