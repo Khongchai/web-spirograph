@@ -34,13 +34,15 @@ export default class DrawNodeLevel {
 
     const thisNode = thisLevel[key];
     if (!thisNode) {
-      throw new Error(`Node with the key of: ${key} does not exist`);
+      throw new Error(
+        `Node with the key of: ${key} does not exist, or has not been set yet`
+      );
     }
 
     return thisNode;
   };
 
-  retrieveSingleNode = ({ key }: { key: string }) =>
+  retrieveSingleNode = ({ key }: { key: string | number }) =>
     this.allNodesAsKeyValuePairs[key];
 
   getAllNodes = () => this.allNodes;

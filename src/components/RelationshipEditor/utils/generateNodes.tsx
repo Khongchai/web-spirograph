@@ -61,25 +61,17 @@ export default function useGenerateNodes(
       const thisCycloid = cycloidParams[i];
       const currentDrawLevel = getDrawLevel(thisCycloid.id, cycloidControls);
 
-      // For offsetting the node to be below the parent node
-      const previousLevel = currentDrawLevel - 1;
-      const parentId = thisCycloid.boundingCircleId.toString();
       const nodeRelativePos = {
         x: initialNodePosition.x,
         y:
           (initialNodePosition.y + childAndParentYGap) * (currentDrawLevel + 1),
       };
 
-      // console.log("drawLevel: " + currentDrawLevel +  ", " + "cycloid id: " +  thisCycloid.id);
       levels.setNode({
         levelKey: thisCycloid.id.toString(),
         level: currentDrawLevel,
         drawNode: {
           currentDrawLevel,
-          parentDrawNode: levels.retrieveNodeFromLevel({
-            key: parentId,
-            level: previousLevel,
-          }),
           pos: nodeRelativePos,
           radius: thisCycloid.radius,
           ids: {
@@ -151,7 +143,7 @@ function getPositionedNodesAndLines(
           onOverNeighbor={(neighbor) => {
             // We must traverse the tree from the this cycloid to the bounding circle
             // to see if they contain itself, if it does, do nothing.
-            let parentId = neighbor?.parentDrawNode?.ids.thisNodeId;
+            let parentId = neighbor?.ids.parentId;
             let thisNodeIsAnAncestorOfNeighbor = false;
 
             while (true) {
@@ -172,7 +164,6 @@ function getPositionedNodesAndLines(
             }
             if (!thisNodeIsAnAncestorOfNeighbor) {
               thisCycloid!.boundingCircleId = neighbor.ids.thisNodeId;
-              cycloidControls.current.sortCycloidByBoundingPriority();
             }
           }}
           otherCirclesData={levels.getAllNodesExceptThis(node.ids.thisNodeId)}
@@ -180,8 +171,17 @@ function getPositionedNodesAndLines(
         />
       );
 
-      if (node.parentDrawNode) {
-        svgLines.push(<SvgLineFromNodeToParent key={key} node={node} />);
+      const parentNode = levels.retrieveSingleNode({
+        key: node.ids.parentId ?? "",
+      });
+      if (parentNode) {
+        svgLines.push(
+          <SvgLineFromNodeToParent
+            key={key}
+            node={node}
+            parentNode={parentNode}
+          />
+        );
       }
     });
   });

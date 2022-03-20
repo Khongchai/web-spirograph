@@ -104,6 +104,8 @@ export default class CycloidControls {
   }
 
   /**
+   * @deprecated this is not needed anymore as we do not need to reference the parent draw node directly anymore.
+   *
    * This is required every time the relationship is reassigned.
    *
    * We cannot just sort by the boundingCircleId as the the ids do not
@@ -135,11 +137,9 @@ export default class CycloidControls {
           : after;
       }
     ).id;
-
     const { objsAlongPath } = this.getTreeDistanceFromRoot(
       cycloidWithHighestBoundingCircleId
     );
-
     this.cycloids = [
       ...objsAlongPath,
       ...this.cycloids.filter((c) => !objsAlongPath.includes(c)),

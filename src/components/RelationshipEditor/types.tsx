@@ -7,15 +7,6 @@ export type DrawNode = {
    */
   currentDrawLevel: number;
 
-  /**
-   * The parent draw node.
-   *
-   * This is needed to position a node directly under its parent when there exist multiple nodes on the same level as its parent.
-   *
-   * If the node has no parent, then null (base bounding circle has no parents).
-   */
-  parentDrawNode?: DrawNode;
-
   pos: Vector2;
   radius: number;
 

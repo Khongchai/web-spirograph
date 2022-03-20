@@ -25,13 +25,15 @@ export default function organizeNodesPositionOnLevel(
 
   for (let i = 0; i < currentLevelLength; i++) {
     const node = nodesOnLevel[i];
-    if (!node.parentDrawNode) {
-      break;
+    if (node.ids.parentId == undefined) {
+      continue;
     }
 
     const shouldOffsetX = determineShouldOffsetX(node, nodesOnLevel);
 
-    const parentXPosition = node.parentDrawNode!.pos.x;
+    const parentXPosition = levels.retrieveSingleNode({
+      key: node.ids.parentId,
+    }).pos.x;
 
     if (!shouldOffsetX) {
       node.pos = {
@@ -67,10 +69,10 @@ function determineShouldOffsetX(
 ): boolean {
   let amountOfNodesThatHaveTheSameParent = 0;
 
-  const nodeToCheckId = nodeToCheck.ids.parentId;
+  const parentToCheck = nodeToCheck.ids.parentId;
 
   allNodesOnTheSameLevel.forEach((node) => {
-    if (node.ids.parentId === nodeToCheckId) {
+    if (node.ids.parentId === parentToCheck) {
       amountOfNodesThatHaveTheSameParent++;
     }
   });

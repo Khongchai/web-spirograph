@@ -4,12 +4,18 @@ import scaleDrawRadius from "./utils/scaleDrawRadius";
 /**
  * 1 is the child and 2 is the parent
  */
-export default function SvgLineFromNodeToParent({ node }: { node: DrawNode }) {
+export default function SvgLineFromNodeToParent({
+  node,
+  parentNode,
+}: {
+  node: DrawNode;
+  parentNode: DrawNode;
+}) {
   const { x: x1, y: y1 } = node.pos;
   const r1 = scaleDrawRadius(node.radius);
 
-  const { x: x2, y: y2 } = node.parentDrawNode!.pos;
-  const r2 = scaleDrawRadius(node.parentDrawNode!.radius);
+  const { x: x2, y: y2 } = parentNode.pos;
+  const r2 = scaleDrawRadius(parentNode.radius);
 
   const xOffsetScale = 5;
 
