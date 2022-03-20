@@ -11,7 +11,32 @@ import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
 
 /**
- *  For generating the tree graph for the relationship editor
+ * For generating the tree graph for the relationship editor.
+ *
+ * # Positioning
+ *
+ * All nodes are iterated over once and stored in a Record inside the DrawNodeLevel instance as a property.
+ *
+ * The levels are a list of objects, where each object is a level.
+ * Using a manager like levels, in which, the nodes are stored in maps.
+ * is better in that all we can retrieve some information related to any node at almost O(1) time.
+ *
+ * For example, we can retrieve all the nodes at level 3 at O(1) time
+ * to calculate the X position by checking if they have the same parents before we draw them.
+ *
+ * With breadth-first, all nodes in the previous levels will have to be traversed to find the nodes at the level we want.
+ *
+ * To use BFS, we'd also need to know a node's children, which is not possible with the current implementation.
+ * The current implementation is modeled after the physical spirograph relationship,
+ * where the child knows its parent, not vice versa. And this also helps with drawing, as we need to know
+ * the parent's position to draw the child and whether we should offsetX when there are multiple nodes that
+ * share the same parent.
+ *
+ * # Drawing
+ *
+ * For drawing, the current implementation is capable of drawing both depth-first and breadth-first.
+ * We are doing BF.
+ *
  */
 export default function useGenerateNodes(
   boundingCircle: BoundingCircle,
@@ -99,6 +124,7 @@ function getPositionedNodesAndLines(
   const svgLines: JSX.IntrinsicElements["line"][] = [];
   const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
 
+  // Draw nodes by level (same as breadth-first).
   levels.getAllLevels().forEach((l, levelIndex) => {
     organizeNodesPositionOnLevel(levels, levelIndex);
 

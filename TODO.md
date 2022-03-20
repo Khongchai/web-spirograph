@@ -1,4 +1,8 @@
+Removing or adding cycloid.
+
 Try writing tests for each of the utils as a start.
+
+Instead of a show-all button, make it so that you can kind of choose what to show and what not to show.
 
 Bug: Left nodes can't be dragged to the right, while right nodes always can be dragged over the left ones.... << postion alignment problem
 
