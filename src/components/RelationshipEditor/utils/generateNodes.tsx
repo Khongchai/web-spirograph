@@ -166,7 +166,7 @@ function getPositionedNodesAndLines(
               return;
             }
           }}
-          onOverNeighbor={(neighbor) => {
+          onOverNeighborAndReleased={(neighbor) => {
             // We must traverse the tree from the this cycloid to the bounding circle
             // to see if they contain itself, if it does, do nothing.
             let parentId = neighbor?.ids.parentId;
@@ -191,6 +191,24 @@ function getPositionedNodesAndLines(
             if (!thisNodeIsAnAncestorOfNeighbor) {
               thisCycloid!.boundingCircleId = neighbor.ids.thisNodeId;
             }
+          }}
+          onOverNeighborAndHeld={(neighbor) => {
+            const neighborCycloidParams =
+              cycloidControls.current.getSingleCycloidParamFromId(
+                neighbor.ids.thisNodeId
+              );
+
+            neighborCycloidParams &&
+              (neighborCycloidParams.boundingColor = colors.yellow);
+          }}
+          onOverNeighborAndCanceled={(neighbor) => {
+            const neighborCycloidParams =
+              cycloidControls.current.getSingleCycloidParamFromId(
+                neighbor.ids.thisNodeId
+              );
+
+            neighborCycloidParams &&
+              (neighborCycloidParams.boundingColor = colors.purple.light);
           }}
           otherCirclesData={levels.getAllNodesExceptThis(node.ids.thisNodeId)}
           isMoveable={!isBoundingCircle}

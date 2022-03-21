@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
 import { Vector2 } from "../../types/vector2";
+import useForceUpdate from "../../utils/hooks/useForceUpdate";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
 import useCheckCircleCircleCollision from "./utils/useCheckCircleCircleCollision";
@@ -26,15 +27,29 @@ interface DraggableSvgCircleInterface {
   onPointerEnter?: VoidFunction;
   onPointerOut?: VoidFunction;
   onPointerDown?: VoidFunction;
-  onOverNeighbor?: (neighbor: DrawNode) => void;
   otherCirclesData?: DrawNode[];
   isMoveable?: boolean;
+
+  /**
+   * When released the mouse over a neighbor node.
+   */
+  onOverNeighborAndReleased?: (neighbor: DrawNode) => void;
+  /**
+   * When the mouse is over a neighbor node and the mouse is being held.
+   */
+  onOverNeighborAndHeld?: (neighbor: DrawNode) => void;
+  /**
+   * When the mouse is over a neighbor node and then move somewhere else.
+   */
+  onOverNeighborAndCanceled?: (neighbor: DrawNode) => void;
 }
 
 /**
  * A moveable svg circle. Calls an onOverNeighbor callback when it is over another node
  *
  * It knows that it is over another node based on the provided DrawNode[] information
+ *
+ * Using svg is a mistake....shoulda stuck with canvas :'(
  */
 export default function DraggableSvgCircle({
   radius,
@@ -44,9 +59,11 @@ export default function DraggableSvgCircle({
   onPointerEnter,
   onPointerOut,
   onPointerDown,
-  onOverNeighbor,
   otherCirclesData = [],
   isMoveable = true,
+  onOverNeighborAndHeld,
+  onOverNeighborAndReleased,
+  onOverNeighborAndCanceled,
 }: DraggableSvgCircleInterface) {
   const [isPointerDown, setIsPointerDown] = useState(false);
 
@@ -54,7 +71,10 @@ export default function DraggableSvgCircle({
   const pointerDownPosRef = useRef<Vector2>(centerPoint);
   const hoveredNeighborRef = useRef<DrawNode | null>(null);
 
+  // Update global
   const rerenderToggle = useContext(RerenderToggle);
+  // Update local
+  const forceUpdate = useForceUpdate();
 
   /**
    * Using state for this because we need to rerender everytime the circle is moved
@@ -89,9 +109,13 @@ export default function DraggableSvgCircle({
     radius,
     otherCirclesData,
     (neighbor) => {
+      onOverNeighborAndHeld?.(neighbor);
       hoveredNeighborRef.current = neighbor;
+      forceUpdate();
     },
     () => {
+      hoveredNeighborRef.current &&
+        onOverNeighborAndCanceled?.(hoveredNeighborRef.current!);
       hoveredNeighborRef.current = null;
     }
   );
@@ -104,7 +128,7 @@ export default function DraggableSvgCircle({
       // Call the onOverNeighbor callback if the circle is over another node
       else {
         if (hoveredNeighborRef.current) {
-          onOverNeighbor?.(hoveredNeighborRef.current);
+          onOverNeighborAndReleased?.(hoveredNeighborRef.current);
           onPointerOut?.();
           rerenderToggle();
         } else {
