@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { RerenderToggle } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/cycloidControls";
+import CycloidControlsData from "../../classes/CycloidControls";
 import ContentArray from "./shared/contentArray";
 import Content from "./shared/control";
 import ContentContainer from "./shared/ControlContainer";
@@ -56,7 +56,9 @@ const Global: React.FC<globalProps> = ({
         />
         <ContentArray
           paramName={"Current Cycloid"}
-          values={cycloidControls.cycloids.map((cycloid) => cycloid.id)}
+          values={cycloidControls.cycloidManager
+            .getAllCycloidParams()
+            .map((cycloid) => cycloid.id)}
           targetValue={cycloidControls.currentCycloidId}
           onClick={(newId: number) => {
             cycloidControls.currentCycloidId = newId;

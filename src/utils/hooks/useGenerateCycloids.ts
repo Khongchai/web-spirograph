@@ -1,6 +1,6 @@
 import { MutableRefObject, useMemo } from "react";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControlsData from "../../classes/cycloidControls";
+import CycloidControlsData from "../../classes/CycloidControls";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 
 /*
@@ -14,18 +14,20 @@ export default function useGenerateCycloids(
   let cycloids = useMemo(() => {
     const cycloids: Cycloid[] = [];
 
-    cycloidControls.current.cycloids.forEach((c) => {
-      let cycloid = new Cycloid(
-        c.radius,
-        c.rotationDirection,
-        //Use this for now, will refactor later.
-        outerMostBoundingCircle,
-        false,
-        c.boundingColor,
-        c.id
-      );
-      cycloids.push(cycloid);
-    });
+    cycloidControls.current.cycloidManager
+      .getAllCycloidParams()
+      .forEach((c) => {
+        let cycloid = new Cycloid(
+          c.radius,
+          c.rotationDirection,
+          //Use this for now, will refactor later.
+          outerMostBoundingCircle,
+          false,
+          c.boundingColor,
+          c.id
+        );
+        cycloids.push(cycloid);
+      });
 
     return cycloids;
   }, []);

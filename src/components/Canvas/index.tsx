@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/cycloidControls";
+import CycloidControlsData from "../../classes/CycloidControls";
 import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../utils/hooks/useHandlePan";

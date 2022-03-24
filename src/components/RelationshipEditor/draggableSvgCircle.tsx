@@ -24,9 +24,9 @@ interface DraggableSvgCircleInterface {
   centerPoint: Vector2;
   color?: string;
   thickness?: number;
-  onPointerEnter?: VoidFunction;
-  onPointerOut?: VoidFunction;
-  onPointerDown?: VoidFunction;
+  onPointerEnter?: (node?: DrawNode | null) => void;
+  onPointerOut?: (node?: DrawNode | null) => void;
+  onPointerDown?: (node?: DrawNode | null) => void;
   otherCirclesData?: DrawNode[];
   isMoveable?: boolean;
 
@@ -129,7 +129,7 @@ export default function DraggableSvgCircle({
       else {
         if (hoveredNeighborRef.current) {
           onOverNeighborAndReleased?.(hoveredNeighborRef.current);
-          onPointerOut?.();
+          onPointerOut?.(hoveredNeighborRef.current);
           rerenderToggle();
         } else {
           setThisCirclePosition(centerPoint);
@@ -148,8 +148,8 @@ export default function DraggableSvgCircle({
   return (
     <circle
       ref={svgRef}
-      onPointerEnter={onPointerEnter}
-      onPointerOut={onPointerOut}
+      onPointerEnter={() => onPointerEnter?.(hoveredNeighborRef.current)}
+      onPointerOut={() => onPointerOut?.(hoveredNeighborRef.current)}
       onPointerDown={(e) => {
         e.preventDefault();
         handlePointerDownOrUp(e, true);

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControls from "../../classes/cycloidControls";
+import CycloidControls from "../../classes/CycloidControls";
 import CycloidParams from "../../classes/CycloidParams";
 
 /**

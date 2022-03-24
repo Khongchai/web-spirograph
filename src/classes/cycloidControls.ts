@@ -1,5 +1,8 @@
 import BoundingCircle from "./BoundingCircle";
-import CycloidParams from "./CycloidParams";
+import CycloidParams, {
+  CycloidParamsArgs,
+  CycloidParamsManager,
+} from "./CycloidParams";
 
 // CycloidControlsData but turned into a class
 export default class CycloidControls {
@@ -10,9 +13,11 @@ export default class CycloidControls {
   /*
    * All drawable cycloids.
    */
-  cycloids: CycloidParams[];
+  cycloidManager: CycloidParamsManager;
   /**
    * A map for the cycloids for O(1) retrieval.
+   *
+   * TODO this should be inside the manager
    */
   private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams> = {};
 
@@ -74,7 +79,7 @@ export default class CycloidControls {
     showAllCycloids,
   }: {
     outerMostBoundingCircle: BoundingCircle;
-    cycloids: CycloidParams[];
+    cycloids: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[];
     animationSpeed: number;
     currentCycloidId: number;
     mode: "Animated" | "Instant";
@@ -87,7 +92,6 @@ export default class CycloidControls {
     };
   }) {
     this.outerMostBoundingCircle = outerMostBoundingCircle;
-    this.cycloids = cycloids;
     this.animationSpeed = animationSpeed;
     this.currentCycloidId = currentCycloidId;
     this.mode = mode;
@@ -97,9 +101,13 @@ export default class CycloidControls {
     this.showAllCycloids = showAllCycloids;
     this.programOnly = programOnly;
 
-    this.cycloids.forEach((c) => {
+    this.cycloidManager = new CycloidParamsManager();
+    this.cycloidManager.loadCycloidParamsFromArgs(cycloids);
+
+    this.cycloidManager.getAllCycloidParams().forEach((c) => {
       this.cycloidsIdMap[c.id] = c;
     });
+
     this.cycloidsIdMap["-1"] = this.outerMostBoundingCircle;
   }
 
@@ -130,20 +138,22 @@ export default class CycloidControls {
    * - Profit.
    */
   sortCycloidByBoundingPriority() {
-    const cycloidWithHighestBoundingCircleId = this.cycloids.reduce(
-      (before, after) => {
+    const cycloidWithHighestBoundingCircleId = this.cycloidManager
+      .getAllCycloidParams()
+      .reduce((before, after) => {
         return before.boundingCircleId > after.boundingCircleId
           ? before
           : after;
-      }
-    ).id;
+      }).id;
     const { objsAlongPath } = this.getTreeDistanceFromRoot(
       cycloidWithHighestBoundingCircleId
     );
-    this.cycloids = [
+    this.cycloidManager.setAllCycloidParams([
       ...objsAlongPath,
-      ...this.cycloids.filter((c) => !objsAlongPath.includes(c)),
-    ];
+      ...this.cycloidManager
+        .getAllCycloidParams()
+        .filter((c) => !objsAlongPath.includes(c)),
+    ]);
   }
   /**
    * Retrieve both the distance from the root and the objects that are in the path.

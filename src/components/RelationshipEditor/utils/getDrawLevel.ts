@@ -1,5 +1,5 @@
 import React from "react";
-import CycloidControls from "../../../classes/cycloidControls";
+import CycloidControls from "../../../classes/CycloidControls";
 
 export default function getDrawLevel(
   currentId: number,

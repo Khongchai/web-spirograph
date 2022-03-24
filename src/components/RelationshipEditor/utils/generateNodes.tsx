@@ -2,13 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import BoundingCircle from "../../../classes/BoundingCircle";
 import colors from "../../../constants/colors";
 import { Rerender } from "../../../contexts/rerenderToggle";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/CycloidControls";
 import DrawNodeLevel from "../classes/drawNodeLevel";
 import DraggableSvgCircle from "../draggableSvgCircle";
 import SvgLineFromNodeToParent from "../svgLine";
 import getDrawLevel from "./getDrawLevel";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";
+import { DrawNode } from "../types";
 
 /**
  * For generating the tree graph for the relationship editor.
@@ -65,7 +66,8 @@ export default function useGenerateNodes(
     // 0 is the bounding circle's level
     const levels = new DrawNodeLevel();
 
-    const cycloidParams = cycloidControls.current.cycloids;
+    const cycloidParams =
+      cycloidControls.current.cycloidManager.getAllCycloidParams();
 
     // Push the bounding circle to the top most level
     levels.setNode({
@@ -232,6 +234,7 @@ function getPositionedNodesAndLines(
 
   return {
     svgCircles,
+
     svgLines,
   };
 }

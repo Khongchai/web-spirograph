@@ -4,6 +4,17 @@
 
 import { rotationDirection as RotationDirection } from "../types/rotationDirection";
 
+export interface CycloidParamsArgs {
+  rodLengthScale: number;
+  rotationDirection: RotationDirection;
+  radius: number;
+  animationSpeedScale: number;
+  moveOutSideOfParent: boolean;
+  boundingColor: string;
+  id: number;
+  boundingCircleId: number;
+}
+
 export default class CycloidParams {
   /*
    * Rod length's scale. This allows the rod to be scaled out of physical possibility, zum Beispiel, out of the cycloid.
@@ -44,16 +55,7 @@ export default class CycloidParams {
      * This is important, as it will be used to find this element even when the array is sorted.
      */
     id: index,
-  }: {
-    rodLengthScale: number;
-    rotationDirection: RotationDirection;
-    radius: number;
-    animationSpeedScale: number;
-    moveOutSideOfParent: boolean;
-    boundingCircleId: number;
-    boundingColor: string;
-    id: number;
-  }) {
+  }: CycloidParamsArgs) {
     this.rodLengthScale = rodLengthScale;
     this.rotationDirection = rotationDirection;
     this.radius = radius;
@@ -68,5 +70,73 @@ export default class CycloidParams {
         "Either a cycloid has itself as its bounding circle or there is another cycloid with the same id"
       );
     }
+  }
+}
+
+//////////////////////////////// Management Zone //////////////////////////////////
+
+class IdManager {
+  private idCounter: number;
+
+  incrementId = () => this.idCounter++;
+  decrementId = () => this.idCounter--;
+
+  getId = () => this.idCounter;
+
+  constructor() {
+    this.idCounter = 0;
+  }
+}
+
+/**
+ * A mediator & a factory
+ *
+ * Manages all cycloid params.
+ *
+ */
+export class CycloidParamsManager {
+  private cycloidParams: CycloidParams[] = [];
+
+  private idManager: IdManager = new IdManager();
+
+  addCycloid(props: Omit<CycloidParamsArgs, "id" | "boundingCircleId">) {
+    const { generatedId, boundingCircleId } = this.generateId();
+    this.idManager.incrementId();
+
+    const newCycloidParams = new CycloidParams({
+      ...props,
+      id: generatedId,
+      boundingCircleId,
+    });
+
+    this.cycloidParams.push(newCycloidParams);
+  }
+  generateId() {
+    const generatedId = this.idManager.getId();
+    const boundingCircleId = generatedId - 1;
+
+    return { generatedId, boundingCircleId };
+  }
+
+  removeCycloid(cycloidParamId: number) {
+    this.cycloidParams = this.cycloidParams.filter(
+      ({ id }) => id !== cycloidParamId
+    );
+
+    this.idManager.decrementId();
+  }
+
+  getAllCycloidParams() {
+    return this.cycloidParams;
+  }
+
+  setAllCycloidParams(cycloidParams: CycloidParams[]) {
+    this.cycloidParams = cycloidParams;
+  }
+
+  loadCycloidParamsFromArgs(
+    args: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[]
+  ) {
+    args.forEach((a) => this.addCycloid(a));
   }
 }

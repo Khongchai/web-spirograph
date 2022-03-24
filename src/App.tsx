@@ -1,13 +1,11 @@
 import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "./classes/BoundingCircle";
-import CycloidParams from "./classes/CycloidParams";
+import CycloidControls from "./classes/CycloidControls";
 import Canvas from "./components/Canvas";
 import ControlsOrRelationshipEditor from "./components/ControlsOrRelationshipEditor";
 import colors from "./constants/colors";
 import { Rerender, RerenderToggle } from "./contexts/rerenderToggle";
 import "./index.css";
-import CycloidControlsData from "./classes/cycloidControls";
-import CycloidControls from "./classes/cycloidControls";
 
 const defaultGlobalAnimationSpeed = 1;
 function App() {
@@ -18,7 +16,7 @@ function App() {
   /**
    * To be referenced by anything that would like to read from or write to the draw data.
    */
-  const cycloidControls = useRef<CycloidControlsData>(
+  const cycloidControls = useRef<CycloidControls>(
     new CycloidControls({
       outerMostBoundingCircle: new BoundingCircle(
         {
@@ -29,56 +27,46 @@ function App() {
         colors.purple.light
       ),
       cycloids: [
-        new CycloidParams({
+        {
           rodLengthScale: 0.5,
           rotationDirection: "clockwise",
           radius: 140,
           animationSpeedScale: 0.4,
           moveOutSideOfParent: false,
           boundingColor: colors.purple.light,
-          id: 0,
-          boundingCircleId: -1,
-        }),
-        new CycloidParams({
+        },
+        {
           rodLengthScale: 0.8,
           rotationDirection: "counterclockwise",
           radius: 50,
           animationSpeedScale: 0.5,
           moveOutSideOfParent: false,
           boundingColor: colors.purple.light,
-          id: 1,
-          boundingCircleId: 0,
-        }),
-        new CycloidParams({
+        },
+        {
           rodLengthScale: 1.2,
           rotationDirection: "clockwise",
           radius: 20,
           animationSpeedScale: 0.1,
           moveOutSideOfParent: false,
           boundingColor: colors.purple.light,
-          id: 2,
-          boundingCircleId: -1,
-        }),
-        new CycloidParams({
+        },
+        {
           rodLengthScale: 1.2,
           rotationDirection: "counterclockwise",
           radius: 60,
           animationSpeedScale: 0.3,
           moveOutSideOfParent: true,
           boundingColor: colors.purple.light,
-          id: 3,
-          boundingCircleId: -1,
-        }),
-        new CycloidParams({
+        },
+        {
           rodLengthScale: 2,
           rotationDirection: "clockwise",
           radius: 30,
           animationSpeedScale: 0.7,
           moveOutSideOfParent: true,
           boundingColor: colors.purple.light,
-          id: 4,
-          boundingCircleId: 3,
-        }),
+        },
       ],
       animationSpeed: defaultGlobalAnimationSpeed,
       currentCycloidId: 0,
@@ -149,7 +137,7 @@ function App() {
 export default App;
 
 function useAnimateMenuToggling(
-  cycloidControls: React.MutableRefObject<CycloidControlsData>,
+  cycloidControls: React.MutableRefObject<CycloidControls>,
   rerender: () => void
 ) {
   const originalSpeedRef = useRef<number | undefined>(undefined);
