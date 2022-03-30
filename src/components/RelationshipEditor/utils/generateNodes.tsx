@@ -137,9 +137,10 @@ function getPositionedNodesAndLines(
       const cycloidId = node.ids.thisNodeId;
       const isBoundingCircle = cycloidId === -1;
 
-      const thisCycloid = cycloidControls.current.getSingleCycloidParamFromId(
-        cycloidId.toString()
-      );
+      const thisCycloid =
+        cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
+          cycloidId.toString()
+        );
 
       svgCircles.push(
         <DraggableSvgCircle
@@ -196,7 +197,7 @@ function getPositionedNodesAndLines(
           }}
           onOverNeighborAndHeld={(neighbor) => {
             const neighborCycloidParams =
-              cycloidControls.current.getSingleCycloidParamFromId(
+              cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
                 neighbor.ids.thisNodeId
               );
 
@@ -205,7 +206,7 @@ function getPositionedNodesAndLines(
           }}
           onOverNeighborAndCanceled={(neighbor) => {
             const neighborCycloidParams =
-              cycloidControls.current.getSingleCycloidParamFromId(
+              cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
                 neighbor.ids.thisNodeId
               );
 

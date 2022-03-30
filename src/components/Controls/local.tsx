@@ -40,7 +40,7 @@ const Local: React.FC<{
         />
         <Control
           paramName={"Move Outside of Parent"}
-          booleanValue={cycloid.moveOutSideOfParent}
+          defaultBooleanValue={cycloid.moveOutSideOfParent}
           onClick={(newValue: boolean) => {
             cycloid.moveOutSideOfParent = newValue;
             rerenderToggle();

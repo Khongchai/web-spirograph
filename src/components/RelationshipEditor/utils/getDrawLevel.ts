@@ -6,7 +6,7 @@ export default function getDrawLevel(
   cycloidControls: React.MutableRefObject<CycloidControls>
 ) {
   const parentId =
-    cycloidControls.current.getSingleCycloidParamFromId(
+    cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
       currentId
     )!.boundingCircleId;
 
@@ -35,7 +35,9 @@ function getCurrentDrawLevel(
   if (parentId === -1) return levelCounter;
 
   let parentParams =
-    cycloidControls.current.getSingleCycloidParamFromId(parentId);
+    cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
+      parentId
+    );
 
   if (!parentParams) {
     throw new Error("Cannot find parent");

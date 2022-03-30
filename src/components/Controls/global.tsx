@@ -2,11 +2,10 @@ import React, { useContext } from "react";
 import { RerenderToggle } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../classes/CycloidControls";
 import ContentArray from "./shared/contentArray";
-import Content from "./shared/control";
-import ContentContainer from "./shared/ControlContainer";
+import Settings from "./shared/control";
+import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
-import CycloidParams from "../../classes/CycloidParams";
 
 interface globalProps {
   cycloidControls: CycloidControlsData;
@@ -23,22 +22,22 @@ const Global: React.FC<globalProps> = ({
   return (
     <ControlSection>
       <Heading tooltipText={tooltipText}>Global</Heading>
-      <ContentContainer>
-        <Content
+      <SettingsContainer>
+        <Settings
           paramName={"Animation Speed Scale"}
           numberValue={cycloidControls.animationSpeed}
           onDrag={(newValue: number) =>
             (cycloidControls.animationSpeed = newValue)
           }
         />
-        <Content
+        <Settings
           onClick={(newValue) =>
             (cycloidControls.clearTracedPathOnParamsChange = newValue)
           }
           paramName="Clear Traced Path on Params Change"
-          booleanValue={cycloidControls.clearTracedPathOnParamsChange}
+          defaultBooleanValue={cycloidControls.clearTracedPathOnParamsChange}
         />
-        <Content
+        <Settings
           onDrag={(newValue: number) => {
             cycloidControls.outerMostBoundingCircle.setRadius(newValue);
             rerenderToggle();
@@ -46,13 +45,13 @@ const Global: React.FC<globalProps> = ({
           numberValue={cycloidControls.outerMostBoundingCircle.getRadius()}
           paramName="Outer Bounding Circle Radius"
         />
-        <Content
+        <Settings
           onClick={(newValue) => {
             cycloidControls.showAllCycloids = newValue;
             rerenderToggle();
           }}
           paramName="Show all cycloids"
-          booleanValue={cycloidControls.showAllCycloids}
+          defaultBooleanValue={cycloidControls.showAllCycloids}
         />
         <ContentArray
           paramName={"Current Cycloid"}
@@ -71,7 +70,7 @@ const Global: React.FC<globalProps> = ({
             }
           }}
         />
-      </ContentContainer>
+      </SettingsContainer>
     </ControlSection>
   );
 };

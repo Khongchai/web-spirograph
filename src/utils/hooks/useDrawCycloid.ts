@@ -63,8 +63,9 @@ export default function useDrawCanvas(
             if (cycloidControls.current.scaffold === "Showing") {
               cycloid.showBounding(
                 ctx,
-                curControls.getSingleCycloidParamFromId(cycloid.getId())
-                  ?.boundingColor
+                curControls.cycloidManager.getSingleCycloidParamFromId(
+                  cycloid.getId()
+                )?.boundingColor
               );
               cycloid.showRod(ctx);
               cycloid.showPoint(ctx);

@@ -1,6 +1,6 @@
 import React from "react";
 
-const ContentContainer: React.FC = ({ children }) => {
+const SettingsContainer: React.FC = ({ children }) => {
   return (
     <div className="content-container" style={{ marginTop: "24.05px" }}>
       {children}
@@ -8,4 +8,4 @@ const ContentContainer: React.FC = ({ children }) => {
   );
 };
 
-export default ContentContainer;
+export default SettingsContainer;

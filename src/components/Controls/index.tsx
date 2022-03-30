@@ -12,9 +12,10 @@ interface ControlsProps {
 
 const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   const id = cycloidControls.current.currentCycloidId;
-  const cycloid = cycloidControls.current.getSingleCycloidParamFromId(
-    id.toString()
-  );
+  const cycloid =
+    cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
+      id.toString()
+    );
   if (!cycloid) throw new Error(`Cycloid of id ${id} not found`);
 
   /**

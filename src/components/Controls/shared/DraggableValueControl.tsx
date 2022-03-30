@@ -3,7 +3,7 @@ import useStateEffect from "./utils/useStateEffect";
 
 interface DraggableValueProps {
   value: number;
-  step: number;
+  step?: number;
   onDrag: (newValue: number) => void;
   constraints?: { min: number; max: number };
 }
@@ -17,7 +17,7 @@ interface DraggableValueProps {
 const DraggableValue: React.FC<DraggableValueProps> = ({
   value,
   onDrag,
-  step: steps,
+  step,
   constraints,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);
@@ -29,12 +29,12 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
       e,
       pointerDownPos,
       dragValue,
-      steps,
       (newValue: number) => {
         setDragValue(newValue);
         onDrag(newValue);
       },
-      constraints
+      constraints,
+      step
     );
   };
 
@@ -68,15 +68,15 @@ function _manageDrag(
   e: PointerEvent,
   pointerDownPos: React.MutableRefObject<number>,
   valueOnMouseDown: number,
-  steps: number,
   setDragValueCallback: (newValue: number) => void,
-  constraints?: { min: number; max: number }
+  constraints?: { min: number; max: number },
+  steps?: number
 ) {
   const maxDecimal = 0.001;
   const maxDecimalPlaces = 100;
 
   const difference = e.clientX - pointerDownPos.current;
-  const differenceStepped = difference * steps;
+  const differenceStepped = difference * (steps ?? 1);
   const newValue =
     valueOnMouseDown + roundNearest(differenceStepped, maxDecimal);
   const newValueRounded =

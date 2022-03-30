@@ -1,7 +1,7 @@
 import React from "react";
 import CycloidControlsData from "../../classes/CycloidControls";
 import useForceUpdate from "../../utils/hooks/useForceUpdate";
-import ContentContainer from "./shared/ControlContainer";
+import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
@@ -24,7 +24,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
   const forceUpdate = useForceUpdate();
   return (
     <ControlSection>
-      <ContentContainer>
+      <SettingsContainer>
         <Heading tooltipText={modeTooltipText}>Mode</Heading>
         <SelectionButton
           blur={cycloidControls.mode !== "Animated"}
@@ -42,8 +42,8 @@ const NonCycloidControls: React.FC<miscProps> = ({
             forceUpdate();
           }}
         />
-      </ContentContainer>
-      <ContentContainer>
+      </SettingsContainer>
+      <SettingsContainer>
         <Heading tooltipText={showScaffoldTooltipText}>Show Scaffold</Heading>
         <SelectionButton
           blur={cycloidControls.scaffold !== "Showing"}
@@ -61,7 +61,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
           }}
           innerHTML={"Hidden"}
         />
-      </ContentContainer>
+      </SettingsContainer>
     </ControlSection>
   );
 };

@@ -3,6 +3,7 @@
  */
 
 import { rotationDirection as RotationDirection } from "../types/rotationDirection";
+import BoundingCircle from "./BoundingCircle";
 
 export interface CycloidParamsArgs {
   rodLengthScale: number;
@@ -99,6 +100,11 @@ export class CycloidParamsManager {
 
   private idManager: IdManager = new IdManager();
 
+  /**
+   * A map for the cycloids for O(1) retrieval.
+   */
+  private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams> = {};
+
   addCycloid(props: Omit<CycloidParamsArgs, "id" | "boundingCircleId">) {
     const { generatedId, boundingCircleId } = this.generateId();
     this.idManager.incrementId();
@@ -134,9 +140,26 @@ export class CycloidParamsManager {
     this.cycloidParams = cycloidParams;
   }
 
+  /**
+   *  Load cycloid params with aut-generated ids
+   */
   loadCycloidParamsFromArgs(
-    args: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[]
+    args: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[],
+    boundingCircleId: number,
+    boundingCircle: BoundingCircle
   ) {
     args.forEach((a) => this.addCycloid(a));
+    this.getAllCycloidParams().forEach((c) => {
+      this.cycloidsIdMap[c.id] = c;
+    });
+
+    // Explicitly set bounding circle
+    this.cycloidsIdMap[boundingCircleId] = boundingCircle;
+  }
+
+  getSingleCycloidParamFromId(id: number | string) {
+    const cycloid = this.cycloidsIdMap[id] as CycloidParams | undefined;
+
+    return cycloid;
   }
 }

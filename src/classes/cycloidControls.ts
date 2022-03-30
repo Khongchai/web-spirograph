@@ -14,12 +14,6 @@ export default class CycloidControls {
    * All drawable cycloids.
    */
   cycloidManager: CycloidParamsManager;
-  /**
-   * A map for the cycloids for O(1) retrieval.
-   *
-   * TODO this should be inside the manager
-   */
-  private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams> = {};
 
   /*
    * The global animation speed.
@@ -102,13 +96,11 @@ export default class CycloidControls {
     this.programOnly = programOnly;
 
     this.cycloidManager = new CycloidParamsManager();
-    this.cycloidManager.loadCycloidParamsFromArgs(cycloids);
-
-    this.cycloidManager.getAllCycloidParams().forEach((c) => {
-      this.cycloidsIdMap[c.id] = c;
-    });
-
-    this.cycloidsIdMap["-1"] = this.outerMostBoundingCircle;
+    this.cycloidManager.loadCycloidParamsFromArgs(
+      cycloids,
+      -1,
+      outerMostBoundingCircle
+    );
   }
 
   /**
@@ -137,69 +129,63 @@ export default class CycloidControls {
    * - ???
    * - Profit.
    */
-  sortCycloidByBoundingPriority() {
-    const cycloidWithHighestBoundingCircleId = this.cycloidManager
-      .getAllCycloidParams()
-      .reduce((before, after) => {
-        return before.boundingCircleId > after.boundingCircleId
-          ? before
-          : after;
-      }).id;
-    const { objsAlongPath } = this.getTreeDistanceFromRoot(
-      cycloidWithHighestBoundingCircleId
-    );
-    this.cycloidManager.setAllCycloidParams([
-      ...objsAlongPath,
-      ...this.cycloidManager
-        .getAllCycloidParams()
-        .filter((c) => !objsAlongPath.includes(c)),
-    ]);
-  }
-  /**
-   * Retrieve both the distance from the root and the objects that are in the path.
-   */
-  private getTreeDistanceFromRoot(
-    thisCycloidId: number | string,
-    distanceAsLevel = 0,
-    objsAlongPath: CycloidParams[] = []
-  ): { distanceAsLevel: number; objsAlongPath: CycloidParams[] } {
-    const cycloid = this.cycloidsIdMap[thisCycloidId] as
-      | CycloidParams
-      | undefined;
+  // sortCycloidByBoundingPriority() {
+  //   const cycloidWithHighestBoundingCircleId = this.cycloidManager
+  //     .getAllCycloidParams()
+  //     .reduce((before, after) => {
+  //       return before.boundingCircleId > after.boundingCircleId
+  //         ? before
+  //         : after;
+  //     }).id;
+  //   const { objsAlongPath } = this.getTreeDistanceFromRoot(
+  //     cycloidWithHighestBoundingCircleId
+  //   );
+  //   this.cycloidManager.setAllCycloidParams([
+  //     ...objsAlongPath,
+  //     ...this.cycloidManager
+  //       .getAllCycloidParams()
+  //       .filter((c) => !objsAlongPath.includes(c)),
+  //   ]);
+  // }
+  // /**
+  //  * Retrieve both the distance from the root and the objects that are in the path.
+  //  */
+  // private getTreeDistanceFromRoot(
+  //   thisCycloidId: number | string,
+  //   distanceAsLevel = 0,
+  //   objsAlongPath: CycloidParams[] = []
+  // ): { distanceAsLevel: number; objsAlongPath: CycloidParams[] } {
+  //   const cycloid = this.cycloidsIdMap[thisCycloidId] as
+  //     | CycloidParams
+  //     | undefined;
 
-    if (!cycloid) {
-      throw new Error("Cycloid not found");
-    }
+  //   if (!cycloid) {
+  //     throw new Error("Cycloid not found");
+  //   }
 
-    const idIsRootId = thisCycloidId === -1;
+  //   const idIsRootId = thisCycloidId === -1;
 
-    if (idIsRootId) {
-      return {
-        distanceAsLevel: 0,
-        objsAlongPath: [],
-      };
-    }
+  //   if (idIsRootId) {
+  //     return {
+  //       distanceAsLevel: 0,
+  //       objsAlongPath: [],
+  //     };
+  //   }
 
-    const { boundingCircleId } = cycloid;
-    objsAlongPath.unshift(cycloid);
+  //   const { boundingCircleId } = cycloid;
+  //   objsAlongPath.unshift(cycloid);
 
-    const parentIsBoundingCircle = cycloid.boundingCircleId === -1;
-    if (parentIsBoundingCircle)
-      return {
-        distanceAsLevel,
-        objsAlongPath,
-      };
+  //   const parentIsBoundingCircle = cycloid.boundingCircleId === -1;
+  //   if (parentIsBoundingCircle)
+  //     return {
+  //       distanceAsLevel,
+  //       objsAlongPath,
+  //     };
 
-    return this.getTreeDistanceFromRoot(
-      boundingCircleId,
-      distanceAsLevel + 1,
-      objsAlongPath
-    );
-  }
-
-  getSingleCycloidParamFromId(id: number | string) {
-    const cycloid = this.cycloidsIdMap[id] as CycloidParams | undefined;
-
-    return cycloid;
-  }
+  //   return this.getTreeDistanceFromRoot(
+  //     boundingCircleId,
+  //     distanceAsLevel + 1,
+  //     objsAlongPath
+  //   );
+  // }
 }

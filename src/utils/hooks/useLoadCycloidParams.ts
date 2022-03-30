@@ -58,7 +58,7 @@ export default function useLoadCycloidParams(
         moveOutSideOfParent,
         id,
         boundingCircleId,
-      } = cycloidControls.current.getSingleCycloidParamFromId(
+      } = cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
         cycloid.getId().toString()
       )!;
 
