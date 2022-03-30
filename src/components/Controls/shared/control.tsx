@@ -3,19 +3,19 @@ import BooleanValueControl from "../BooleanValueControl";
 import SidebySideButtonsControl from "../SidebySideButtonsControl";
 import DraggableValue from "./DraggableValueControl";
 
-type DragBehavior = {
+export type DragBehavior = {
   onDrag: (newValue: number) => void;
   numberValue: number;
   constraints?: { min: number; max: number };
   step?: number;
 };
 
-type BooleanSwitchBehavior = {
+export type BooleanSwitchBehavior = {
   defaultBooleanValue: boolean;
   onClick: (newValue: boolean) => void;
 };
 
-type SidebySideButtonsVariant = {
+export type SidebySideButtonsVariant = {
   onLeftClicked: VoidFunction;
   onRightClicked: VoidFunction;
 };
@@ -33,7 +33,7 @@ const Settings: React.FC<SettingsType> = (props) => {
       <Wrapper
         children={
           <BooleanValueControl
-            value={props.defaultBooleanValue}
+            defaultBooleanValue={props.defaultBooleanValue}
             onClick={props.onClick!}
           />
         }
@@ -57,7 +57,12 @@ const Settings: React.FC<SettingsType> = (props) => {
   } else {
     return (
       <Wrapper
-        children={<SidebySideButtonsControl />}
+        children={
+          <SidebySideButtonsControl
+            onLeftClicked={props.onLeftClicked}
+            onRightClicked={props.onRightClicked}
+          />
+        }
         paramName={props.paramName}
       />
     );
@@ -74,7 +79,7 @@ function Wrapper({
   paramName: string;
 }) {
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row items-center">
       <h2 className="font-bold text-base mr-1.5">{paramName}: </h2>
       <div>{children}</div>
     </div>

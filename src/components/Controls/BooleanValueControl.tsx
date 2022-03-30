@@ -1,16 +1,12 @@
 import React from "react";
+import { BooleanSwitchBehavior } from "./shared/control";
 import useStateEffect from "./shared/utils/useStateEffect";
 
-interface BooleanValueControlProps {
-  value: boolean;
-  onClick: (newValue: boolean) => void;
-}
-
-const BooleanValueControl: React.FC<BooleanValueControlProps> = ({
-  value,
+const BooleanValueControl: React.FC<BooleanSwitchBehavior> = ({
+  defaultBooleanValue,
   onClick,
 }) => {
-  const [newValue, setNewValue] = useStateEffect(value);
+  const [newValue, setNewValue] = useStateEffect(defaultBooleanValue);
   return (
     <h3
       className="text-whit cursor-pointer select-none"

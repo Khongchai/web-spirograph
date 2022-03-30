@@ -6,6 +6,7 @@ import Settings from "./shared/control";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
+import colors from "../../constants/colors";
 
 interface globalProps {
   cycloidControls: CycloidControlsData;
@@ -53,6 +54,26 @@ const Global: React.FC<globalProps> = ({
           paramName="Show all cycloids"
           defaultBooleanValue={cycloidControls.showAllCycloids}
         />
+        <Settings
+          onLeftClicked={() => {
+            cycloidControls.cycloidManager.addCycloid({
+              animationSpeedScale: 1,
+              boundingColor: colors.purple.light,
+              moveOutSideOfParent: false,
+              radius: Math.random() * 100,
+              rodLengthScale: Math.random() * 5,
+              rotationDirection:
+                Math.random() > 0.5 ? "clockwise" : "counterclockwise",
+            });
+            //TODO
+            rerenderToggle();
+          }}
+          onRightClicked={() => {
+            //TODO
+          }}
+          paramName={"Add Or Remove Cycloids"}
+        />
+
         <ContentArray
           paramName={"Current Cycloid"}
           values={cycloidControls.cycloidManager

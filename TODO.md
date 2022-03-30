@@ -1,3 +1,5 @@
+bug => Error when adding a new cycloid.
+
 Continue refactoring for logic encapsulation before moving on to removing or adding cycloid. // Look for todo in cycloidControls
 
 Try writing tests for each of the utils as a start.
