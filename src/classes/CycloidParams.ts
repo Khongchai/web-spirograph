@@ -103,9 +103,13 @@ export class CycloidParamsManager {
   /**
    * A map for the cycloids for O(1) retrieval.
    */
-  private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams> = {};
+  private cycloidsIdMap: Record<string, BoundingCircle | CycloidParams | null> =
+    {};
 
-  addCycloid(props: Omit<CycloidParamsArgs, "id" | "boundingCircleId">) {
+  addCycloid(
+    props: Omit<CycloidParamsArgs, "id" | "boundingCircleId">,
+    onCycloidAdded?: VoidFunction
+  ) {
     const { generatedId, boundingCircleId } = this.generateId();
     this.idManager.incrementId();
 
@@ -116,8 +120,9 @@ export class CycloidParamsManager {
     });
 
     this.cycloidParams.push(newCycloidParams);
-
     this.cycloidsIdMap[newCycloidParams.id] = newCycloidParams;
+
+    onCycloidAdded?.();
   }
   generateId() {
     const generatedId = this.idManager.getId();
@@ -126,12 +131,19 @@ export class CycloidParamsManager {
     return { generatedId, boundingCircleId };
   }
 
-  removeCycloid(cycloidParamId: number) {
-    this.cycloidParams = this.cycloidParams.filter(
-      ({ id }) => id !== cycloidParamId
-    );
+  removeLastCycloid(onCycloidRemoved?: VoidFunction) {
+    if (this.cycloidParams.length > 1) {
+      const poppedCycloidId = this.cycloidParams.pop()?.id;
 
-    this.idManager.decrementId();
+      if (!poppedCycloidId && poppedCycloidId != 0) {
+        throw new Error("Popped cycloid doesn't have an id");
+      }
+
+      this.idManager.decrementId();
+      this.cycloidsIdMap[poppedCycloidId!] = null;
+
+      onCycloidRemoved?.();
+    }
   }
 
   getAllCycloidParams() {

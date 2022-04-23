@@ -56,20 +56,21 @@ const Global: React.FC<globalProps> = ({
         />
         <Settings
           onLeftClicked={() => {
-            cycloidControls.cycloidManager.addCycloid({
-              animationSpeedScale: 1,
-              boundingColor: colors.purple.light,
-              moveOutSideOfParent: false,
-              radius: Math.random() * 100,
-              rodLengthScale: Math.random() * 5,
-              rotationDirection:
-                Math.random() > 0.5 ? "clockwise" : "counterclockwise",
-            });
-            //TODO
-            rerenderToggle();
+            cycloidControls.cycloidManager.addCycloid(
+              {
+                animationSpeedScale: 1,
+                boundingColor: colors.purple.light,
+                moveOutSideOfParent: false,
+                radius: Math.random() * 100,
+                rodLengthScale: Math.random() * 5,
+                rotationDirection:
+                  Math.random() > 0.5 ? "clockwise" : "counterclockwise",
+              },
+              rerenderToggle
+            );
           }}
           onRightClicked={() => {
-            //TODO
+            cycloidControls.cycloidManager.removeLastCycloid(rerenderToggle);
           }}
           paramName={"Add Or Remove Cycloids"}
         />
