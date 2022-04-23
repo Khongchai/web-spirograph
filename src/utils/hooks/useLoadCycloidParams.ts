@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
 import CycloidControls from "../../classes/CycloidControls";
-import CycloidParams from "../../classes/CycloidParams";
+import { Rerender } from "../../contexts/rerenderToggle";
 
 /**
  * After the cycloids are generated, load the params from cycloidParams object for each cycloid.
@@ -13,9 +13,9 @@ import CycloidParams from "../../classes/CycloidParams";
 export default function useLoadCycloidParams(
   generatedCycloids: Cycloid[],
   outermostBoundingCircle: BoundingCircle,
-  cycloidControls: React.MutableRefObject<CycloidControls>,
-  clearCanvasToggle: boolean
+  cycloidControls: React.MutableRefObject<CycloidControls>
 ) {
+  const rerender = useContext(Rerender);
   /**
    *  Find out which of the generated cycloid to attach the currentCycloid to.
    *
@@ -71,5 +71,5 @@ export default function useLoadCycloidParams(
         getParentCycloid(boundingCircleId, id, generatedCycloids)
       );
     });
-  }, [clearCanvasToggle]);
+  }, [rerender]);
 }

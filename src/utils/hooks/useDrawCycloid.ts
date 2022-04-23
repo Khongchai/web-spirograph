@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useContext, useEffect } from "react";
+import React, { MutableRefObject, useContext, useEffect, useRef } from "react";
 import { Rerender } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../classes/CycloidControls";
 import { Vector2 } from "../../types/vector2";
@@ -6,6 +6,7 @@ import setCanvasSize from "../setCanvasSize";
 import useGenerateCycloids from "./useGenerateCycloids";
 import useLoadCycloidParams from "./useLoadCycloidParams";
 import useSetOutermostBoundingCirclePosition from "./useSetOutermostBoundingCirclePosition";
+import Cycloid from "../../classes/Cycloid";
 
 export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -14,18 +15,17 @@ export default function useDrawCanvas(
   parent: MutableRefObject<HTMLElement>,
   panRef: MutableRefObject<Vector2>
 ) {
-  const rerender = useContext(Rerender);
   let { generatedCycloids: cycloids, outermostBoundingCircle } =
     useGenerateCycloids(cycloidControls);
 
-  useLoadCycloidParams(
-    cycloids,
-    outermostBoundingCircle,
-    cycloidControls,
-    rerender
-  );
+  useLoadCycloidParams(cycloids, outermostBoundingCircle, cycloidControls);
 
   useSetOutermostBoundingCirclePosition(outermostBoundingCircle, parent, 300);
+
+  const cycloidsRefForCanvas = useRef<Cycloid[] | null>();
+  useEffect(() => {
+    cycloidsRefForCanvas.current = cycloids;
+  }, [cycloids]);
 
   useEffect(() => {
     if (canvasRef.current && parent.current) {
@@ -48,7 +48,7 @@ export default function useDrawCanvas(
 
         pointsToTrace.current = [];
 
-        cycloids.forEach((cycloid) => {
+        cycloidsRefForCanvas.current?.forEach((cycloid) => {
           const drawCurrentCycloid =
             curControls.showAllCycloids ||
             cycloid.getId() == curControls.currentCycloidId;

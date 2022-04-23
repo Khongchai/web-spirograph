@@ -116,6 +116,8 @@ export class CycloidParamsManager {
     });
 
     this.cycloidParams.push(newCycloidParams);
+
+    this.cycloidsIdMap[newCycloidParams.id] = newCycloidParams;
   }
   generateId() {
     const generatedId = this.idManager.getId();
