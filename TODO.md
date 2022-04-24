@@ -1,5 +1,7 @@
 - Experiment with offscreen canvas
 
+- Move all context provider to App.tsx.
+
 - refactor folder structures, especially utils folder.
 
 - New landing page
