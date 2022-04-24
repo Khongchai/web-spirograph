@@ -5,6 +5,7 @@ import Canvas from "../components/Canvas";
 import ControlsOrRelationshipEditor from "../components/ControlsOrRelationshipEditor";
 import colors from "../constants/colors";
 import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
+import { CanvasWorker } from "../contexts/worker";
 import "../index.css";
 
 const defaultGlobalAnimationSpeed = 1;
@@ -98,39 +99,43 @@ function Main() {
   return (
     <Rerender.Provider value={rerender}>
       <RerenderToggle.Provider value={handleClearCanvasToggle}>
-        <div className="bg-purple-dark text-purple-light h-full w-full">
-          <div className="w-full h-full relative flex md:flex-row sm:flex-col">
-            <div
-              style={{ flex: 0.6 }}
-              className="relative canvas-container-flex-wrapper"
-              ref={canvasContainerFlexWrapper as any}
-            >
+        <CanvasWorker.Provider
+          value={new Worker("../../canvasWorker/cycloidAnimationWorker.ts")}
+        >
+          <div className="bg-purple-dark text-purple-light h-full w-full">
+            <div className="w-full h-full relative flex md:flex-row sm:flex-col">
               <div
-                ref={allCanvasContainer as any}
-                className="w-full h-full absolute canvas-container"
+                style={{ flex: 0.6 }}
+                className="relative canvas-container-flex-wrapper"
+                ref={canvasContainerFlexWrapper as any}
               >
-                <Canvas
+                <div
+                  ref={allCanvasContainer as any}
+                  className="w-full h-full absolute canvas-container"
+                >
+                  <Canvas
+                    cycloidControls={cycloidControls}
+                    parent={allCanvasContainer}
+                    parentWrapper={canvasContainerFlexWrapper}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  padding: "75px 75px 20px 75px",
+                  overflow: "auto",
+                  flex: 0.4,
+                }}
+              >
+                <ControlsOrRelationshipEditor
+                  onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
+                  onControlsToggle={handleOnControlsToggle}
                   cycloidControls={cycloidControls}
-                  parent={allCanvasContainer}
-                  parentWrapper={canvasContainerFlexWrapper}
                 />
               </div>
             </div>
-            <div
-              style={{
-                padding: "75px 75px 20px 75px",
-                overflow: "auto",
-                flex: 0.4,
-              }}
-            >
-              <ControlsOrRelationshipEditor
-                onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
-                onControlsToggle={handleOnControlsToggle}
-                cycloidControls={cycloidControls}
-              />
-            </div>
           </div>
-        </div>
+        </CanvasWorker.Provider>
       </RerenderToggle.Provider>
     </Rerender.Provider>
   );

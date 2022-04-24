@@ -13,6 +13,7 @@ import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
 import { OnMessagePayload } from "../../canvasWorker/models/onMessagePayload";
+import { CanvasWorker } from "../../contexts/worker";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -34,8 +35,8 @@ const Canvas: React.FC<CanvasProps> = ({
   const rerender = useContext(Rerender);
 
   //TODO refactor this into a custom hook (useSetupWorkerCanvasConnection)
+  const worker = useContext(CanvasWorker);
   useEffect(() => {
-    const worker = new Worker("../../canvasWorker/cycloidAnimationWorker.ts");
     const drawCanvas = (
       drawCanvasRef.current as any
     ).transferControlToOffscreen();
