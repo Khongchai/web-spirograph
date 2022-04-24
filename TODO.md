@@ -1,8 +1,12 @@
 - Experiment with offscreen canvas
 
+- refactor folder structures.
+
 - New landing page
 
 - Package it nicely by composing a music for the application.
+
+- Save state
 
 Write tests for the generateNodes -- kinda complicated
 

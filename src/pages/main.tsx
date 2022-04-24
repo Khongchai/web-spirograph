@@ -8,6 +8,8 @@ import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 
 const defaultGlobalAnimationSpeed = 1;
+
+// This is where we set up stuff and prepare data.
 function Main() {
   const [rerender, setRerender] = useState(false);
 

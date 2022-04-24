@@ -12,6 +12,7 @@ import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
+import { OnMessagePayload } from "../../canvasWorker/models/onMessagePayload";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -30,6 +31,52 @@ const Canvas: React.FC<CanvasProps> = ({
   );
 
   const rerender = useContext(Rerender);
+
+  //TODO refactor this into a custom hook (useSetupWorkerCanvasConnection)
+  useEffect(() => {
+    const worker = new Worker("../../canvasWorker/cycloidAnimationWorker.ts");
+    const drawCanvas = (
+      drawCanvasRef.current as any
+    ).transferControlToOffscreen();
+    const traceCanvas = (
+      traceCanvasRef.current as any
+    ).transferControlToOffscreen();
+    worker.postMessage(
+      {
+        drawCanvas,
+        traceCanvas,
+        parentHeight: parent.current!.clientHeight,
+        parentWidth: parent.current!.clientWidth,
+      } as OnMessagePayload,
+      [drawCanvas, traceCanvas]
+    );
+  }, []);
+
+  //TODO refactor this into a custom hook (useClearTracePath).
+  useEffect(() => {
+    if (cycloidControls.current.clearTracedPathOnParamsChange) {
+      const drawRef = drawCanvasRef.current?.getContext("2d");
+      const traceRef = traceCanvasRef.current?.getContext("2d");
+      drawRef?.save();
+      traceRef?.save();
+      drawRef?.setTransform(1, 0, 0, 1, 0, 0);
+      traceRef?.setTransform(1, 0, 0, 1, 0, 0);
+      drawRef?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
+      traceRef?.clearRect(
+        0,
+        0,
+        parent.current!.clientWidth,
+        parent.current!.clientHeight
+      );
+      drawRef?.restore();
+      traceRef?.restore();
+    }
+  }, [rerender]);
 
   const panRef = useRef<Vector2>({ x: 0, y: 0 });
 
@@ -52,33 +99,6 @@ const Canvas: React.FC<CanvasProps> = ({
 
   useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
   useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
-
-  useEffect(() => {
-    if (cycloidControls.current.clearTracedPathOnParamsChange) {
-      const drawRef = drawCanvasRef.current?.getContext("2d");
-      const traceRef = traceCanvasRef.current?.getContext("2d");
-      drawRef?.save();
-      traceRef?.save();
-
-      drawRef?.setTransform(1, 0, 0, 1, 0, 0);
-      traceRef?.setTransform(1, 0, 0, 1, 0, 0);
-      drawRef?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-      traceRef?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-
-      drawRef?.restore();
-      traceRef?.restore();
-    }
-  }, [rerender]);
 
   if (mode === "animate") {
     return (
