@@ -24,6 +24,7 @@ const Local: React.FC<{
         <Control
           paramName={"Rod Length Scale"}
           numberValue={cycloid.rodLengthScale}
+          step={0.1}
           onDrag={(newValue: number) => {
             cycloid.rodLengthScale = newValue;
             rerenderToggle();
