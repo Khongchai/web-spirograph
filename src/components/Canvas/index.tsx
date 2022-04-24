@@ -25,6 +25,7 @@ const Canvas: React.FC<CanvasProps> = ({
   parent,
   parentWrapper,
 }) => {
+  // TODO
   const [mode, setMode] = useState<"animate" | "instant">("animate");
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
     "auto"
@@ -43,10 +44,12 @@ const Canvas: React.FC<CanvasProps> = ({
     ).transferControlToOffscreen();
     worker.postMessage(
       {
-        drawCanvas,
-        traceCanvas,
-        parentHeight: parent.current!.clientHeight,
-        parentWidth: parent.current!.clientWidth,
+        setupCanvas: {
+          drawCanvas,
+          traceCanvas,
+          parentHeight: parent.current!.clientHeight,
+          parentWidth: parent.current!.clientWidth,
+        },
       } as OnMessagePayload,
       [drawCanvas, traceCanvas]
     );

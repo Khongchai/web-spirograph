@@ -1,6 +1,6 @@
 import { CycloidAnimationWorkerData } from "../models/cycloidAnimationWorkerData";
 
-export default function setupCanvases({
+export default function resetCAnvas({
   drawContext,
   parentHeight: height,
   parentWidth: width,

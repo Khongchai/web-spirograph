@@ -1,6 +1,6 @@
 - Experiment with offscreen canvas
 
-- refactor folder structures.
+- refactor folder structures, especially utils folder.
 
 - New landing page
 
