@@ -1,3 +1,5 @@
+- Refactor everything out of App.tsx, keep it clean.
+
 - Refactor the relationship editor to use canvas instead of svg and apply verlet for some cool effect.
 
 - Experiment with offscreen canvas
