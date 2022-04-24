@@ -15,6 +15,3 @@ export function remap(
 ) {
   return min2 + ((value - min1) * (max2 - min2)) / (max1 - min1);
 }
-
-//TODO: for slowing down animation speed
-export function slowdown() {}

@@ -1,3 +1,9 @@
+# In progress
+
+- Trying to refactor everything to an offscreen-canvas (run the app and you'll know from where to continue).
+
+## TODO
+
 - Experiment with offscreen canvas
 
 - Move all context provider to App.tsx.
