@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import {
   OnMessagePayload,
   WorkerOperation,
-} from "../../../canvasWorker/models/onMessagePayloads";
+} from "../../../canvasWorker/models/onMessageInitialPayloads";
 import CycloidControls from "../../../classes/CycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CanvasWorker } from "../../../contexts/worker";

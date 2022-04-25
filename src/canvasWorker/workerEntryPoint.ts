@@ -1,5 +1,8 @@
 import { CycloidAnimationWorkerData } from "./models/cycloidAnimationWorkerData";
-import { OnMessagePayload, WorkerOperation } from "./models/onMessagePayloads";
+import {
+  OnMessagePayload,
+  WorkerOperation,
+} from "./models/onMessageInitialPayloads";
 import { drawCycloid } from "./operations/drawCycloids";
 import resetCanvas from "./operations/resetCanvas";
 

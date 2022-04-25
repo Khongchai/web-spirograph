@@ -18,7 +18,7 @@ export interface OnMessagePayload {
 }
 
 /**
- * For switch-casing
+ * For switch-casing the first operations.
  */
 export enum WorkerOperation {
   ResetCanvas = 1 << 0,

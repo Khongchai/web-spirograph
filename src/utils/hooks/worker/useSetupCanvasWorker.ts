@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import {
   OnMessagePayload,
   WorkerOperation,
-} from "../../../canvasWorker/models/onMessagePayloads";
+} from "../../../canvasWorker/models/onMessageInitialPayloads";
 import CycloidControls from "../../../classes/CycloidControls";
 import { CanvasWorker } from "../../../contexts/worker";
 import { Vector2 } from "../../../types/vector2";
@@ -33,6 +33,7 @@ export default function useSetupCanvasWorker({
     const traceCanvas = (
       traceCanvasRef.current as any
     ).transferControlToOffscreen();
+
     worker.postMessage(
       {
         setupCanvas: {

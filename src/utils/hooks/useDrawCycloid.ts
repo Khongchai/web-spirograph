@@ -2,7 +2,7 @@ import React, { MutableRefObject, useContext, useEffect, useRef } from "react";
 import {
   OnMessagePayload,
   WorkerOperation,
-} from "../../canvasWorker/models/onMessagePayloads";
+} from "../../canvasWorker/models/onMessageInitialPayloads";
 import Cycloid from "../../classes/Cycloid";
 import CycloidControls from "../../classes/CycloidControls";
 import { CanvasWorker } from "../../contexts/worker";
