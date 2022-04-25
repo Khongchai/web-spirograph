@@ -148,28 +148,47 @@ export default class Cycloid extends BoundingCircle {
     );
   }
 
-  getId = () => this.id;
+  getId() {
+    return this.id;
+  }
 
-  getDrawPoint = () => this.drawPoint;
+  getDrawPoint() {
+    return this.drawPoint;
+  }
 
-  setPoint = (point: { x: number; y: number }) => (this.drawPoint = point);
+  setPoint(point: Vector2) {
+    this.drawPoint = point;
+  }
 
-  getRadius = () => this.radius;
+  getRadius() {
+    return this.radius;
+  }
 
-  getParent = () => this.parentBounding;
+  getParent() {
+    return this.parentBounding;
+  }
 
-  setDx = (dx: number) => (this.animationSpeed = dx);
+  setDx(dx: number) {
+    this.animationSpeed = dx;
+  }
 
-  setRotationDirection = (direction: CycloidRotationDirection) =>
-    (this.rotationDirection = direction);
+  setRotationDirection(direction: CycloidRotationDirection) {
+    this.rotationDirection = direction;
+  }
 
-  setRodRotationSpeedRatio = (ratio: number) =>
-    (this.rodRotationSpeedRatio = ratio);
+  setRodRotationSpeedRatio(ratio: number) {
+    this.rodRotationSpeedRatio = ratio;
+  }
 
-  setRadius = (radius: number) => (this.radius = radius);
+  setRadius(radius: number) {
+    this.radius = radius;
+  }
 
-  setIsOutsideOfParent = (isOutside: boolean) =>
-    (this.isOutsideOfParent = isOutside);
+  setIsOutsideOfParent(isOutside: boolean) {
+    this.isOutsideOfParent = isOutside;
+  }
 
-  setParent = (parent: BoundingCircle) => (this.parentBounding = parent);
+  setParent(parent: BoundingCircle) {
+    this.parentBounding = parent;
+  }
 }

@@ -30,10 +30,7 @@ export type SetupCanvasPayload = Omit<
   "drawContext" | "traceContext"
 >;
 
-export type ResetCanvasPayload = Omit<
-  CycloidAnimationWorkerData,
-  "drawContext" | "traceContext"
->;
+export type ResetCanvasPayload = undefined;
 
 export type DrawCycloidPayload = {
   cycloidControls: React.MutableRefObject<CycloidControls>;

@@ -79,10 +79,16 @@ export default class CycloidParams {
 class IdManager {
   private idCounter: number;
 
-  incrementId = () => this.idCounter++;
-  decrementId = () => this.idCounter--;
+  incrementId() {
+    this.idCounter++;
+  }
+  decrementId() {
+    this.idCounter--;
+  }
 
-  getId = () => this.idCounter;
+  getId() {
+    return this.idCounter;
+  }
 
   constructor() {
     this.idCounter = 0;

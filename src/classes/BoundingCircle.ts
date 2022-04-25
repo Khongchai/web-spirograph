@@ -11,16 +11,25 @@ export default class BoundingCircle {
     this.boundingColor = boundingColor;
   }
 
-  getCenterPoint = () => this.centerPoint;
+  getCenterPoint() {
+    return this.centerPoint;
+  }
 
-  getRadius = () => this.radius;
+  getRadius() {
+    return this.radius;
+  }
 
-  setCenterPoint = (centerPoint: Vector2) => (this.centerPoint = centerPoint);
+  setCenterPoint(centerPoint: Vector2) {
+    this.centerPoint = centerPoint;
+  }
 
-  setRadius = (radius: number) => (this.radius = radius);
+  setRadius(radius: number) {
+    this.radius = radius;
+  }
 
-  setBoundingColor = (boundingColor: string) =>
-    (this.boundingColor = boundingColor);
+  setBoundingColor(boundingColor: string) {
+    this.boundingColor = boundingColor;
+  }
 
   showBounding(ctx: CanvasRenderingContext2D, boundingColor?: string) {
     this.boundingColor = boundingColor || this.boundingColor;

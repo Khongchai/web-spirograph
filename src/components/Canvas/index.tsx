@@ -17,6 +17,8 @@ import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
+import useClearCanvasOnRerender from "../../utils/hooks/worker/useClearCanvasOnRerender";
+import useSetupCanvasWorker from "../../utils/hooks/worker/useSetupCanvasWorker";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -26,7 +28,7 @@ interface CanvasProps {
 
 const Canvas: React.FC<CanvasProps> = ({
   cycloidControls,
-  parent,
+  parent: parentRef,
   parentWrapper,
 }) => {
   // TODO
@@ -37,72 +39,27 @@ const Canvas: React.FC<CanvasProps> = ({
 
   const rerender = useContext(Rerender);
 
-  //TODO refactor this into a custom hook (useSetupWorkerCanvasConnection)
-  const worker = useContext(CanvasWorker);
-  useEffect(() => {
-    const drawCanvas = (
-      drawCanvasRef.current as any
-    ).transferControlToOffscreen();
-    const traceCanvas = (
-      traceCanvasRef.current as any
-    ).transferControlToOffscreen();
-    worker.postMessage(
-      {
-        setupCanvas: {
-          drawCanvas,
-          traceCanvas,
-          parentHeight: parent.current!.clientHeight,
-          parentWidth: parent.current!.clientWidth,
-        },
-        workerOperations: WorkerOperation.SetupCanvas,
-      } as OnMessagePayload,
-      [drawCanvas, traceCanvas]
-    );
-  }, []);
-
-  //TODO refactor this into a custom hook (useClearTracedPath) + pass to Worker.
-  useEffect(() => {
-    if (cycloidControls.current.clearTracedPathOnParamsChange) {
-      const drawRef = drawCanvasRef.current?.getContext("2d");
-      const traceRef = traceCanvasRef.current?.getContext("2d");
-      drawRef?.save();
-      traceRef?.save();
-      drawRef?.setTransform(1, 0, 0, 1, 0, 0);
-      traceRef?.setTransform(1, 0, 0, 1, 0, 0);
-      drawRef?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-      traceRef?.clearRect(
-        0,
-        0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
-      );
-      drawRef?.restore();
-      traceRef?.restore();
-    }
-  }, [rerender]);
-
-  const panRef = useRef<Vector2>({ x: 0, y: 0 });
-
   /*
     Cycloids are drawn on one canvas and their paths are traced on another.
   */
   const pointsToTrace = useRef<Vector2[]>([]);
-
   const drawCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const panRef = useRef<Vector2>({ x: 0, y: 0 });
+  const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useSetupCanvasWorker(drawCanvasRef, traceCanvasRef, parentRef);
+
+  //TODO refactor this into a custom hook (useClearTracedPath) + pass to Worker.
+  useClearCanvasOnRerender(cycloidControls);
+
   useDrawCycloid(
     drawCanvasRef,
     pointsToTrace,
     cycloidControls,
-    parent as MutableRefObject<HTMLElement>,
+    parentRef as MutableRefObject<HTMLElement>,
     panRef
   );
 
-  const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
   useTraceCycloidPath(traceCanvasRef, pointsToTrace, panRef, cycloidControls);
 
   useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);

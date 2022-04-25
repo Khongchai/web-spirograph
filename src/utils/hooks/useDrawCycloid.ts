@@ -7,7 +7,6 @@ import Cycloid from "../../classes/Cycloid";
 import CycloidControls from "../../classes/CycloidControls";
 import { CanvasWorker } from "../../contexts/worker";
 import { Vector2 } from "../../types/vector2";
-import setCanvasSize from "../setCanvasSize";
 import useGenerateCycloids from "./useGenerateCycloids";
 import useLoadCycloidParams from "./useLoadCycloidParams";
 import useSetOutermostBoundingCirclePosition from "./useSetOutermostBoundingCirclePosition";
