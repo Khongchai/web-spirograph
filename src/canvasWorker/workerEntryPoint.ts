@@ -16,7 +16,18 @@ export {};
 let workerData: CycloidAnimationWorkerData;
 
 /**
- *  Architecture: main thread canvas => onmessage => (maps payload args to operation args) =>  call operation on worker
+ *
+ *  Glossary:
+ *    usecase = some tiny updation targetting specific data or groups of data.
+ *    operation = bulk process like initial setup of the canvas, resetting the canvas, drawing cycloids, tracing cycloids.
+ *    mapper = function that maps the payload to a usecase(s) or operation(s).
+ *  Architecture:
+ *
+ *  setup:
+ *  main thread canvas => onmessage => (maps payload args to operation args) =>  call initial operation on worker.
+ *
+ *  updation:
+ *  main thread canvas => onmessage => (maps payload args to usecase args) =>  call the appropriate usecase.
  *
  *  onmessage accepts a payload of type OnMessagePayload, wherein
  *  contains nullable properties that will be read if the
