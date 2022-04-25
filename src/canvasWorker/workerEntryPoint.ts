@@ -7,6 +7,8 @@ export {};
 
 /**
  * Global worker data that is needed by many operations that was obtained during setup.
+ *
+ * This includes all React's refs objects and some static values like width and height.
  */
 let workerData: CycloidAnimationWorkerData;
 
@@ -37,13 +39,16 @@ onmessage = (message: { data: OnMessagePayload }) => {
         parentHeight: height,
         parentWidth: width,
       } = workerData;
+
+      const { cycloidsRefForCanvas, outermostBoundingCircle } =
+        message.data.drawCycloid!;
+
       const {
-        cycloidControls,
-        cycloidsRefForCanvas,
-        outermostBoundingCircle,
+        cycloidControlsRef: cycloidControls,
         panRef,
-        pointsToTrace,
-      } = message.data.drawCycloid!;
+        pointsToTraceRef: pointsToTrace,
+      } = workerData;
+
       drawCycloid({
         canvas,
         height,

@@ -37,11 +37,8 @@ export default function useDrawCanvas(
       worker.postMessage({
         workerOperations: WorkerOperation.DrawCycloids,
         drawCycloid: {
-          cycloidControls,
           cycloidsRefForCanvas,
           outermostBoundingCircle,
-          panRef,
-          pointsToTrace,
         },
       } as OnMessagePayload);
     }

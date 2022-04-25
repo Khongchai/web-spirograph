@@ -14,10 +14,12 @@ export default function useSetupCanvasWorker({
   panRef,
   cycloidControlsRef,
   parentWrapperRef,
+  pointsToTraceRef,
 }: {
   drawCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
   traceCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
   parentRef: React.MutableRefObject<HTMLElement | null>;
+  pointsToTraceRef: React.MutableRefObject<Vector2[]>;
   panRef: React.MutableRefObject<Vector2 | null>;
   cycloidControlsRef: React.MutableRefObject<CycloidControls>;
   parentWrapperRef: React.MutableRefObject<HTMLElement | null>;
@@ -41,6 +43,7 @@ export default function useSetupCanvasWorker({
           panRef,
           cycloidControlsRef,
           parentWrapperRef,
+          pointsToTraceRef,
         },
         workerOperations: WorkerOperation.SetupCanvas,
       } as OnMessagePayload,

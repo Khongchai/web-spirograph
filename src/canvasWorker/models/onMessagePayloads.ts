@@ -1,7 +1,5 @@
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControls from "../../classes/CycloidControls";
-import { Vector2 } from "../../types/vector2";
 import { CycloidAnimationWorkerData } from "./cycloidAnimationWorkerData";
 
 /**
@@ -35,9 +33,6 @@ export type SetupCanvasPayload = Omit<
 export type ResetCanvasPayload = undefined;
 
 export type DrawCycloidPayload = {
-  cycloidControls: React.MutableRefObject<CycloidControls>;
-  panRef: React.MutableRefObject<Vector2>;
-  pointsToTrace: React.MutableRefObject<Vector2[]>;
   cycloidsRefForCanvas: React.MutableRefObject<Cycloid[]>;
   outermostBoundingCircle: BoundingCircle;
 };

@@ -17,6 +17,7 @@ export type CycloidAnimationWorkerData = {
   traceContext: CanvasRenderingContext2D;
 
   panRef: MutableRefObject<Vector2>;
+  pointsToTraceRef: MutableRefObject<Vector2[]>;
   cycloidControlsRef: MutableRefObject<CycloidControls>;
   parentWrapperRef: MutableRefObject<HTMLCanvasElement>;
 };
