@@ -5,15 +5,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
+import {
+  OnMessagePayload,
+  WorkerOperation,
+} from "../../canvasWorker/models/onMessagePayloads";
 import CycloidControlsData from "../../classes/CycloidControls";
+import { Rerender } from "../../contexts/rerenderToggle";
+import { CanvasWorker } from "../../contexts/worker";
 import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
-import { OnMessagePayload } from "../../canvasWorker/models/onMessagePayload";
-import { CanvasWorker } from "../../contexts/worker";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -51,12 +54,13 @@ const Canvas: React.FC<CanvasProps> = ({
           parentHeight: parent.current!.clientHeight,
           parentWidth: parent.current!.clientWidth,
         },
+        workerOperations: WorkerOperation.SetupCanvas,
       } as OnMessagePayload,
       [drawCanvas, traceCanvas]
     );
   }, []);
 
-  //TODO refactor this into a custom hook (useClearTracePath).
+  //TODO refactor this into a custom hook (useClearTracedPath) + pass to Worker.
   useEffect(() => {
     if (cycloidControls.current.clearTracedPathOnParamsChange) {
       const drawRef = drawCanvasRef.current?.getContext("2d");
