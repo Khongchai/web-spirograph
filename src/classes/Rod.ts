@@ -7,7 +7,9 @@ export default class Rod {
     this.originalLenght = this.length;
   }
 
-  getLength = () => this.length;
+  getLength() {
+    return this.length;
+  }
 
   scaleLength(scalar: number) {
     this.length = this.originalLenght * scalar;
