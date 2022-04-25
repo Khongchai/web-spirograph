@@ -6,7 +6,7 @@ import resetCanvas from "./operations/resetCanvas";
 export {};
 
 /**
- * Global worker data that is needed by many operations.
+ * Global worker data that is needed by many operations that was obtained during setup.
  */
 let workerData: CycloidAnimationWorkerData;
 
@@ -31,7 +31,7 @@ onmessage = (message: { data: OnMessagePayload }) => {
       };
     case WorkerOperation.ResetCanvas:
       resetCanvas(workerData);
-    case WorkerOperation.DrawCycloid:
+    case WorkerOperation.DrawCycloids:
       const {
         drawCanvas: canvas,
         parentHeight: height,

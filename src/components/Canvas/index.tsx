@@ -1,23 +1,11 @@
-import React, {
-  MutableRefObject,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
-  OnMessagePayload,
-  WorkerOperation,
-} from "../../canvasWorker/models/onMessagePayloads";
+import React, { MutableRefObject, useRef, useState } from "react";
 import CycloidControlsData from "../../classes/CycloidControls";
-import { Rerender } from "../../contexts/rerenderToggle";
-import { CanvasWorker } from "../../contexts/worker";
 import { Vector2 } from "../../types/vector2";
 import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
-import useClearCanvasOnRerender from "../../utils/hooks/worker/useClearCanvasOnRerender";
+import useClearTracedCanvasOnRerender from "../../utils/hooks/worker/useClearTracedCanvasOnRerender";
 import useSetupCanvasWorker from "../../utils/hooks/worker/useSetupCanvasWorker";
 
 interface CanvasProps {
@@ -27,17 +15,15 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({
-  cycloidControls,
+  cycloidControls: cycloidControlsRef,
   parent: parentRef,
-  parentWrapper,
+  parentWrapper: parentWrapperRef,
 }) => {
   // TODO
   const [mode, setMode] = useState<"animate" | "instant">("animate");
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
     "auto"
   );
-
-  const rerender = useContext(Rerender);
 
   /*
     Cycloids are drawn on one canvas and their paths are traced on another.
@@ -47,23 +33,34 @@ const Canvas: React.FC<CanvasProps> = ({
   const panRef = useRef<Vector2>({ x: 0, y: 0 });
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  useSetupCanvasWorker(drawCanvasRef, traceCanvasRef, parentRef);
+  useSetupCanvasWorker({
+    drawCanvasRef,
+    parentRef,
+    traceCanvasRef,
+    panRef,
+    cycloidControlsRef,
+    parentWrapperRef,
+  });
 
-  //TODO refactor this into a custom hook (useClearTracedPath) + pass to Worker.
-  useClearCanvasOnRerender(cycloidControls);
+  useClearTracedCanvasOnRerender(cycloidControlsRef);
 
   useDrawCycloid(
     drawCanvasRef,
     pointsToTrace,
-    cycloidControls,
+    cycloidControlsRef,
     parentRef as MutableRefObject<HTMLElement>,
     panRef
   );
 
-  useTraceCycloidPath(traceCanvasRef, pointsToTrace, panRef, cycloidControls);
+  useTraceCycloidPath(
+    traceCanvasRef,
+    pointsToTrace,
+    panRef,
+    cycloidControlsRef
+  );
 
-  useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
-  useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
+  useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapperRef);
+  useHandlePan(parentWrapperRef, panRef, [drawCanvasRef, traceCanvasRef]);
 
   if (mode === "animate") {
     return (

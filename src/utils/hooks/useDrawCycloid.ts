@@ -35,7 +35,7 @@ export default function useDrawCanvas(
   useEffect(() => {
     if (canvasRef.current && parent.current) {
       worker.postMessage({
-        workerOperations: WorkerOperation.DrawCycloid,
+        workerOperations: WorkerOperation.DrawCycloids,
         drawCycloid: {
           cycloidControls,
           cycloidsRefForCanvas,

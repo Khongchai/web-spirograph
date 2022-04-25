@@ -1,15 +1,27 @@
-import { useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   OnMessagePayload,
   WorkerOperation,
 } from "../../../canvasWorker/models/onMessagePayloads";
+import CycloidControls from "../../../classes/CycloidControls";
 import { CanvasWorker } from "../../../contexts/worker";
+import { Vector2 } from "../../../types/vector2";
 
-export default function useSetupCanvasWorker(
-  drawCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  traceCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
-  parentRef: React.MutableRefObject<HTMLElement | null>
-) {
+export default function useSetupCanvasWorker({
+  drawCanvasRef,
+  parentRef,
+  traceCanvasRef,
+  panRef,
+  cycloidControlsRef,
+  parentWrapperRef,
+}: {
+  drawCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  traceCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  parentRef: React.MutableRefObject<HTMLElement | null>;
+  panRef: React.MutableRefObject<Vector2 | null>;
+  cycloidControlsRef: React.MutableRefObject<CycloidControls>;
+  parentWrapperRef: React.MutableRefObject<HTMLElement | null>;
+}) {
   const worker = useContext(CanvasWorker);
 
   useEffect(() => {
@@ -26,6 +38,9 @@ export default function useSetupCanvasWorker(
           traceCanvas,
           parentHeight: parentRef.current!.clientWidth,
           parentWidth: parentRef.current!.clientHeight,
+          panRef,
+          cycloidControlsRef,
+          parentWrapperRef,
         },
         workerOperations: WorkerOperation.SetupCanvas,
       } as OnMessagePayload,

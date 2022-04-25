@@ -13,6 +13,7 @@ export interface OnMessagePayload {
   resetCanvas?: ResetCanvasPayload;
   setupCanvas?: SetupCanvasPayload;
   drawCycloid?: DrawCycloidPayload;
+  traceCycloid: TraceCycloidPayload;
   workerOperations: WorkerOperation;
 }
 
@@ -22,7 +23,8 @@ export interface OnMessagePayload {
 export enum WorkerOperation {
   ResetCanvas = 1 << 0,
   SetupCanvas = 1 << 1,
-  DrawCycloid = 1 << 2,
+  DrawCycloids = 1 << 2,
+  TraceCycloids = 1 << 3,
 }
 
 export type SetupCanvasPayload = Omit<
@@ -39,3 +41,5 @@ export type DrawCycloidPayload = {
   cycloidsRefForCanvas: React.MutableRefObject<Cycloid[]>;
   outermostBoundingCircle: BoundingCircle;
 };
+
+export type TraceCycloidPayload = {};

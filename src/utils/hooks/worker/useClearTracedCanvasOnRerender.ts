@@ -7,7 +7,7 @@ import CycloidControls from "../../../classes/CycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CanvasWorker } from "../../../contexts/worker";
 
-export default function useClearCanvasOnRerender(
+export default function useClearTracedCanvasOnRerender(
   cycloidControls: React.MutableRefObject<CycloidControls>
 ) {
   const rerender = useContext(Rerender);
