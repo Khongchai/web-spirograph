@@ -1,5 +1,7 @@
+import { MutableRefObject } from "react";
 import BoundingCircle from "../../classes/BoundingCircle";
 import Cycloid from "../../classes/Cycloid";
+import { Vector2 } from "../../types/vector2";
 import { CycloidAnimationWorkerData } from "./cycloidAnimationWorkerData";
 
 /**
@@ -37,4 +39,7 @@ export type DrawCycloidPayload = {
   outermostBoundingCircle: BoundingCircle;
 };
 
-export type TraceCycloidPayload = {};
+export type TraceCycloidPayload = {
+  lastPoints: Vector2[];
+  notFirstTime: MutableRefObject<boolean[]>;
+};

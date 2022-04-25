@@ -1,6 +1,6 @@
 import { CycloidAnimationWorkerData } from "./models/cycloidAnimationWorkerData";
 import { OnMessagePayload, WorkerOperation } from "./models/onMessagePayloads";
-import { drawCycloid } from "./operations/drawCycloid";
+import { drawCycloid } from "./operations/drawCycloids";
 import resetCanvas from "./operations/resetCanvas";
 
 export {};
@@ -47,6 +47,7 @@ onmessage = (message: { data: OnMessagePayload }) => {
         cycloidControlsRef: cycloidControls,
         panRef,
         pointsToTraceRef: pointsToTrace,
+        drawContext,
       } = workerData;
 
       drawCycloid({
@@ -58,6 +59,7 @@ onmessage = (message: { data: OnMessagePayload }) => {
         outermostBoundingCircle,
         panRef,
         pointsToTrace,
+        drawContext,
       });
     default:
       break;

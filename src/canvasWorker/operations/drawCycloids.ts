@@ -15,6 +15,7 @@ interface args {
   pointsToTrace: React.MutableRefObject<Vector2[]>;
   cycloidsRefForCanvas: React.MutableRefObject<Cycloid[]>;
   outermostBoundingCircle: BoundingCircle;
+  drawContext: CanvasRenderingContext2D;
 }
 
 export function drawCycloid({
@@ -26,9 +27,8 @@ export function drawCycloid({
   outermostBoundingCircle,
   panRef,
   pointsToTrace,
+  drawContext: ctx,
 }: args) {
-  const ctx = canvas.getContext("2d")!;
-
   let dx = 0;
 
   setCanvasSize(canvas, width, height);
