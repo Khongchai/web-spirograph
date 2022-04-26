@@ -100,7 +100,7 @@ function Main() {
     <Rerender.Provider value={rerender}>
       <RerenderToggle.Provider value={handleClearCanvasToggle}>
         <CanvasWorker.Provider
-          value={new Worker("../../canvasWorker/cycloidAnimationWorker.ts")}
+          value={new Worker("../../canvasWorker/workerEntryPoint.ts")}
         >
           <div className="bg-purple-dark text-purple-light h-full w-full">
             <div className="w-full h-full relative flex md:flex-row sm:flex-col">

@@ -9,7 +9,7 @@ import { CycloidAnimationWorkerData } from "./cycloidAnimationWorkerData";
  */
 
 //TODO there might be a way to do this wihtout the nullable types.
-export interface OnMessagePayload {
+export interface OnMessageOperationPayload {
   resetCanvas?: ResetCanvasPayload;
   setupCanvas?: SetupCanvasPayload;
   drawCycloid?: DrawCycloidPayload;

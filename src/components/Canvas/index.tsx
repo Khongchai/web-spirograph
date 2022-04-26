@@ -42,7 +42,6 @@ const Canvas: React.FC<CanvasProps> = ({
     traceCanvasRef,
     panRef,
     cycloidControlsRef,
-    parentWrapperRef,
     pointsToTraceRef,
   });
 
@@ -56,13 +55,9 @@ const Canvas: React.FC<CanvasProps> = ({
     panRef
   );
 
-  useTraceCycloidPath(
-    traceCanvasRef,
-    pointsToTraceRef,
-    panRef,
-    cycloidControlsRef
-  );
+  useTraceCycloidPath(traceCanvasRef, pointsToTraceRef);
 
+  //TODO, refactor into worker.
   useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapperRef);
   useHandlePan(parentWrapperRef, panRef, [drawCanvasRef, traceCanvasRef]);
 

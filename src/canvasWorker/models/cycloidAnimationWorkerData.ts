@@ -19,5 +19,4 @@ export type CycloidAnimationWorkerData = {
   panRef: MutableRefObject<Vector2>;
   pointsToTraceRef: MutableRefObject<Vector2[]>;
   cycloidControlsRef: MutableRefObject<CycloidControls>;
-  parentWrapperRef: MutableRefObject<HTMLCanvasElement>;
 };

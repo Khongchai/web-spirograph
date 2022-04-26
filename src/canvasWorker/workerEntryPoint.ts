@@ -1,6 +1,6 @@
 import { CycloidAnimationWorkerData } from "./models/cycloidAnimationWorkerData";
 import {
-  OnMessagePayload,
+  OnMessageOperationPayload,
   WorkerOperation,
 } from "./models/onMessageInitialPayloads";
 import { drawCycloid } from "./operations/drawCycloids";
@@ -35,7 +35,7 @@ let workerData: CycloidAnimationWorkerData;
  *
  * This onmessage acts as a mapper for the argument models and the operations
  */
-onmessage = (message: { data: OnMessagePayload }) => {
+onmessage = (message: { data: OnMessageOperationPayload }) => {
   switch (message.data.workerOperations) {
     //TODO make a mapper once everything works
     case WorkerOperation.SetupCanvas:

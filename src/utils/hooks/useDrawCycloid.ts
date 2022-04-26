@@ -1,6 +1,6 @@
 import React, { MutableRefObject, useContext, useEffect, useRef } from "react";
 import {
-  OnMessagePayload,
+  OnMessageOperationPayload,
   WorkerOperation,
 } from "../../canvasWorker/models/onMessageInitialPayloads";
 import Cycloid from "../../classes/Cycloid";
@@ -40,7 +40,7 @@ export default function useDrawCanvas(
           cycloidsRefForCanvas,
           outermostBoundingCircle,
         },
-      } as OnMessagePayload);
+      } as OnMessageOperationPayload);
     }
   }, []);
 }

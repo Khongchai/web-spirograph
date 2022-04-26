@@ -1,9 +1,8 @@
 import { useContext, useEffect, useRef } from "react";
-import colors from "../../constants/colors";
+import { OnMessageOperationPayload } from "../../canvasWorker/models/onMessageInitialPayloads";
 import { Rerender } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/CycloidControls";
+import { CanvasWorker } from "../../contexts/worker";
 import { Vector2 } from "../../types/vector2";
-import setCanvasSize from "../setCanvasSize";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -12,14 +11,9 @@ export default function useTraceCycloidPath(
 
     This hook is not aware of any cycloid bodies outside, only what it should be tracing.
   */
-  pointsToTrace: React.MutableRefObject<Vector2[]>,
-  panRef: React.MutableRefObject<Vector2>,
-
-  // Currently using this just for the trace bool.
-  cycloidControls: React.MutableRefObject<CycloidControlsData>
+  pointsToTrace: React.MutableRefObject<Vector2[]>
 ) {
   const rerender = useContext(Rerender);
-  const currentPoints = pointsToTrace;
   const lastPoints: Vector2[] = [...pointsToTrace.current];
 
   /*
@@ -34,50 +28,16 @@ export default function useTraceCycloidPath(
 
   window.onresize = () => (notFirstTime.current = []);
 
+  const worker = useContext(CanvasWorker);
+
   useEffect(() => {
     if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d")!;
-
-      setCanvasSize(canvas);
-
-      const draw = () => {
-        if (cycloidControls.current.programOnly.tracePath) {
-          ctx.save();
-          ctx.translate(panRef.current.x, panRef.current.y);
-
-          for (let i = 0; i < currentPoints.current.length; i++) {
-            const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };
-
-            const { x: cx, y: cy } = currentPoints.current[i];
-
-            if (notFirstTime.current[i]) {
-              ctx.strokeStyle = "#E2C6FF";
-              ctx.shadowColor = colors.purple.vivid;
-              ctx.shadowBlur = 10;
-              ctx.lineWidth = 2.5;
-              ctx.beginPath();
-              ctx.moveTo(lx, ly);
-              ctx.lineTo(cx, cy);
-              ctx.stroke();
-              ctx.closePath();
-
-              ctx.beginPath();
-
-              ctx.stroke();
-            } else {
-              notFirstTime.current[i] = true;
-            }
-
-            lastPoints[i] = { x: cx, y: cy };
-          }
-
-          ctx.restore();
-        }
-        requestAnimationFrame(draw);
-      };
-
-      draw();
+      worker.postMessage({
+        traceCycloid: {
+          lastPoints,
+          notFirstTime,
+        },
+      } as OnMessageOperationPayload);
     }
   }, []);
 }

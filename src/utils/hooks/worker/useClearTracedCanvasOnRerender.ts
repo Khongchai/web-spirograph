@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import {
-  OnMessagePayload,
+  OnMessageOperationPayload,
   WorkerOperation,
 } from "../../../canvasWorker/models/onMessageInitialPayloads";
 import CycloidControls from "../../../classes/CycloidControls";
@@ -18,7 +18,7 @@ export default function useClearTracedCanvasOnRerender(
     if (cycloidControls.current.clearTracedPathOnParamsChange) {
       worker.postMessage({
         workerOperations: WorkerOperation.ResetCanvas,
-      } as OnMessagePayload);
+      } as OnMessageOperationPayload);
     }
   }, [rerender]);
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import {
-  OnMessagePayload,
+  OnMessageOperationPayload,
   WorkerOperation,
 } from "../../../canvasWorker/models/onMessageInitialPayloads";
 import CycloidControls from "../../../classes/CycloidControls";
@@ -13,7 +13,6 @@ export default function useSetupCanvasWorker({
   traceCanvasRef,
   panRef,
   cycloidControlsRef,
-  parentWrapperRef,
   pointsToTraceRef,
 }: {
   drawCanvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
@@ -22,7 +21,6 @@ export default function useSetupCanvasWorker({
   pointsToTraceRef: React.MutableRefObject<Vector2[]>;
   panRef: React.MutableRefObject<Vector2 | null>;
   cycloidControlsRef: React.MutableRefObject<CycloidControls>;
-  parentWrapperRef: React.MutableRefObject<HTMLElement | null>;
 }) {
   const worker = useContext(CanvasWorker);
 
@@ -43,11 +41,10 @@ export default function useSetupCanvasWorker({
           parentWidth: parentRef.current!.clientHeight,
           panRef,
           cycloidControlsRef,
-          parentWrapperRef,
           pointsToTraceRef,
         },
         workerOperations: WorkerOperation.SetupCanvas,
-      } as OnMessagePayload,
+      } as OnMessageOperationPayload,
       [drawCanvas, traceCanvas]
     );
   }, []);
