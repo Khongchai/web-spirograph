@@ -45,6 +45,8 @@
     "@types/node": "^12.20.46",
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
+    "webpack-cli": "^4.9.2",
+    "worker-loader": "^3.0.8"
   }
 }
