@@ -6,8 +6,6 @@ import {
 import { drawCycloid } from "./operations/drawCycloids";
 import resetCanvas from "./operations/resetCanvas";
 
-export {};
-
 /**
  * Global worker data that is needed by many operations that was obtained during setup.
  *

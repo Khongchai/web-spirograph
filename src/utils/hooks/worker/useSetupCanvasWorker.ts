@@ -25,6 +25,8 @@ export default function useSetupCanvasWorker({
   const worker = useContext(CanvasWorker);
 
   useEffect(() => {
+    if (!worker) return;
+
     const drawCanvas = (
       drawCanvasRef.current as any
     ).transferControlToOffscreen();
@@ -47,5 +49,5 @@ export default function useSetupCanvasWorker({
       } as OnMessageOperationPayload,
       [drawCanvas, traceCanvas]
     );
-  }, []);
+  }, [worker]);
 }

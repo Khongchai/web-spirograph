@@ -33,6 +33,8 @@ export default function useDrawCanvas(
   const worker = useContext(CanvasWorker);
 
   useEffect(() => {
+    if (!worker) return;
+
     if (canvasRef.current && parent.current) {
       worker.postMessage({
         workerOperations: WorkerOperation.DrawCycloids,
@@ -42,5 +44,5 @@ export default function useDrawCanvas(
         },
       } as OnMessageOperationPayload);
     }
-  }, []);
+  }, [worker]);
 }

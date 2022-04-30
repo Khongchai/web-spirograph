@@ -31,6 +31,7 @@ export default function useTraceCycloidPath(
   const worker = useContext(CanvasWorker);
 
   useEffect(() => {
+    if (!worker) return;
     if (canvasRef.current) {
       worker.postMessage({
         traceCycloid: {
@@ -39,5 +40,5 @@ export default function useTraceCycloidPath(
         },
       } as OnMessageOperationPayload);
     }
-  }, []);
+  }, [worker]);
 }

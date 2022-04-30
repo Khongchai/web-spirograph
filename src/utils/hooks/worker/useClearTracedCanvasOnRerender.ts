@@ -15,10 +15,10 @@ export default function useClearTracedCanvasOnRerender(
 
   useEffect(() => {
     //TODO test whether it will still work when we don't use current
-    if (cycloidControls.current.clearTracedPathOnParamsChange) {
+    if (cycloidControls.current.clearTracedPathOnParamsChange && worker) {
       worker.postMessage({
         workerOperations: WorkerOperation.ResetCanvas,
       } as OnMessageOperationPayload);
     }
-  }, [rerender]);
+  }, [rerender, worker]);
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import BoundingCircle from "../classes/BoundingCircle";
 import CycloidControls from "../classes/CycloidControls";
 import Canvas from "../components/Canvas";
@@ -6,6 +6,10 @@ import ControlsOrRelationshipEditor from "../components/ControlsOrRelationshipEd
 import colors from "../constants/colors";
 import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import { CanvasWorker } from "../contexts/worker";
+
+//@ts-ignore
+// import Worker from "../canvasWorker/workerEntryPoint.worker";
+import Worker from "worker-loader!../canvasWorker/workerEntryPoint.worker";
 
 import "../index.css";
 
@@ -97,12 +101,16 @@ function Main() {
       handleClearCanvasToggle();
     });
 
+  // TODO Refactor  this block into useWorker or something.
+  const [worker, setWorker] = useState<Worker | null>(null);
+  useEffect(() => {
+    setWorker(new Worker());
+  }, []);
+
   return (
     <Rerender.Provider value={rerender}>
       <RerenderToggle.Provider value={handleClearCanvasToggle}>
-        <CanvasWorker.Provider
-          value={new Worker("../../canvasWorker/workerEntryPoint.worker.ts")}
-        >
+        <CanvasWorker.Provider value={worker}>
           <div className="bg-purple-dark text-purple-light h-full w-full">
             <div className="w-full h-full relative flex md:flex-row sm:flex-col">
               <div
