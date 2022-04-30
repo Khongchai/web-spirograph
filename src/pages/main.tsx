@@ -6,6 +6,7 @@ import ControlsOrRelationshipEditor from "../components/ControlsOrRelationshipEd
 import colors from "../constants/colors";
 import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import { CanvasWorker } from "../contexts/worker";
+
 import "../index.css";
 
 const defaultGlobalAnimationSpeed = 1;
@@ -100,7 +101,7 @@ function Main() {
     <Rerender.Provider value={rerender}>
       <RerenderToggle.Provider value={handleClearCanvasToggle}>
         <CanvasWorker.Provider
-          value={new Worker("../../canvasWorker/workerEntryPoint.ts")}
+          value={new Worker("../../canvasWorker/workerEntryPoint.worker.ts")}
         >
           <div className="bg-purple-dark text-purple-light h-full w-full">
             <div className="w-full h-full relative flex md:flex-row sm:flex-col">
