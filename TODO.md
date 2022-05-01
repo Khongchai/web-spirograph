@@ -1,4 +1,4 @@
-- refactor folder structures, especially utils folder.
+Reset canvas size on resize + it's not clearing right now.
 
 - New landing page
 

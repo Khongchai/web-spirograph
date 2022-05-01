@@ -14,11 +14,20 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         canvasHeight: height,
         canvasWidth: width,
       } = data.initPayload!;
+      canvas.height = height;
+      canvas.width = width;
       screenSize.width = width;
       screenSize.height = height;
 
       const ctx = canvas.getContext("2d")!;
-      drawParticles({ ctx, width, height });
+
+      drawParticles({ ctx, screenSize });
+      break;
+    case ParticlesWorkerOperation.Resize:
+      const { newWidth, newHeight } = data.resize!;
+      screenSize.width = newWidth;
+      screenSize.height = newHeight;
+
       break;
     default:
   }
