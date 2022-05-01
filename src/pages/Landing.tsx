@@ -3,7 +3,7 @@ import Button from "../components/main/Shared/Button";
 
 export default function Landing() {
   return (
-    <div className="bg-purple-dark w-full h-full relative">
+    <div className="bg-purple-dark w-full h-full relative select-none">
       <h1
         className="m-auto text-white w-min text-5xl font-bold"
         style={{ paddingTop: "114px" }}
