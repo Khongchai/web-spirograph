@@ -5,13 +5,13 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/CycloidControls";
-import { Vector2 } from "../../types/vector2";
-import useDrawCycloid from "../../utils/hooks/useDrawCycloid";
-import useHandlePan from "../../utils/hooks/useHandlePan";
-import useHandleZoom from "../../utils/hooks/useHandleZoom";
-import useTraceCycloidPath from "../../utils/hooks/useTraceCycloidPath";
+import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
+import CycloidControlsData from "../../../classes/CycloidControls";
+import { Vector2 } from "../../../types/vector2";
+import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
+import useHandlePan from "../../../utils/hooks/useHandlePan";
+import useHandleZoom from "../../../utils/hooks/useHandleZoom";
+import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;

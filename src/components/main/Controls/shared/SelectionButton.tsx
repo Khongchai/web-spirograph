@@ -1,5 +1,5 @@
 import React from "react";
-import useForceUpdate from "../../../utils/hooks/useForceUpdate";
+import useForceUpdate from "../../../../utils/hooks/useForceUpdate";
 
 interface buttonProps {
   innerHTML: string;

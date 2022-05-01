@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { Rerender, RerenderToggle } from "../../contexts/rerenderToggle";
-import { Vector2 } from "../../types/vector2";
-import useForceUpdate from "../../utils/hooks/useForceUpdate";
+import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
+import { Vector2 } from "../../../types/vector2";
+import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
 import useCheckCircleCircleCollision from "./utils/useCheckCircleCircleCollision";

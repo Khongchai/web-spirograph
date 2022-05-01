@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import BoundingCircle from "../../../classes/BoundingCircle";
-import colors from "../../../constants/colors";
-import { Rerender } from "../../../contexts/rerenderToggle";
-import CycloidControlsData from "../../../classes/CycloidControls";
+import BoundingCircle from "../../../../classes/BoundingCircle";
+import colors from "../../../../constants/colors";
+import { Rerender } from "../../../../contexts/rerenderToggle";
+import CycloidControlsData from "../../../../classes/CycloidControls";
 import DrawNodeLevel from "../classes/drawNodeLevel";
 import DraggableSvgCircle from "../draggableSvgCircle";
-import SvgLineFromNodeToParent from "../svgLine";
+import SvgLineFromNodeToParent from "../SvgLine";
 import getDrawLevel from "./getDrawLevel";
 import organizeNodesPositionOnLevel from "./getNodeXPos";
 import scaleDrawRadius from "./scaleDrawRadius";

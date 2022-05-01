@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
-import { RerenderToggle } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/CycloidControls";
+import { RerenderToggle } from "../../../contexts/rerenderToggle";
+import CycloidControlsData from "../../../classes/CycloidControls";
 import ContentArray from "./shared/contentArray";
 import Settings from "./shared/control";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
-import colors from "../../constants/colors";
+import colors from "../../../constants/colors";
 
 interface globalProps {
   cycloidControls: CycloidControlsData;

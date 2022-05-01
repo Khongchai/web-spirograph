@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import useStateEffect from "./utils/useStateEffect";
+import useStateEffect from "../utils/useStateEffect";
 
 interface DraggableValueProps {
   value: number;

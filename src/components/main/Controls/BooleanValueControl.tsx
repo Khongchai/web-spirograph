@@ -1,6 +1,6 @@
 import React from "react";
 import { BooleanSwitchBehavior } from "./shared/control";
-import useStateEffect from "./shared/utils/useStateEffect";
+import useStateEffect from "./utils/useStateEffect";
 
 const BooleanValueControl: React.FC<BooleanSwitchBehavior> = ({
   defaultBooleanValue,

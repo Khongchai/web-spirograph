@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "../classes/BoundingCircle";
 import CycloidControls from "../classes/CycloidControls";
-import Canvas from "../components/Canvas";
-import ControlsOrRelationshipEditor from "../components/ControlsOrRelationshipEditor";
+import Canvas from "../components/main/Canvas";
+import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
 import colors from "../constants/colors";
 import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";

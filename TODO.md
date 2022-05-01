@@ -16,9 +16,6 @@ Refactor tooltip out as a wrapper so that you can use it with anything.
 
 Instant draw
 
-Canvas // eventlistener multi-threading for better performance. Watch out for non-atomic operations.
-https://medium.com/techtrument/multithreading-javascript-46156179cf9a
-
 The ability to change colors
 
 use another cycloid as the base for drawing.
