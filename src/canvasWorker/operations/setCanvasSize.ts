@@ -4,6 +4,9 @@ export default function setCanvasSize(
   height: number,
   extraSetUp?: Function
 ) {
+  //TODO
+  return;
+
   canvas.setAttribute("width", width.toString());
   canvas.setAttribute("height", height.toString());
 

@@ -1,5 +1,3 @@
-TODO => continue with import
-
 # In progress
 
 - Trying to refactor everything to an offscreen-canvas (run the app and you'll know from where to continue).
@@ -11,6 +9,8 @@ TODO => continue with import
 - If deep copy poses some problems, then we'll have to abuse useEffect and custom dispatch function to trigger changes to the onMessage mapper -- but just focus on the migration for now. And if that is the case then we actually don't even need react MutableRefs anymore.
 
 ## TODO
+
+- Do something about canvas resize with the offscreen canvas.
 
 - Experiment with offscreen canvas
 

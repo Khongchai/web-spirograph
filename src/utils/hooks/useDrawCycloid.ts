@@ -18,6 +18,8 @@ export default function useDrawCanvas(
   parent: MutableRefObject<HTMLElement>,
   panRef: MutableRefObject<Vector2>
 ) {
+  const worker = useContext(CanvasWorker);
+
   let { generatedCycloids: cycloids, outermostBoundingCircle } =
     useGenerateCycloids(cycloidControls);
 
@@ -28,21 +30,18 @@ export default function useDrawCanvas(
   const cycloidsRefForCanvas = useRef<Cycloid[] | null>();
   useEffect(() => {
     cycloidsRefForCanvas.current = cycloids;
-  }, [cycloids]);
 
-  const worker = useContext(CanvasWorker);
-
-  useEffect(() => {
     if (!worker) return;
 
-    if (canvasRef.current && parent.current) {
-      worker.postMessage({
+    if (canvasRef.current && parent.current && cycloidsRefForCanvas.current) {
+      const payload: OnMessageOperationPayload = {
         workerOperations: WorkerOperation.DrawCycloids,
         drawCycloid: {
-          cycloidsRefForCanvas,
-          outermostBoundingCircle,
+          cycloidsRefForCanvas: JSON.stringify(cycloidsRefForCanvas),
+          outermostBoundingCircle: JSON.stringify(outermostBoundingCircle),
         },
-      } as OnMessageOperationPayload);
+      };
+      worker.postMessage(payload);
     }
-  }, [worker]);
+  }, [cycloids, worker]);
 }

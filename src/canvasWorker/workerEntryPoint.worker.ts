@@ -1,3 +1,6 @@
+import { MutableRefObject } from "react";
+import BoundingCircle from "../classes/BoundingCircle";
+import Cycloid from "../classes/Cycloid";
 import { CycloidAnimationWorkerData } from "./models/cycloidAnimationWorkerData";
 import {
   OnMessageOperationPayload,
@@ -43,8 +46,10 @@ onmessage = (message: { data: OnMessageOperationPayload }) => {
         traceContext: setupData.traceCanvas.getContext("2d")!,
         ...setupData,
       };
+      break;
     case WorkerOperation.ResetCanvas:
       resetCanvas(workerData);
+      break;
     case WorkerOperation.DrawCycloids:
       const {
         drawCanvas: canvas,
@@ -62,17 +67,24 @@ onmessage = (message: { data: OnMessageOperationPayload }) => {
         drawContext,
       } = workerData;
 
+      console.log(cycloidsRefForCanvas);
+
       drawCycloid({
         canvas,
         height,
         width,
         cycloidControls,
-        cycloidsRefForCanvas,
-        outermostBoundingCircle,
+        cycloidsRefForCanvas: JSON.parse(
+          cycloidsRefForCanvas
+        ) as MutableRefObject<Cycloid[]>,
+        outermostBoundingCircle: JSON.parse(
+          outermostBoundingCircle
+        ) as BoundingCircle,
         panRef,
         pointsToTrace,
         drawContext,
       });
+      break;
     default:
       break;
   }
