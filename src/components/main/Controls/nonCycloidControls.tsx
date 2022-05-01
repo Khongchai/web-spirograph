@@ -28,7 +28,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
         <Heading tooltipText={modeTooltipText}>Mode</Heading>
         <SelectionButton
           blur={cycloidControls.mode !== "Animated"}
-          innerHTML="Animated"
+          text="Animated"
           onClick={() => {
             cycloidControls.mode = "Animated";
             forceUpdate();
@@ -36,7 +36,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
         />
         <SelectionButton
           blur={cycloidControls.mode !== "Instant"}
-          innerHTML="Instant"
+          text="Instant"
           onClick={() => {
             cycloidControls.mode = "Instant";
             forceUpdate();
@@ -51,7 +51,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
             cycloidControls.scaffold = "Showing";
             forceUpdate();
           }}
-          innerHTML={"Showing"}
+          text={"Showing"}
         />
         <SelectionButton
           blur={cycloidControls.scaffold !== "Hidden"}
@@ -59,7 +59,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
             cycloidControls.scaffold = "Hidden";
             forceUpdate();
           }}
-          innerHTML={"Hidden"}
+          text={"Hidden"}
         />
       </SettingsContainer>
     </ControlSection>

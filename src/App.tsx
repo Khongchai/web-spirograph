@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import "./index.css";
-import Main from "./pages/main";
+import Landing from "./pages/Landing";
+import Main from "./pages/Main";
 
-/// Switch between main and landing
+/// Switch between main and landing with custom animation.
 function App() {
+  return <Landing />;
   return <Main />;
 }
 

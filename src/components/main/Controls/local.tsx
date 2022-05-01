@@ -61,7 +61,7 @@ const Local: React.FC<{
         <div className="flex">
           <SelectionButton
             blur={cycloid.rotationDirection !== "clockwise"}
-            innerHTML="Clockwise"
+            text="Clockwise"
             onClick={() => {
               cycloid.rotationDirection = "clockwise";
               forceUpdate();
@@ -70,7 +70,7 @@ const Local: React.FC<{
           />
           <SelectionButton
             blur={cycloid.rotationDirection !== "counterclockwise"}
-            innerHTML="Counter Clockwise"
+            text="Counter Clockwise"
             onClick={() => {
               cycloid.rotationDirection = "counterclockwise";
               forceUpdate();

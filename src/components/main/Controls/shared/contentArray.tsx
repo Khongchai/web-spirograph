@@ -22,7 +22,7 @@ export default function ContentArray<T>({
             onClick={() => onClick(value)}
             key={paramName + i}
             blur={value !== targetValue}
-            innerHTML={(value as any).toString()}
+            text={(value as any).toString()}
           />
         ))}
       </div>
