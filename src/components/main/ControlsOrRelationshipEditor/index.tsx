@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import CycloidControlsData from "../../../classes/CycloidControls";
+import CycloidControlsData from "../../../classes/cycloidControls";
 import Controls from "../Controls";
 import RelationShipEditor from "../RelationshipEditor";
 import IconButton from "./IconButton";

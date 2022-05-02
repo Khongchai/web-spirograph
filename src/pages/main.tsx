@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import BoundingCircle from "../classes/BoundingCircle";
-import CycloidControls from "../classes/CycloidControls";
+import CycloidControls from "../classes/cycloidControls";
 import Canvas from "../components/main/Canvas";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
 import colors from "../constants/colors";

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";

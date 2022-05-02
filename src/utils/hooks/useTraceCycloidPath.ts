@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from "react";
 import colors from "../../constants/colors";
 import { Rerender } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/CycloidControls";
+import CycloidControlsData from "../../classes/cycloidControls";
 import { Vector2 } from "../../types/vector2";
 import setCanvasSize from "../setCanvasSize";
 

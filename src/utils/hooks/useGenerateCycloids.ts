@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControlsData from "../../classes/CycloidControls";
+import CycloidControlsData from "../../classes/cycloidControls";
 import { Rerender } from "../../contexts/rerenderToggle";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 
