@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect } from "react";
-import { Vector2 } from "../../types/vector2";
+import { Vector2 } from "../../classes/vector2";
 
 const mouseDownPos: Vector2 = { x: 0, y: 0 };
 const canvasTranslatedPosition: Vector2 = { x: 0, y: 0 };

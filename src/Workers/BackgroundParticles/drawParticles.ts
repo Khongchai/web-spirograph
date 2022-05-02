@@ -1,57 +1,164 @@
+//TODO on begin clicked, expand all dots to be farther from one another.
+
 import colors from "../../constants/colors";
-import Vector3 from "./classes/vector3";
+import CenterSpreadWeight from "./models/CenterSpreadWeight";
+import Delta from "./models/Delta";
+import MousePos from "./models/MousePos";
+import Particle from "./models/particle";
+import RotationAngles from "./models/RotationAngles";
+import ScreenSize from "./models/ScreenSize";
 
-let _context: OffscreenCanvasRenderingContext2D;
-let _screenSize: { width: number, height: number };
-
-export default function drawParticles(
-  ctx: OffscreenCanvasRenderingContext2D,
-  screenSize: {
-    width: number;
-    height: number;
-  },
-) {
+interface DrawParticlesParams {
+  ctx: OffscreenCanvasRenderingContext2D;
+  screenSize: ScreenSize;
+  mousePos: MousePos;
+  rotationAngles: RotationAngles;
+  /**
+   * The heavier this value, the more the particles will be spread out.
+   */
+  centerSpreadWeight: CenterSpreadWeight;
+}
+export default function drawParticles({
+  ctx,
+  mousePos,
+  rotationAngles,
+  screenSize,
+  centerSpreadWeight,
+}: DrawParticlesParams) {
   //Setup n stuff
-  _screenSize = screenSize;
-  _context = ctx;
 
-  _context.fillStyle = colors.purple.dark;
-  _context.strokeStyle = "white";
+  ctx.strokeStyle = "white";
 
-  draw();
+  const particles: Particle[] = generateParticles({
+    width: screenSize.width,
+    height: screenSize.height,
+    count: 20,
+  });
+
+  const focalLength = 900;
+
+  centerVanishingPoint(ctx, screenSize.width, screenSize.height);
+
+  const delta = new Delta();
+
+  draw({
+    screenSize,
+    ctx,
+    focalLength,
+    mousePos,
+    particles,
+    rotationAngles,
+    delta,
+    centerSpreadWeight,
+  });
 }
 
-function draw() {
-  const { width, height } = _screenSize;
+interface DrawParams extends DrawParticlesParams {
+  particles: Particle[];
+  focalLength: number;
+  delta: Delta;
+}
+function draw({
+  screenSize,
+  ctx,
+  focalLength,
+  mousePos,
+  particles,
+  rotationAngles,
+  delta,
+  centerSpreadWeight,
+}: DrawParams) {
+  const { width, height } = screenSize;
 
-  _context.fillStyle = colors.purple.dark;
-  _context.fillRect(0, 0, width, height);
+  const tick = delta.elapsedTotal;
 
+  ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
+  ctx.fillRect(-width / 2, -height / 2, width, height);
 
-  requestAnimationFrame(draw);
+  _drawParticles(ctx, particles, focalLength, tick);
+
+  requestAnimationFrame(() =>
+    draw({
+      ctx,
+      focalLength,
+      mousePos,
+      particles,
+      rotationAngles,
+      screenSize,
+      delta,
+      centerSpreadWeight,
+    })
+  );
 }
 
-function centerVanishingPoint(ctx: OffscreenCanvasRenderingContext2D) {
-  ctx.translate(_screenSize.width / 2, _screenSize.height / 2);
+function centerVanishingPoint(
+  ctx: OffscreenCanvasRenderingContext2D,
+  width: number,
+  height: number
+) {
+  ctx.translate(width / 2, height / 2);
 }
 
-//TODO generate particles first.
-function generateParticles(particlesArray: Vector3) {
-  const {width, height} = _screenSize;
+function _drawParticles(
+  ctx: OffscreenCanvasRenderingContext2D,
+  particles: Particle[],
+  focalLength: number,
+  tick: number
+) {
+  particles.forEach((p) => {
+    //3d lissajous curve
+    const zNoise = Math.sin(tick * p.z * 0.000001) * 50;
+    const xNoise = Math.sin(tick * p.x * 0.0000005) * 100;
+    const yNoise = Math.sin(tick * p.y * 0.0000002) * 100;
+    const perspective = focalLength / (focalLength + p.z + zNoise);
 
-  for (let i = 0; i < 200; i++) {
-    const newParticle = {
-      x: Math.random() * width - width / 2,
-      y: Math.random() * -height * 2,
-      z: Math.random() * 4000,
-      radius: Math.random() * 3 + 2,
-      color: "rgba(240, 94, 27, 0.7)",
+    ctx.save();
+
+    ctx.scale(perspective, perspective);
+    ctx.translate(p.x + xNoise, p.y + yNoise);
+
+    ctx.beginPath();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = p.shadowColor;
+    ctx.fillStyle = p.color;
+    ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  });
+}
+
+function generateParticles({
+  width,
+  height,
+  count,
+}: {
+  width: number;
+  height: number;
+  count: number;
+}) {
+  const particles: Particle[] = [];
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * width - width / 2;
+    const y = Math.random() * height - height / 2;
+    const z = Math.random() * 3000;
+    const newParticle: Particle = {
+      x,
+      y,
+      z,
+      radius: Math.random() * 10 + 2,
+      color: colors.purple.light,
       shadowColor: "rgba(300, 94, 27, 0.9)",
+      initialX: x,
+      initialY: y,
+      initialZ: z,
     };
     newParticle.initialZ = newParticle.z;
     newParticle.initialX = newParticle.x;
     newParticle.initialY = newParticle.y;
 
-    particlesArray.push(newParticle);
+    particles.push(newParticle);
   }
+
+  return particles;
 }

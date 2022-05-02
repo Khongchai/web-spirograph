@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Vector2 } from "../../../../types/vector2";
+import { Vector2 } from "../../../../classes/vector2";
 import { DrawNode } from "../types";
 import scaleDrawRadius from "./scaleDrawRadius";
 

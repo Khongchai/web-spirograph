@@ -7,6 +7,9 @@ export default interface ParticlesWorkerPayload {
 export enum ParticlesWorkerOperation {
   Init,
   Resize,
+  //TODO
+  SetMousePos,
+  SetRotationAngles,
 }
 
 export type InitPayload = {

@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
 import CycloidControlsData from "../../../classes/cycloidControls";
-import { Vector2 } from "../../../types/vector2";
+import { Vector2 } from "../../../classes/vector2";
 import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../../utils/hooks/useHandleZoom";
