@@ -1,4 +1,5 @@
-import drawParticles from "./draw";
+import colors from "../../constants/colors";
+import drawParticles from "./drawParticles";
 import ParticlesWorkerPayload, { ParticlesWorkerOperation } from "./payloads";
 
 const screenSize = {
@@ -21,9 +22,11 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
 
       const ctx = canvas.getContext("2d")!;
 
-      drawParticles({ ctx, screenSize });
+      drawParticles(ctx, screenSize);
       break;
     case ParticlesWorkerOperation.Resize:
+      //TODO figure out later why this shit doesn't work.
+      break;
       const { newWidth, newHeight } = data.resize!;
       screenSize.width = newWidth;
       screenSize.height = newHeight;
