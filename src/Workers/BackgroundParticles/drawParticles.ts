@@ -108,7 +108,7 @@ function _drawParticles(
   particles.forEach((p) => {
     //3d lissajous curve
     const zNoise = Math.sin(tick * p.z * 0.000001) * 50;
-    const xNoise = Math.sin(tick * p.x * 0.0000005) * 100;
+    const xNoise = Math.cos(tick * p.x * 0.0000005) * 100;
     const yNoise = Math.sin(tick * p.y * 0.0000002) * 100;
     const perspective = focalLength / (focalLength + p.z + zNoise);
 
