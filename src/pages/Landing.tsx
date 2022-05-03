@@ -1,7 +1,11 @@
 import React from "react";
 import Button from "../components/main/Shared/Button";
 
-export default function Landing() {
+export default function Landing({
+  onBeginClicked,
+}: {
+  onBeginClicked: VoidFunction;
+}) {
   return (
     <div className=" select-none">
       <h1
@@ -11,9 +15,7 @@ export default function Landing() {
         Spiro
       </h1>
       <Button
-        onClick={() => {
-          console.log("TODO");
-        }}
+        onClick={onBeginClicked}
         additionalStyle={{
           color: "white",
           fontWeight: "bold",

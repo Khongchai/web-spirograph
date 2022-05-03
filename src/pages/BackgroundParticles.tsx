@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { NaivgationStage } from "../types/Stage";
 import useOnMouseMove from "../utils/BackgroundParticles/useOnMouseMove";
 import useOnResize from "../utils/BackgroundParticles/useOnResize";
 import useSetupWorker from "../utils/BackgroundParticles/useSetupWorker";
@@ -6,7 +7,11 @@ import useSetupWorker from "../utils/BackgroundParticles/useSetupWorker";
 // Assume canvas is always the same size as the window.
 
 //TODO refactor into separate hooks and cancel the eventlisteners.
-export default function BackgroundParticles() {
+export default function BackgroundParticles({
+  stage,
+}: {
+  stage: NaivgationStage;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const { worker } = useSetupWorker({ canvasRef, dependencyList: [] });
