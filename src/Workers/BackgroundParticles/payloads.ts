@@ -4,14 +4,16 @@ export default interface ParticlesWorkerPayload {
   initPayload?: InitPayload;
   resizePayload?: ResizePayload;
   setMousePosPayload?: SetMousePosPayload;
+  spreadAndRotate?: SpreadAndRotatePayload;
   operation: ParticlesWorkerOperation;
 }
 
 export enum ParticlesWorkerOperation {
   Init,
   Resize,
-  //TODO
   SetMousePos,
+  SpreadAndRotate,
+  //TODO
   SetRotationAngles,
 }
 
@@ -27,3 +29,5 @@ export type ResizePayload = {
 };
 
 export type SetMousePosPayload = Vector2;
+
+export type SpreadAndRotatePayload = null;

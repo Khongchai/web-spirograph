@@ -1,4 +1,5 @@
 //TODO on begin clicked, expand all dots to be farther from one another.
+//TODO refactor this humongous mess.
 
 import colors from "../../constants/colors";
 import CenterSpreadWeight from "./models/CenterSpreadWeight";
