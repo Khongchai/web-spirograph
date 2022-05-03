@@ -17,7 +17,11 @@ export default function manageInteractionsAndDrawParticles(
   particles.forEach((p) => {
     //TODO spread everything from the center.
 
-    const { x, y, z } = spreadOrShrink(lissajousNoise(p, tick), tick, ctx);
+    const { x, y, z } = rotateBasedOnWeight(
+      spreadOrShrink(lissajousNoise(p, tick), tick, centerSpreadWeight),
+      tick,
+      centerSpreadWeight
+    );
 
     saveTransform(ctx);
 
@@ -42,10 +46,13 @@ function lissajousNoise(p: Particle, tick: number) {
   const noisedY = p.y + yNoise;
   const noisedZ = p.z + zNoise;
 
+  const rotateXNoise = Math.cos(Math.PI + tick * 0.00005) * 10;
+  const rotateZNoise = 100 + Math.sin(Math.PI + tick * 0.00004) * 100;
+
   return {
-    x: noisedX,
+    x: noisedX + rotateXNoise,
     y: noisedY,
-    z: noisedZ,
+    z: noisedZ + rotateZNoise,
   };
 }
 
@@ -99,7 +106,16 @@ function drawParticle(ctx: OffscreenCanvasRenderingContext2D, p: Particle) {
 function spreadOrShrink(
   p: Vector3,
   tick: number,
-  ctx: OffscreenCanvasRenderingContext2D
+  centerSpreadWeight: CenterSpreadWeight
+) {
+  //TODO
+  return p;
+}
+
+function rotateBasedOnWeight(
+  p: Vector3,
+  tick: number,
+  centerSpreadWeight: CenterSpreadWeight
 ) {
   //TODO
   return p;
