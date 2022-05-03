@@ -8,6 +8,7 @@ import ParticlesWorkerPayload, {
 
 // Assume canvas is always the same size as the window.
 
+//TODO refactor into separate hooks and cancel the eventlisteners.
 export default function BackgroundParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -30,12 +31,23 @@ export default function BackgroundParticles() {
     window.addEventListener("resize", () => {
       const resizePayload: ParticlesWorkerPayload = {
         operation: ParticlesWorkerOperation.Resize,
-        resize: {
+        resizePayload: {
           newHeight: window.innerHeight,
           newWidth: window.innerWidth,
         },
       };
       worker.postMessage(resizePayload);
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      const setMousePosPayload: ParticlesWorkerPayload = {
+        operation: ParticlesWorkerOperation.SetMousePos,
+        setMousePosPayload: {
+          x: e.x,
+          y: e.y,
+        },
+      };
+      worker.postMessage(setMousePosPayload);
     });
   }, []);
 

@@ -125,7 +125,9 @@ function _drawParticles(
       Math.pow(mousePos.x - p.x, 2) + Math.pow(mousePos.y - p.y, 2)
     );
     const distThreshold = 200;
-    const alpha = distThreshold / Math.max(dist, distThreshold);
+    let alpha = distThreshold / Math.max(dist, distThreshold);
+    alpha = Math.max(Math.min(alpha, 1), 0.3);
+
     ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${
       0.1 + alpha
     })`;

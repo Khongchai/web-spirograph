@@ -11,8 +11,8 @@ const screenSize: ScreenSize = {
   height: 0,
 };
 const mousePos: MousePos = {
-  x: 0,
-  y: 0,
+  x: -999999,
+  y: -999999,
 };
 const rotationAngles: RotationAngles = {
   current: 0,
@@ -24,7 +24,7 @@ const centerSpreadWeight: CenterSpreadWeight = {
 
 onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
   switch (data.operation) {
-    case ParticlesWorkerOperation.Init:
+    case ParticlesWorkerOperation.Init: {
       const {
         canvas,
         canvasHeight: height,
@@ -45,14 +45,24 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         centerSpreadWeight,
       });
       break;
-    case ParticlesWorkerOperation.Resize:
+    }
+
+    case ParticlesWorkerOperation.SetMousePos: {
+      const { height, width } = screenSize;
+      const { x, y } = data.setMousePosPayload!;
+      mousePos.x = x - width / 2;
+      mousePos.y = y - height / 2;
+      break;
+    }
+
+    case ParticlesWorkerOperation.Resize: {
       //TODO figure out later why this shit doesn't work.
       break;
-      const { newWidth, newHeight } = data.resize!;
+      const { newWidth, newHeight } = data.resizePayload!;
       screenSize.width = newWidth;
       screenSize.height = newHeight;
 
       break;
-    default:
+    }
   }
 };

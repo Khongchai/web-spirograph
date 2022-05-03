@@ -1,6 +1,9 @@
+import { Vector2 } from "../../classes/vector2";
+
 export default interface ParticlesWorkerPayload {
   initPayload?: InitPayload;
-  resize?: ResizePayload;
+  resizePayload?: ResizePayload;
+  setMousePosPayload?: SetMousePosPayload;
   operation: ParticlesWorkerOperation;
 }
 
@@ -22,3 +25,5 @@ export type ResizePayload = {
   newWidth: number;
   newHeight: number;
 };
+
+export type SetMousePosPayload = Vector2;
