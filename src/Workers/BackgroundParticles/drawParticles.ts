@@ -75,7 +75,7 @@ function draw({
   ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
   ctx.fillRect(-width / 2, -height / 2, width, height);
 
-  _drawParticles(ctx, particles, focalLength, tick);
+  _drawParticles(ctx, particles, focalLength, mousePos, tick);
 
   requestAnimationFrame(() =>
     draw({
@@ -103,13 +103,14 @@ function _drawParticles(
   ctx: OffscreenCanvasRenderingContext2D,
   particles: Particle[],
   focalLength: number,
+  mousePos: MousePos,
   tick: number
 ) {
   particles.forEach((p) => {
     //3d lissajous curve
-    const zNoise = Math.sin(tick * p.z * 0.000001) * 50;
-    const xNoise = Math.cos(tick * p.x * 0.0000005) * 100;
-    const yNoise = Math.sin(tick * p.y * 0.0000002) * 100;
+    const zNoise = Math.sin(tick * p.z * 0.000001) * 60;
+    const xNoise = Math.cos(tick * p.x * 0.0000005) * 95;
+    const yNoise = Math.sin(tick * p.y * 0.0000003) * 100;
     const perspective = focalLength / (focalLength + p.z + zNoise);
 
     ctx.save();
@@ -119,8 +120,19 @@ function _drawParticles(
 
     ctx.beginPath();
     ctx.shadowBlur = 10;
-    ctx.shadowColor = p.shadowColor;
-    ctx.fillStyle = p.color;
+
+    const dist = Math.sqrt(
+      Math.pow(mousePos.x - p.x, 2) + Math.pow(mousePos.y - p.y, 2)
+    );
+    const distThreshold = 200;
+    const alpha = distThreshold / Math.max(dist, distThreshold);
+    ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${
+      0.1 + alpha
+    })`;
+    ctx.shadowColor = `rgba(${p.shadowColor.r}, ${p.shadowColor.g}, ${
+      p.shadowColor.b
+    }, ${0.1 + alpha})`;
+
     ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
     ctx.fill();
 
@@ -147,8 +159,18 @@ function generateParticles({
       y,
       z,
       radius: Math.random() * 10 + 2,
-      color: colors.purple.light,
-      shadowColor: "rgba(300, 94, 27, 0.9)",
+      color: {
+        r: 231,
+        g: 210,
+        b: 253,
+        a: 0.9,
+      },
+      shadowColor: {
+        r: 300,
+        g: 94,
+        b: 27,
+        a: 0.9,
+      },
       initialX: x,
       initialY: y,
       initialZ: z,

@@ -5,6 +5,16 @@ export default interface Particle extends Vector3 {
   initialY: number;
   initialZ: number;
   radius: number;
-  color: string;
-  shadowColor: string;
+  color: {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  };
+  shadowColor: {
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+  };
 }
