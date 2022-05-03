@@ -1,4 +1,5 @@
-import drawParticles from "./drawParticles";
+import { Vector2 } from "../../classes/vector2";
+import drawParticles from "./utils/drawParticles/drawParticles";
 import CenterSpreadWeight from "./models/CenterSpreadWeight";
 import MousePos from "./models/MousePos";
 import RotationAngles from "./models/RotationAngles";
@@ -20,6 +21,10 @@ const rotationAngles: RotationAngles = {
 };
 const centerSpreadWeight: CenterSpreadWeight = {
   weight: 0,
+};
+const screenCenter: Vector2 = {
+  x: 0,
+  y: 0,
 };
 
 /**
@@ -49,6 +54,7 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         rotationAngles,
         screenSize,
         centerSpreadWeight,
+        screenCenter,
       });
       break;
     }

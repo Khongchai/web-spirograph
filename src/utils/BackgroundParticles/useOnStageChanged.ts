@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { NaivgationStage } from "../../types/Stage";
-import Particle from "../../Workers/BackgroundParticles/models/particle";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
 } from "../../Workers/BackgroundParticles/payloads";

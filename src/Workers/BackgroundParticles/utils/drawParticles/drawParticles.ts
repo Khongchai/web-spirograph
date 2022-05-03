@@ -1,13 +1,14 @@
 //TODO on begin clicked, expand all dots to be farther from one another.
 //TODO refactor this humongous mess.
 
-import colors from "../../constants/colors";
-import CenterSpreadWeight from "./models/CenterSpreadWeight";
-import Delta from "./models/Delta";
-import MousePos from "./models/MousePos";
-import Particle from "./models/particle";
-import RotationAngles from "./models/RotationAngles";
-import ScreenSize from "./models/ScreenSize";
+import { Vector2 } from "../../../../classes/vector2";
+import CenterSpreadWeight from "../../models/CenterSpreadWeight";
+import Delta from "../../models/Delta";
+import MousePos from "../../models/MousePos";
+import Particle from "../../models/particle";
+import RotationAngles from "../../models/RotationAngles";
+import ScreenSize from "../../models/ScreenSize";
+import manageInteractionsAndDrawParticles from "./manageInteractionsAndDrawParticles";
 
 interface DrawParticlesParams {
   ctx: OffscreenCanvasRenderingContext2D;
@@ -18,6 +19,7 @@ interface DrawParticlesParams {
    * The heavier this value, the more the particles will be spread out.
    */
   centerSpreadWeight: CenterSpreadWeight;
+  screenCenter: Vector2;
 }
 export default function drawParticles({
   ctx,
@@ -25,6 +27,7 @@ export default function drawParticles({
   rotationAngles,
   screenSize,
   centerSpreadWeight,
+  screenCenter,
 }: DrawParticlesParams) {
   //Setup n stuff
 
@@ -51,6 +54,7 @@ export default function drawParticles({
     rotationAngles,
     delta,
     centerSpreadWeight,
+    screenCenter,
   });
 }
 
@@ -68,6 +72,7 @@ function draw({
   rotationAngles,
   delta,
   centerSpreadWeight,
+  screenCenter,
 }: DrawParams) {
   const { width, height } = screenSize;
 
@@ -76,7 +81,15 @@ function draw({
   ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
   ctx.fillRect(-width / 2, -height / 2, width, height);
 
-  _drawParticles(ctx, particles, focalLength, mousePos, tick);
+  manageInteractionsAndDrawParticles(
+    ctx,
+    particles,
+    focalLength,
+    mousePos,
+    tick,
+    centerSpreadWeight,
+    screenCenter
+  );
 
   requestAnimationFrame(() =>
     draw({
@@ -88,6 +101,7 @@ function draw({
       screenSize,
       delta,
       centerSpreadWeight,
+      screenCenter,
     })
   );
 }
@@ -98,49 +112,6 @@ function centerVanishingPoint(
   height: number
 ) {
   ctx.translate(width / 2, height / 2);
-}
-
-function _drawParticles(
-  ctx: OffscreenCanvasRenderingContext2D,
-  particles: Particle[],
-  focalLength: number,
-  mousePos: MousePos,
-  tick: number
-) {
-  particles.forEach((p) => {
-    //3d lissajous curve
-    const zNoise = Math.sin(tick * p.z * 0.000001) * 60;
-    const xNoise = Math.cos(tick * p.x * 0.0000005) * 95;
-    const yNoise = Math.sin(tick * p.y * 0.0000003) * 100;
-    const perspective = focalLength / (focalLength + p.z + zNoise);
-
-    ctx.save();
-
-    ctx.scale(perspective, perspective);
-    ctx.translate(p.x + xNoise, p.y + yNoise);
-
-    ctx.beginPath();
-    ctx.shadowBlur = 10;
-
-    const dist = Math.sqrt(
-      Math.pow(mousePos.x - p.x, 2) + Math.pow(mousePos.y - p.y, 2)
-    );
-    const distThreshold = 200;
-    let alpha = distThreshold / Math.max(dist, distThreshold);
-    alpha = Math.max(Math.min(alpha, 1), 0.3);
-
-    ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${
-      0.1 + alpha
-    })`;
-    ctx.shadowColor = `rgba(${p.shadowColor.r}, ${p.shadowColor.g}, ${
-      p.shadowColor.b
-    }, ${0.1 + alpha})`;
-
-    ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  });
 }
 
 function generateParticles({
