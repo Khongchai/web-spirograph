@@ -4,7 +4,7 @@ export default interface ParticlesWorkerPayload {
   initPayload?: InitPayload;
   resizePayload?: ResizePayload;
   setMousePosPayload?: SetMousePosPayload;
-  spreadAndRotate?: SpreadAndRotatePayload;
+  spreadAndRotatePayload?: SpreadAndRotatePayload;
   operation: ParticlesWorkerOperation;
 }
 
@@ -30,4 +30,4 @@ export type ResizePayload = {
 
 export type SetMousePosPayload = Vector2;
 
-export type SpreadAndRotatePayload = null;
+export type SpreadAndRotatePayload = "spread" | "shrink";

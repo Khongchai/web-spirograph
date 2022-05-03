@@ -22,6 +22,12 @@ const centerSpreadWeight: CenterSpreadWeight = {
   weight: 0,
 };
 
+/**
+ *
+ * Docs:
+ *
+ * main thread => (payload & operation) as message => onmessage (like a mapper) => worker thread
+ */
 onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
   switch (data.operation) {
     case ParticlesWorkerOperation.Init: {
@@ -52,6 +58,13 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
       const { x, y } = data.setMousePosPayload!;
       mousePos.x = x - width / 2;
       mousePos.y = y - height / 2;
+      break;
+    }
+
+    case ParticlesWorkerOperation.SpreadAndRotate: {
+      const action = data.spreadAndRotatePayload!;
+      centerSpreadWeight.weight = action === "shrink" ? 0 : 1;
+
       break;
     }
 

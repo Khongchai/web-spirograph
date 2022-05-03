@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { NaivgationStage } from "../types/Stage";
 import useOnMouseMove from "../utils/BackgroundParticles/useOnMouseMove";
 import useOnResize from "../utils/BackgroundParticles/useOnResize";
+import useOnStageChanged from "../utils/BackgroundParticles/useOnStageChanged";
 import useSetupWorker from "../utils/BackgroundParticles/useSetupWorker";
 
 // Assume canvas is always the same size as the window.
@@ -25,6 +26,8 @@ export default function BackgroundParticles({
     worker,
     dependencyList: [worker],
   });
+
+  useOnStageChanged({ currentStage: stage, dependencyArray: [stage], worker });
 
   return <canvas className="w-full h-full relative" ref={canvasRef}></canvas>;
 }
