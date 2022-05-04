@@ -128,8 +128,8 @@ function generateParticles({
   for (let i = 0; i < count; i++) {
     const x = Math.random() * width - width / 2;
     const y = Math.random() * height - height / 2;
-    const z = Math.random() * 3000;
-    const newParticle: Particle = {
+    const z = Math.random() * 2500;
+    const newParticle: Particle = new Particle({
       x,
       y,
       z,
@@ -149,10 +149,7 @@ function generateParticles({
       initialX: x,
       initialY: y,
       initialZ: z,
-    };
-    newParticle.initialZ = newParticle.z;
-    newParticle.initialX = newParticle.x;
-    newParticle.initialY = newParticle.y;
+    });
 
     particles.push(newParticle);
   }

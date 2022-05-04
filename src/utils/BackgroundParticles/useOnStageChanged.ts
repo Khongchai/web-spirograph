@@ -19,7 +19,7 @@ export default function useOnStageChanged({
     const payload: ParticlesWorkerPayload = {
       operation: ParticlesWorkerOperation.SpreadAndRotate,
       spreadAndRotatePayload: {
-        repellerWeight: 0.0005,
+        repellerWeight: 0.0009,
         action: currentStage === "landing" ? "shrink" : "spread",
         repellerSize: window.innerHeight * 0.9,
       },
