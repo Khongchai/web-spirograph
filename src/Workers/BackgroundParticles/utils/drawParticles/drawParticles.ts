@@ -37,6 +37,7 @@ export default function drawParticles({
     width: screenSize.width,
     height: screenSize.height,
     count: 20,
+    // count: 1,
   });
 
   const focalLength = 900;

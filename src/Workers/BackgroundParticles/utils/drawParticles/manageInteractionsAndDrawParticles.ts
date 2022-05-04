@@ -15,18 +15,12 @@ export default function manageInteractionsAndDrawParticles(
 ) {
   ctx.shadowBlur = 10;
   particles.forEach((p) => {
+    saveTransform(ctx);
     const { x, y, z } = rotateBasedOnWeight({
-      p: spreadOrShrink(
-        lissajousNoise(p, tick),
-        tick,
-        repellerData,
-        screenCenter
-      ),
+      p: spreadOrShrink(lissajousNoise(p, tick), repellerData, screenCenter),
       tick,
       repellerData,
     });
-
-    saveTransform(ctx);
 
     setFillIntensityBasedOnDistanceToCursor(mousePos, p, ctx);
 
@@ -108,16 +102,15 @@ function drawParticle(ctx: OffscreenCanvasRenderingContext2D, p: Particle) {
 
 function spreadOrShrink(
   p: Vector3,
-  tick: number,
   centerSpreadWeight: RepellerData,
   screenCenter: Vector2
 ) {
   // P is Vector3, but we'll be using only x and y
+  const dx = p.x - screenCenter.x;
+  const dy = p.y - screenCenter.y;
   const dist = Math.sqrt(
     Math.pow(p.x - screenCenter.x, 2) + Math.pow(p.y - screenCenter.y, 2)
   );
-
-  // We set the desired size of the repeller when centerSpreadWeight is one.
 
   const {
     desiredRepellerSize,
@@ -130,8 +123,17 @@ function spreadOrShrink(
     repellerCurrentSize,
     desiredRepellerSize * flag,
     lerpWeight
-    // lerpWeight
   );
+
+  //TODO use repellerCurrentSize
+
+  let force = 0;
+  if (dist < centerSpreadWeight.repellerCurrentSize) {
+    force = (centerSpreadWeight.repellerCurrentSize - dist) * 0.1;
+  }
+
+  p.x += dx * force * 0.1;
+  p.y += dy * force * 0.1;
 
   return p;
 }
@@ -151,4 +153,8 @@ function rotateBasedOnWeight({
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t;
+}
+
+function hooke(a: number, b: number, t: number) {
+  return (a - b) * t;
 }
