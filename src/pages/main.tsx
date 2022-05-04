@@ -96,7 +96,7 @@ function Main() {
   return (
     <Rerender.Provider value={rerender}>
       <RerenderToggle.Provider value={handleClearCanvasToggle}>
-        <div className="bg-purple-dark text-purple-light h-full w-full">
+        <div className="text-purple-light h-full w-full">
           <div className="w-full h-full relative flex md:flex-row sm:flex-col">
             <div
               style={{ flex: 0.6 }}

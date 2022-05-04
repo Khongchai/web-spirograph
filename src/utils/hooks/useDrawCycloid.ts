@@ -37,6 +37,7 @@ export default function useDrawCanvas(
       setCanvasSize(canvas);
 
       const draw = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const curControls = cycloidControls.current;
 
         ctx.save();
@@ -80,8 +81,7 @@ export default function useDrawCanvas(
         });
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.fillStyle = "rgba(43, 30, 57, 0.7)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // ctx.fillStyle = "red";
 
         ctx.restore();
         requestAnimationFrame(draw);

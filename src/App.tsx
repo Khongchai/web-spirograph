@@ -7,7 +7,7 @@ import { NaivgationStage } from "./types/Stage";
 
 /// Switch between main and landing with custom animation.
 function App() {
-  const [stage, setStage] = useState<NaivgationStage>("landing");
+  const [stage, setStage] = useState<NaivgationStage>("main");
 
   function changeNavigationStage() {
     setStage((curStage) => {
@@ -22,11 +22,10 @@ function App() {
         <BackgroundParticles stage={stage} />
       </section>
       <section className="absolute w-full h-full">
-        <Landing onBeginClicked={changeNavigationStage} />;
+        <Landing onBeginClicked={changeNavigationStage} />;{/* <Main /> */}
       </section>
     </div>
   );
-  return <Main />;
 }
 
 export default App;
