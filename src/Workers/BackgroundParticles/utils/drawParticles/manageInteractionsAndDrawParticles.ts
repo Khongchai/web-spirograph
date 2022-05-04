@@ -20,8 +20,8 @@ export default function manageInteractionsAndDrawParticles(
       p: spreadOrShrink(
         lissajousNoise(p, tick, repellerData.repellerCurrentSize),
         repellerData,
-        screenCenter,
-        ctx
+        screenCenter
+        // ctx
       ),
       tick,
       repellerData,
@@ -155,10 +155,11 @@ function spreadOrShrink(
     ctxForDebugging.stroke();
   }
 
-  p.vx = (p.vx ?? 0) + dx * force * 0.9;
-  p.vx = (p.vx ?? 0) + dx * force * 0.9;
-  // p.x += dx * force * 0.1;
-  // p.y += dy * force * 0.1;
+  //TODO maybe this is the solution
+  // p.vx = (p.vx ?? 0) + dx * force * 0.9;
+  // p.vx = (p.vx ?? 0) + dx * force * 0.9;
+  p.x += dx * force * 0.1;
+  p.y += dy * force * 0.1;
 
   return p;
 }

@@ -1,4 +1,3 @@
-- Each dots get a bit brighter when cursor is close
 - Some rotation interaction? << not sure >>
 - Spread when clicked
 - Take care of resize
