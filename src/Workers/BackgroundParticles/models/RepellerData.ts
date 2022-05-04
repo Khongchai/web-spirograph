@@ -2,9 +2,14 @@
  * Data for controlling the spread weight of the repeller.
  */
 export default interface RepellerData {
-  // The weight value 0 or 1
-  weight: 1 | 0;
+  /**
+   * A flag for the lerp equation a + (b - a) * t.
+   *
+   * This is basically a + ((b - a) * beginLerping) * t.
+   */
+  beginLerping: 1 | 0;
   // The lerped weight value that will be calculated on every frame.
-  lerpedWeight: number;
+  repellerCurrentSize: number;
   desiredRepellerSize: number;
+  lerpWeight: number;
 }

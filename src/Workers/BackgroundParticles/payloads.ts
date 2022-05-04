@@ -1,5 +1,9 @@
 import { Vector2 } from "../../classes/vector2";
 
+/**
+ * This is like the data models in clean architecture.
+ */
+
 export default interface ParticlesWorkerPayload {
   initPayload?: InitPayload;
   resizePayload?: ResizePayload;
@@ -33,4 +37,5 @@ export type SetMousePosPayload = Vector2;
 export type SpreadAndRotatePayload = {
   action: "shrink" | "spread";
   repellerSize: number;
+  repellerWeight: number;
 };

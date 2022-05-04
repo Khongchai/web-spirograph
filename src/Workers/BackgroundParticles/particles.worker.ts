@@ -20,9 +20,10 @@ const rotationAngles: RotationAngles = {
   initial: 0,
 };
 const repellerData: RepellerData = {
-  weight: 0,
-  lerpedWeight: 0,
+  beginLerping: 0,
+  repellerCurrentSize: 0,
   desiredRepellerSize: 0,
+  lerpWeight: 0,
 };
 const screenCenter: Vector2 = {
   x: 0,
@@ -70,10 +71,12 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
     }
 
     case ParticlesWorkerOperation.SpreadAndRotate: {
-      const { action, repellerSize } = data.spreadAndRotatePayload!;
+      const { action, repellerSize, repellerWeight } =
+        data.spreadAndRotatePayload!;
 
-      repellerData.weight = action === "shrink" ? 0 : 1;
+      repellerData.beginLerping = action === "shrink" ? 0 : 1;
       repellerData.desiredRepellerSize = repellerSize;
+      repellerData.lerpWeight = repellerWeight;
 
       break;
     }

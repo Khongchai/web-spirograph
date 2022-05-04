@@ -121,14 +121,19 @@ function spreadOrShrink(
 
   // We set the desired size of the repeller when centerSpreadWeight is one.
 
-  const { desiredRepellerSize, lerpedWeight, weight } = centerSpreadWeight;
+  const {
+    desiredRepellerSize,
+    repellerCurrentSize,
+    beginLerping: flag,
+    lerpWeight,
+  } = centerSpreadWeight;
 
-  centerSpreadWeight.lerpedWeight = lerp(
-    lerpedWeight,
-    desiredRepellerSize * weight,
-    0.025
+  centerSpreadWeight.repellerCurrentSize = lerp(
+    repellerCurrentSize,
+    desiredRepellerSize * flag,
+    lerpWeight
   );
-  console.log(centerSpreadWeight.lerpedWeight);
+  console.log(centerSpreadWeight.repellerCurrentSize);
 
   return p;
 }
