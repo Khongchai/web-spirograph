@@ -15,8 +15,6 @@ export default function manageInteractionsAndDrawParticles(
 ) {
   ctx.shadowBlur = 10;
   particles.forEach((p) => {
-    //TODO spread everything from the center.
-
     const { x, y, z } = rotateBasedOnWeight({
       p: spreadOrShrink(
         lissajousNoise(p, tick),
@@ -132,8 +130,8 @@ function spreadOrShrink(
     repellerCurrentSize,
     desiredRepellerSize * flag,
     lerpWeight
+    // lerpWeight
   );
-  console.log(centerSpreadWeight.repellerCurrentSize);
 
   return p;
 }
@@ -141,7 +139,7 @@ function spreadOrShrink(
 function rotateBasedOnWeight({
   p,
   tick,
-  repellerData: centerSpreadWeight,
+  repellerData,
 }: {
   p: Vector3;
   tick: number;

@@ -36,8 +36,7 @@ export default function drawParticles({
   const particles: Particle[] = generateParticles({
     width: screenSize.width,
     height: screenSize.height,
-    // count: 20,
-    count: 1,
+    count: 20,
   });
 
   const focalLength = 900;
