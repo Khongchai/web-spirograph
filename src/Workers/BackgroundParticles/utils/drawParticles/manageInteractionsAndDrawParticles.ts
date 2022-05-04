@@ -1,6 +1,6 @@
 import { Vector2 } from "../../../../classes/vector2";
 import { Vector3 } from "../../../../classes/vector3";
-import CenterSpreadWeight from "../../models/CenterSpreadWeight";
+import RepellerData from "../../models/RepellerData";
 import MousePos from "../../models/MousePos";
 import Particle from "../../models/particle";
 
@@ -10,18 +10,23 @@ export default function manageInteractionsAndDrawParticles(
   focalLength: number,
   mousePos: MousePos,
   tick: number,
-  centerSpreadWeight: CenterSpreadWeight,
+  repellerData: RepellerData,
   screenCenter: Vector2
 ) {
   ctx.shadowBlur = 10;
   particles.forEach((p) => {
     //TODO spread everything from the center.
 
-    const { x, y, z } = rotateBasedOnWeight(
-      spreadOrShrink(lissajousNoise(p, tick), tick, centerSpreadWeight),
+    const { x, y, z } = rotateBasedOnWeight({
+      p: spreadOrShrink(
+        lissajousNoise(p, tick),
+        tick,
+        repellerData,
+        screenCenter
+      ),
       tick,
-      centerSpreadWeight
-    );
+      repellerData,
+    });
 
     saveTransform(ctx);
 
@@ -106,17 +111,41 @@ function drawParticle(ctx: OffscreenCanvasRenderingContext2D, p: Particle) {
 function spreadOrShrink(
   p: Vector3,
   tick: number,
-  centerSpreadWeight: CenterSpreadWeight
+  centerSpreadWeight: RepellerData,
+  screenCenter: Vector2
 ) {
+  // P is Vector3, but we'll be using only x and y
+  const dist = Math.sqrt(
+    Math.pow(p.x - screenCenter.x, 2) + Math.pow(p.y - screenCenter.y, 2)
+  );
+
+  // We set the desired size of the repeller when centerSpreadWeight is one.
+
+  const { desiredRepellerSize, lerpedWeight, weight } = centerSpreadWeight;
+
+  centerSpreadWeight.lerpedWeight = lerp(
+    lerpedWeight,
+    desiredRepellerSize * weight,
+    0.025
+  );
+  console.log(centerSpreadWeight.lerpedWeight);
+
+  return p;
+}
+
+function rotateBasedOnWeight({
+  p,
+  tick,
+  repellerData: centerSpreadWeight,
+}: {
+  p: Vector3;
+  tick: number;
+  repellerData: RepellerData;
+}) {
   //TODO
   return p;
 }
 
-function rotateBasedOnWeight(
-  p: Vector3,
-  tick: number,
-  centerSpreadWeight: CenterSpreadWeight
-) {
-  //TODO
-  return p;
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
 }

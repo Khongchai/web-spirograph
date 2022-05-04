@@ -2,7 +2,7 @@
 //TODO refactor this humongous mess.
 
 import { Vector2 } from "../../../../classes/vector2";
-import CenterSpreadWeight from "../../models/CenterSpreadWeight";
+import RepellerData from "../../models/RepellerData";
 import Delta from "../../models/Delta";
 import MousePos from "../../models/MousePos";
 import Particle from "../../models/particle";
@@ -18,7 +18,7 @@ interface DrawParticlesParams {
   /**
    * The heavier this value, the more the particles will be spread out.
    */
-  centerSpreadWeight: CenterSpreadWeight;
+  repellerData: RepellerData;
   screenCenter: Vector2;
 }
 export default function drawParticles({
@@ -26,7 +26,7 @@ export default function drawParticles({
   mousePos,
   rotationAngles,
   screenSize,
-  centerSpreadWeight,
+  repellerData,
   screenCenter,
 }: DrawParticlesParams) {
   //Setup n stuff
@@ -36,7 +36,8 @@ export default function drawParticles({
   const particles: Particle[] = generateParticles({
     width: screenSize.width,
     height: screenSize.height,
-    count: 20,
+    // count: 20,
+    count: 1,
   });
 
   const focalLength = 900;
@@ -53,7 +54,7 @@ export default function drawParticles({
     particles,
     rotationAngles,
     delta,
-    centerSpreadWeight,
+    repellerData,
     screenCenter,
   });
 }
@@ -71,7 +72,7 @@ function draw({
   particles,
   rotationAngles,
   delta,
-  centerSpreadWeight,
+  repellerData,
   screenCenter,
 }: DrawParams) {
   const { width, height } = screenSize;
@@ -87,7 +88,7 @@ function draw({
     focalLength,
     mousePos,
     tick,
-    centerSpreadWeight,
+    repellerData,
     screenCenter
   );
 
@@ -100,7 +101,7 @@ function draw({
       rotationAngles,
       screenSize,
       delta,
-      centerSpreadWeight,
+      repellerData: repellerData,
       screenCenter,
     })
   );

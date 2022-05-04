@@ -1,6 +1,6 @@
 import { Vector2 } from "../../classes/vector2";
 import drawParticles from "./utils/drawParticles/drawParticles";
-import CenterSpreadWeight from "./models/CenterSpreadWeight";
+import RepellerData from "./models/RepellerData";
 import MousePos from "./models/MousePos";
 import RotationAngles from "./models/RotationAngles";
 import ScreenSize from "./models/ScreenSize";
@@ -19,8 +19,10 @@ const rotationAngles: RotationAngles = {
   current: 0,
   initial: 0,
 };
-const centerSpreadWeight: CenterSpreadWeight = {
+const repellerData: RepellerData = {
   weight: 0,
+  lerpedWeight: 0,
+  desiredRepellerSize: 0,
 };
 const screenCenter: Vector2 = {
   x: 0,
@@ -53,7 +55,7 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         mousePos,
         rotationAngles,
         screenSize,
-        centerSpreadWeight,
+        repellerData,
         screenCenter,
       });
       break;
@@ -68,8 +70,10 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
     }
 
     case ParticlesWorkerOperation.SpreadAndRotate: {
-      const action = data.spreadAndRotatePayload!;
-      centerSpreadWeight.weight = action === "shrink" ? 0 : 1;
+      const { action, repellerSize } = data.spreadAndRotatePayload!;
+
+      repellerData.weight = action === "shrink" ? 0 : 1;
+      repellerData.desiredRepellerSize = repellerSize;
 
       break;
     }
