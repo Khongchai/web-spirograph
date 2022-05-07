@@ -27,8 +27,9 @@ export default class CycloidControls {
 
   /*
    * Animation mode. Instant draws the cycloid instantly, while Animated tries draws the cycloid at 60 fps.
+   * The animated instant keeps the drawing but has a worker thread updates the stars position as the final, instant result.
    */
-  mode: "Animated" | "Instant";
+  mode: "Animated" | "Instant" | "AnimatedInstant";
 
   /*
    *  Whether or not to show the bounding circles.

@@ -129,7 +129,7 @@ function generateParticles({
       x,
       y,
       z,
-      radius: Math.random() * 7 + 2,
+      radius: Math.random() * 3 + 1,
       color: {
         r: 231,
         g: 210,
