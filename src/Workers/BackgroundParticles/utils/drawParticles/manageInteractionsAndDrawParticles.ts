@@ -18,15 +18,14 @@ export default function manageInteractionsAndDrawParticles(
   particles.forEach((p) => {
     saveTransform(ctx);
 
-    const noisedP = lissajousNoise(p, tick, repellerData.repellerCurrentSize);
-    const spreadOrShrunkP = spreadOrShrink(
-      noisedP,
-      repellerData,
-      screenCenter
-      // ctx
-    );
+    spread(p, repellerData, screenCenter);
+
+    p.update();
+
+    lissajousNoise(p, tick);
+
     const { x, y, z } = rotateBasedOnWeight({
-      p: spreadOrShrunkP,
+      p,
       tick,
       repellerData,
     });
@@ -43,32 +42,15 @@ export default function manageInteractionsAndDrawParticles(
   });
 }
 
-function lissajousNoise(
-  p: Particle,
-  tick: number,
-  repellerCurrentSize: number
-) {
+function lissajousNoise(p: Particle, tick: number) {
   //3d lissajous curve
-  const zNoise = Math.sin(tick * p.z * 0.000001) * 60;
-  const xNoise = Math.cos(tick * p.x * 0.0000005) * 95;
-  const yNoise = Math.sin(tick * p.y * 0.0000003) * 100;
+  const zNoise = Math.acos(Math.cos(tick * p.initialZ * 0.000001 * 0.4)) * 0.2;
+  const xNoise = Math.cos(tick * p.initialX * 0.0000005) * 0.5;
+  const yNoise = Math.sin(tick * p.initialY * 0.000003) * 0.3;
 
-  // Noise the values
-  const noisedX = p.x + xNoise + (p.vx ?? 0);
-  const noisedY = p.y + yNoise + (p.vy ?? 0);
-  const noisedZ = p.z + zNoise + (p.vz ?? 0);
-
-  const rotateXNoise = Math.cos(Math.PI + tick * 0.00005) * 10;
-  const rotateZNoise = 100 + Math.sin(Math.PI + tick * 0.00004) * 100;
-
-  return {
-    x: noisedX,
-    y: noisedY,
-    z: noisedZ,
-    // x: noisedX + rotateXNoise,
-    // y: noisedY,
-    // z: noisedZ + rotateZNoise,
-  };
+  p.x += xNoise;
+  p.y += yNoise;
+  p.z += zNoise;
 }
 
 function getPerspective(focalLength: number, z: number): number {
@@ -120,7 +102,7 @@ function drawParticle(ctx: OffscreenCanvasRenderingContext2D, p: Particle) {
   ctx.fill();
 }
 
-function spreadOrShrink(
+function spread(
   p: Vector3,
   repellerData: RepellerData,
   screenCenter: Vector2,
@@ -163,11 +145,8 @@ function spreadOrShrink(
     ctxForDebugging.stroke();
   }
 
-  //TODO maybe this is the solution
-  // p.vx = (p.vx ?? 0) + dx * force * 0.9;
-  // p.vx = (p.vx ?? 0) + dx * force * 0.9;
-  p.x += dx * force * 0.1;
-  p.y += dy * force * 0.1;
+  p.vx = dx * force * 0.01;
+  p.vy = dy * force * 0.01;
 
   return p;
 }

@@ -1,6 +1,5 @@
 import { Vector2 } from "../../../classes/vector2";
 import { Vector3 } from "../../../classes/vector3";
-import ScreenSize from "./ScreenSize";
 
 export default class Particle implements Vector3 {
   initialX: number;
@@ -69,6 +68,20 @@ export default class Particle implements Vector3 {
     this.vx = 0;
     this.vy = 0;
     this.vz = 0;
+  }
+
+  update() {
+    this.x += this.vx ?? 0;
+    this.y += this.vy ?? 0;
+    this.z += this.vz ?? 0;
+  }
+
+  getInitialPos() {
+    return {
+      x: this.initialX,
+      y: this.initialY,
+      z: this.initialZ,
+    };
   }
 
   /**

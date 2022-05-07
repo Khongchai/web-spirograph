@@ -21,7 +21,7 @@ export default function useOnStageChanged({
       spreadAndRotatePayload: {
         repellerWeight: 0.0009,
         action: currentStage === "landing" ? "shrink" : "spread",
-        repellerSize: window.innerHeight * 0.9,
+        repellerSize: window.innerHeight * 1.1,
       },
     };
     worker.postMessage(payload);
