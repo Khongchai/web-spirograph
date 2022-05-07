@@ -71,8 +71,15 @@ export default class Particle implements Vector3 {
     this.vz = 0;
   }
 
-  getScreenCoordinates(screenSize: ScreenSize): Vector2 {
-    //TODO
-    return { x: 0, y: 0 };
+  /**
+   * Returns the projected 2d coordinate of this particle on the screen.
+   *
+   * This works only for 2.5d particles.
+   */
+  getProjected2dCoordinate({ perspective }: { perspective: number }): Vector2 {
+    return {
+      x: this.x * perspective,
+      y: this.y * perspective,
+    };
   }
 }

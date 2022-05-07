@@ -16,6 +16,7 @@ export default function manageInteractionsAndDrawParticles(
   ctx.shadowBlur = 20;
   particles.forEach((p) => {
     saveTransform(ctx);
+
     const { x, y, z } = rotateBasedOnWeight({
       p: spreadOrShrink(
         lissajousNoise(p, tick, repellerData.repellerCurrentSize),
@@ -27,9 +28,11 @@ export default function manageInteractionsAndDrawParticles(
       repellerData,
     });
 
-    setFillIntensityBasedOnDistanceToCursor(mousePos, p, ctx);
+    const perspective = getPerspective(focalLength, z);
 
-    positionPoints(ctx, getPerspective(focalLength, z), { x, y });
+    setFillIntensityBasedOnDistanceToCursor(mousePos, p, ctx, perspective);
+
+    positionPoints(ctx, perspective, { x, y });
 
     drawParticle(ctx, p);
 
@@ -80,19 +83,21 @@ function restoreTransform(ctx: OffscreenCanvasRenderingContext2D) {
 function positionPoints(
   ctx: OffscreenCanvasRenderingContext2D,
   perspective: number,
-  { x: noisedX, y: noisedY }: Vector2
+  { x, y }: Vector2
 ) {
   ctx.scale(perspective, perspective);
-  ctx.translate(noisedX, noisedY);
+  ctx.translate(x, y);
 }
 
 function setFillIntensityBasedOnDistanceToCursor(
   mousePos: Vector2,
   p: Particle,
-  ctx: OffscreenCanvasRenderingContext2D
+  ctx: OffscreenCanvasRenderingContext2D,
+  perspective: number
 ) {
+  const { x, y } = p.getProjected2dCoordinate({ perspective });
   const dist = Math.sqrt(
-    Math.pow(mousePos.x - p.x, 2) + Math.pow(mousePos.y - p.y, 2)
+    Math.pow(mousePos.x - x, 2) + Math.pow(mousePos.y - y, 2)
   );
   const distThreshold = 200;
   let alpha = distThreshold / Math.max(dist, distThreshold);

@@ -129,6 +129,7 @@ function generateParticles({
     const x = Math.random() * width - width / 2;
     const y = Math.random() * height - height / 2;
     const z = Math.random() * 2500;
+    // const z = 1;
     const newParticle: Particle = new Particle({
       x,
       y,

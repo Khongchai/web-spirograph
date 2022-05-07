@@ -7,7 +7,7 @@ import { NaivgationStage } from "./types/Stage";
 
 /// Switch between main and landing with custom animation.
 function App() {
-  const [stage, setStage] = useState<NaivgationStage>("main");
+  const [stage, setStage] = useState<NaivgationStage>("landing");
 
   function changeNavigationStage() {
     setStage((curStage) => {

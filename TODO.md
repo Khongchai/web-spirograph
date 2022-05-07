@@ -19,7 +19,7 @@ A better folder structure, please.
 
 Refactor tooltip out as a wrapper so that you can use it with anything.
 
-Instant draw
+Instant draw: or instead of this, make the bg stars do the final shape.....
 
 The ability to change colors
 
