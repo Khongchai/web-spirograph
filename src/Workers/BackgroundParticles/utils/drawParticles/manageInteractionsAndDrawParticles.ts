@@ -18,23 +18,22 @@ export default function manageInteractionsAndDrawParticles(
   particles.forEach((p) => {
     saveTransform(ctx);
 
+    rotateBasedOnWeight({
+      p,
+      repellerData,
+    });
+
     spread(p, repellerData, screenCenter);
 
     p.update();
 
     lissajousNoise(p, tick);
 
-    const { x, y, z } = rotateBasedOnWeight({
-      p,
-      tick,
-      repellerData,
-    });
-
-    const perspective = getPerspective(focalLength, z);
+    const perspective = getPerspective(focalLength, p.z);
 
     setFillIntensityBasedOnDistanceToCursor(mousePos, p, ctx, perspective);
 
-    positionPoints(ctx, perspective, { x, y });
+    positionPoints(ctx, perspective, p);
 
     drawParticle(ctx, p);
 
@@ -153,11 +152,9 @@ function spread(
 
 function rotateBasedOnWeight({
   p,
-  tick,
   repellerData,
 }: {
   p: Particle;
-  tick: number;
   repellerData: RepellerData;
 }) {
   //TODO
@@ -169,9 +166,9 @@ function rotateBasedOnWeight({
     lerpWeight
   );
 
-  p.x = Math.cos(p.initialZ + currentRotationAngle) * 20;
-  p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * 20;
-  return p;
+  const radius = 400;
+  p.x = p.initialX + Math.cos(p.initialZ + currentRotationAngle) * radius;
+  p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * radius;
 }
 
 function lerp(a: number, b: number, t: number) {
