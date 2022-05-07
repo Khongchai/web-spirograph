@@ -35,6 +35,7 @@ export type ResizePayload = {
 export type SetMousePosPayload = Vector2;
 
 export type SpreadAndRotatePayload = {
+  //TODO we only need "spread"
   action: "shrink" | "spread";
   repellerSize: number;
   repellerWeight: number;

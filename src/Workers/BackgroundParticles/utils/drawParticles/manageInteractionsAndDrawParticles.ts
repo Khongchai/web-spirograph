@@ -156,11 +156,21 @@ function rotateBasedOnWeight({
   tick,
   repellerData,
 }: {
-  p: Vector3;
+  p: Particle;
   tick: number;
   repellerData: RepellerData;
 }) {
   //TODO
+  const { beginLerping, currentRotationAngle, lerpWeight } = repellerData;
+
+  repellerData.currentRotationAngle = lerp(
+    currentRotationAngle,
+    Math.PI * beginLerping,
+    lerpWeight
+  );
+
+  p.x = Math.cos(p.initialZ + currentRotationAngle) * 20;
+  p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * 20;
   return p;
 }
 

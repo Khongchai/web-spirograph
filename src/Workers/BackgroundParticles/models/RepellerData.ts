@@ -11,5 +11,6 @@ export default interface RepellerData {
   // The lerped weight value that will be calculated on every frame.
   repellerCurrentSize: number;
   desiredRepellerSize: number;
+  currentRotationAngle: number;
   lerpWeight: number;
 }

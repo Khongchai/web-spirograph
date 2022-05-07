@@ -15,15 +15,12 @@ const mousePos: MousePos = {
   x: -999999,
   y: -999999,
 };
-const rotationAngles: RotationAngles = {
-  current: 0,
-  initial: 0,
-};
 const repellerData: RepellerData = {
   beginLerping: 0,
   repellerCurrentSize: 0,
   desiredRepellerSize: 0,
   lerpWeight: 0,
+  currentRotationAngle: 0,
 };
 const screenCenter: Vector2 = {
   x: 0,
@@ -54,7 +51,6 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
       drawParticles({
         ctx,
         mousePos,
-        rotationAngles,
         screenSize,
         repellerData,
         screenCenter,

@@ -14,7 +14,6 @@ interface DrawParticlesParams {
   ctx: OffscreenCanvasRenderingContext2D;
   screenSize: ScreenSize;
   mousePos: MousePos;
-  rotationAngles: RotationAngles;
   /**
    * The heavier this value, the more the particles will be spread out.
    */
@@ -24,7 +23,6 @@ interface DrawParticlesParams {
 export default function drawParticles({
   ctx,
   mousePos,
-  rotationAngles,
   screenSize,
   repellerData,
   screenCenter,
@@ -52,7 +50,6 @@ export default function drawParticles({
     focalLength,
     mousePos,
     particles,
-    rotationAngles,
     delta,
     repellerData,
     screenCenter,
@@ -70,7 +67,6 @@ function draw({
   focalLength,
   mousePos,
   particles,
-  rotationAngles,
   delta,
   repellerData,
   screenCenter,
@@ -98,7 +94,6 @@ function draw({
       focalLength,
       mousePos,
       particles,
-      rotationAngles,
       screenSize,
       delta,
       repellerData: repellerData,
