@@ -22,7 +22,12 @@ function App() {
         <BackgroundParticles stage={stage} />
       </section>
       <section className="absolute w-full h-full">
-        <Landing onBeginClicked={changeNavigationStage} />;{/* <Main /> */}
+        {stage === "landing" ? (
+          <Landing onBeginClicked={changeNavigationStage} />
+        ) : (
+          <Main />
+        )}
+        {/* <Landing onBeginClicked={changeNavigationStage} />;<Main /> */}
       </section>
     </div>
   );

@@ -85,7 +85,7 @@ function setFillIntensityBasedOnDistanceToCursor(
   );
   const distThreshold = 200;
   let alpha = distThreshold / Math.max(dist, distThreshold);
-  alpha = Math.max(Math.min(alpha, 1), 0.3);
+  alpha = Math.max(Math.min(alpha, 0.4), 0.1);
 
   ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${
     0.1 + alpha
@@ -157,18 +157,16 @@ function rotateBasedOnWeight({
   p: Particle;
   repellerData: RepellerData;
 }) {
-  //TODO
   const { beginLerping, currentRotationAngle, lerpWeight } = repellerData;
 
   repellerData.currentRotationAngle = lerp(
     currentRotationAngle,
-    (Math.PI / 2) * beginLerping,
+    Math.PI * beginLerping,
     lerpWeight
   );
 
-  const radius = 1000;
-  p.x = p.initialX + Math.cos(p.initialZ + currentRotationAngle) * radius;
-  p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * radius;
+  p.x = p.initialX + Math.cos(p.initialZ + currentRotationAngle) * 20;
+  p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * 20;
 }
 
 function lerp(a: number, b: number, t: number) {

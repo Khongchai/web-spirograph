@@ -37,12 +37,14 @@ export default function useDrawCanvas(
       setCanvasSize(canvas);
 
       const draw = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const curControls = cycloidControls.current;
 
         ctx.save();
 
         ctx.translate(panRef.current.x, panRef.current.y);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         ctx.lineWidth = 1.5;
 
         dx += curControls.animationSpeed;
@@ -79,9 +81,7 @@ export default function useDrawCanvas(
             pointsToTrace.current.push({ x: pointPos.x, y: pointPos.y });
           }
         });
-
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        // ctx.fillStyle = "red";
 
         ctx.restore();
         requestAnimationFrame(draw);
