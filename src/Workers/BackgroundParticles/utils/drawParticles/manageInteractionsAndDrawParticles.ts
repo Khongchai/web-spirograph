@@ -44,7 +44,7 @@ export default function manageInteractionsAndDrawParticles(
 function lissajousNoise(p: Particle, tick: number) {
   //3d lissajous curve
   const zNoise = Math.acos(Math.cos(tick * p.initialZ * 0.000001 * 0.4)) * 0.2;
-  const xNoise = Math.cos(tick * p.initialX * 0.0000005) * 0.5;
+  const xNoise = Math.cos(tick * p.initialX * 0.000005) * 0.5;
   const yNoise = Math.sin(tick * p.initialY * 0.000003) * 0.3;
 
   p.x += xNoise;
@@ -162,11 +162,11 @@ function rotateBasedOnWeight({
 
   repellerData.currentRotationAngle = lerp(
     currentRotationAngle,
-    Math.PI * beginLerping,
+    (Math.PI / 2) * beginLerping,
     lerpWeight
   );
 
-  const radius = 400;
+  const radius = 1000;
   p.x = p.initialX + Math.cos(p.initialZ + currentRotationAngle) * radius;
   p.z = p.initialZ + 40 + Math.sin(p.initialZ + currentRotationAngle) * radius;
 }

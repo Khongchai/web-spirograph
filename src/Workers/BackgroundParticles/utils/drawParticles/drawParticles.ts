@@ -34,7 +34,7 @@ export default function drawParticles({
   const particles: Particle[] = generateParticles({
     width: screenSize.width,
     height: screenSize.height,
-    count: 30,
+    count: 100,
     // count: 1,
   });
 
@@ -123,13 +123,13 @@ function generateParticles({
   for (let i = 0; i < count; i++) {
     const x = Math.random() * width - width / 2;
     const y = Math.random() * height - height / 2;
-    const z = Math.random() * 1300;
+    const z = Math.random() * 2000;
     // const z = 1;
     const newParticle: Particle = new Particle({
       x,
       y,
       z,
-      radius: Math.random() * 10 + 2,
+      radius: Math.random() * 7 + 2,
       color: {
         r: 231,
         g: 210,
