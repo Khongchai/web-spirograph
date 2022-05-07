@@ -4,6 +4,7 @@ import RepellerData from "../../models/RepellerData";
 import MousePos from "../../models/MousePos";
 import Particle from "../../models/particle";
 
+//TODO refactor some methods into the Particle class.
 export default function manageInteractionsAndDrawParticles(
   ctx: OffscreenCanvasRenderingContext2D,
   particles: Particle[],
@@ -17,13 +18,15 @@ export default function manageInteractionsAndDrawParticles(
   particles.forEach((p) => {
     saveTransform(ctx);
 
+    const noisedP = lissajousNoise(p, tick, repellerData.repellerCurrentSize);
+    const spreadOrShrunkP = spreadOrShrink(
+      noisedP,
+      repellerData,
+      screenCenter
+      // ctx
+    );
     const { x, y, z } = rotateBasedOnWeight({
-      p: spreadOrShrink(
-        lissajousNoise(p, tick, repellerData.repellerCurrentSize),
-        repellerData,
-        screenCenter
-        // ctx
-      ),
+      p: spreadOrShrunkP,
       tick,
       repellerData,
     });
