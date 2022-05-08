@@ -1,11 +1,7 @@
 import BoundingCircle from "./BoundingCircle";
-import CycloidParams, {
-  CycloidParamsArgs,
-  CycloidParamsManager,
-} from "./CycloidParams";
+import { CycloidParamsArgs, CycloidParamsManager } from "./CycloidParams";
 
-// CycloidControlsData but turned into a class
-export default class CycloidControls {
+export interface CycloidControlsProperties {
   /*
    * Base parent of all cycloids.
    */
@@ -60,7 +56,22 @@ export default class CycloidControls {
      */
     tracePath: boolean;
   };
+}
 
+// CycloidControlsData but turned into a class
+export default class CycloidControls implements CycloidControlsProperties {
+  outerMostBoundingCircle: BoundingCircle;
+  cycloidManager: CycloidParamsManager;
+  animationSpeed: number;
+  currentCycloidId: number;
+  mode: "Animated" | "Instant" | "AnimatedInstant";
+  scaffold: "Showing" | "Hidden";
+  animationState: "Playing" | "Paused";
+  clearTracedPathOnParamsChange: boolean;
+  showAllCycloids: boolean;
+  programOnly: {
+    tracePath: boolean;
+  };
   constructor({
     animationSpeed,
     animationState,

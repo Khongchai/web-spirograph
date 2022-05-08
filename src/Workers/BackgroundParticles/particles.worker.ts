@@ -1,10 +1,11 @@
 import { Vector2 } from "../../classes/vector2";
-import drawParticles from "./utils/drawParticles/drawParticles";
-import RepellerData from "./models/RepellerData";
 import MousePos from "./models/MousePos";
-import RotationAngles from "./models/RotationAngles";
+import RepellerData from "./models/RepellerData";
 import ScreenSize from "./models/ScreenSize";
 import ParticlesWorkerPayload, { ParticlesWorkerOperation } from "./payloads";
+import drawParticles from "./utils/drawParticles/drawParticles";
+
+export {};
 
 // Global objects to be referenced until the worker dies.
 const screenSize: ScreenSize = {

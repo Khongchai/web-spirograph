@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { Vector2 } from "./classes/vector2";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";
 import Main from "./pages/Main";
 import { NaivgationStage } from "./types/Stage";
+import useSetupInstantCycloidDrawer from "./utils/InstantCycloidDrawer/useSetupInstantCycloidDrawer";
 
 /// Switch between main and landing with custom animation.
 function App() {
   const [stage, setStage] = useState<NaivgationStage>("landing");
+
+  /**
+   * Points used for instant draw.
+   */
+  // const { pointsRef, worker: instantDrawerWorker } =
+  //   useSetupInstantCycloidDrawer({
+  //     dependencyList: [],
+  //   });
 
   function changeNavigationStage() {
     setStage((curStage) => {
@@ -15,7 +25,6 @@ function App() {
     });
   }
 
-  //TODO if stage = "main" then move to <Main />
   return (
     <div className="w-full h-full">
       <section className="absolute w-full h-full">
@@ -25,9 +34,9 @@ function App() {
         {stage === "landing" ? (
           <Landing onBeginClicked={changeNavigationStage} />
         ) : (
+          //TODO => animation or something.
           <Main />
         )}
-        {/* <Landing onBeginClicked={changeNavigationStage} />;<Main /> */}
       </section>
     </div>
   );

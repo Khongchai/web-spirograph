@@ -1,6 +1,6 @@
+- Instant mode <<
 - Some rotation interaction? << not sure >>
-- Spread when clicked
-- Take care of resize
+- Take care of resize for the stars.
 
 - New landing page
   Translate 3d coordinate to 2d screen position. <<< you will need this anyway for the mouse thing. This is useful to know too for future 3js references.>>>

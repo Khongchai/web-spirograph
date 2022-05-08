@@ -80,24 +80,22 @@ const Canvas: React.FC<CanvasProps> = ({
     }
   }, [rerender]);
 
-  if (mode === "animate") {
-    return (
-      <>
+  return (
+    <>
+      {mode === "animate" ? (
         <canvas
           id="animation-draw-canvas"
           ref={drawCanvasRef}
           className="absolute"
         ></canvas>
-        <canvas
-          id="animation-trace-canvas"
-          ref={traceCanvasRef}
-          className="absolute opacity-50"
-        ></canvas>
-      </>
-    );
-  } else {
-    return <div>Instant thing</div>;
-  }
+      ) : null}
+      <canvas
+        id="animation-trace-canvas"
+        ref={traceCanvasRef}
+        className="absolute opacity-50"
+      ></canvas>
+    </>
+  );
 };
 
 export default Canvas;

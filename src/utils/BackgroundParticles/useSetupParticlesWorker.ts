@@ -4,7 +4,7 @@ import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
 } from "../../Workers/BackgroundParticles/payloads";
 
-export default function useSetupWorker({
+export default function useSetupParticlesWorker({
   canvasRef,
   dependencyList,
 }: {

@@ -16,7 +16,7 @@ export interface CycloidParamsArgs {
   boundingCircleId: number;
 }
 
-export default class CycloidParams {
+export default class CycloidParams implements CycloidParamsArgs {
   /*
    * Rod length's scale. This allows the rod to be scaled out of physical possibility, zum Beispiel, out of the cycloid.
    */

@@ -3,7 +3,7 @@ import { NaivgationStage } from "../types/Stage";
 import useOnMouseMove from "../utils/BackgroundParticles/useOnMouseMove";
 import useOnResize from "../utils/BackgroundParticles/useOnResize";
 import useOnStageChanged from "../utils/BackgroundParticles/useOnStageChanged";
-import useSetupWorker from "../utils/BackgroundParticles/useSetupWorker";
+import useSetupParticlesWorker from "../utils/BackgroundParticles/useSetupParticlesWorker";
 
 // Assume canvas is always the same size as the window.
 
@@ -15,7 +15,7 @@ export default function BackgroundParticles({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { worker } = useSetupWorker({ canvasRef, dependencyList: [] });
+  const { worker } = useSetupParticlesWorker({ canvasRef, dependencyList: [] });
 
   useOnResize({
     worker,

@@ -12,7 +12,11 @@ export default class Cycloid extends BoundingCircle {
   // The global reference id shared by CycloidControls and DrawNode
   private id: number;
 
-  //basically cannot go beyond this value -- something % limit
+  /**
+   * The timestep, basically.
+   *
+   * The smaller, the more refined the curves.
+   */
   private animationSpeed: number = 0;
 
   private parentBounding: BoundingCircle;
@@ -20,9 +24,9 @@ export default class Cycloid extends BoundingCircle {
   private rotationDirection: CycloidRotationDirection;
 
   /*
-    1 means the rod rotates at the same speed as the circle
+    1 means the rod rotates at the same speed as the bounding circle.
   */
-  private rodRotationSpeedRatio = 1;
+  private rodRotationSpeedScale = 1;
 
   private isOutsideOfParent: boolean;
 
@@ -84,12 +88,12 @@ export default class Cycloid extends BoundingCircle {
     let change =
       this.rotationDirection === "clockwise"
         ? {
-            dx: Math.sin(dx * this.rodRotationSpeedRatio),
-            dy: Math.cos(dx * this.rodRotationSpeedRatio),
+            dx: Math.sin(dx * this.rodRotationSpeedScale),
+            dy: Math.cos(dx * this.rodRotationSpeedScale),
           }
         : {
-            dx: Math.cos(dx * this.rodRotationSpeedRatio),
-            dy: Math.sin(dx * this.rodRotationSpeedRatio),
+            dx: Math.cos(dx * this.rodRotationSpeedScale),
+            dy: Math.sin(dx * this.rodRotationSpeedScale),
           };
     let pos = {
       x: beginningPos * change.dx,
@@ -163,8 +167,8 @@ export default class Cycloid extends BoundingCircle {
   setRotationDirection = (direction: CycloidRotationDirection) =>
     (this.rotationDirection = direction);
 
-  setRodRotationSpeedRatio = (ratio: number) =>
-    (this.rodRotationSpeedRatio = ratio);
+  setRodRotatationSpeedScale = (scalar: number) =>
+    (this.rodRotationSpeedScale = scalar);
 
   setRadius = (radius: number) => (this.radius = radius);
 

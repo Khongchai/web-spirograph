@@ -54,7 +54,7 @@ export default function useLoadCycloidParams(
         rodLengthScale,
         radius: cycloidRadius,
         rotationDirection: cycloidDirection,
-        animationSpeedScale: rodRotationRatio,
+        animationSpeedScale: localAnimationSpeedScale,
         moveOutSideOfParent,
         id,
         boundingCircleId,
@@ -65,7 +65,7 @@ export default function useLoadCycloidParams(
       cycloid.rod.scaleLength(rodLengthScale);
       cycloid.setRadius(cycloidRadius);
       cycloid.setRotationDirection(cycloidDirection);
-      cycloid.setRodRotationSpeedRatio(rodRotationRatio);
+      cycloid.setRodRotatationSpeedScale(localAnimationSpeedScale);
       cycloid.setIsOutsideOfParent(moveOutSideOfParent);
       cycloid.setParent(
         getParentCycloid(boundingCircleId, id, generatedCycloids)
