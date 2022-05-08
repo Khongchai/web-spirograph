@@ -2,7 +2,7 @@ import { CycloidControlsProperties } from "../../classes/cycloidControls";
 
 export default interface InstantDrawerWorkerRequestPayload {
   operation: InstantDrawerWorkerOperation;
-  setParametersPayload?: GeneratePointsPayload;
+  generatePointsPayload?: GeneratePointsPayload;
   retrievePointsPayload?: RetrievePointsPayload;
 }
 

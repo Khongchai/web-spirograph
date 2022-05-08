@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { Vector2 } from "./classes/vector2";
+import { useEffect, useState } from "react";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";
@@ -14,10 +13,15 @@ function App() {
   /**
    * Points used for instant draw.
    */
-  // const { pointsRef, worker: instantDrawerWorker } =
-  //   useSetupInstantCycloidDrawer({
-  //     dependencyList: [],
-  //   });
+  const { pointsRef, worker: instantDrawerWorker } =
+    useSetupInstantCycloidDrawer({
+      dependencyList: [],
+    });
+
+  useEffect(() => {
+    //TODO make this work.
+    instantDrawerWorker?.postMessage("Hello world");
+  }, [instantDrawerWorker]);
 
   function changeNavigationStage() {
     setStage((curStage) => {

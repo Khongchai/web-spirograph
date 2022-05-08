@@ -1,6 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Vector2 } from "../../classes/vector2";
-import Worker from "worker-loader!../../Workers/InstantDrawer/instantDrawer.worker";
+//@ts-ignore
+import InstantDrawerWorker from "worker-loader?filename=instantdrawer!../../Workers/InstantDrawer/instantDrawer.worker";
 import InstantDrawerWorkerResponsePayload, {
   InstantDrawerWorkerResponseOperation,
 } from "../../Workers/InstantDrawer/responsePayload";
@@ -20,7 +21,7 @@ export default function useSetupInstantCycloidDrawer({
 
   useEffect(() => {
     setWorker(() => {
-      const worker = new Worker();
+      const worker = new InstantDrawerWorker();
 
       worker.onmessage = ({
         data,

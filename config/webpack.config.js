@@ -28,6 +28,7 @@ const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
 const postcssNormalize = require("postcss-normalize");
+const { config } = require("dotenv/types");
 
 const appPackageJson = require(paths.appPackageJson);
 
@@ -361,10 +362,6 @@ module.exports = function (webpackEnv) {
     module: {
       strictExportPresence: true,
       rules: [
-        {
-          test: /\.worker\.ts$/,
-          use: { loader: "worker-loader" },
-        },
         // Disable require.ensure as it's not a standard language feature.
         { parser: { requireEnsure: false } },
         {

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import Worker from "worker-loader!../../Workers/BackgroundParticles/particles.worker";
+//@ts-ignore
+import Worker from "worker-loader?filename=particlesWorker!../../Workers/BackgroundParticles/particles.worker";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
 } from "../../Workers/BackgroundParticles/payloads";

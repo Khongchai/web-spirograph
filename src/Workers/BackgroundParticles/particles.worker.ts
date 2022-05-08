@@ -5,8 +5,6 @@ import ScreenSize from "./models/ScreenSize";
 import ParticlesWorkerPayload, { ParticlesWorkerOperation } from "./payloads";
 import drawParticles from "./utils/drawParticles/drawParticles";
 
-export {};
-
 // Global objects to be referenced until the worker dies.
 const screenSize: ScreenSize = {
   width: 0,
