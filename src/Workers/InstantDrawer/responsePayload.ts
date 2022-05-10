@@ -2,11 +2,11 @@ import { Vector2 } from "../../classes/vector2";
 
 export default interface InstantDrawerWorkerResponsePayload {
   operation: InstantDrawerWorkerResponseOperation;
-  RetrievePointsResponse?: RetrievePointsResponse;
+  generatePointsResponse?: RetrievePointsResponse;
 }
 
 export enum InstantDrawerWorkerResponseOperation {
-  retrievePoints,
+  generatePoints,
 }
 
 export type RetrievePointsResponse = {

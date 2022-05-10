@@ -1,3 +1,5 @@
+- Right now, the worker cannot clone the entire CycloidControls object because some of the properties are functions. However, we don't actually need all of that anyway and we should make a separate object for the request that has only the required properties for generating the points.
+
 - Instant mode <<
 - Some rotation interaction? << not sure >>
 - Take care of resize for the stars.
