@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import CycloidControls from "../classes/cycloidControls";
-import Canvas from "../components/main/Canvas";
+import AnimatedCanvas from "../components/main/Canvas/Animated";
+import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
 import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
@@ -38,11 +39,19 @@ function Main({
                 ref={allCanvasContainer as any}
                 className="w-full h-full absolute canvas-container"
               >
-                <Canvas
-                  cycloidControls={cycloidControls}
-                  parent={allCanvasContainer}
-                  parentWrapper={canvasContainerFlexWrapper}
-                />
+                {cycloidControls.current.mode === "Instant" ||
+                cycloidControls.current.mode === "AnimatedInstant" ? (
+                  <InstantCanvas
+                    cycloidControls={cycloidControls}
+                    points={400}
+                  />
+                ) : (
+                  <AnimatedCanvas
+                    cycloidControls={cycloidControls}
+                    parent={allCanvasContainer}
+                    parentWrapper={canvasContainerFlexWrapper}
+                  />
+                )}
               </div>
             </div>
             <div

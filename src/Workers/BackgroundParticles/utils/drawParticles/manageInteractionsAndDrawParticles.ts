@@ -43,8 +43,8 @@ export default function manageInteractionsAndDrawParticles(
 
 function lissajousNoise(p: Particle, tick: number) {
   //3d lissajous curve
-  const zNoise = Math.acos(Math.cos(tick * p.initialZ * 0.000001 * 0.4)) * 0.2;
-  const xNoise = Math.cos(tick * p.initialX * 0.000005) * 0.5;
+  const zNoise = Math.acos(Math.cos(tick * p.initialZ * 0.00001 * 0.9)) * 0.9;
+  const xNoise = Math.cos(tick * p.initialX * 0.000002) * 7;
   const yNoise = Math.sin(tick * p.initialY * 0.000003) * 0.3;
 
   p.x += xNoise;

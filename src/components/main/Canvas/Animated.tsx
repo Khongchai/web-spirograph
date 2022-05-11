@@ -19,12 +19,12 @@ interface CanvasProps {
   parentWrapper: MutableRefObject<HTMLElement | null>;
 }
 
-const Canvas: React.FC<CanvasProps> = ({
+const AnimatedCanvas: React.FC<CanvasProps> = ({
   cycloidControls,
   parent,
   parentWrapper,
 }) => {
-  const [mode, setMode] = useState<"animate" | "instant">("animate");
+  //TODO a very BIG maybe
   const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
     "auto"
   );
@@ -82,13 +82,11 @@ const Canvas: React.FC<CanvasProps> = ({
 
   return (
     <>
-      {mode === "animate" ? (
-        <canvas
-          id="animation-draw-canvas"
-          ref={drawCanvasRef}
-          className="absolute"
-        ></canvas>
-      ) : null}
+      <canvas
+        id="animation-draw-canvas"
+        ref={drawCanvasRef}
+        className="absolute"
+      ></canvas>
       <canvas
         id="animation-trace-canvas"
         ref={traceCanvasRef}
@@ -98,4 +96,4 @@ const Canvas: React.FC<CanvasProps> = ({
   );
 };
 
-export default Canvas;
+export default AnimatedCanvas;

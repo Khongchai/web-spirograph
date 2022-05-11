@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import CycloidControlsData from "../../../classes/cycloidControls";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import SettingsContainer from "./shared/ControlContainer";
@@ -6,6 +6,7 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
 import Control from "./shared/control";
+import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
 
 interface miscProps {
   cycloidControls: CycloidControlsData;
@@ -22,6 +23,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
   showScaffoldTooltipText,
 }) => {
   const forceUpdate = useForceUpdate();
+  const toggleRerender = useContext(RerenderToggle);
   return (
     <ControlSection>
       <SettingsContainer>
@@ -31,7 +33,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
           text="Animated"
           onClick={() => {
             cycloidControls.mode = "Animated";
-            forceUpdate();
+            toggleRerender();
           }}
         />
         <SelectionButton
@@ -39,7 +41,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
           text="Instant"
           onClick={() => {
             cycloidControls.mode = "Instant";
-            forceUpdate();
+            toggleRerender();
           }}
         />
       </SettingsContainer>

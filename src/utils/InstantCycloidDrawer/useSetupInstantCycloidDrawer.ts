@@ -30,25 +30,25 @@ export default function useSetupInstantCycloidDrawer({
     setWorker(() => {
       const worker: Worker = new InstantDrawerWorker();
 
-      const setupPayload: SetCycloidControlsPayload = {
-        cycloidControls: cycloidControls.current,
-      };
-      worker.postMessage({
-        setCycloidControlsPayload: setupPayload,
-        operation: InstantDrawerWorkerOperation.setCycloidControls,
-      } as InstantDrawerWorkerRequestPayload);
+      // const setupPayload: SetCycloidControlsPayload = {
+      //   cycloidControls: cycloidControls.current,
+      // };
+      // worker.postMessage({
+      //   setCycloidControlsPayload: setupPayload,
+      //   operation: InstantDrawerWorkerOperation.setCycloidControls,
+      // } as InstantDrawerWorkerRequestPayload);
 
-      worker.onmessage = ({
-        data,
-      }: {
-        data: InstantDrawerWorkerResponsePayload;
-      }) => {
-        if (
-          data.operation == InstantDrawerWorkerResponseOperation.generatePoints
-        ) {
-          pointsRef.current = data.generatePointsResponse!.points ?? [];
-        }
-      };
+      // worker.onmessage = ({
+      //   data,
+      // }: {
+      //   data: InstantDrawerWorkerResponsePayload;
+      // }) => {
+      //   if (
+      //     data.operation == InstantDrawerWorkerResponseOperation.generatePoints
+      //   ) {
+      //     pointsRef.current = data.generatePointsResponse!.points ?? [];
+      //   }
+      // };
 
       return worker;
     });
