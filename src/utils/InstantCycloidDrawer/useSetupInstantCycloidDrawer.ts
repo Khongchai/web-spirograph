@@ -6,10 +6,10 @@ import { Vector2 } from "../../classes/vector2";
 import InstantDrawerWorkerRequestPayload, {
   InstantDrawerWorkerOperation,
   SetCycloidControlsPayload,
-} from "../../Workers/InstantDrawer/requestPayload";
+} from "../../Workers/InstantDrawer/models/requestPayload";
 import InstantDrawerWorkerResponsePayload, {
   InstantDrawerWorkerResponseOperation,
-} from "../../Workers/InstantDrawer/responsePayload";
+} from "../../Workers/InstantDrawer/models/responsePayload";
 
 /**
  * Instant drawing will be done in another thread due for loop's blocking nature.

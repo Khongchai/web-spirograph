@@ -1,4 +1,4 @@
-import { Vector2 } from "../../classes/vector2";
+import { Vector2 } from "../../../classes/vector2";
 
 export default interface InstantDrawerWorkerResponsePayload {
   operation: InstantDrawerWorkerResponseOperation;

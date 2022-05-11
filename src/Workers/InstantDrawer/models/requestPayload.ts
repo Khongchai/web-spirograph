@@ -1,6 +1,6 @@
 import CycloidControls, {
   CycloidControlsProperties,
-} from "../../classes/cycloidControls";
+} from "../../../classes/cycloidControls";
 
 /**
  * # Defined Operations:

@@ -1,7 +1,7 @@
 import CycloidControls from "../../classes/cycloidControls";
 import InstantDrawerWorkerRequestPayload, {
   InstantDrawerWorkerOperation,
-} from "./requestPayload";
+} from "./models/requestPayload";
 import generatePoints from "./utils/generatePoints";
 
 let cycloidControls: CycloidControls | undefined;
