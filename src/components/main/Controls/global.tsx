@@ -27,6 +27,7 @@ const Global: React.FC<globalProps> = ({
         <Settings
           paramName={"Animation Speed Scale"}
           numberValue={cycloidControls.animationSpeed}
+          step={0.1}
           onDrag={(newValue: number) =>
             (cycloidControls.animationSpeed = newValue)
           }

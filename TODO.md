@@ -1,3 +1,4 @@
+- Showing and tracing all cycloids should be separate options.
 - clear all event listeners when one of the canvases is disposed.
 - Pause offloading stuff to instantdrawercycloidParams and make it work first cus I think we might need to offload the tracing to another canvas entirely. => now working on another canvas
 
