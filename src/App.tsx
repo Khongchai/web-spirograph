@@ -37,6 +37,7 @@ function App() {
           moveOutSideOfParent: false,
           boundingColor: colors.purple.light,
         },
+        //TODO, eventually, show two by default.
         // {
         //   rodLengthScale: 0.8,
         //   rotationDirection: "counterclockwise",
@@ -52,6 +53,7 @@ function App() {
       scaffold: "Showing",
       animationState: "Playing",
       clearTracedPathOnParamsChange: true,
+      traceAllCycloids: false,
       showAllCycloids: false,
       programOnly: {
         tracePath: true,

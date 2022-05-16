@@ -25,7 +25,7 @@ const Global: React.FC<globalProps> = ({
       <Heading tooltipText={tooltipText}>Global</Heading>
       <SettingsContainer>
         <Settings
-          paramName={"Animation Speed Scale"}
+          paramName={"Timestep scale"}
           numberValue={cycloidControls.animationSpeed}
           step={0.1}
           onDrag={(newValue: number) =>
@@ -54,6 +54,14 @@ const Global: React.FC<globalProps> = ({
           }}
           paramName="Show all cycloids"
           defaultBooleanValue={cycloidControls.showAllCycloids}
+        />
+        <Settings
+          onClick={(newValue) => {
+            cycloidControls.traceAllCycloids = newValue;
+            rerenderToggle();
+          }}
+          paramName="Trace all cycloids"
+          defaultBooleanValue={cycloidControls.traceAllCycloids}
         />
         <Settings
           onLeftClicked={() => {

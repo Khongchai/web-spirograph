@@ -43,7 +43,12 @@ export interface CycloidControlsProperties {
   clearTracedPathOnParamsChange: boolean;
 
   /*
-   * Pretty self-explanatory.
+   * If false, only the path of the selected cycloid will be traced.
+   */
+  traceAllCycloids: boolean;
+
+  /*
+   * If false, only the selected cycloid will be shown.
    */
   showAllCycloids: boolean;
 
@@ -68,6 +73,7 @@ export default class CycloidControls implements CycloidControlsProperties {
   scaffold: "Showing" | "Hidden";
   animationState: "Playing" | "Paused";
   clearTracedPathOnParamsChange: boolean;
+  traceAllCycloids: boolean;
   showAllCycloids: boolean;
   programOnly: {
     tracePath: boolean;
@@ -83,6 +89,7 @@ export default class CycloidControls implements CycloidControlsProperties {
     scaffold,
     programOnly,
     showAllCycloids,
+    traceAllCycloids,
   }: {
     outerMostBoundingCircle: BoundingCircle;
     cycloids: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[];
@@ -96,11 +103,13 @@ export default class CycloidControls implements CycloidControlsProperties {
     programOnly: {
       tracePath: boolean;
     };
+    traceAllCycloids: boolean;
   }) {
     this.outerMostBoundingCircle = outerMostBoundingCircle;
     this.animationSpeed = animationSpeed;
     this.currentCycloidId = currentCycloidId;
     this.mode = mode;
+    this.traceAllCycloids = traceAllCycloids;
     this.scaffold = scaffold;
     this.animationState = animationState;
     this.clearTracedPathOnParamsChange = clearTracedPathOnParamsChange;

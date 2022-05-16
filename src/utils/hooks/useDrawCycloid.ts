@@ -80,8 +80,13 @@ export default function useDrawCanvas(
               outermostBoundingCircle.showBounding(ctx);
             }
 
-            const pointPos = cycloid.getDrawPoint();
-            pointsToTrace.current.push({ x: pointPos.x, y: pointPos.y });
+            if (
+              curControls.traceAllCycloids ||
+              cycloid.getId() == curControls.currentCycloidId
+            ) {
+              const pointPos = cycloid.getDrawPoint();
+              pointsToTrace.current.push({ x: pointPos.x, y: pointPos.y });
+            }
           }
         });
 
