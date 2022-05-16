@@ -1,6 +1,7 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 import Cycloid from "../../../classes/Cycloid";
 import CycloidControls from "../../../classes/cycloidControls";
+import colors from "../../../constants/colors";
 
 //TODO this will be moved to a worker thread later.
 
@@ -25,7 +26,7 @@ interface InstantCycloidParameters {
 }
 
 interface InstantBaseBoundingParameters {
-  timeStepScale: number;
+  timeStep: number;
   outerBoundingCircleRadius: number;
 }
 
@@ -51,10 +52,37 @@ function mapInstantDrawerProps(cycloidControls: CycloidControls) {
     instantGlobalParameters: {
       outerBoundingCircleRadius:
         cycloidControls.outerMostBoundingCircle.getRadius(),
-      timeStepScale: cycloidControls.animationSpeed,
+      timeStep: cycloidControls.animationSpeed,
     },
   } as InstantCycloidDrawerProps;
 }
+
+function epitrochoid1({
+  r1,
+  r2,
+  alpha,
+  beta,
+  h,
+  invertCosAndSin,
+}: {
+  r1: number;
+  r2: number;
+  alpha: number;
+  beta: number;
+  h: number;
+  invertCosAndSin: boolean;
+}) {
+  const xTrig = (x: number) => (invertCosAndSin ? Math.sin(x) : Math.cos(x));
+  const yTrig = (y: number) => (invertCosAndSin ? Math.sin(y) : Math.cos(y));
+  const newPoint = {
+    x: (r1 + r2) * xTrig(alpha) + h * xTrig(alpha + beta),
+    y: (r1 + r2) * yTrig(alpha) + h * yTrig(alpha + beta),
+  };
+
+  return newPoint;
+}
+function epitrochoid2() {}
+function epitrochoid3() {}
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -104,12 +132,71 @@ export default function InstantCanvas({
 
   //TODO this is the code that's gonna be moved into the worker.
   useEffect(() => {
+    let time = 0;
+    let previousPoint: null | { x: number; y: number } = null;
+
     function draw() {
-      if (instantDrawCanvasRef.current) {
-        const ctx = instantDrawCanvasRef.current.getContext("2d");
-        const instantDrawerProps = mapInstantDrawerProps(
-          cycloidControls.current
+      //TODO remove this
+      if (
+        cycloidControls.current.cycloidManager.getAllCycloidParams().length > 2
+      ) {
+        throw new Error("Too many cycloids, we're testing only 2");
+      }
+
+      if (
+        cycloidControls.current.cycloidManager.getAllCycloidParams().length > 5
+      ) {
+        throw new Error(
+          "Instant draw supports only upto 5 nested cycloids for now"
         );
+      }
+
+      if (instantDrawCanvasRef.current) {
+        const ctx = instantDrawCanvasRef.current.getContext("2d")!;
+        ctx.strokeStyle = colors.purple.light;
+        const { instantCycloidParamtersArray, instantGlobalParameters } =
+          mapInstantDrawerProps(cycloidControls.current);
+        const { outerBoundingCircleRadius, timeStep } = instantGlobalParameters;
+
+        instantCycloidParamtersArray.forEach((cycloidParam) => {
+          for (let i = 0; i < points; i++) {
+            const alpha = (time += timeStep);
+            const beta =
+              ((alpha * cycloidParam.radius) / outerBoundingCircleRadius) *
+              cycloidParam.speedScalar;
+
+            const {
+              moveOutsideOfParent,
+              radius,
+              rodLength,
+              rotationDirection,
+              speedScalar,
+            } = cycloidParam;
+            const { x, y } = epitrochoid1({
+              alpha,
+              beta,
+              h: rodLength,
+              invertCosAndSin: rotationDirection === "clockwise",
+              r1: outerBoundingCircleRadius,
+              r2: radius + radius * moveOutsideOfParent,
+            });
+
+            if (!previousPoint) {
+              previousPoint = { x, y };
+            } else {
+              ctx.beginPath();
+              ctx.arc(x, y, 10, 0, 2 * Math.PI);
+              ctx.fill();
+              // ctx.beginPath();
+              // ctx.moveTo(previousPoint.x, previousPoint.y);
+              // ctx.lineTo(x, y);
+              // ctx.stroke();
+              // previousPoint = { x, y };
+            }
+          }
+
+          time = 0;
+        });
       }
     }
 

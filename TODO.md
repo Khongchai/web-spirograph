@@ -1,4 +1,8 @@
-- Pause offloading stuff to instantdrawercycloidParams and make it work first cus I think we might need to offload the tracing to another canvas entirely. => now working on another canvas
+New way:
+Move the entire trace canvas to a worker thread so that we can do both animated and instantdraw there.
+Instant draw is just the same as the animated, using the brute force way, but we'll allow the user to generate equations up to five (not sure) nested epitrochoid levels.
+
+- Refactor pan and zoom out as they don't really need to be a part of the whole instant or animated draw thing.
 
 - Right now, the worker cannot clone the entire CycloidControls object because some of the properties are functions. However, we don't actually need all of that anyway and we should make a separate object for the request that has only the required properties for generating the points.
 

@@ -32,7 +32,7 @@ export default function useDrawCanvas(
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d")!;
 
-      let dx = 0;
+      let time = 0;
 
       setCanvasSize(canvas);
 
@@ -50,7 +50,7 @@ export default function useDrawCanvas(
 
         ctx.lineWidth = 1.5;
 
-        dx += curControls.animationSpeed;
+        time += curControls.animationSpeed;
 
         pointsToTrace.current = [];
 
@@ -61,7 +61,7 @@ export default function useDrawCanvas(
 
           // Keep updating the position even if the cycloid is not being drawn
           // This allows the child cycloids to be drawn in the correct position
-          cycloid.setDx(dx);
+          cycloid.setDx(time);
           cycloid.move();
 
           if (drawCurrentCycloid) {
