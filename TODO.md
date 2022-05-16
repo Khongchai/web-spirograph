@@ -1,3 +1,5 @@
+remove instant canvas on main thread
+
 New way:
 Move the entire trace canvas to a worker thread so that we can do both animated and instantdraw there.
 Instant draw is just the same as the animated, using the brute force way, but we'll allow the user to generate equations up to five (not sure) nested epitrochoid levels.

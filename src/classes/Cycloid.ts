@@ -115,18 +115,13 @@ export default class Cycloid extends BoundingCircle {
 
     const theta = this.animationSpeedAsRadians();
 
-    //TODO => what's this?
-    const innerRotationSpeed = 1;
-
     const path = {
       x,
       y,
     };
 
-    this.drawPoint.x =
-      Math.cos(theta * innerRotationSpeed) * this.rod.getLength() + path.x;
-    this.drawPoint.y =
-      Math.sin(theta * innerRotationSpeed) * this.rod.getLength() + path.y;
+    this.drawPoint.x = Math.cos(theta) * this.rod.getLength() + path.x;
+    this.drawPoint.y = Math.sin(theta) * this.rod.getLength() + path.y;
   }
 
   showPoint(context: CanvasRenderingContext2D) {

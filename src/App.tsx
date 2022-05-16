@@ -25,7 +25,7 @@ function App() {
           x: 0,
           y: 0,
         },
-        240,
+        300,
         colors.purple.light
       ),
       cycloids: [
