@@ -50,7 +50,7 @@ export default function useDrawCanvas(
 
         ctx.lineWidth = 1.5;
 
-        time += curControls.animationSpeed;
+        time += curControls.globalTimeStep;
 
         pointsToTrace.current = [];
 

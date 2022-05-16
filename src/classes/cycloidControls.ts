@@ -14,7 +14,7 @@ export interface CycloidControlsProperties {
   /*
    * The global animation speed.
    */
-  animationSpeed: number;
+  globalTimeStep: number;
 
   /*
    * The id of the current cycloid that is being drawn.
@@ -67,7 +67,7 @@ export interface CycloidControlsProperties {
 export default class CycloidControls implements CycloidControlsProperties {
   outerMostBoundingCircle: BoundingCircle;
   cycloidManager: CycloidParamsManager;
-  animationSpeed: number;
+  globalTimeStep: number;
   currentCycloidId: number;
   mode: "Animated" | "Instant" | "AnimatedInstant";
   scaffold: "Showing" | "Hidden";
@@ -106,7 +106,7 @@ export default class CycloidControls implements CycloidControlsProperties {
     traceAllCycloids: boolean;
   }) {
     this.outerMostBoundingCircle = outerMostBoundingCircle;
-    this.animationSpeed = animationSpeed;
+    this.globalTimeStep = animationSpeed;
     this.currentCycloidId = currentCycloidId;
     this.mode = mode;
     this.traceAllCycloids = traceAllCycloids;

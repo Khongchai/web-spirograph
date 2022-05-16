@@ -52,7 +52,7 @@ function mapInstantDrawerProps(cycloidControls: CycloidControls) {
     instantGlobalParameters: {
       outerBoundingCircleRadius:
         cycloidControls.outerMostBoundingCircle.getRadius(),
-      timeStep: cycloidControls.animationSpeed,
+      timeStep: cycloidControls.globalTimeStep,
     },
   } as InstantCycloidDrawerProps;
 }

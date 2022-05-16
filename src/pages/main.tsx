@@ -86,7 +86,7 @@ function useAnimateMenuToggling(
   const handleOnRelationshipEditorToggle = useCallback(() => {
     cycloidControls.current.scaffold = "Showing";
 
-    let animateSpeed = cycloidControls.current.animationSpeed;
+    let animateSpeed = cycloidControls.current.globalTimeStep;
     let change = animateSpeed * 0.05;
 
     // Set the animation speed that we can later revert to.
@@ -101,10 +101,10 @@ function useAnimateMenuToggling(
     function slowDown() {
       animateSpeed -= change;
       if (animateSpeed > 0) {
-        cycloidControls.current.animationSpeed = animateSpeed;
+        cycloidControls.current.globalTimeStep = animateSpeed;
         requestAnimationFrame(slowDown);
       } else {
-        cycloidControls.current.animationSpeed = 0;
+        cycloidControls.current.globalTimeStep = 0;
         rerender();
       }
     }
@@ -129,13 +129,13 @@ function useAnimateMenuToggling(
     function speedUp() {
       animateSpeed += change;
       if (animateSpeed < originalSpeedRef.current!) {
-        cycloidControls.current.animationSpeed = parseFloat(
+        cycloidControls.current.globalTimeStep = parseFloat(
           animateSpeed.toFixed(1)
         );
         rerender();
         requestAnimationFrame(speedUp);
       } else {
-        cycloidControls.current.animationSpeed = originalSpeedRef.current!;
+        cycloidControls.current.globalTimeStep = originalSpeedRef.current!;
         rerender();
       }
     }

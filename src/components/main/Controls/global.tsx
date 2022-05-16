@@ -25,11 +25,11 @@ const Global: React.FC<globalProps> = ({
       <Heading tooltipText={tooltipText}>Global</Heading>
       <SettingsContainer>
         <Settings
-          paramName={"Timestep scale"}
-          numberValue={cycloidControls.animationSpeed}
+          paramName={"Global Timestep"}
+          numberValue={cycloidControls.globalTimeStep}
           step={0.1}
           onDrag={(newValue: number) =>
-            (cycloidControls.animationSpeed = newValue)
+            (cycloidControls.globalTimeStep = newValue)
           }
         />
         <Settings
