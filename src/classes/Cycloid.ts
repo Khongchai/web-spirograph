@@ -67,7 +67,9 @@ export default class Cycloid extends BoundingCircle {
   };
 
   private animationSpeedAsRadians() {
-    return this.animationSpeed * 6 * (Math.PI / 180);
+    // If animationSpeed is 1, the cycloid will complete 1
+    // rotation around its parent within a second.
+    return (this.animationSpeed * (Math.PI * 2)) / 60;
   }
 
   /*
