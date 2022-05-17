@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Worker from "worker-loader?filename=particlesWorker!../../Workers/BackgroundParticles/particles.worker";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
-} from "../../Workers/BackgroundParticles/payloads";
+} from "../../Workers/BackgroundParticles/particlesWorkerPayloads";
 
 export default function useSetupParticlesWorker({
   canvasRef,

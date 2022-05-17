@@ -6,15 +6,18 @@ import {
   useState,
 } from "react";
 import Cycloid from "../../classes/Cycloid";
-import CycloidControlsData from "../../classes/cycloidControls";
+import CycloidControls from "../../classes/cycloidControls";
 import { Rerender } from "../../contexts/rerenderToggle";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
+import generateCycloids from "../generateCycloids";
 
 /*
     This hook encapsulate the generation of cycloids from information within the controls.
+
+    It simply wraps the generateCycloids function and calls it on every rerender.
 */
 export default function useGenerateCycloids(
-  cycloidControls: MutableRefObject<CycloidControlsData>
+  cycloidControls: MutableRefObject<CycloidControls>
 ): GeneratedCycloidData {
   const outerMostBoundingCircle =
     cycloidControls.current.outerMostBoundingCircle;
@@ -22,24 +25,7 @@ export default function useGenerateCycloids(
   const rerender = useContext(Rerender);
 
   const cycloids = useMemo(() => {
-    const cycloids: Cycloid[] = [];
-
-    cycloidControls.current.cycloidManager
-      .getAllCycloidParams()
-      .forEach((c) => {
-        const cycloid = new Cycloid(
-          c.radius,
-          c.rotationDirection,
-          //Use this for now, will refactor later.
-          outerMostBoundingCircle,
-          false,
-          c.boundingColor,
-          c.id
-        );
-        cycloids.push(cycloid);
-      });
-
-    return cycloids;
+    return generateCycloids(cycloidControls.current);
   }, [rerender]);
 
   return {

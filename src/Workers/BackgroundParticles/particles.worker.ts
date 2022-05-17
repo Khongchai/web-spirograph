@@ -2,7 +2,9 @@ import { Vector2 } from "../../classes/vector2";
 import MousePos from "./models/MousePos";
 import RepellerData from "./models/RepellerData";
 import ScreenSize from "./models/ScreenSize";
-import ParticlesWorkerPayload, { ParticlesWorkerOperation } from "./payloads";
+import ParticlesWorkerPayload, {
+  ParticlesWorkerOperation,
+} from "./particlesWorkerPayloads";
 import drawParticles from "./utils/drawParticles/drawParticles";
 
 // Global objects to be referenced until the worker dies.

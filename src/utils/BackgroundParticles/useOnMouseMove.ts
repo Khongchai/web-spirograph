@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
-} from "../../Workers/BackgroundParticles/payloads";
+} from "../../Workers/BackgroundParticles/particlesWorkerPayloads";
 
 export default function useOnMouseMove({
   worker,

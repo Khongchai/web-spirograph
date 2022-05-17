@@ -7,7 +7,6 @@ import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";
 import Main from "./pages/Main";
 import { NaivgationStage } from "./types/Stage";
-import useSetupInstantCycloidDrawer from "./utils/InstantCycloidDrawer/useSetupInstantCycloidDrawer";
 
 /// Switch between main and landing with custom animation.
 function App() {
@@ -37,15 +36,14 @@ function App() {
           moveOutSideOfParent: false,
           boundingColor: colors.purple.light,
         },
-        //TODO, eventually, show two by default.
-        // {
-        //   rodLengthScale: 0.8,
-        //   rotationDirection: "counterclockwise",
-        //   radius: 50,
-        //   animationSpeedScale: 0.5,
-        //   moveOutSideOfParent: false,
-        //   boundingColor: colors.purple.light,
-        // },
+        {
+          rodLengthScale: 0.8,
+          rotationDirection: "counterclockwise",
+          radius: 100,
+          animationSpeedScale: 0.9,
+          moveOutSideOfParent: false,
+          boundingColor: colors.purple.light,
+        },
       ],
       animationSpeed: 1,
       currentCycloidId: 0,
@@ -60,20 +58,6 @@ function App() {
       },
     })
   );
-
-  /**
-   * Points used for instant draw.
-   */
-  const { pointsRef, worker: instantDrawerWorker } =
-    useSetupInstantCycloidDrawer({
-      cycloidControls: cycloidControls,
-      dependencyList: [],
-    });
-
-  useEffect(() => {
-    //TODO make this work.
-    instantDrawerWorker?.postMessage("Hello world");
-  }, [instantDrawerWorker]);
 
   function changeNavigationStage() {
     setStage((curStage) => {

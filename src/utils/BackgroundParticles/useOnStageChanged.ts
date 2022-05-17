@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { NaivgationStage } from "../../types/Stage";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
-} from "../../Workers/BackgroundParticles/payloads";
+} from "../../Workers/BackgroundParticles/particlesWorkerPayloads";
 
 export default function useOnStageChanged({
   currentStage,
