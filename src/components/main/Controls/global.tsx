@@ -50,7 +50,6 @@ const Global: React.FC<globalProps> = ({
         <Settings
           onClick={(newValue) => {
             cycloidControls.showAllCycloids = newValue;
-            rerenderToggle();
           }}
           paramName="Show all cycloids"
           defaultBooleanValue={cycloidControls.showAllCycloids}
