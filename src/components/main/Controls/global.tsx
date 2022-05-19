@@ -66,11 +66,11 @@ const Global: React.FC<globalProps> = ({
           onLeftClicked={() => {
             cycloidControls.cycloidManager.addCycloid(
               {
-                animationSpeedScale: 1,
+                animationSpeedScale: Math.round(Math.random() * 100) / 100,
                 boundingColor: colors.purple.light,
                 moveOutSideOfParent: false,
-                radius: Math.random() * 100,
-                rodLengthScale: Math.random() * 5,
+                radius: Math.round(Math.random() * 100),
+                rodLengthScale: (Math.round(Math.random() * 5) * 100) / 100,
                 rotationDirection:
                   Math.random() > 0.5 ? "clockwise" : "counterclockwise",
               },

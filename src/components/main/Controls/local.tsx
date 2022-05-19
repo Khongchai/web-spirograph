@@ -37,7 +37,7 @@ const Local: React.FC<{
             rerenderToggle();
           }}
           numberValue={cycloid.animationSpeedScale}
-          step={0.01}
+          step={0.001}
         />
         <Control
           paramName={"Move Outside of Parent"}

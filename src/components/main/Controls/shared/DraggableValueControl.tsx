@@ -72,8 +72,8 @@ function _manageDrag(
   constraints?: { min: number; max: number },
   steps?: number
 ) {
-  const maxDecimal = 0.001;
-  const maxDecimalPlaces = 100;
+  const maxDecimal = 0.0001;
+  const maxDecimalPlaces = 1000;
 
   const difference = e.clientX - pointerDownPos.current;
   const differenceStepped = difference * (steps ?? 1);
