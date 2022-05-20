@@ -25,6 +25,13 @@ export default class CycloidParams implements CycloidParamsArgs {
   radius: number;
   /*
    *  Local animation speed scale. This affect only the current cycloid.
+   *
+   * A bit counter-intuitively, this parameter changes the speed not of its rotation,
+   * but of its movement around its parent cycloid.
+   *
+   * Physically, a ratio of other than thetaOfParent * parentCycloidRadius / thisCycloidRadius
+   * means the cycloid is sliding along the surface as the amount of surface rolled
+   * is no longer proportional to that of its parent.
    */
   animationSpeedScale: number;
   /*
