@@ -5,7 +5,7 @@ export default function generateCycloids(cycloidControls: CycloidControls) {
   const cycloids: Cycloid[] = [];
   const outerMostBoundingCircle = cycloidControls.outerMostBoundingCircle;
 
-  cycloidControls.cycloidManager.getAllCycloidParams().forEach((c) => {
+  cycloidControls.cycloidManager.allCycloidParams.forEach((c) => {
     const cycloid = new Cycloid(
       c.radius,
       c.rotationDirection,

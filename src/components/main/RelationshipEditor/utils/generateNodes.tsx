@@ -67,7 +67,7 @@ export default function useGenerateNodes(
     const levels = new DrawNodeLevel();
 
     const cycloidParams =
-      cycloidControls.current.cycloidManager.getAllCycloidParams();
+      cycloidControls.current.cycloidManager.allCycloidParams;
 
     // Push the bounding circle to the top most level
     levels.setNode({

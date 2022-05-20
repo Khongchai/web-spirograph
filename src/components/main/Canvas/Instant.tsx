@@ -37,9 +37,8 @@ interface InstantCanvasProps {
 
 function mapInstantDrawerProps(cycloidControls: CycloidControls) {
   return {
-    instantCycloidParamtersArray: cycloidControls.cycloidManager
-      .getAllCycloidParams()
-      .map(
+    instantCycloidParamtersArray:
+      cycloidControls.cycloidManager.allCycloidParams.map(
         (cycloid) =>
           ({
             moveOutsideOfParent: cycloid.moveOutSideOfParent ? 1 : 0,

@@ -78,16 +78,30 @@ const Global: React.FC<globalProps> = ({
             );
           }}
           onRightClicked={() => {
-            cycloidControls.cycloidManager.removeLastCycloid(rerenderToggle);
+            cycloidControls.cycloidManager.removeLastCycloid(
+              ({ idOfRemovedCycloid, cycloidParamsAfterRemoval }) => {
+                const selectedCycloidIdBeforeRemoval =
+                  cycloidControls.currentCycloidId;
+
+                if (selectedCycloidIdBeforeRemoval === idOfRemovedCycloid) {
+                  cycloidControls.currentCycloidId =
+                    cycloidParamsAfterRemoval[
+                      cycloidParamsAfterRemoval.length - 1
+                    ].id;
+                }
+
+                rerenderToggle();
+              }
+            );
           }}
           paramName={"Add Or Remove Cycloids"}
         />
 
         <ContentArray
           paramName={"Current Cycloid"}
-          values={cycloidControls.cycloidManager
-            .getAllCycloidParams()
-            .map((cycloid) => cycloid.id)}
+          values={cycloidControls.cycloidManager.allCycloidParams.map(
+            (cycloid) => cycloid.id
+          )}
           targetValue={cycloidControls.currentCycloidId}
           onClick={(newId: number) => {
             cycloidControls.currentCycloidId = newId;

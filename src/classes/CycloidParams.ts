@@ -131,7 +131,15 @@ export class CycloidParamsManager {
     return { generatedId, boundingCircleId };
   }
 
-  removeLastCycloid(onCycloidRemoved?: VoidFunction) {
+  removeLastCycloid(
+    onCycloidRemoved?: ({
+      idOfRemovedCycloid,
+      cycloidParamsAfterRemoval,
+    }: {
+      idOfRemovedCycloid: number;
+      cycloidParamsAfterRemoval: CycloidParams[];
+    }) => void
+  ) {
     if (this.cycloidParams.length > 1) {
       const poppedCycloidId = this.cycloidParams.pop()?.id;
 
@@ -142,11 +150,14 @@ export class CycloidParamsManager {
       this.idManager.decrementId();
       this.cycloidsIdMap[poppedCycloidId!] = null;
 
-      onCycloidRemoved?.();
+      onCycloidRemoved?.({
+        idOfRemovedCycloid: poppedCycloidId,
+        cycloidParamsAfterRemoval: this.cycloidParams,
+      });
     }
   }
 
-  getAllCycloidParams() {
+  get allCycloidParams() {
     return this.cycloidParams;
   }
 
@@ -163,7 +174,7 @@ export class CycloidParamsManager {
     boundingCircle: BoundingCircle
   ) {
     args.forEach((a) => this.addCycloid(a));
-    this.getAllCycloidParams().forEach((c) => {
+    this.cycloidParams.forEach((c) => {
       this.cycloidsIdMap[c.id] = c;
     });
 
