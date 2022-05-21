@@ -43,7 +43,7 @@ function Main({
                 cycloidControls.current.mode === "AnimatedInstant" ? (
                   <InstantCanvas
                     cycloidControls={cycloidControls}
-                    points={400}
+                    pointsAmount={400}
                   />
                 ) : (
                   <AnimatedCanvas

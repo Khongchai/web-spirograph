@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 //@ts-ignore
-import Worker from "worker-loader?filename=particlesWorker!../../Workers/BackgroundParticles/particles.worker";
+import ParticlesWorker from "worker-loader?filename=particlesWorker!../../Workers/BackgroundParticles/particles.worker";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
 } from "../../Workers/BackgroundParticles/particlesWorkerPayloads";
@@ -12,10 +12,10 @@ export default function useSetupParticlesWorker({
   canvasRef: React.RefObject<HTMLCanvasElement>;
   dependencyList: any[];
 }) {
-  const [worker, setWorker] = useState<Worker | null>(null);
+  const [worker, setWorker] = useState<ParticlesWorker | null>(null);
 
   useEffect(() => {
-    const worker = new Worker();
+    const worker = new ParticlesWorker();
     setWorker(worker);
 
     const canvas = canvasRef.current!;

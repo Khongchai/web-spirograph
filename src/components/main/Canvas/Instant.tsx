@@ -1,60 +1,8 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import Cycloid from "../../../classes/Cycloid";
+//@ts-ignore
+import InstantDrawerWorker from "worker-loader?filename=instantDrawerWorker../../../Workers/InstantDrawer/instantDrawer.worker";
+
 import CycloidControls from "../../../classes/cycloidControls";
-import colors from "../../../constants/colors";
-
-//TODO this will be moved to a worker thread later.
-
-//TODO this is the model for the drawer in the worker thread.
-interface InstantCycloidDrawerProps {
-  instantCycloidParamtersArray: InstantCycloidParameters[];
-  instantGlobalParameters: InstantBaseBoundingParameters;
-}
-
-interface InstantCycloidParameters {
-  rodLength: number;
-  speedScalar: number;
-  /**
-   * 1 true 0 false, for multiplication.
-   */
-  moveOutsideOfParent: 1 | 0;
-  /**
-   * counterclockwise will swap cos and sin for x and y
-   */
-  rotationDirection: "clockwise" | "counterclockwise";
-  radius: number;
-}
-
-interface InstantBaseBoundingParameters {
-  timeStep: number;
-  outerBoundingCircleRadius: number;
-}
-
-interface InstantCanvasProps {
-  cycloidControls: MutableRefObject<CycloidControls>;
-  points: number;
-}
-
-function mapInstantDrawerProps(cycloidControls: CycloidControls) {
-  return {
-    instantCycloidParamtersArray:
-      cycloidControls.cycloidManager.allCycloidParams.map(
-        (cycloid) =>
-          ({
-            moveOutsideOfParent: cycloid.moveOutSideOfParent ? 1 : 0,
-            radius: cycloid.radius,
-            rodLength: cycloid.rodLengthScale,
-            rotationDirection: cycloid.rotationDirection,
-            speedScalar: cycloid.animationSpeedScale,
-          } as InstantCycloidParameters)
-      ),
-    instantGlobalParameters: {
-      outerBoundingCircleRadius:
-        cycloidControls.outerMostBoundingCircle.getRadius(),
-      timeStep: cycloidControls.globalTimeStep,
-    },
-  } as InstantCycloidDrawerProps;
-}
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -98,12 +46,17 @@ function mapInstantDrawerProps(cycloidControls: CycloidControls) {
  */
 export default function InstantCanvas({
   cycloidControls,
-  points,
-}: InstantCanvasProps) {
+  pointsAmount: points,
+}: {
+  cycloidControls: MutableRefObject<CycloidControls>;
+  pointsAmount: number;
+}) {
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  //TODO this is the code that's gonna be moved into the worker.
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // console.log(InstantDrawerWorker);
+    const worker = new InstantDrawerWorker();
+  }, []);
 
   /* TODO move this to worker thread later, just get it working first. */
   return (

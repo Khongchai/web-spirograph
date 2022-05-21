@@ -1,27 +1,10 @@
-export interface ComputedEpitrochoidArguments {
-  cycloids: {
-    isOutsideOfParent: boolean;
-    radius: number;
-    /**
-     * The arc direction around the parent cycloid
-     */
-    isClockwise: boolean;
-    /**
-     * The rotation ratio between this cycloid and its parent.
-     *
-     * To move without sliding, the ratio should be r1 * theta / r2
-     */
-    thetaScale: number;
-  }[];
-  theta: number;
-  rodLength: number;
-}
+import { DrawerArguments } from "../../Workers/InstantDrawer/instantDrawer.worker";
 
 export default function computedEpitrochoid({
   cycloids,
   theta,
   rodLength,
-}: ComputedEpitrochoidArguments) {
+}: DrawerArguments) {
   if (cycloids.length < 2) {
     throw new Error("Provide at least 2 cycloids");
   }

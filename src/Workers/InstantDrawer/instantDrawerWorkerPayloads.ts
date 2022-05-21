@@ -1,14 +1,21 @@
+import { DrawerArguments } from "./instantDrawer.worker";
+
 export interface InstantDrawerWorkerPayload {
   operation: InstantDrawerWorkerOperations;
   setParametersPayload?: SetParametersPayload;
-  tracePathPayload?: TracePathPayload;
+  initializeDrawerPayload?: InitializeDrawerPayload;
 }
 
-enum InstantDrawerWorkerOperations {
+export enum InstantDrawerWorkerOperations {
   setParameters,
-  tracePath,
+  initializeDrawer,
 }
 
-interface SetParametersPayload {}
+export type SetParametersPayload = Partial<DrawerArguments>;
 
-interface TracePathPayload {}
+//TODO add canvas to this
+export type InitializeDrawerPayload = DrawerArguments & {
+  canvas: HTMLCanvasElement;
+  canvasWidth: number;
+  canvasHeight: number;
+};
