@@ -54,8 +54,7 @@ export default function useTraceCycloidPath(
             if (notFirstTime.current[i]) {
               ctx.strokeStyle = "#E2C6FF";
               ctx.shadowColor = colors.purple.vivid;
-              ctx.shadowBlur = 10;
-              ctx.lineWidth = 2.5;
+              ctx.lineWidth = 1;
               ctx.beginPath();
               ctx.moveTo(lx, ly);
               ctx.lineTo(cx, cy);

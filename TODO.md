@@ -1,6 +1,8 @@
 1. Draw with equation on the main thread.
 2. Focus on instant draw canvas on the worker thread and don't do anything else just yet. Draw with equation seems to be the best....
 
+Able to save and load configurations. // Maybe have a simple backend service for this? (requires authentication, of course, should be done with GO maybe).
+
 Unit tests...?
 
 - Refactor pan and zoom out as they don't really need to be a part of the whole instant or animated draw thing.
