@@ -1,3 +1,4 @@
+Look for TODO in instant.tsx
 Right now this the instant drawer worker does not work so migrate this entire project to a newer version of react.
 
 1. Draw with equation on the main thread.

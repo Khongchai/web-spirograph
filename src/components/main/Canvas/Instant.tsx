@@ -1,9 +1,11 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/cycloidControls";
+import CycloidParams from "../../../classes/CycloidParams";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
+import InstantDrawCycloid from "../../../Workers/InstantDrawer/models/Cycloid";
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -66,20 +68,16 @@ export default function InstantCanvas({
       )
     );
 
-    //refactor into a separate mapper
-    const payload = {
-      operation: InstantDrawerWorkerOperations.initializeDrawer,
-      initializeDrawerPayload: {
-        canvas: instantDrawCanvasRef.current,
-        canvasHeight: parent.current!.clientHeight,
-        canvasWidth: parent.current!.clientWidth,
-        //TODO map this
-        cycloids: [{}],
+    worker.postMessage(
+      getInstantDrawPayload(
+        cycloidControls.current!,
+        instantDrawCanvasRef.current!,
         pointsAmount,
-        initialTheta: 0,
-      },
-    } as InstantDrawerWorkerPayload;
-    worker.postMessage([instantDrawCanvasRef.current]);
+        parent.current.clientHeight,
+        parent.current.clientWidth
+      ),
+      [instantDrawCanvasRef.current.transferControlToOffscreen()]
+    );
   }, []);
 
   return (
@@ -89,4 +87,43 @@ export default function InstantCanvas({
       className="absolute"
     ></canvas>
   );
+}
+
+function getInstantDrawPayload(
+  cycloidControls: CycloidControls,
+  instantDrawCanvas: HTMLCanvasElement,
+  pointsAmount: number,
+  canvasHeight: number,
+  canvasWidth: number
+) {
+  const instantDrawCycloids =
+    cycloidControls.cycloidManager.allCycloidParams.map((param) => {
+      const {
+        animationSpeedScale,
+        moveOutSideOfParent,
+        radius,
+        rodLengthScale,
+        rotationDirection,
+      } = param;
+      return {
+        isClockwise: rotationDirection === "clockwise",
+        isOutsideOfParent: moveOutSideOfParent,
+        radius,
+        rodLength: rodLengthScale * radius,
+        thetaScale: animationSpeedScale,
+      } as InstantDrawCycloid;
+    });
+  const payload = {
+    operation: InstantDrawerWorkerOperations.initializeDrawer,
+    initializeDrawerPayload: {
+      canvas: instantDrawCanvas,
+      canvasHeight: canvasWidth,
+      canvasWidth: canvasHeight,
+      cycloids: instantDrawCycloids,
+      pointsAmount,
+      initialTheta: 0,
+    },
+  } as InstantDrawerWorkerPayload;
+
+  return payload;
 }

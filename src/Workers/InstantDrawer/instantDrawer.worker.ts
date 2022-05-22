@@ -37,6 +37,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
     // 2. begin canvas
     case InstantDrawerWorkerOperations.initializeDrawer: {
       const params = data.initializeDrawerPayload as InitializeDrawerPayload;
+      console.log(params);
 
       break;
     }
