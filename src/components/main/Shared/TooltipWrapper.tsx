@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useRef, useState } from "react";
 
 const TooltipWrapper: React.FC<{
   tooltipText: string;
   wrapperType?: string;
   wrapperProps?: any;
+  children: ReactNode;
 }> = ({ children, tooltipText, wrapperType, wrapperProps }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [tooltipTextPos, setTooltipTextPos] = useState({ x: 0, y: 0 });

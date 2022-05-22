@@ -11,16 +11,12 @@ const colors = {
 };
 
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: false,
   theme: {
     colors,
     "w-fit": "fit-content",
-  },
-  variants: {
-    extend: {
-      backgroundColor: ["active"],
-    },
+    extend: {},
   },
   plugins: [],
 };

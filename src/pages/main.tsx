@@ -42,6 +42,7 @@ function Main({
                 {cycloidControls.current.mode === "Instant" ||
                 cycloidControls.current.mode === "AnimatedInstant" ? (
                   <InstantCanvas
+                    parent={allCanvasContainer}
                     cycloidControls={cycloidControls}
                     pointsAmount={400}
                   />

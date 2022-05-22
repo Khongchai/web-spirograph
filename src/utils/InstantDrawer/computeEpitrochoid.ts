@@ -3,7 +3,6 @@ import { DrawerArguments } from "../../Workers/InstantDrawer/instantDrawer.worke
 export default function computedEpitrochoid({
   cycloids,
   theta,
-  rodLength,
 }: DrawerArguments) {
   if (cycloids.length < 2) {
     throw new Error("Provide at least 2 cycloids");
@@ -33,6 +32,7 @@ export default function computedEpitrochoid({
           Math.PI * 0.5 * Number(thisCycloid.isClockwise)
       );
   }
+  const rodLength = cycloids[cycloids.length - 1].rodLength;
 
   return {
     x: finalPoint.x + rodLength * Math.cos(theta),

@@ -1,8 +1,9 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-//@ts-ignore
-import InstantDrawerWorker from "worker-loader?filename=instantDrawerWorker../../../Workers/InstantDrawer/instantDrawer.worker";
-
 import CycloidControls from "../../../classes/cycloidControls";
+import {
+  InstantDrawerWorkerOperations,
+  InstantDrawerWorkerPayload,
+} from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -46,19 +47,41 @@ import CycloidControls from "../../../classes/cycloidControls";
  */
 export default function InstantCanvas({
   cycloidControls,
-  pointsAmount: points,
+  pointsAmount,
+  parent,
 }: {
   cycloidControls: MutableRefObject<CycloidControls>;
+  parent: MutableRefObject<HTMLElement | null>;
   pointsAmount: number;
 }) {
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // console.log(InstantDrawerWorker);
-    const worker = new InstantDrawerWorker();
+    if (!instantDrawCanvasRef.current || !parent.current) return;
+
+    const worker = new Worker(
+      new URL(
+        "../../../Workers/InstantDrawer/instantDrawer.worker",
+        import.meta.url
+      )
+    );
+
+    //refactor into a separate mapper
+    const payload = {
+      operation: InstantDrawerWorkerOperations.initializeDrawer,
+      initializeDrawerPayload: {
+        canvas: instantDrawCanvasRef.current,
+        canvasHeight: parent.current!.clientHeight,
+        canvasWidth: parent.current!.clientWidth,
+        //TODO map this
+        cycloids: [{}],
+        pointsAmount,
+        initialTheta: 0,
+      },
+    } as InstantDrawerWorkerPayload;
+    worker.postMessage([instantDrawCanvasRef.current]);
   }, []);
 
-  /* TODO move this to worker thread later, just get it working first. */
   return (
     <canvas
       id="instant-draw-canvas"

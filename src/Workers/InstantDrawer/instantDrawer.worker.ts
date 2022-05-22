@@ -4,24 +4,11 @@ import {
   InstantDrawerWorkerPayload,
   SetParametersPayload,
 } from "./instantDrawerWorkerPayloads";
+import InstantDrawCycloid from "./models/Cycloid";
 
 export interface DrawerArguments {
-  cycloids: {
-    isOutsideOfParent: boolean;
-    radius: number;
-    /**
-     * The arc direction around the parent cycloid
-     */
-    isClockwise: boolean;
-    /**
-     * The rotation ratio between this cycloid and its parent.
-     *
-     * To move without sliding, the ratio should be r1 * theta / r2
-     */
-    thetaScale: number;
-  }[];
+  cycloids: InstantDrawCycloid[];
   theta: number;
-  rodLength: number;
 
   /**
    * Number of points to draw.

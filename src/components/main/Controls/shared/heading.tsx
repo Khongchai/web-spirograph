@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import TooltipWrapper from "../../Shared/TooltipWrapper";
 
-const Heading: React.FC<{ tooltipText: string }> = ({
+const Heading: React.FC<{ tooltipText: string; children: ReactNode }> = ({
   children,
   tooltipText,
 }) => {

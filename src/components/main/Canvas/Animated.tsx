@@ -24,11 +24,6 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
   parent,
   parentWrapper,
 }) => {
-  //TODO a very BIG maybe
-  const [animateMode, setAnimateMode] = useState<"auto" | "dragAndDrop">(
-    "auto"
-  );
-
   const rerender = useContext(Rerender);
 
   const panRef = useRef<Vector2>({ x: 0, y: 0 });
