@@ -1,9 +1,12 @@
-import { DrawerArguments } from "../../Workers/InstantDrawer/instantDrawer.worker";
+import InstantDrawCycloid from "../models/Cycloid";
 
 export default function computedEpitrochoid({
   cycloids,
   theta,
-}: DrawerArguments) {
+}: {
+  cycloids: InstantDrawCycloid[];
+  theta: number;
+}) {
   if (cycloids.length < 2) {
     throw new Error("Provide at least 2 cycloids");
   }

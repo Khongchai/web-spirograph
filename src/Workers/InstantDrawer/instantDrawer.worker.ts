@@ -1,3 +1,4 @@
+import computedEpitrochoid from "./utils/computeEpitrochoid";
 import {
   InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
@@ -5,8 +6,9 @@ import {
   SetParametersPayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
+import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
 
-export interface DrawerArguments {
+export interface DrawerData {
   cycloids: InstantDrawCycloid[];
   theta: number;
 
@@ -16,20 +18,41 @@ export interface DrawerArguments {
    * More points = more processing time.
    */
   pointsAmount: number;
+
+  ctx: OffscreenCanvasRenderingContext2D;
+
+  canvasWidth: number;
+  canvasHeight: number;
+
+  timeStepScalar: number;
 }
 
-let drawerArguments: DrawerArguments;
+let drawerData: DrawerData;
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
   switch (data.operation) {
     case InstantDrawerWorkerOperations.setParameters: {
-      if (!drawerArguments) {
+      if (!drawerData) {
         throw new Error("Call initializeDrawer first");
       }
 
-      const params = data.setParametersPayload as SetParametersPayload;
+      const { cycloids, pointsAmount, theta } =
+        data.setParametersPayload as SetParametersPayload;
 
-      // computedEpitrochoid();
+      // Zero inclusive
+      if (pointsAmount != null || pointsAmount != undefined) {
+        drawerData.pointsAmount = pointsAmount;
+      }
+
+      // Zero inclusive
+      if (theta != null || theta != undefined) {
+        drawerData.theta = theta;
+      }
+
+      if (cycloids) {
+        drawerData.cycloids = cycloids;
+      }
+
       break;
     }
 
@@ -37,7 +60,32 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
     // 2. begin canvas
     case InstantDrawerWorkerOperations.initializeDrawer: {
       const params = data.initializeDrawerPayload as InitializeDrawerPayload;
-      console.log(params);
+      const {
+        canvas,
+        canvasHeight,
+        canvasWidth,
+        cycloids,
+        initialTheta,
+        pointsAmount,
+        timeStepScalar,
+      } = params;
+
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+      const ctx = canvas.getContext("2d")!;
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+
+      drawerData = {
+        ctx,
+        cycloids: cycloids,
+        pointsAmount: pointsAmount,
+        theta: initialTheta,
+        canvasHeight,
+        canvasWidth,
+        timeStepScalar,
+      };
+
+      beginDrawingEpitrochoid(drawerData);
 
       break;
     }

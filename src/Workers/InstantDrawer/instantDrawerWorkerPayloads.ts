@@ -1,19 +1,28 @@
-import { DrawerArguments } from "./instantDrawer.worker";
+import { DrawerData } from "./instantDrawer.worker";
 
 export interface InstantDrawerWorkerPayload {
   operation: InstantDrawerWorkerOperations;
   setParametersPayload?: SetParametersPayload;
   initializeDrawerPayload?: InitializeDrawerPayload;
+  setCanvasSizePayload?: SetCanvasSizePayload;
 }
 
 export enum InstantDrawerWorkerOperations {
   setParameters,
   initializeDrawer,
+  setCanvasSize,
 }
 
-export type SetParametersPayload = Partial<DrawerArguments>;
+export type SetParametersPayload = Partial<
+  Omit<DrawerData, "ctx" | "canvasHeight" | "canvasWidth">
+>;
 
-export type InitializeDrawerPayload = Exclude<DrawerArguments, "theta"> & {
+export type SetCanvasSizePayload = Pick<
+  DrawerData,
+  "canvasHeight" | "canvasWidth"
+>;
+
+export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "ctx"> & {
   initialTheta: number;
   canvas: OffscreenCanvas;
   canvasWidth: number;

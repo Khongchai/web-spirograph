@@ -80,6 +80,8 @@ export default function InstantCanvas({
     );
 
     worker.postMessage(payload, [offscreenCanvas]);
+
+    return () => worker.terminate();
   }, []);
 
   return (
@@ -98,6 +100,9 @@ function getInstantDrawPayload(
   canvasHeight: number,
   canvasWidth: number
 ) {
+  // TODO
+  // Grab cycloids only up until the currently selected one
+  // Make sure that the currently selected cycloid index is really its position in the array, not the id
   const instantDrawCycloids =
     cycloidControls.cycloidManager.allCycloidParams.map((param) => {
       const {
@@ -115,15 +120,17 @@ function getInstantDrawPayload(
         thetaScale: animationSpeedScale,
       } as InstantDrawCycloid;
     });
+
   const payload = {
     operation: InstantDrawerWorkerOperations.initializeDrawer,
     initializeDrawerPayload: {
       canvas: offscreenCanvas,
-      canvasHeight: canvasWidth,
-      canvasWidth: canvasHeight,
+      canvasHeight,
+      canvasWidth,
       cycloids: instantDrawCycloids,
       pointsAmount,
       initialTheta: 0,
+      timeStepScalar: cycloidControls.globalTimeStep,
     },
   } as InstantDrawerWorkerPayload;
 
