@@ -13,10 +13,9 @@ export enum InstantDrawerWorkerOperations {
 
 export type SetParametersPayload = Partial<DrawerArguments>;
 
-//TODO add canvas to this
 export type InitializeDrawerPayload = Exclude<DrawerArguments, "theta"> & {
   initialTheta: number;
-  canvas: HTMLCanvasElement;
+  canvas: OffscreenCanvas;
   canvasWidth: number;
   canvasHeight: number;
 };

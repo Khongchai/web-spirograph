@@ -68,16 +68,18 @@ export default function InstantCanvas({
       )
     );
 
-    worker.postMessage(
-      getInstantDrawPayload(
-        cycloidControls.current!,
-        instantDrawCanvasRef.current!,
-        pointsAmount,
-        parent.current.clientHeight,
-        parent.current.clientWidth
-      ),
-      [instantDrawCanvasRef.current.transferControlToOffscreen()]
+    const offscreenCanvas =
+      instantDrawCanvasRef.current.transferControlToOffscreen();
+
+    const payload = getInstantDrawPayload(
+      cycloidControls.current!,
+      offscreenCanvas,
+      pointsAmount,
+      parent.current.clientHeight,
+      parent.current.clientWidth
     );
+
+    worker.postMessage(payload, [offscreenCanvas]);
   }, []);
 
   return (
@@ -91,7 +93,7 @@ export default function InstantCanvas({
 
 function getInstantDrawPayload(
   cycloidControls: CycloidControls,
-  instantDrawCanvas: HTMLCanvasElement,
+  offscreenCanvas: OffscreenCanvas,
   pointsAmount: number,
   canvasHeight: number,
   canvasWidth: number
@@ -116,7 +118,7 @@ function getInstantDrawPayload(
   const payload = {
     operation: InstantDrawerWorkerOperations.initializeDrawer,
     initializeDrawerPayload: {
-      canvas: instantDrawCanvas,
+      canvas: offscreenCanvas,
       canvasHeight: canvasWidth,
       canvasWidth: canvasHeight,
       cycloids: instantDrawCycloids,
