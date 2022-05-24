@@ -164,6 +164,45 @@ export class CycloidParamsManager {
     }
   }
 
+  /**
+   * Recursively get all the parents, and parents of parents, until we are at the bounding circle.
+   */
+  getAllAncestors(id: number | string): CycloidParams[] {
+    const cycloid = this.cycloidsIdMap[id] as CycloidParams | undefined;
+
+    if (!cycloid) {
+      throw new Error("Cycloid not found");
+    }
+
+    const traceRoots = (
+      currentCycloid: CycloidParams,
+      currentCycloidDescendants: CycloidParams[]
+    ): CycloidParams[] => {
+      const boundingCircleId = currentCycloid.boundingCircleId;
+
+      if (!boundingCircleId && boundingCircleId != 0) {
+        throw new Error(
+          `This cycloid of id ${currentCycloid.id} doesn't hav a parent for some reason`
+        );
+      }
+
+      currentCycloidDescendants.push(currentCycloid);
+
+      if (boundingCircleId === -1) {
+        return [
+          ...currentCycloidDescendants,
+          this.getSingleCycloidParamFromId(boundingCircleId)!,
+        ];
+      }
+
+      const parentCycloid = this.getSingleCycloidParamFromId(boundingCircleId)!;
+
+      return traceRoots(parentCycloid, currentCycloidDescendants);
+    };
+
+    return traceRoots(cycloid, []);
+  }
+
   get allCycloidParams() {
     return this.cycloidParams;
   }

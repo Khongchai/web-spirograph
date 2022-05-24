@@ -44,7 +44,7 @@ function Main({
                   <InstantCanvas
                     parent={allCanvasContainer}
                     cycloidControls={cycloidControls}
-                    pointsAmount={400}
+                    pointsAmount={10000}
                   />
                 ) : (
                   <AnimatedCanvas

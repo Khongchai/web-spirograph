@@ -1,8 +1,4 @@
 Look for TODO in instant.tsx
-Right now this the instant drawer worker does not work so migrate this entire project to a newer version of react.
-
-1. Draw with equation on the main thread.
-2. Focus on instant draw canvas on the worker thread and don't do anything else just yet. Draw with equation seems to be the best....
 
 Able to save and load configurations. // Maybe have a simple backend service for this? (requires authentication, of course, should be done with GO maybe).
 

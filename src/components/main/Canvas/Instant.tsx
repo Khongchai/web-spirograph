@@ -100,26 +100,28 @@ function getInstantDrawPayload(
   canvasHeight: number,
   canvasWidth: number
 ) {
-  // TODO
+  // TODO verify if this works.
   // Grab cycloids only up until the currently selected one
   // Make sure that the currently selected cycloid index is really its position in the array, not the id
-  const instantDrawCycloids =
-    cycloidControls.cycloidManager.allCycloidParams.map((param) => {
-      const {
-        animationSpeedScale,
-        moveOutSideOfParent,
-        radius,
-        rodLengthScale,
-        rotationDirection,
-      } = param;
-      return {
-        isClockwise: rotationDirection === "clockwise",
-        isOutsideOfParent: moveOutSideOfParent,
-        radius,
-        rodLength: rodLengthScale * radius,
-        thetaScale: animationSpeedScale,
-      } as InstantDrawCycloid;
-    });
+  const { cycloidManager, currentCycloidId } = cycloidControls;
+  const cycloidsToDraw = cycloidManager.getAllAncestors(currentCycloidId);
+
+  const instantDrawCycloids = cycloidsToDraw.map((param) => {
+    const {
+      animationSpeedScale,
+      moveOutSideOfParent,
+      radius,
+      rodLengthScale,
+      rotationDirection,
+    } = param;
+    return {
+      isClockwise: rotationDirection === "clockwise",
+      isOutsideOfParent: moveOutSideOfParent,
+      radius,
+      rodLength: rodLengthScale * radius,
+      thetaScale: animationSpeedScale,
+    } as InstantDrawCycloid;
+  });
 
   const payload = {
     operation: InstantDrawerWorkerOperations.initializeDrawer,
