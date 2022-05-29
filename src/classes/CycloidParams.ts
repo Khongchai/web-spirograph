@@ -192,7 +192,7 @@ export class CycloidParamsManager {
         return [
           ...currentCycloidDescendants,
           this.getSingleCycloidParamFromId(boundingCircleId)!,
-        ];
+        ].reverse();
       }
 
       const parentCycloid = this.getSingleCycloidParamFromId(boundingCircleId)!;

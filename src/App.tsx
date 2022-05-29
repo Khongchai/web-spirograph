@@ -5,7 +5,7 @@ import colors from "./constants/colors";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";
-import Main from "./pages/Main";
+import Main from "./pages/main";
 import { NaivgationStage } from "./types/Stage";
 
 /// Switch between main and landing with custom animation.

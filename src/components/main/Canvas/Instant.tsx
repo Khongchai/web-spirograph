@@ -100,11 +100,11 @@ function getInstantDrawPayload(
   canvasHeight: number,
   canvasWidth: number
 ) {
-  // TODO verify if this works.
   // Grab cycloids only up until the currently selected one
   // Make sure that the currently selected cycloid index is really its position in the array, not the id
   const { cycloidManager, currentCycloidId } = cycloidControls;
   const cycloidsToDraw = cycloidManager.getAllAncestors(currentCycloidId);
+  console.log(cycloidsToDraw);
 
   const instantDrawCycloids = cycloidsToDraw.map((param) => {
     const {
