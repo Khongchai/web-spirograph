@@ -1,12 +1,8 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/cycloidControls";
-import CycloidParams from "../../../classes/CycloidParams";
+import { Rerender } from "../../../contexts/rerenderToggle";
+import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
-import {
-  InstantDrawerWorkerOperations,
-  InstantDrawerWorkerPayload,
-} from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
-import InstantDrawCycloid from "../../../Workers/InstantDrawer/models/Cycloid";
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -66,8 +62,7 @@ export default function InstantCanvas({
     pointsAmount,
   });
 
-  // TODO everytime the refresh context is trigggered, also trigger a redraw in the worker.
-  // Try to write test first, this is quite easy, come on.
+  useDelayedCallback(() => {}, 300);
 
   return (
     <canvas

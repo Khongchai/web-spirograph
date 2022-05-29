@@ -1,4 +1,4 @@
-Write test a test for the instant.tsx <<< After this, integrate the otp thing for now.
+Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
 
 Able to save and load configurations. // Maybe have a simple backend service for this? (requires authentication, of course, should be done with GO maybe).
 
@@ -17,7 +17,7 @@ Unit tests...?
   Find out why after expanding, everything kind of get attracted to the center.
   Continue with rotation.
 
-- Package it nicely by composing a music for the application.
+- Package it nicely by composing music for the application.
 
 - Save state
 
