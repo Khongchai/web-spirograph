@@ -1,4 +1,4 @@
-Look for TODO in instant.tsx <<< After this, integrate the otp thing for now.
+Write test a test for the instant.tsx <<< After this, integrate the otp thing for now.
 
 Able to save and load configurations. // Maybe have a simple backend service for this? (requires authentication, of course, should be done with GO maybe).
 

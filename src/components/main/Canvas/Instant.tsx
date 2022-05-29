@@ -1,6 +1,7 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/cycloidControls";
 import CycloidParams from "../../../classes/CycloidParams";
+import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
@@ -58,31 +59,15 @@ export default function InstantCanvas({
 }) {
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    if (!instantDrawCanvasRef.current || !parent.current) return;
+  useSetupInstantDrawerCanvas({
+    cycloidControlsRef: cycloidControls,
+    instantDrawCanvasRef,
+    parentRef: parent,
+    pointsAmount,
+  });
 
-    const worker = new Worker(
-      new URL(
-        "../../../Workers/InstantDrawer/instantDrawer.worker",
-        import.meta.url
-      )
-    );
-
-    const offscreenCanvas =
-      instantDrawCanvasRef.current.transferControlToOffscreen();
-
-    const payload = getInstantDrawPayload(
-      cycloidControls.current!,
-      offscreenCanvas,
-      pointsAmount,
-      parent.current.clientHeight,
-      parent.current.clientWidth
-    );
-
-    worker.postMessage(payload, [offscreenCanvas]);
-
-    return () => worker.terminate();
-  }, []);
+  // TODO everytime the refresh context is trigggered, also trigger a redraw in the worker.
+  // Try to write test first, this is quite easy, come on.
 
   return (
     <canvas
@@ -91,50 +76,4 @@ export default function InstantCanvas({
       className="absolute"
     ></canvas>
   );
-}
-
-function getInstantDrawPayload(
-  cycloidControls: CycloidControls,
-  offscreenCanvas: OffscreenCanvas,
-  pointsAmount: number,
-  canvasHeight: number,
-  canvasWidth: number
-) {
-  // Grab cycloids only up until the currently selected one
-  // Make sure that the currently selected cycloid index is really its position in the array, not the id
-  const { cycloidManager, currentCycloidId } = cycloidControls;
-  const cycloidsToDraw = cycloidManager.getAllAncestors(currentCycloidId);
-  console.log(cycloidsToDraw);
-
-  const instantDrawCycloids = cycloidsToDraw.map((param) => {
-    const {
-      animationSpeedScale,
-      moveOutSideOfParent,
-      radius,
-      rodLengthScale,
-      rotationDirection,
-    } = param;
-    return {
-      isClockwise: rotationDirection === "clockwise",
-      isOutsideOfParent: moveOutSideOfParent,
-      radius,
-      rodLength: rodLengthScale * radius,
-      thetaScale: animationSpeedScale,
-    } as InstantDrawCycloid;
-  });
-
-  const payload = {
-    operation: InstantDrawerWorkerOperations.initializeDrawer,
-    initializeDrawerPayload: {
-      canvas: offscreenCanvas,
-      canvasHeight,
-      canvasWidth,
-      cycloids: instantDrawCycloids,
-      pointsAmount,
-      initialTheta: 0,
-      timeStepScalar: cycloidControls.globalTimeStep,
-    },
-  } as InstantDrawerWorkerPayload;
-
-  return payload;
 }
