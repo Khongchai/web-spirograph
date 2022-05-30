@@ -79,7 +79,6 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
       const ctx = canvas.getContext("2d")!;
-      ctx.translate(canvas.width / 2, canvas.height / 2);
 
       drawerData = {
         ctx,
@@ -91,7 +90,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         timeStepScalar,
       };
 
-      // beginDrawingEpitrochoid(drawerData);
+      beginDrawingEpitrochoid(drawerData);
 
       break;
     }

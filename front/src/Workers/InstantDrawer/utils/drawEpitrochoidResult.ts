@@ -8,11 +8,17 @@ export default function beginDrawingEpitrochoid({
   theta,
   timeStepScalar,
   ctx,
-}: Omit<DrawerData, "canvasHeight" | "canvasWidth">) {
+  canvasHeight,
+  canvasWidth,
+}: DrawerData) {
   let previousPoints: Vector2 | undefined;
   let currentPoint: Vector2 | undefined;
   const BASE_STEP = (Math.PI * 2) / 60;
   const step = timeStepScalar * BASE_STEP;
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.save();
+
+  ctx.translate(canvasWidth / 2, canvasHeight / 2);
 
   for (let _ = 0; _ < pointsAmount; _++) {
     const newPoint = computedEpitrochoid({
@@ -35,4 +41,6 @@ export default function beginDrawingEpitrochoid({
 
     theta += step;
   }
+
+  ctx.restore();
 }

@@ -1,4 +1,4 @@
-The setParams canvas is drawn immediately. The set params canvas does not clear.
+Bug: The setParams canvas is drawn immediately.
 
 Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
 
