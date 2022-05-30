@@ -2,10 +2,6 @@ import { Vector2 } from "../../../classes/vector2";
 import { DrawerData } from "../instantDrawer.worker";
 import computedEpitrochoid from "./computeEpitrochoid";
 
-let previousPoints: Vector2;
-let currentPoint: Vector2;
-const BASE_STEP = (Math.PI * 2) / 60;
-
 export default function beginDrawingEpitrochoid({
   cycloids,
   pointsAmount,
@@ -13,6 +9,9 @@ export default function beginDrawingEpitrochoid({
   timeStepScalar,
   ctx,
 }: Omit<DrawerData, "canvasHeight" | "canvasWidth">) {
+  let previousPoints: Vector2 | undefined;
+  let currentPoint: Vector2 | undefined;
+  const BASE_STEP = (Math.PI * 2) / 60;
   const step = timeStepScalar * BASE_STEP;
 
   for (let _ = 0; _ < pointsAmount; _++) {

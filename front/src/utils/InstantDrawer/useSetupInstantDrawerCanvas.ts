@@ -4,6 +4,7 @@ import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
 } from "../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
+import { InstantDrawCycloidMapper } from "../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
 import InstantDrawCycloid from "../../Workers/InstantDrawer/models/Cycloid";
 
 export function useSetupInstantDrawerCanvas({
@@ -31,22 +32,8 @@ export function useSetupInstantDrawerCanvas({
     const { cycloidManager, currentCycloidId } = cycloidControls;
     const cycloidsToDraw = cycloidManager.getAllAncestors(currentCycloidId);
 
-    const instantDrawCycloids = cycloidsToDraw.map((param) => {
-      const {
-        animationSpeedScale,
-        moveOutSideOfParent,
-        radius,
-        rodLengthScale,
-        rotationDirection,
-      } = param;
-      return {
-        isClockwise: rotationDirection === "clockwise",
-        isOutsideOfParent: moveOutSideOfParent,
-        radius,
-        rodLength: rodLengthScale * radius,
-        thetaScale: animationSpeedScale,
-      } as InstantDrawCycloid;
-    });
+    const instantDrawCycloids =
+      InstantDrawCycloidMapper.fromCycloidParams(cycloidsToDraw);
 
     const payload = {
       operation: InstantDrawerWorkerOperations.initializeDrawer,

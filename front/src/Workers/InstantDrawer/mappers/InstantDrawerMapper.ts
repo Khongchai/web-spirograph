@@ -1,0 +1,103 @@
+import CycloidControls from "../../../classes/cycloidControls";
+import CycloidParams from "../../../classes/CycloidParams";
+import { RerenderReason } from "../../../contexts/rerenderToggle";
+import { DrawerData } from "../instantDrawer.worker";
+import InstantDrawCycloid from "../models/Cycloid";
+
+// This is not yet aplied
+
+// A mapper that spits out InstantDrawCycloid
+export class InstantDrawCycloidMapper {
+  static fromCycloidParams(cycloidParams: CycloidParams[]) {
+    const instantDrawCycloids = cycloidParams.map((param) => {
+      const {
+        animationSpeedScale,
+        moveOutSideOfParent,
+        radius,
+        rodLengthScale,
+        rotationDirection,
+      } = param;
+      return {
+        isClockwise: rotationDirection === "clockwise",
+        isOutsideOfParent: moveOutSideOfParent,
+        radius,
+        rodLength: rodLengthScale * radius,
+        thetaScale: animationSpeedScale,
+      } as InstantDrawCycloid;
+    });
+
+    return instantDrawCycloids;
+  }
+
+  /**
+   * Responsible for making sure that the field transfer to the worker is really the changed field.
+   *
+   * This function accepts the current cycloid controls (presumable the newest one with the latest state change)
+   * and the latest change reason. It then looks
+   *
+   * TODO map this and all actions that trigger rerender
+   */
+  static fromReasonAndControls(
+    cycloidControls: CycloidControls,
+    reason: RerenderReason
+  ): InstantDrawCycloid[] | DrawerData | undefined {
+    const _reason = reason;
+    const params = cycloidControls.cycloidManager.allCycloidParams;
+    switch (_reason) {
+      case "addOrRemoveCycloid":
+        return InstantDrawCycloidMapper.fromCycloidParams(params);
+
+      case "changedFocusedCycloid":
+        return InstantDrawCycloidMapper.fromCycloidParams(
+          cycloidControls.cycloidManager.getAllAncestors(
+            cycloidControls.currentCycloidId
+          )
+        );
+
+      case "moveOutsideOfParent":
+        return params.map(({ moveOutSideOfParent }) => {
+          return {
+            isOutsideOfParent: moveOutSideOfParent,
+          } as InstantDrawCycloid;
+        });
+
+      case "pan":
+        throw new Error("Unhandled case");
+
+      case "radius":
+        return params.map(({ radius }) => {
+          return {
+            radius: radius,
+          } as InstantDrawCycloid;
+        });
+
+      case "resize":
+        break;
+
+      case "rodLength":
+        return params.map(({ rodLengthScale, radius }) => {
+          return {
+            rodLength: rodLengthScale * radius,
+          } as InstantDrawCycloid;
+        });
+
+      case "rotationDirection":
+        return params.map(({ rotationDirection }) => {
+          return {
+            isClockwise: rotationDirection === "clockwise",
+          } as InstantDrawCycloid;
+        });
+
+      case "speedScale":
+        return params.map(({ animationSpeedScale }) => {
+          return {
+            thetaScale: animationSpeedScale,
+          } as InstantDrawCycloid;
+        });
+      default:
+        return;
+    }
+
+    return [];
+  }
+}

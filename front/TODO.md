@@ -1,8 +1,14 @@
+The setParams canvas is drawn immediately. The set params canvas does not clear.
+
 Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
+
+An algorithm that determines the complexity of the shape so that we can give it the appropriate amount of points to draw.
 
 Able to save and load configurations. // Maybe have a simple backend service for this? (requires authentication, of course, should be done with GO maybe).
 
 Unit tests...?
+
+Apply the instantdrawermapper so that we can change only the value that really changed.
 
 - Refactor pan and zoom out as they don't really need to be a part of the whole instant or animated draw thing.
 

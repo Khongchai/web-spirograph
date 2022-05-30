@@ -7,6 +7,7 @@ import {
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
+import { createTextChangeRange } from "typescript";
 
 export interface DrawerData {
   cycloids: InstantDrawCycloid[];
@@ -49,9 +50,14 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         drawerData.theta = theta;
       }
 
+      // TODO only assign some fields, man
       if (cycloids) {
         drawerData.cycloids = cycloids;
       }
+
+      const { ctx, canvasHeight: h, canvasWidth: w } = drawerData;
+      ctx.clearRect(w / 2, h / 2, w, h);
+      beginDrawingEpitrochoid(drawerData);
 
       break;
     }
@@ -85,7 +91,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         timeStepScalar,
       };
 
-      beginDrawingEpitrochoid(drawerData);
+      // beginDrawingEpitrochoid(drawerData);
 
       break;
     }

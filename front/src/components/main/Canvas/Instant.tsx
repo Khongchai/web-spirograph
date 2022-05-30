@@ -7,6 +7,7 @@ import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
+import { InstantDrawCycloidMapper } from "../../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
 import InstantDrawCycloid from "../../../Workers/InstantDrawer/models/Cycloid";
 
 /**
@@ -71,8 +72,17 @@ export default function InstantCanvas({
   useDelayedCallback(
     () => {
       if (workerRef.current) {
+        const { currentCycloidId, globalTimeStep, cycloidManager } =
+          cycloidControls.current;
+
         workerRef.current.postMessage({
-          setParametersPayload: {},
+          setParametersPayload: {
+            pointsAmount,
+            cycloids: InstantDrawCycloidMapper.fromCycloidParams(
+              cycloidManager.getAllAncestors(currentCycloidId)
+            ),
+            timeStepScalar: globalTimeStep,
+          },
           operation: InstantDrawerWorkerOperations.setParameters,
         } as InstantDrawerWorkerPayload);
       }
