@@ -3,7 +3,11 @@ import CycloidControls from "../classes/cycloidControls";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
-import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
+import {
+  Rerender,
+  RerenderToggle,
+  RerenderType,
+} from "../contexts/rerenderToggle";
 import "../index.css";
 
 function Main({
@@ -11,10 +15,13 @@ function Main({
 }: {
   cycloidControls: React.MutableRefObject<CycloidControls>;
 }) {
-  const [rerender, setRerender] = useState(false);
+  const [rerender, setRerender] = useState<RerenderType>({
+    reason: undefined,
+    toggle: false,
+  });
 
   const handleClearCanvasToggle = useCallback(() => {
-    setRerender((toggle) => !toggle);
+    setRerender((state) => (state = { ...state }));
   }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);

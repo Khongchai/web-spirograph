@@ -4,9 +4,9 @@ import { Rerender } from "../../contexts/rerenderToggle";
 // Test that when the rerender context changes, the callback gets called.
 export function useDelayedCallback(
   callback: VoidFunction,
-  delayInMilliseconds: number
+  delayInMilliseconds: number,
+  callbackDependencies: any[]
 ) {
-  const rerender = useContext(Rerender);
   let timeoutRef = useRef<any>();
 
   useEffect(() => {
@@ -14,5 +14,5 @@ export function useDelayedCallback(
     timeoutRef.current = setTimeout(() => {
       callback();
     }, delayInMilliseconds);
-  }, [rerender]);
+  }, [...callbackDependencies]);
 }

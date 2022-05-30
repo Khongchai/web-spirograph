@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 import CycloidControls from "../../classes/cycloidControls";
 import {
   InstantDrawerWorkerOperations,
@@ -17,6 +17,8 @@ export function useSetupInstantDrawerCanvas({
   cycloidControlsRef: MutableRefObject<CycloidControls | null>;
   pointsAmount: number;
 }) {
+  const workerRef = useRef<Worker>();
+
   function getInstantDrawPayload(
     cycloidControls: CycloidControls,
     offscreenCanvas: OffscreenCanvas,
@@ -71,6 +73,7 @@ export function useSetupInstantDrawerCanvas({
         import.meta.url
       )
     );
+    workerRef.current = worker;
 
     const offscreenCanvas =
       instantDrawCanvasRef.current.transferControlToOffscreen();
@@ -87,4 +90,6 @@ export function useSetupInstantDrawerCanvas({
 
     return () => worker.terminate();
   }, []);
+
+  return workerRef;
 }

@@ -3,6 +3,11 @@ import CycloidControls from "../../../classes/cycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
+import {
+  InstantDrawerWorkerOperations,
+  InstantDrawerWorkerPayload,
+} from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
+import InstantDrawCycloid from "../../../Workers/InstantDrawer/models/Cycloid";
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -55,14 +60,26 @@ export default function InstantCanvas({
 }) {
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  useSetupInstantDrawerCanvas({
+  const workerRef = useSetupInstantDrawerCanvas({
     cycloidControlsRef: cycloidControls,
     instantDrawCanvasRef,
     parentRef: parent,
     pointsAmount,
   });
 
-  useDelayedCallback(() => {}, 300);
+  const rerender = useContext(Rerender);
+  useDelayedCallback(
+    () => {
+      if (workerRef.current) {
+        workerRef.current.postMessage({
+          setParametersPayload: {},
+          operation: InstantDrawerWorkerOperations.setParameters,
+        } as InstantDrawerWorkerPayload);
+      }
+    },
+    300,
+    [rerender]
+  );
 
   return (
     <canvas
