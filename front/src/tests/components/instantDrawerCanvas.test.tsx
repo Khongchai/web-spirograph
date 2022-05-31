@@ -2,12 +2,15 @@ import { renderHook } from "@testing-library/react";
 import React from "react";
 import { act } from "react-dom/test-utils";
 import { Rerender } from "../../contexts/rerenderToggle";
+import { RerenderReason } from "../../types/contexts/rerenderReasons";
 import { useDelayedCallback } from "../../utils/InstantDrawer/useDelayedWorkerUpdate";
 
 //TODO
 test("The callback passed to useDelayedCallback should be called after 300 milliseconds when rerender context is triggered", () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <Rerender.Provider value={{ reason: undefined, toggle: false }}>
+    <Rerender.Provider
+      value={{ reason: RerenderReason.appStart, toggle: false }}
+    >
       {children}
     </Rerender.Provider>
   );

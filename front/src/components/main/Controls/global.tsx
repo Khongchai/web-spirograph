@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { RerenderToggle } from "../../../contexts/rerenderToggle";
+import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
 import CycloidControlsData from "../../../classes/cycloidControls";
 import ContentArray from "./shared/contentArray";
 import Settings from "./shared/control";
@@ -7,6 +7,7 @@ import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import colors from "../../../constants/colors";
+import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 
 interface globalProps {
   cycloidControls: CycloidControlsData;
@@ -42,7 +43,7 @@ const Global: React.FC<globalProps> = ({
         <Settings
           onDrag={(newValue: number) => {
             cycloidControls.outerMostBoundingCircle.setRadius(newValue);
-            rerenderToggle();
+            rerenderToggle(RerenderReason.radius);
           }}
           numberValue={cycloidControls.outerMostBoundingCircle.getRadius()}
           paramName="Outer Bounding Circle Radius"
@@ -57,25 +58,22 @@ const Global: React.FC<globalProps> = ({
         <Settings
           onClick={(newValue) => {
             cycloidControls.traceAllCycloids = newValue;
-            rerenderToggle();
+            rerenderToggle(RerenderReason.undefined);
           }}
           paramName="Trace all cycloids"
           defaultBooleanValue={cycloidControls.traceAllCycloids}
         />
         <Settings
           onLeftClicked={() => {
-            cycloidControls.cycloidManager.addCycloid(
-              {
-                animationSpeedScale: Math.round(Math.random() * 100) / 100,
-                boundingColor: colors.purple.light,
-                moveOutSideOfParent: false,
-                radius: Math.round(Math.random() * 100),
-                rodLengthScale: (Math.round(Math.random() * 5) * 100) / 100,
-                rotationDirection:
-                  Math.random() > 0.5 ? "clockwise" : "counterclockwise",
-              },
-              rerenderToggle
-            );
+            cycloidControls.cycloidManager.addCycloid({
+              animationSpeedScale: Math.round(Math.random() * 100) / 100,
+              boundingColor: colors.purple.light,
+              moveOutSideOfParent: false,
+              radius: Math.round(Math.random() * 100),
+              rodLengthScale: (Math.round(Math.random() * 5) * 100) / 100,
+              rotationDirection:
+                Math.random() > 0.5 ? "clockwise" : "counterclockwise",
+            });
           }}
           onRightClicked={() => {
             cycloidControls.cycloidManager.removeLastCycloid(
@@ -89,8 +87,7 @@ const Global: React.FC<globalProps> = ({
                       cycloidParamsAfterRemoval.length - 1
                     ].id;
                 }
-
-                rerenderToggle();
+                rerenderToggle(RerenderReason.addOrRemoveCycloid);
               }
             );
           }}
@@ -108,7 +105,7 @@ const Global: React.FC<globalProps> = ({
             //If all are shown, there's no need to clear the canvas to repaint another one
             //We'll just need to update the settings UI
             if (!cycloidControls.showAllCycloids) {
-              rerenderToggle();
+              rerenderToggle(RerenderReason.undefined);
             } else {
               forceUpdateSettingsUI();
             }

@@ -1,6 +1,7 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/cycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
+import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
@@ -71,21 +72,23 @@ export default function InstantCanvas({
   const rerender = useContext(Rerender);
   useDelayedCallback(
     () => {
-      if (workerRef.current) {
-        const { currentCycloidId, globalTimeStep, cycloidManager } =
-          cycloidControls.current;
+      console.log(rerender.reason & CHANGE_SETTINGS_REASONS);
+      if (rerender.reason & CHANGE_SETTINGS_REASONS)
+        if (workerRef.current) {
+          const { currentCycloidId, globalTimeStep, cycloidManager } =
+            cycloidControls.current;
 
-        workerRef.current.postMessage({
-          setParametersPayload: {
-            pointsAmount,
-            cycloids: InstantDrawCycloidMapper.fromCycloidParams(
-              cycloidManager.getAllAncestors(currentCycloidId)
-            ),
-            timeStepScalar: globalTimeStep,
-          },
-          operation: InstantDrawerWorkerOperations.setParameters,
-        } as InstantDrawerWorkerPayload);
-      }
+          workerRef.current.postMessage({
+            setParametersPayload: {
+              pointsAmount,
+              cycloids: InstantDrawCycloidMapper.fromCycloidParams(
+                cycloidManager.getAllAncestors(currentCycloidId)
+              ),
+              timeStepScalar: globalTimeStep,
+            },
+            operation: InstantDrawerWorkerOperations.setParameters,
+          } as InstantDrawerWorkerPayload);
+        }
     },
     300,
     [rerender]

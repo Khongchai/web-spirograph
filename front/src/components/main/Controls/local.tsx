@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import CycloidParams from "../../../classes/CycloidParams";
-import { RerenderToggle } from "../../../contexts/rerenderToggle";
+import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
+import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import Control from "./shared/control";
 import ControlContainer from "./shared/ControlContainer";
@@ -27,14 +28,14 @@ const Local: React.FC<{
           step={0.1}
           onDrag={(newValue: number) => {
             cycloid.rodLengthScale = newValue;
-            rerenderToggle();
+            rerenderToggle(RerenderReason.rodLength);
           }}
         />
         <Control
           paramName={"Cycloid Speed Scale"}
           onDrag={(newValue: number) => {
             cycloid.animationSpeedScale = newValue;
-            rerenderToggle();
+            rerenderToggle(RerenderReason.speedScale);
           }}
           numberValue={cycloid.animationSpeedScale}
           step={0.001}
@@ -44,7 +45,7 @@ const Local: React.FC<{
           defaultBooleanValue={cycloid.moveOutSideOfParent}
           onClick={(newValue: boolean) => {
             cycloid.moveOutSideOfParent = newValue;
-            rerenderToggle();
+            rerenderToggle(RerenderReason.moveOutsideOfParent);
           }}
         />
         <Control
@@ -54,7 +55,7 @@ const Local: React.FC<{
           step={1}
           onDrag={(newValue: number) => {
             cycloid.radius = newValue;
-            rerenderToggle();
+            rerenderToggle(RerenderReason.radius);
           }}
         />
         <h2 className="font-bold text-base mr-1.5">Rotation Direction: </h2>
@@ -65,7 +66,7 @@ const Local: React.FC<{
             onClick={() => {
               cycloid.rotationDirection = "clockwise";
               forceUpdate();
-              rerenderToggle();
+              rerenderToggle(RerenderReason.rotationDirection);
             }}
           />
           <SelectionButton
@@ -74,7 +75,7 @@ const Local: React.FC<{
             onClick={() => {
               cycloid.rotationDirection = "counterclockwise";
               forceUpdate();
-              rerenderToggle();
+              rerenderToggle(RerenderReason.rotationDirection);
             }}
           />
         </div>

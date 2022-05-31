@@ -1,6 +1,6 @@
 import CycloidControls from "../../../classes/cycloidControls";
 import CycloidParams from "../../../classes/CycloidParams";
-import { RerenderReason } from "../../../contexts/rerenderToggle";
+import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 import { DrawerData } from "../instantDrawer.worker";
 import InstantDrawCycloid from "../models/Cycloid";
 
@@ -44,51 +44,51 @@ export class InstantDrawCycloidMapper {
     const _reason = reason;
     const params = cycloidControls.cycloidManager.allCycloidParams;
     switch (_reason) {
-      case "addOrRemoveCycloid":
+      case RerenderReason.addOrRemoveCycloid:
         return InstantDrawCycloidMapper.fromCycloidParams(params);
 
-      case "changedFocusedCycloid":
+      case RerenderReason.changedFocusedCycloid:
         return InstantDrawCycloidMapper.fromCycloidParams(
           cycloidControls.cycloidManager.getAllAncestors(
             cycloidControls.currentCycloidId
           )
         );
 
-      case "moveOutsideOfParent":
+      case RerenderReason.moveOutsideOfParent:
         return params.map(({ moveOutSideOfParent }) => {
           return {
             isOutsideOfParent: moveOutSideOfParent,
           } as InstantDrawCycloid;
         });
 
-      case "pan":
-        throw new Error("Unhandled case");
+      case RerenderReason.pan:
+        throw new Error("Unhandled RerenderReason.case");
 
-      case "radius":
+      case RerenderReason.radius:
         return params.map(({ radius }) => {
           return {
             radius: radius,
           } as InstantDrawCycloid;
         });
 
-      case "resize":
+      case RerenderReason.resize:
         break;
 
-      case "rodLength":
+      case RerenderReason.rodLength:
         return params.map(({ rodLengthScale, radius }) => {
           return {
             rodLength: rodLengthScale * radius,
           } as InstantDrawCycloid;
         });
 
-      case "rotationDirection":
+      case RerenderReason.rotationDirection:
         return params.map(({ rotationDirection }) => {
           return {
             isClockwise: rotationDirection === "clockwise",
           } as InstantDrawCycloid;
         });
 
-      case "speedScale":
+      case RerenderReason.speedScale:
         return params.map(({ animationSpeedScale }) => {
           return {
             thetaScale: animationSpeedScale,

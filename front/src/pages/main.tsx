@@ -9,6 +9,7 @@ import {
   RerenderType,
 } from "../contexts/rerenderToggle";
 import "../index.css";
+import { RerenderReason } from "../types/contexts/rerenderReasons";
 
 function Main({
   cycloidControls,
@@ -16,12 +17,12 @@ function Main({
   cycloidControls: React.MutableRefObject<CycloidControls>;
 }) {
   const [rerender, setRerender] = useState<RerenderType>({
-    reason: undefined,
+    reason: RerenderReason.appStart,
     toggle: false,
   });
 
-  const handleClearCanvasToggle = useCallback(() => {
-    setRerender((state) => (state = { ...state }));
+  const handleClearCanvasToggle = useCallback((reason: RerenderReason) => {
+    setRerender((state) => (state = { ...state, reason: reason }));
   }, []);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
@@ -29,7 +30,7 @@ function Main({
 
   const { handleOnControlsToggle, handleOnRelationshipEditorToggle } =
     useAnimateMenuToggling(cycloidControls, () => {
-      handleClearCanvasToggle();
+      handleClearCanvasToggle(RerenderReason.switchMenu);
     });
 
   return (

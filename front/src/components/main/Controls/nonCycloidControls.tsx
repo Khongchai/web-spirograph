@@ -7,6 +7,7 @@ import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
 import Control from "./shared/control";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
+import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 
 interface miscProps {
   cycloidControls: CycloidControlsData;
@@ -33,7 +34,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
           text="Animated"
           onClick={() => {
             cycloidControls.mode = "Animated";
-            toggleRerender();
+            toggleRerender(RerenderReason.switchMenu);
           }}
         />
         <SelectionButton
@@ -41,7 +42,7 @@ const NonCycloidControls: React.FC<miscProps> = ({
           text="Instant"
           onClick={() => {
             cycloidControls.mode = "Instant";
-            toggleRerender();
+            toggleRerender(RerenderReason.switchMenu);
           }}
         />
       </SettingsContainer>

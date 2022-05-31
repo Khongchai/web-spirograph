@@ -6,6 +6,7 @@ import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";
 import useCheckCircleCircleCollision from "./utils/useCheckCircleCircleCollision";
 import useGlobalPointerMove from "./utils/useGlobalPointerMove";
+import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 
 /**
  * TODO:
@@ -130,7 +131,7 @@ export default function DraggableSvgCircle({
         if (hoveredNeighborRef.current) {
           onOverNeighborAndReleased?.(hoveredNeighborRef.current);
           onPointerOut?.(hoveredNeighborRef.current);
-          rerenderToggle();
+          rerenderToggle(RerenderReason.undefined);
         } else {
           setThisCirclePosition(centerPoint);
         }
