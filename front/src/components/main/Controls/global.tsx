@@ -74,6 +74,7 @@ const Global: React.FC<globalProps> = ({
               rotationDirection:
                 Math.random() > 0.5 ? "clockwise" : "counterclockwise",
             });
+            rerenderToggle(RerenderReason.addOrRemoveCycloid);
           }}
           onRightClicked={() => {
             cycloidControls.cycloidManager.removeLastCycloid(
@@ -105,7 +106,7 @@ const Global: React.FC<globalProps> = ({
             //If all are shown, there's no need to clear the canvas to repaint another one
             //We'll just need to update the settings UI
             if (!cycloidControls.showAllCycloids) {
-              rerenderToggle(RerenderReason.undefined);
+              rerenderToggle(RerenderReason.changedFocusedCycloid);
             } else {
               forceUpdateSettingsUI();
             }
