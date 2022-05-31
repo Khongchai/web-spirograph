@@ -54,5 +54,9 @@ We are doing breadth-first.
 ![Example 3](example-images/ex3.png)
 ![Example 4](example-images/ex4.png)
 ![Example 5](example-images/ex5.png)
+![Example 6](example-images/ex6.png)
+![Example 7](example-images/ex7.png)
+![Example 8](example-images/ex8.png)
+![Example 9](example-images/ex9.png)
 
 This project has no dependencies other than React and, regrettably, Tailwind (I hate this crap). The drawing api is just plain html5's canvas api.
