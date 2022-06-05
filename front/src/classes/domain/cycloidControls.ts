@@ -1,7 +1,8 @@
 import BoundingCircle from "./BoundingCircle";
+import { Configuration } from "./Configuration";
 import { CycloidParamsArgs, CycloidParamsManager } from "./CycloidParams";
 
-export interface CycloidControlsProperties {
+export interface CycloidControlsInterface {
   /*
    * Base parent of all cycloids.
    */
@@ -64,7 +65,7 @@ export interface CycloidControlsProperties {
 }
 
 // CycloidControlsData but turned into a class
-export default class CycloidControls implements CycloidControlsProperties {
+export default class CycloidControls implements CycloidControlsInterface {
   outerMostBoundingCircle: BoundingCircle;
   cycloidManager: CycloidParamsManager;
   globalTimeStep: number;
@@ -90,21 +91,7 @@ export default class CycloidControls implements CycloidControlsProperties {
     programOnly,
     showAllCycloids,
     traceAllCycloids,
-  }: {
-    outerMostBoundingCircle: BoundingCircle;
-    cycloids: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[];
-    animationSpeed: number;
-    currentCycloidId: number;
-    mode: "Animated" | "Instant";
-    scaffold: "Showing" | "Hidden";
-    animationState: "Playing" | "Paused";
-    clearTracedPathOnParamsChange: boolean;
-    showAllCycloids: boolean;
-    programOnly: {
-      tracePath: boolean;
-    };
-    traceAllCycloids: boolean;
-  }) {
+  }: Configuration) {
     this.outerMostBoundingCircle = outerMostBoundingCircle;
     this.globalTimeStep = animationSpeed;
     this.currentCycloidId = currentCycloidId;

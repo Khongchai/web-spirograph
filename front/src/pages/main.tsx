@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import CycloidControls from "../classes/cycloidControls";
+import CycloidControls from "../classes/domain/cycloidControls";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";

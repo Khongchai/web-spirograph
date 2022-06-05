@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import CycloidParams from "../../../classes/CycloidParams";
+import CycloidParams from "../../../classes/domain/CycloidParams";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
 import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";

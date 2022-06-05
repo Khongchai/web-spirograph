@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import ContentArray from "./shared/contentArray";
 import Settings from "./shared/control";
 import SettingsContainer from "./shared/ControlContainer";
@@ -29,9 +29,10 @@ const Global: React.FC<globalProps> = ({
           paramName={"Global Timestep"}
           numberValue={cycloidControls.globalTimeStep}
           step={0.1}
-          onDrag={(newValue: number) =>
-            (cycloidControls.globalTimeStep = newValue)
-          }
+          onDrag={(newValue: number) => {
+            cycloidControls.globalTimeStep = newValue;
+            rerenderToggle(RerenderReason.timeStep);
+          }}
         />
         <Settings
           onClick={(newValue) =>

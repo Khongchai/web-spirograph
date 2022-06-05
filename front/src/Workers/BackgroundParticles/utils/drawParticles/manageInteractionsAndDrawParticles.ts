@@ -1,5 +1,5 @@
-import { Vector2 } from "../../../../classes/vector2";
-import { Vector3 } from "../../../../classes/vector3";
+import { Vector2 } from "../../../../classes/domain/vector2";
+import { Vector3 } from "../../../../classes/domain/vector3";
 import RepellerData from "../../models/RepellerData";
 import MousePos from "../../models/MousePos";
 import Particle from "../../models/particle";

@@ -27,7 +27,7 @@ const TooltipWrapper: React.FC<{
       {children}
       <div
         ref={tooltipRef}
-        className="tooltip absolute bg-purple-grey p-3 rounded-md 
+        className="tooltip fixed bg-purple-grey p-3 rounded-md 
     transition-opacity pointer-events-none max-w-sm z-50"
         style={{
           opacity: showTooltip ? 1 : 0,

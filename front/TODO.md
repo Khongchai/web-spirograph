@@ -1,5 +1,3 @@
-Bug: The setParams canvas is drawn immediately. << not really a bug, we'll just have to draw it only when it's not reason === first start.
-
 Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
 
 An algorithm that determines the complexity of the shape so that we can give it the appropriate amount of points to draw.

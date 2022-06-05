@@ -28,4 +28,5 @@ export const CHANGE_SETTINGS_REASON: number =
   RerenderReason.radius |
   RerenderReason.rotationDirection |
   RerenderReason.addOrRemoveCycloid |
+  RerenderReason.timeStep |
   RerenderReason.changedFocusedCycloid;

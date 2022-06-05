@@ -1,8 +1,8 @@
 import { useContext, useEffect, useRef } from "react";
 import colors from "../../constants/colors";
 import { Rerender } from "../../contexts/rerenderToggle";
-import CycloidControlsData from "../../classes/cycloidControls";
-import { Vector2 } from "../../classes/vector2";
+import CycloidControlsData from "../../classes/domain/cycloidControls";
+import { Vector2 } from "../../classes/domain/vector2";
 import setCanvasSize from "../setCanvasSize";
 
 export default function useTraceCycloidPath(

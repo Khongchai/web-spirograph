@@ -1,6 +1,6 @@
 import { log } from "console";
 import { MutableRefObject, useEffect } from "react";
-import { Vector2 } from "../../classes/vector2";
+import { Vector2 } from "../../classes/domain/vector2";
 /*
     zooming and panning doesn't happen on everyframe, so putting it in a separate file makes sense
 */

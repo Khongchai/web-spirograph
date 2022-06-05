@@ -1,4 +1,4 @@
-import { Vector2 } from "../../classes/vector2";
+import { Vector2 } from "../../classes/domain/vector2";
 import MousePos from "./models/MousePos";
 import RepellerData from "./models/RepellerData";
 import ScreenSize from "./models/ScreenSize";

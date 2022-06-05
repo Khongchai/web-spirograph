@@ -1,5 +1,5 @@
 import React from "react";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import useGenerateNodes from "./utils/generateNodes";
 
 interface RelationShipEditorProps {

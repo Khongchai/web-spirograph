@@ -1,4 +1,4 @@
-import { Vector2 } from "../../../classes/vector2";
+import { Vector2 } from "../../../classes/domain/vector2";
 import { DrawerData } from "../instantDrawer.worker";
 import computedEpitrochoid from "./computeEpitrochoid";
 

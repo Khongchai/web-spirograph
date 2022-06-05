@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import CycloidControls from "../../classes/cycloidControls";
+import CycloidControls from "../../classes/domain/cycloidControls";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,

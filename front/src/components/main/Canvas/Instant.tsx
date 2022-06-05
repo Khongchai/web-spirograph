@@ -1,5 +1,5 @@
-import { MutableRefObject, useContext, useEffect, useRef } from "react";
-import CycloidControls from "../../../classes/cycloidControls";
+import { MutableRefObject, useContext, useRef } from "react";
+import CycloidControls from "../../../classes/domain/cycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
@@ -9,7 +9,6 @@ import {
   InstantDrawerWorkerPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
-import InstantDrawCycloid from "../../../Workers/InstantDrawer/models/Cycloid";
 
 /**
  * The equation for each cycloid consists of mainly two parameters:
@@ -72,7 +71,6 @@ export default function InstantCanvas({
   const rerender = useContext(Rerender);
   useDelayedCallback(
     () => {
-      console.log(rerender.reason & CHANGE_SETTINGS_REASONS);
       if (rerender.reason & CHANGE_SETTINGS_REASONS)
         if (workerRef.current) {
           const { currentCycloidId, globalTimeStep, cycloidManager } =

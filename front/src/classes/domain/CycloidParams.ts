@@ -2,7 +2,7 @@
  * A data holder for cycloid params.
  */
 
-import { rotationDirection as RotationDirection } from "../types/rotationDirection";
+import { rotationDirection as RotationDirection } from "../../types/rotationDirection";
 import BoundingCircle from "./BoundingCircle";
 
 export interface CycloidParamsArgs {

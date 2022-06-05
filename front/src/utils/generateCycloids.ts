@@ -1,5 +1,5 @@
-import Cycloid from "../classes/Cycloid";
-import CycloidControls from "../classes/cycloidControls";
+import Cycloid from "../classes/domain/Cycloid";
+import CycloidControls from "../classes/domain/cycloidControls";
 
 export default function generateCycloids(cycloidControls: CycloidControls) {
   const cycloids: Cycloid[] = [];

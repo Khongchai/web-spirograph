@@ -5,8 +5,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import Cycloid from "../../classes/Cycloid";
-import CycloidControls from "../../classes/cycloidControls";
+import Cycloid from "../../classes/domain/Cycloid";
+import CycloidControls from "../../classes/domain/cycloidControls";
 import { Rerender } from "../../contexts/rerenderToggle";
 import GeneratedCycloidData from "../../types/generatedCycloidData";
 import generateCycloids from "../generateCycloids";

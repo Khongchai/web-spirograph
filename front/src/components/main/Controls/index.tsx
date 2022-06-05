@@ -1,10 +1,11 @@
 import React, { MutableRefObject } from "react";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import Global from "./global";
 import Local from "./local";
 import NonCycloidControls from "./nonCycloidControls";
 import "./style.css";
+import { UserDataControl } from "./userDataControl";
 
 interface ControlsProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -41,6 +42,7 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
         showScaffoldTooltipText="When off, only the traced path will be shown."
         cycloidControls={cycloidControls.current}
       />
+      <UserDataControl tooltipText="Save the current configuration. If not logged in, this will save locally." />
     </div>
   );
 };

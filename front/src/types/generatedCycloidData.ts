@@ -1,5 +1,5 @@
-import BoundingCircle from "../classes/BoundingCircle";
-import Cycloid from "../classes/Cycloid";
+import BoundingCircle from "../classes/domain/BoundingCircle";
+import Cycloid from "../classes/domain/Cycloid";
 
 type GeneratedCycloidData = {
   outermostBoundingCircle: BoundingCircle;

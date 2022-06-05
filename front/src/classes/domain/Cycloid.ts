@@ -1,4 +1,4 @@
-import { CycloidDirection as CycloidRotationDirection } from "../types/cycloidDirection";
+import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
 import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
 import { Vector2 } from "./vector2";

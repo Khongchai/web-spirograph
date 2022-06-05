@@ -1,5 +1,5 @@
-import { Vector2 } from "../../../classes/vector2";
-import { Vector3 } from "../../../classes/vector3";
+import { Vector2 } from "../../../classes/domain/vector2";
+import { Vector3 } from "../../../classes/domain/vector3";
 
 export default class Particle implements Vector3 {
   initialX: number;

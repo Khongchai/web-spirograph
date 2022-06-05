@@ -37,9 +37,13 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         throw new Error("Call initializeDrawer first");
       }
 
-      const { cycloids, pointsAmount, theta } =
+      const { cycloids, pointsAmount, theta, timeStepScalar } =
         data.setParametersPayload as SetParametersPayload;
 
+      // Zero inclusive
+      if (timeStepScalar != null) {
+        drawerData.timeStepScalar = timeStepScalar;
+      }
       // Zero inclusive
       if (pointsAmount != null || pointsAmount != undefined) {
         drawerData.pointsAmount = pointsAmount;

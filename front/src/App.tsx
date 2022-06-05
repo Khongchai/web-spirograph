@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import BoundingCircle from "./classes/BoundingCircle";
-import CycloidControls from "./classes/cycloidControls";
+import BoundingCircle from "./classes/domain/BoundingCircle";
+import CycloidControls from "./classes/domain/cycloidControls";
 import colors from "./constants/colors";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
@@ -66,7 +66,7 @@ function App() {
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full overflow-x-hidden">
       <section className="absolute w-full h-full">
         <BackgroundParticles stage={stage} />
       </section>

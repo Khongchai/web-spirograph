@@ -5,6 +5,7 @@
 .all-container {
   height: 100%;
   overflow-y: auto;
+  padding-right: 2rem;
 }
 
 .all-container > * + * {
@@ -13,4 +14,24 @@
 
 .hover-no-blur:hover {
   filter: blur(0) !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(231, 210, 253, 99);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(191, 134, 252, 99);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

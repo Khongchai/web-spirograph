@@ -1,7 +1,7 @@
 //TODO on begin clicked, expand all dots to be farther from one another.
 //TODO refactor this humongous mess.
 
-import { Vector2 } from "../../../../classes/vector2";
+import { Vector2 } from "../../../../classes/domain/vector2";
 import RepellerData from "../../models/RepellerData";
 import Delta from "../../models/Delta";
 import MousePos from "../../models/MousePos";

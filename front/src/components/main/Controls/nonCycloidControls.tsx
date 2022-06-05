@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";

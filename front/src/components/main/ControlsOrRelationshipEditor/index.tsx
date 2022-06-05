@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
-import CycloidControlsData from "../../../classes/cycloidControls";
+import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import Controls from "../Controls";
 import RelationShipEditor from "../RelationshipEditor";
+import Button from "../Shared/Button";
 import IconButton from "./IconButton";
 
 interface ControlsOrRelationshipEditorProps {

@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect } from "react";
-import BoundingCircle from "../../classes/BoundingCircle";
+import BoundingCircle from "../../classes/domain/BoundingCircle";
 
 export default function useSetOutermostBoundingCirclePosition(
   outermostBoundingCircle: BoundingCircle,
