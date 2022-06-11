@@ -1,0 +1,5 @@
+endpoint:
+  user:
+    register: "user/register"
+  otp:
+    generate: "otp/generate"

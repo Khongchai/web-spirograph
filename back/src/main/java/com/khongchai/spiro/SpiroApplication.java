@@ -9,5 +9,4 @@ public class SpiroApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpiroApplication.class, args);
 	}
-
 }
