@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class User {
     @Id
-    Long id;
+    String id;
 
     String email;
     // Allow duplicate username, we login with only email and otp, no password.

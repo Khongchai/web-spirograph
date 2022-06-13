@@ -11,5 +11,5 @@ import java.io.Serializable;
 @Data
 public class GetUserRequest implements Serializable {
     String email;
-    Long id;
+    String id;
 }

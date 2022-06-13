@@ -4,6 +4,8 @@ import com.khongchai.spiro.users.requests.GetUserRequest;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.CorePublisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,16 +31,25 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("${endpoint.user")
-    public  Mono<User> getUser(GetUserRequest request){
-        // Check id, if id null, check email, if email null, return user not found error
+    //TODO make after getting email and is empty, return not found, else return all users
+    //TODO then write test for those.
+    @GetMapping("${endpoint.user}")
+    public CorePublisher<User> getUser(GetUserRequest request){
         return userRepository.findById(request.getId())
                 .switchIfEmpty(userRepository.findByEmail(request.getEmail()))
-                .switchIfEmpty(Mono.error(new InstanceNotFoundException("User not found")));
+                .flatMap(
+                        user -> {
+                            if(user == null){
+                                return userRepository.findAll().switchIfEmpty(
+                                        Mono.error(new InstanceNotFoundException("User not found"))
+                                );
+                            }
+                            return null;
+                        });
     }
 
 
-    @PostMapping("${endpoint.user")
+    @PostMapping("${endpoint.user}")
     Mono<User> register(@RequestBody User newUser){
 
         //check if user already exists
