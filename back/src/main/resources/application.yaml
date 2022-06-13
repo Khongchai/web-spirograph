@@ -1,7 +1,6 @@
 endpoint:
   pingTest: pingtest
-  user:
-    register: user/register
+  user: user
   otp:
     generate: otp/generate
 

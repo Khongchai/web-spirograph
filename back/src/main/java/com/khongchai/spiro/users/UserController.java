@@ -1,12 +1,16 @@
 package com.khongchai.spiro.users;
 
+import com.khongchai.spiro.users.requests.GetUserRequest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.InstanceNotFoundException;
+
 @RestController
-// @PropertySource("classpath:application.properties")
 public class UserController {
     private final UserRepository userRepository;
 
@@ -20,22 +24,25 @@ public class UserController {
         return String.format("Request param is %s", someValue);
     }
 
-    @GetMapping("user")
+    @GetMapping("${endpoint.user}")
     Flux<User> all(){
         return userRepository.findAll();
     }
 
-    @GetMapping("user/{id}")
-    public  Mono<User> getUser(@PathVariable Long id){
-        return userRepository.findById(id);
+    @GetMapping("${endpoint.user")
+    public  Mono<User> getUser(GetUserRequest request){
+        // Check id, if id null, check email, if email null, return user not found error
+        return userRepository.findById(request.getId())
+                .switchIfEmpty(userRepository.findByEmail(request.getEmail()))
+                .switchIfEmpty(Mono.error(new InstanceNotFoundException("User not found")));
     }
 
 
-//    @RequestMapping("${endpoint.user.register}")
-    @PostMapping("user")
+    @PostMapping("${endpoint.user")
     Mono<User> register(@RequestBody User newUser){
 
-
-       return userRepository.save(newUser);
+        //check if user already exists
+        return userRepository.findByEmail(newUser.getEmail()).switchIfEmpty(Mono.error(
+                new InstanceAlreadyExistsException("User already exists"))).flatMap(user -> userRepository.save(newUser));
     }
 }

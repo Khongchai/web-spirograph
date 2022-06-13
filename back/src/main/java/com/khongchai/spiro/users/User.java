@@ -13,7 +13,7 @@ public class User {
     Long id;
 
     String email;
+    // Allow duplicate username, we login with only email and otp, no password.
     String username;
-    String password;
 }
 
