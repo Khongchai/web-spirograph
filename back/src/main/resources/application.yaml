@@ -1,5 +1,14 @@
 endpoint:
+  pingTest: pingtest
   user:
-    register: "user/register"
+    register: user/register
   otp:
-    generate: "otp/generate"
+    generate: otp/generate
+
+
+spring:
+  data:
+    mongodb:
+      port: 27017
+      database: local
+      host: 127.0.0.1

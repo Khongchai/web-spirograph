@@ -1,8 +1,7 @@
-package com.khongchai.spiro.users.models;
+package com.khongchai.spiro.users;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,12 +12,8 @@ public class User {
     @Id
     Long id;
 
-    @NonNull
     String email;
-    @NonNull
     String username;
-    @NonNull
     String password;
-
 }
 

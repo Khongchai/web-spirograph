@@ -1,7 +1,7 @@
 package com.khongchai.spiro.repository;
 
-import com.khongchai.spiro.users.models.User;
-import com.khongchai.spiro.users.repositories.UserRepository;
+import com.khongchai.spiro.users.User;
+import com.khongchai.spiro.users.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
