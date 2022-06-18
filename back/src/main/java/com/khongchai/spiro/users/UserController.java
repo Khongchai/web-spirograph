@@ -36,13 +36,13 @@ public class UserController {
                 userRepository.findAll() :
                 userRepository.findById(request.getId()).switchIfEmpty(
                         userRepository.findByEmail(request.getEmail())).switchIfEmpty(
-                        Mono.error(new InstanceNotFoundException("Not found for using with email and id = " + request.getEmail() + " " + request.getId()))
+                        Mono.error(new InstanceNotFoundException("Not found for using with email and id = " +
+                                request.getEmail() + " " + request.getId()))
                         );
     }
 
-
     @PostMapping("${endpoint.user}")
-    Mono<User> register(@NonNull  @RequestBody User newUser){
+    public Mono<User> register(@NonNull  @RequestBody User newUser){
         return userRepository.findByEmail(newUser.getEmail()).switchIfEmpty(
                 userRepository.save(newUser)
         );
