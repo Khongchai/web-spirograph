@@ -1,12 +1,8 @@
 package com.khongchai.spiro.users;
 
 import com.khongchai.spiro.users.requests.GetUserRequest;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Example;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.CorePublisher;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.management.InstanceAlreadyExistsException;
@@ -27,25 +23,13 @@ public class UserController {
     }
 
     @GetMapping("${endpoint.user}")
-    Flux<User> all(){
-        return userRepository.findAll();
-    }
-
-    //TODO make after getting email and is empty, return not found, else return all users
-    //TODO then write test for those.
-    @GetMapping("${endpoint.user}")
     public CorePublisher<User> getUser(GetUserRequest request){
-        return userRepository.findById(request.getId())
-                .switchIfEmpty(userRepository.findByEmail(request.getEmail()))
-                .flatMap(
-                        user -> {
-                            if(user == null){
-                                return userRepository.findAll().switchIfEmpty(
-                                        Mono.error(new InstanceNotFoundException("User not found"))
-                                );
-                            }
-                            return null;
-                        });
+        return request == null ?
+                userRepository.findAll() :
+                userRepository.findById(request.getId())
+                .switchIfEmpty(userRepository.findByEmail(request.getEmail())).switchIfEmpty(
+                        Mono.error(new InstanceNotFoundException("User not found"))
+                );
     }
 
 
