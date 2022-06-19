@@ -1,5 +1,5 @@
-import BoundingCircle from "./BoundingCircle";
-import { CycloidParamsArgs } from "./CycloidParams";
+import BoundingCircle from "../domain/BoundingCircle";
+import { CycloidParamsArgs } from "./CycloidParamsInterface";
 
 export interface BaseConfiguration {
   /**

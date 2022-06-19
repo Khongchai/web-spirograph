@@ -1,4 +1,4 @@
-import { Vector2 } from "../../../classes/domain/vector2";
+import { Vector2 } from "../../../classes/interfaces/vector2";
 
 // A draw node that keeps track of its parent's position;
 export type DrawNode = {

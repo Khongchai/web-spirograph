@@ -1,6 +1,6 @@
 import BoundingCircle from "./BoundingCircle";
-import { BaseConfiguration } from "./Configuration";
-import { CycloidParamsArgs, CycloidParamsManager } from "./CycloidParams";
+import { BaseConfiguration } from "../interfaces/ConfigurationInterface";
+import { CycloidParamsManager } from "./CycloidParams";
 
 export interface CycloidControlsInterface
   extends Omit<BaseConfiguration, "cycloids"> {}

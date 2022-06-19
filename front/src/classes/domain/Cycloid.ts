@@ -1,7 +1,7 @@
 import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
 import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
-import { Vector2 } from "./vector2";
+import { Vector2 } from "../interfaces/vector2";
 
 export default class Cycloid extends BoundingCircle {
   private static allCycloids: Record<string, Cycloid> = {};
@@ -80,11 +80,11 @@ export default class Cycloid extends BoundingCircle {
     // Get the center point of parent,
     // this abstraction allows us to obtain the center point of the parent,
     // regardless of whether that parent is static or moving.
-    const parentCenter = this.parentBounding.getCenterPoint();
+    const parentCenter = this.parentBounding.centerPoint;
 
     //At angle 0
     const offset = this.isOutsideOfParent ? this.radius : -this.radius;
-    let beginningPos = this.parentBounding.getRadius() + offset;
+    let beginningPos = this.parentBounding.radius + offset;
 
     let dx = this.animationSpeedAsRadians();
     let change =

@@ -43,10 +43,10 @@ const Global: React.FC<globalProps> = ({
         />
         <Settings
           onDrag={(newValue: number) => {
-            cycloidControls.outermostBoundingCircle.setRadius(newValue);
+            cycloidControls.outermostBoundingCircle.radius = newValue;
             rerenderToggle(RerenderReason.radius);
           }}
-          numberValue={cycloidControls.outermostBoundingCircle.getRadius()}
+          numberValue={cycloidControls.outermostBoundingCircle.radius}
           paramName="Outer Bounding Circle Radius"
         />
         <Settings

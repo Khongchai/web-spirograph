@@ -1,4 +1,6 @@
-Once you get the modal to show, move on to BE stuff.
+Combine types folder with interfaces folder and change the name of the "classes"folder to "models
+
+In the end, send out the config as a serialized json. And make sure you can de-serialize!
 
 Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
 

@@ -1,26 +1,16 @@
-import { Vector2 } from "./vector2";
+import { BoundingCircleInterface } from "../interfaces/BoundingCircleInterface";
+import { Vector2 } from "../interfaces/vector2";
 
-export default class BoundingCircle {
-  protected centerPoint: Vector2;
-  protected radius: number;
-  protected boundingColor: string;
+export default class BoundingCircle implements BoundingCircleInterface {
+  centerPoint: Vector2;
+  radius: number;
+  boundingColor: string;
 
   constructor(centerPoint: Vector2, radius: number, boundingColor: string) {
     this.centerPoint = centerPoint;
     this.radius = radius;
     this.boundingColor = boundingColor;
   }
-
-  getCenterPoint = () => this.centerPoint;
-
-  getRadius = () => this.radius;
-
-  setCenterPoint = (centerPoint: Vector2) => (this.centerPoint = centerPoint);
-
-  setRadius = (radius: number) => (this.radius = radius);
-
-  setBoundingColor = (boundingColor: string) =>
-    (this.boundingColor = boundingColor);
 
   showBounding(ctx: CanvasRenderingContext2D, boundingColor?: string) {
     this.boundingColor = boundingColor || this.boundingColor;

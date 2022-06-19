@@ -1,5 +1,6 @@
-import { BaseConfiguration } from "../Configuration";
+import { BaseConfiguration } from "../../interfaces/ConfigurationInterface";
 
+//TODO make an interface
 export class User {
   private username: string;
   private mobileNo: string;

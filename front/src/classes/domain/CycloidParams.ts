@@ -2,19 +2,9 @@
  * A data holder for cycloid params.
  */
 
-import { rotationDirection as RotationDirection } from "../../types/rotationDirection";
+import { RotationDirection } from "../interfaces/rotationDirection";
+import { CycloidParamsArgs } from "../interfaces/CycloidParamsInterface";
 import BoundingCircle from "./BoundingCircle";
-
-export interface CycloidParamsArgs {
-  rodLengthScale: number;
-  rotationDirection: RotationDirection;
-  radius: number;
-  animationSpeedScale: number;
-  moveOutSideOfParent: boolean;
-  boundingColor: string;
-  id: number;
-  boundingCircleId: number;
-}
 
 export default class CycloidParams implements CycloidParamsArgs {
   /*

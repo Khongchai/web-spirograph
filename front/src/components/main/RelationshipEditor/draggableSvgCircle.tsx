@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
-import { Vector2 } from "../../../classes/domain/vector2";
+import { Vector2 } from "../../../classes/interfaces/vector2";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
 import "./cycloid-svg-node.css";
 import { DrawNode } from "./types";

@@ -1,4 +1,4 @@
-import { Vector2 } from "../../classes/domain/vector2";
+import { Vector2 } from "../../classes/interfaces/vector2";
 
 /**
  * This is like the data models in clean architecture.

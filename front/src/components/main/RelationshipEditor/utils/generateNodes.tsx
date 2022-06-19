@@ -76,7 +76,7 @@ export default function useGenerateNodes(
       drawNode: {
         currentDrawLevel: 0,
         pos: initialNodePosition,
-        radius: boundingCircle.getRadius(),
+        radius: boundingCircle.radius,
         ids: {
           thisNodeId: -1,
           parentId: undefined,
@@ -150,7 +150,7 @@ function getPositionedNodesAndLines(
           onPointerEnter={() => {
             const enterColor = colors.yellow;
             if (isBoundingCircle) {
-              boundingCircle.setBoundingColor(enterColor);
+              boundingCircle.boundingColor = enterColor;
             } else {
               thisCycloid!.boundingColor = enterColor;
             }
@@ -158,7 +158,7 @@ function getPositionedNodesAndLines(
           onPointerOut={() => {
             const outColor = colors.purple.light;
             if (isBoundingCircle) {
-              boundingCircle.setBoundingColor(outColor);
+              boundingCircle.boundingColor = outColor;
             } else {
               thisCycloid!.boundingColor = outColor;
             }
