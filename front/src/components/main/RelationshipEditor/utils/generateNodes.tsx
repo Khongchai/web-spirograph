@@ -124,7 +124,7 @@ function getPositionedNodesAndLines(
 } {
   const svgCircles: JSX.IntrinsicElements["circle"][] = [];
   const svgLines: JSX.IntrinsicElements["line"][] = [];
-  const boundingCircle = cycloidControls.current.outerMostBoundingCircle;
+  const boundingCircle = cycloidControls.current.outermostBoundingCircle;
 
   // Draw nodes by level (same as breadth-first).
   levels.getAllLevels().forEach((l, levelIndex) => {

@@ -19,7 +19,7 @@ function App() {
    */
   const cycloidControls = useRef<CycloidControls>(
     new CycloidControls({
-      outerMostBoundingCircle: new BoundingCircle(
+      outermostBoundingCircle: new BoundingCircle(
         {
           x: 0,
           y: 0,
@@ -45,7 +45,7 @@ function App() {
           boundingColor: colors.purple.light,
         },
       ],
-      animationSpeed: 1,
+      globalTimeStepScale: 1,
       currentCycloidId: 0,
       mode: "Animated",
       scaffold: "Showing",

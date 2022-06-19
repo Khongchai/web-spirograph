@@ -44,7 +44,7 @@ export function useSetupInstantDrawerCanvas({
         cycloids: instantDrawCycloids,
         pointsAmount,
         initialTheta: 0,
-        timeStepScalar: cycloidControls.globalTimeStep,
+        timeStepScalar: cycloidControls.globalTimeStepScale,
       },
     } as InstantDrawerWorkerPayload;
 

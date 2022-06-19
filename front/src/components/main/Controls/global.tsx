@@ -27,10 +27,10 @@ const Global: React.FC<globalProps> = ({
       <SettingsContainer>
         <Settings
           paramName={"Global Timestep"}
-          numberValue={cycloidControls.globalTimeStep}
+          numberValue={cycloidControls.globalTimeStepScale}
           step={0.1}
           onDrag={(newValue: number) => {
-            cycloidControls.globalTimeStep = newValue;
+            cycloidControls.globalTimeStepScale = newValue;
             rerenderToggle(RerenderReason.timeStep);
           }}
         />
@@ -43,10 +43,10 @@ const Global: React.FC<globalProps> = ({
         />
         <Settings
           onDrag={(newValue: number) => {
-            cycloidControls.outerMostBoundingCircle.setRadius(newValue);
+            cycloidControls.outermostBoundingCircle.setRadius(newValue);
             rerenderToggle(RerenderReason.radius);
           }}
-          numberValue={cycloidControls.outerMostBoundingCircle.getRadius()}
+          numberValue={cycloidControls.outermostBoundingCircle.getRadius()}
           paramName="Outer Bounding Circle Radius"
         />
         <Settings

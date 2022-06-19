@@ -20,7 +20,7 @@ export default function useGenerateCycloids(
   cycloidControls: MutableRefObject<CycloidControls>
 ): GeneratedCycloidData {
   const outerMostBoundingCircle =
-    cycloidControls.current.outerMostBoundingCircle;
+    cycloidControls.current.outermostBoundingCircle;
 
   const rerender = useContext(Rerender);
 

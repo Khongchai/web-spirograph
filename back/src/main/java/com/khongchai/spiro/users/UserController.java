@@ -1,19 +1,14 @@
 package com.khongchai.spiro.users;
 
-import com.khongchai.spiro.users.requests.GetUserRequest;
+import com.khongchai.spiro.users.Models.User;
+import com.khongchai.spiro.users.Models.requests.GetUserRequest;
 import lombok.NonNull;
-import org.bson.BSONObject;
-import org.bson.BsonObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.CorePublisher;
 import reactor.core.publisher.Mono;
 
-import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
 
 @RestController
 @Slf4j
@@ -36,8 +31,8 @@ public class UserController {
                 userRepository.findAll() :
                 userRepository.findById(request.getId()).switchIfEmpty(
                         userRepository.findByEmail(request.getEmail())).switchIfEmpty(
-                        Mono.error(new InstanceNotFoundException("Not found for using with email and id = " +
-                                request.getEmail() + " " + request.getId()))
+                        Mono.defer(() -> Mono.error(new InstanceNotFoundException("Not found for using with email and id = " +
+                                request.getEmail() + " " + request.getId())))
                         );
     }
 

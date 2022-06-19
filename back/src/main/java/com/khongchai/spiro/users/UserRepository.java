@@ -1,5 +1,6 @@
 package com.khongchai.spiro.users;
 
+import com.khongchai.spiro.users.Models.User;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;

@@ -3,7 +3,7 @@ import CycloidControls from "../classes/domain/cycloidControls";
 
 export default function generateCycloids(cycloidControls: CycloidControls) {
   const cycloids: Cycloid[] = [];
-  const outerMostBoundingCircle = cycloidControls.outerMostBoundingCircle;
+  const outerMostBoundingCircle = cycloidControls.outermostBoundingCircle;
 
   cycloidControls.cycloidManager.allCycloidParams.forEach((c) => {
     const cycloid = new Cycloid(

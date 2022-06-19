@@ -1,74 +1,15 @@
 import BoundingCircle from "./BoundingCircle";
-import { Configuration } from "./Configuration";
+import { BaseConfiguration } from "./Configuration";
 import { CycloidParamsArgs, CycloidParamsManager } from "./CycloidParams";
 
-export interface CycloidControlsInterface {
-  /*
-   * Base parent of all cycloids.
-   */
-  outerMostBoundingCircle: BoundingCircle;
-  /*
-   * All drawable cycloids.
-   */
-  cycloidManager: CycloidParamsManager;
-
-  /*
-   * The global animation speed.
-   */
-  globalTimeStep: number;
-
-  /*
-   * The id of the current cycloid that is being drawn.
-   */
-  currentCycloidId: number;
-
-  /*
-   * Animation mode. Instant draws the cycloid instantly, while Animated tries draws the cycloid at 60 fps.
-   * The animated instant keeps the drawing but has a worker thread updates the stars position as the final, instant result.
-   */
-  mode: "Animated" | "Instant" | "AnimatedInstant";
-
-  /*
-   *  Whether or not to show the bounding circles.
-   */
-  scaffold: "Showing" | "Hidden";
-
-  /*
-   * Pretty self-explanatory.
-   */
-  animationState: "Playing" | "Paused";
-
-  /*
-   * Whether or not to clear the traced path when a "local" parameter is changed.
-   */
-  clearTracedPathOnParamsChange: boolean;
-
-  /*
-   * If false, only the path of the selected cycloid will be traced.
-   */
-  traceAllCycloids: boolean;
-
-  /*
-   * If false, only the selected cycloid will be shown.
-   */
-  showAllCycloids: boolean;
-
-  /**
-   * Not for users to use.
-   */
-  programOnly: {
-    /*
-     * Whether or not to show the traced path.
-     */
-    tracePath: boolean;
-  };
-}
+export interface CycloidControlsInterface
+  extends Omit<BaseConfiguration, "cycloids"> {}
 
 // CycloidControlsData but turned into a class
 export default class CycloidControls implements CycloidControlsInterface {
-  outerMostBoundingCircle: BoundingCircle;
+  outermostBoundingCircle: BoundingCircle;
   cycloidManager: CycloidParamsManager;
-  globalTimeStep: number;
+  globalTimeStepScale: number;
   currentCycloidId: number;
   mode: "Animated" | "Instant" | "AnimatedInstant";
   scaffold: "Showing" | "Hidden";
@@ -80,20 +21,20 @@ export default class CycloidControls implements CycloidControlsInterface {
     tracePath: boolean;
   };
   constructor({
-    animationSpeed,
+    globalTimeStepScale: globalTimeStep,
     animationState,
     clearTracedPathOnParamsChange,
     currentCycloidId,
     cycloids,
     mode,
-    outerMostBoundingCircle,
+    outermostBoundingCircle: outerMostBoundingCircle,
     scaffold,
     programOnly,
     showAllCycloids,
     traceAllCycloids,
-  }: Configuration) {
-    this.outerMostBoundingCircle = outerMostBoundingCircle;
-    this.globalTimeStep = animationSpeed;
+  }: BaseConfiguration) {
+    this.outermostBoundingCircle = outerMostBoundingCircle;
+    this.globalTimeStepScale = globalTimeStep;
     this.currentCycloidId = currentCycloidId;
     this.mode = mode;
     this.traceAllCycloids = traceAllCycloids;

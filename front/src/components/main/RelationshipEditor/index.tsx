@@ -14,7 +14,7 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
   const height = wrapperRef.current.clientHeight;
   const width = wrapperRef.current.clientWidth;
 
-  const boundingCircle = cycloidControlsData.current.outerMostBoundingCircle;
+  const boundingCircle = cycloidControlsData.current.outermostBoundingCircle;
 
   const drawnCircles = useGenerateNodes(
     boundingCircle,

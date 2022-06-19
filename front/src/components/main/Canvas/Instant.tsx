@@ -73,8 +73,11 @@ export default function InstantCanvas({
     () => {
       if (rerender.reason & CHANGE_SETTINGS_REASONS)
         if (workerRef.current) {
-          const { currentCycloidId, globalTimeStep, cycloidManager } =
-            cycloidControls.current;
+          const {
+            currentCycloidId,
+            globalTimeStepScale: globalTimeStep,
+            cycloidManager,
+          } = cycloidControls.current;
 
           workerRef.current.postMessage({
             setParametersPayload: {

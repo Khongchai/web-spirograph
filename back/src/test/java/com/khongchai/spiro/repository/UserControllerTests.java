@@ -1,24 +1,15 @@
 package com.khongchai.spiro.repository;
 
-import com.khongchai.spiro.users.User;
+import com.khongchai.spiro.users.Models.User;
 import com.khongchai.spiro.users.UserController;
 import com.khongchai.spiro.users.UserRepository;
-import com.khongchai.spiro.users.requests.GetUserRequest;
-import lombok.Data;
+import com.khongchai.spiro.users.Models.requests.GetUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.util.Assert;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -26,8 +17,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static reactor.core.publisher.Mono.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,9 +42,9 @@ class UserControllerTests {
 
         StepVerifier.create(userController.register(mockUser))
             .assertNext(user -> {
-                assert(user == mockUser);
+                assert(user.equals(mockUser));
                 verify(userRepository, times(1)).findByEmail(anyString());
-                verify(userRepository, Mockito.never()).save(mockUser);
+                verify(userRepository, never()).save(mockUser);
             })
             .verifyComplete();
     }
@@ -66,7 +56,7 @@ class UserControllerTests {
 
         StepVerifier.create(userController.register(mockUser))
                 .assertNext(user -> {
-                    assert(user == mockUser);
+                    assert(user.equals(mockUser));
                     verify(userRepository, times(1)).findByEmail(anyString());
                     verify(userRepository, times(1)).save(mockUser);
                 })
@@ -75,20 +65,37 @@ class UserControllerTests {
 
     @Test
     public void testGettingUserWithoutQueryParamsShouldReturnAllUsers(){
-        when(userRepository.findAll()).thenReturn(Flux.just(
+        final var mockUsers = new User[]{
                 new User("mock_id", "mock_email_1@mock.com", "user1"),
-                new User("mock_id2", "mock_email_2@mock.com", "user2")));
-//        webTestClient.get().uri("user").exchange().expectStatus().isOk().expectBodyList(User.class).hasSize(2);
+                new User("mock_id2", "mock_email_2@mock.com", "user2")
+        };
+        given(userRepository.findAll()).willReturn(Flux.just( mockUsers ));
+
+        StepVerifier.create(userController.getUser(null))
+                .expectNext(mockUsers)
+                .verifyComplete();
     }
 
     @Test
     public void testGettingUserWithQueryParamsShouldReturnQueriedUser(){
-        final var mockEmail = "mock_email_1@mock.com";
-        final var newUser = new User("mock_id", mockEmail, "user1");
+        given(userRepository.findByEmail(anyString())).willReturn(Mono.just(mockUser));
+        given(userRepository.findById(anyString())).willReturn(Mono.empty());
 
-        when(userRepository.findByEmail(mockEmail)).thenReturn(Mono.just(newUser));
+        StepVerifier.create(
+                userController
+                .getUser(
+                    GetUserRequest.builder()
+                    .email("mockEmail")
+                    .id("mockId")
+                    .build())
+                )
+                .assertNext(user -> {
+                    verify(userRepository, times(1)).findById("mockEmail");
+                    verify(userRepository, times(1)).findByEmail("mockId");
+                    verify(userRepository, never()).findAll();
+                    assert(user.equals(mockUser));
+                })
+                .verifyComplete();
 
-
-//        webTestClient.get().uri("user?email=" + mockEmail).exchange().expectStatus().isOk().expectBody(User.class).isEqualTo(newUser);
     }
 }
