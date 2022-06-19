@@ -13,4 +13,6 @@ public class GetUserRequest implements Serializable {
     String email;
 
     String id;
+
+    String serializedConfig;
 }
