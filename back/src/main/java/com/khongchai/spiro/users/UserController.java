@@ -44,7 +44,7 @@ public class UserController {
     @PostMapping("${endpoint.user}")
     public Mono<User> register(@NonNull  @RequestBody User newUser){
         return userRepository.findByEmail(newUser.getEmail()).switchIfEmpty(
-                userRepository.save(newUser)
+                Mono.defer(() -> userRepository.save(newUser))
         );
     }
 

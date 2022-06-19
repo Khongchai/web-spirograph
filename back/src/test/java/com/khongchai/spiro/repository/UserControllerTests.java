@@ -4,6 +4,8 @@ import com.khongchai.spiro.users.User;
 import com.khongchai.spiro.users.UserController;
 import com.khongchai.spiro.users.UserRepository;
 import com.khongchai.spiro.users.requests.GetUserRequest;
+import lombok.Data;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,11 +23,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static reactor.core.publisher.Mono.when;
 
-@SpringBootTest
-@AutoConfigureWebTestClient
 @ExtendWith(MockitoExtension.class)
 class UserControllerTests {
     @InjectMocks
@@ -34,20 +38,39 @@ class UserControllerTests {
     @Mock
     private UserRepository userRepository;
 
+    private User mockUser;
+
+    @BeforeEach
+    void setUp() {
+        final String mockId = "mock_id";
+        mockUser = new User(mockId, "user@user.com", "user");
+    }
 
     @Test
-    public void testUserExistsAfterRegistering() {
-        final String mockId = "mock_id";
-        var mockUser = new User(mockId, "user@user.com", "user");
-
-        //TODO nullpointerexception for some reasons.
-        when(userRepository.findById(anyString())).thenReturn(Mono.just(mockUser));
+    public void testNotCallingSaveIfUserAlreadyExists() {
+        given(userRepository.findByEmail(anyString())).willReturn(Mono.just(mockUser));
 
         StepVerifier.create(userController.register(mockUser))
             .assertNext(user -> {
                 assert(user == mockUser);
+                verify(userRepository, times(1)).findByEmail(anyString());
+                verify(userRepository, Mockito.never()).save(mockUser);
             })
             .verifyComplete();
+    }
+
+    @Test
+    public void testCallingSaveIfUserDoesNotExist(){
+        given(userRepository.save(any(User.class))).willReturn(Mono.just(mockUser));
+        given(userRepository.findByEmail(anyString())).willReturn(Mono.empty());
+
+        StepVerifier.create(userController.register(mockUser))
+                .assertNext(user -> {
+                    assert(user == mockUser);
+                    verify(userRepository, times(1)).findByEmail(anyString());
+                    verify(userRepository, times(1)).save(mockUser);
+                })
+                .verifyComplete();
     }
 
     @Test
