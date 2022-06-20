@@ -1,26 +1,27 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
 interface ModalProps {
   title: string;
   buttons: Array<{ text: string; onClick: VoidFunction }>;
 }
+
 export default function useShowModal(modalProps: ModalProps) {
   const [showModal, setShowModal] = useState(false);
   const targetRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (showModal) {
-      const rootElem = document.getElementById("root")!;
-      createPortal(
+      const rootElem = createRoot(document.getElementById("modal-root")!);
+      rootElem.render(
         <Modal
           props={{
             ...modalProps,
             hideModal: () => setShowModal(false),
           }}
           ref={targetRef}
-        />,
-        rootElem
+        />
       );
     } else {
       targetRef.current?.remove();
@@ -44,7 +45,7 @@ const Modal = forwardRef(
   ) => {
     return (
       <div
-        className="fixed w-full h-full bg-purple-dark bg-opacity-80 "
+        className="fixed w-full h-full bg-purple-dark bg-opacity-80 top-0 left-0"
         onClick={() => hideModal()}
         ref={ref}
       >
