@@ -1,4 +1,4 @@
-package com.khongchai.spiro.users;
+package com.khongchai.spiro.users.repositories;
 
 import com.khongchai.spiro.users.Models.User;
 import org.springframework.data.mongodb.repository.Query;

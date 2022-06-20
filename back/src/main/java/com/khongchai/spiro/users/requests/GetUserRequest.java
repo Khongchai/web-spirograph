@@ -1,6 +1,8 @@
-package com.khongchai.spiro.users.Models.requests;
+package com.khongchai.spiro.users.requests;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.NonNull;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import java.io.Serializable;

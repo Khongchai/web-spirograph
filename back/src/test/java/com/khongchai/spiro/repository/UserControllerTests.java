@@ -1,9 +1,10 @@
 package com.khongchai.spiro.repository;
 
 import com.khongchai.spiro.users.Models.User;
-import com.khongchai.spiro.users.UserController;
-import com.khongchai.spiro.users.UserRepository;
-import com.khongchai.spiro.users.Models.requests.GetUserRequest;
+import com.khongchai.spiro.users.controllers.UserController;
+import com.khongchai.spiro.users.repositories.UserRepository;
+import com.khongchai.spiro.users.requests.GetUserRequest;
+import com.khongchai.spiro.users.requests.RegisterUserRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,18 +30,24 @@ class UserControllerTests {
     private UserRepository userRepository;
 
     private User mockUser;
+    private RegisterUserRequest mockRegisterUserRequest;
 
     @BeforeEach
     void setUp() {
         final String mockId = "mock_id";
         mockUser = new User(mockId, "user@user.com", "user");
+        mockRegisterUserRequest = RegisterUserRequest
+                .builder()
+                .username(mockUser.getUsername())
+                .email(mockUser.getEmail())
+                .build();
     }
 
     @Test
     public void testNotCallingSaveIfUserAlreadyExists() {
         given(userRepository.findByEmail(anyString())).willReturn(Mono.just(mockUser));
 
-        StepVerifier.create(userController.register(mockUser))
+        StepVerifier.create(userController.register(mockRegisterUserRequest))
             .assertNext(user -> {
                 assert(user.equals(mockUser));
                 verify(userRepository, times(1)).findByEmail(anyString());
@@ -54,7 +61,7 @@ class UserControllerTests {
         given(userRepository.save(any(User.class))).willReturn(Mono.just(mockUser));
         given(userRepository.findByEmail(anyString())).willReturn(Mono.empty());
 
-        StepVerifier.create(userController.register(mockUser))
+        StepVerifier.create(userController.register(mockRegisterUserRequest))
                 .assertNext(user -> {
                     assert(user.equals(mockUser));
                     verify(userRepository, times(1)).findByEmail(anyString());

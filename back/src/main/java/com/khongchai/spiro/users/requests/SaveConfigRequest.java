@@ -1,4 +1,4 @@
-package com.khongchai.spiro.users.Models.requests;
+package com.khongchai.spiro.users.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
