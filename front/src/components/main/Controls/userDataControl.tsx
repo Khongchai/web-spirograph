@@ -1,31 +1,24 @@
-import { useContext } from "react";
-import { userContext } from "../../../contexts/userContext";
-import useShowModal from "../../../utils/showModal";
+import { useState } from "react";
 import Button from "../Shared/Button";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
+import { UserModal } from "./UserModal";
 
 export function UserDataControl({ tooltipText }: { tooltipText: string }) {
-  const user = useContext(userContext);
-
-  const { modalControl } = useShowModal({
-    buttons: [],
-    title: "Test Modal",
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <ControlSection>
       <SettingsContainer>
+        {isModalOpen ? (
+          <UserModal onBgClicked={() => setIsModalOpen(false)} />
+        ) : null}
         <Heading tooltipText={tooltipText}>Save Config</Heading>
         <Button
           buttonText="Save Config"
           onClick={() => {
-            //TODO
-            // check if user is logged in
-            // if log in, save config to database and show success message
-            // else if not logged in, ask if user wants to login or register, or just save to local storage
-            modalControl.showModal();
+            setIsModalOpen(true);
           }}
         ></Button>
       </SettingsContainer>
