@@ -1,9 +1,24 @@
 import React, { useState } from "react";
 import { LoginRegisterForm } from "../Auth/LoginRegisterForm";
 
-export function UserModal({ onBgClicked }: { onBgClicked: VoidFunction }) {
+export function UserModal({
+  onBgClicked,
+  onFormSubmit,
+}: {
+  onBgClicked: VoidFunction;
+  onFormSubmit: ({
+    email,
+    username,
+  }: {
+    email: string;
+    username: string;
+  }) => void;
+}) {
   return (
-    <RegisterAndLoginModal onFormSubmit={() => {}} onBgClicked={onBgClicked} />
+    <RegisterAndLoginModal
+      onFormSubmit={onFormSubmit}
+      onBgClicked={onBgClicked}
+    />
   );
 }
 
@@ -12,14 +27,28 @@ export function RegisterAndLoginModal({
   onFormSubmit,
 }: {
   onBgClicked: VoidFunction;
-  onFormSubmit: VoidFunction;
+  onFormSubmit: ({
+    email,
+    username,
+  }: {
+    email: string;
+    username: string;
+  }) => void;
 }) {
   return (
     <>
       <ModalBackground onBgClicked={onBgClicked}>
-        <h1>Enter Your Email to Sign Up / Log In</h1>
-        <h1>Leave Username Empty If Already Registered</h1>
-        <LoginRegisterForm onFormSubmit={onFormSubmit} />
+        <div className="space-y-3">
+          <div className="space-y-2 text-center">
+            <h1 className="text-lg font-bold">
+              Enter Your Email to Sign Up / Log In
+            </h1>
+            <h1 className="text-lg font-bold">
+              Leave Username Empty If Already Registered
+            </h1>
+          </div>
+          <LoginRegisterForm onFormSubmit={onFormSubmit} />
+        </div>
       </ModalBackground>
     </>
   );
