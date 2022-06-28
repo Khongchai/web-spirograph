@@ -1,26 +1,30 @@
 import { FormEvent, useState } from "react";
 import Button from "../Shared/Button";
 
+export type onFormSubmitType = ({
+  email,
+  username,
+}: {
+  email: string;
+  username: string;
+}) => Promise<boolean>;
+
 export function LoginRegisterForm({
   onFormSubmit,
 }: {
-  onFormSubmit: ({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) => void;
+  onFormSubmit: onFormSubmitType;
 }) {
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputUsername, setInputUsername] = useState<string>("");
 
-  const _onFormSubmit = (e: FormEvent) => {
+  const _onFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    onFormSubmit({
+    const result = await onFormSubmit({
       email: inputEmail!,
       username: inputUsername!,
     });
+
+    console.log(result);
   };
 
   return (

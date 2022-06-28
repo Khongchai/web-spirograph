@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import { LoginRegisterForm } from "../Auth/LoginRegisterForm";
+import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 
 export function UserModal({
   onBgClicked,
   onFormSubmit,
 }: {
   onBgClicked: VoidFunction;
-  onFormSubmit: ({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) => void;
+  onFormSubmit: onFormSubmitType;
 }) {
   return (
     <RegisterAndLoginModal
@@ -27,13 +21,7 @@ export function RegisterAndLoginModal({
   onFormSubmit,
 }: {
   onBgClicked: VoidFunction;
-  onFormSubmit: ({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) => void;
+  onFormSubmit: onFormSubmitType;
 }) {
   return (
     <>

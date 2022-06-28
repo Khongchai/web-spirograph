@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { userContext } from "../../../contexts/userContext";
+import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
@@ -7,21 +8,18 @@ import Heading from "./shared/heading";
 import { UserModal } from "./UserModal";
 
 export function UserDataControl({ tooltipText }: { tooltipText: string }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLogInRegisterModalOpen, setIsLogInRegisterModalOpen] =
+    useState(false);
   const user = useContext(userContext);
 
   const onModalBackgroundClicked = () => {
-    setIsModalOpen(false);
+    setIsLogInRegisterModalOpen(false);
   };
 
-  const onFormSubmit = ({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) => {
-    console.log(email, username);
+  const onFormSubmit: onFormSubmitType = async ({ email, username }) => {
+    //TOOD call API
+    //return something based on the response data.
+    return Promise.resolve(false);
   };
 
   const onSaveConfigButtonClicked = () => {
@@ -29,7 +27,7 @@ export function UserDataControl({ tooltipText }: { tooltipText: string }) {
     if (user) {
       //TODO save data
     } else {
-      setIsModalOpen(true);
+      setIsLogInRegisterModalOpen(true);
     }
   };
 
@@ -38,7 +36,7 @@ export function UserDataControl({ tooltipText }: { tooltipText: string }) {
       onFormSubmit={onFormSubmit}
       onModalBackgroundClicked={onModalBackgroundClicked}
       onSaveConfigButtonClicked={onSaveConfigButtonClicked}
-      state={{ isModalOpen, tooltipText }}
+      state={{ isModalOpen: isLogInRegisterModalOpen, tooltipText }}
     />
   );
 }
@@ -50,13 +48,7 @@ interface _UserDataControlsUIEvents {
   };
   onSaveConfigButtonClicked: () => void;
   onModalBackgroundClicked: () => void;
-  onFormSubmit: ({
-    email,
-    username,
-  }: {
-    email: string;
-    username: string;
-  }) => void;
+  onFormSubmit: onFormSubmitType;
 }
 
 function _UserDataControl({
