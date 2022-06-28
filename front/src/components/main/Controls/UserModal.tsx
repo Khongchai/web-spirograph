@@ -1,29 +1,27 @@
-import React, { useContext, useEffect, useState } from "react";
-import { userContext } from "../../../contexts/userContext";
+import React, { useState } from "react";
+import { LoginRegisterForm } from "../Auth/LoginRegisterForm";
 
 export function UserModal({ onBgClicked }: { onBgClicked: VoidFunction }) {
-  const user = useContext(userContext);
-
-  return user ? (
-    <LoginModal onBgClicked={onBgClicked} />
-  ) : (
-    <RegisterModal onBgClicked={onBgClicked} />
+  return (
+    <RegisterAndLoginModal onFormSubmit={() => {}} onBgClicked={onBgClicked} />
   );
 }
 
-export function RegisterModal({ onBgClicked }: { onBgClicked: VoidFunction }) {
+export function RegisterAndLoginModal({
+  onBgClicked,
+  onFormSubmit,
+}: {
+  onBgClicked: VoidFunction;
+  onFormSubmit: VoidFunction;
+}) {
   return (
-    <ModalBackground onBgClicked={onBgClicked}>
-      <div>Register Modal</div>
-    </ModalBackground>
-  );
-}
-
-export function LoginModal({ onBgClicked }: { onBgClicked: VoidFunction }) {
-  return (
-    <ModalBackground onBgClicked={onBgClicked}>
-      <div>Login Modal</div>
-    </ModalBackground>
+    <>
+      <ModalBackground onBgClicked={onBgClicked}>
+        <h1>Enter Your Email to Sign Up / Log In</h1>
+        <h1>Leave Username Empty If Already Registered</h1>
+        <LoginRegisterForm onFormSubmit={onFormSubmit} />
+      </ModalBackground>
+    </>
   );
 }
 
