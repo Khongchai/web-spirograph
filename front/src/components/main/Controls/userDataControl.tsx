@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import { userContext } from "../../../contexts/userContext";
 import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
@@ -10,6 +11,7 @@ import { UserModal } from "./UserModal";
 export function UserDataControl({ tooltipText }: { tooltipText: string }) {
   const [isLogInRegisterModalOpen, setIsLogInRegisterModalOpen] =
     useState(false);
+
   const user = useContext(userContext);
 
   const onModalBackgroundClicked = () => {
@@ -17,8 +19,11 @@ export function UserDataControl({ tooltipText }: { tooltipText: string }) {
   };
 
   const onFormSubmit: onFormSubmitType = async ({ email, username }) => {
-    //TOOD call API
-    //return something based on the response data.
+    const user = await UserAuthenticationRepository.loginOrRegister({
+      email,
+      username,
+      cycloidControls,
+    });
     return Promise.resolve(false);
   };
 

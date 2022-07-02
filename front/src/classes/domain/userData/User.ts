@@ -1,34 +1,17 @@
-import { BaseConfiguration } from "../../interfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 
-//TODO make an interface
 export class User {
-  private username: string;
-  private mobileNo: string;
-  private currentConfig: BaseConfiguration;
+  readonly username: string;
+  readonly email: string;
+  readonly currentConfigs: BaseConfiguration;
 
   constructor(
     username: string,
-    mobileNo: string,
-    currentConfig: BaseConfiguration
+    email: string,
+    currentConfigs: BaseConfiguration
   ) {
     this.username = username;
-    this.mobileNo = mobileNo;
-    this.currentConfig = currentConfig;
-  }
-
-  get getUsername(): string {
-    return this.username;
-  }
-
-  get getMobileNo(): string {
-    return this.mobileNo;
-  }
-
-  set saveCurrentConfig(config: BaseConfiguration) {
-    this.currentConfig = config;
-  }
-
-  get loadCurrentConfig(): BaseConfiguration {
-    return this.currentConfig;
+    this.email = email;
+    this.currentConfigs = currentConfigs;
   }
 }

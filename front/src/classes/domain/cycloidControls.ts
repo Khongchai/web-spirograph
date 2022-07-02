@@ -1,5 +1,5 @@
 import BoundingCircle from "./BoundingCircle";
-import { BaseConfiguration } from "../interfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../DTOInterfaces/ConfigurationInterface";
 import { CycloidParamsManager } from "./CycloidParams";
 
 export interface CycloidControlsInterface

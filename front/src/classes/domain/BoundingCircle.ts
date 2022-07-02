@@ -1,5 +1,5 @@
-import { BoundingCircleInterface } from "../interfaces/BoundingCircleInterface";
-import { Vector2 } from "../interfaces/vector2";
+import { BoundingCircleInterface } from "../DTOInterfaces/BoundingCircleInterface";
+import { Vector2 } from "../DTOInterfaces/vector2";
 
 export default class BoundingCircle implements BoundingCircleInterface {
   centerPoint: Vector2;

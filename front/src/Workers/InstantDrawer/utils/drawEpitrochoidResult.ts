@@ -1,4 +1,4 @@
-import { Vector2 } from "../../../classes/interfaces/vector2";
+import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
 import { DrawerData } from "../instantDrawer.worker";
 import computedEpitrochoid from "./computeEpitrochoid";
 

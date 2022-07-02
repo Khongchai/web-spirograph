@@ -1,11 +1,12 @@
 import BoundingCircle from "../domain/BoundingCircle";
+import { BoundingCircleInterface } from "./BoundingCircleInterface";
 import { CycloidParamsArgs } from "./CycloidParamsInterface";
 
 export interface BaseConfiguration {
   /**
    * Base parent of all cycloids.
    */
-  outermostBoundingCircle: BoundingCircle;
+  outermostBoundingCircle: BoundingCircleInterface;
 
   /**
    * All cycloids

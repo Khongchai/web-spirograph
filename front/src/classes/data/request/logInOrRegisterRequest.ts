@@ -1,6 +1,4 @@
-import { BaseConfiguration } from "../../interfaces/ConfigurationInterface";
-
-interface SaveConfigurationRequest {
+export interface SaveConfigurationRequest {
   /**
    * JSON-serialized configuration.
    */

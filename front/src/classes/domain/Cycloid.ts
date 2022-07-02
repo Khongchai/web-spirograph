@@ -1,7 +1,7 @@
 import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloidDirection";
 import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
-import { Vector2 } from "../interfaces/vector2";
+import { Vector2 } from "../DTOInterfaces/vector2";
 
 export default class Cycloid extends BoundingCircle {
   private static allCycloids: Record<string, Cycloid> = {};

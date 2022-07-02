@@ -1,4 +1,4 @@
-import { BaseConfiguration } from "../../interfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 
 interface SaveConfigurationRequest {
   /**

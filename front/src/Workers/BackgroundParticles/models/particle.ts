@@ -1,5 +1,5 @@
-import { Vector2 } from "../../../classes/interfaces/vector2";
-import { Vector3 } from "../../../classes/interfaces/vector3";
+import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
+import { Vector3 } from "../../../classes/DTOInterfaces/vector3";
 
 export default class Particle implements Vector3 {
   initialX: number;

@@ -2,8 +2,8 @@
  * A data holder for cycloid params.
  */
 
-import { RotationDirection } from "../interfaces/rotationDirection";
-import { CycloidParamsArgs } from "../interfaces/CycloidParamsInterface";
+import { RotationDirection } from "../DTOInterfaces/rotationDirection";
+import { CycloidParamsArgs } from "../DTOInterfaces/CycloidParamsInterface";
 import BoundingCircle from "./BoundingCircle";
 
 export default class CycloidParams implements CycloidParamsArgs {

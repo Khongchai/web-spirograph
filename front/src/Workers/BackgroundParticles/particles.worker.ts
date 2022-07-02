@@ -1,4 +1,4 @@
-import { Vector2 } from "../../classes/interfaces/vector2";
+import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import MousePos from "./models/MousePos";
 import RepellerData from "./models/RepellerData";
 import ScreenSize from "./models/ScreenSize";
