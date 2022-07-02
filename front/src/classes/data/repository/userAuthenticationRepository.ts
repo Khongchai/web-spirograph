@@ -1,8 +1,8 @@
 import { REACT_APP_BASE_API_ENDPOINT } from "../../../environmentVariables";
 import CycloidControls from "../../domain/cycloidControls";
-import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
+import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import GenericRepositoryModalErrorHandling from "./genericModalErrorHandling";
 
@@ -19,11 +19,11 @@ interface RegisterInterface {
 @GenericRepositoryModalErrorHandling("UserAuthenticationRepository", "static")
 export class UserAuthenticationRepository extends BaseNetworkRepository {
   // TODO Make this work without any otp for now, and then open a websocket and wait for a response (after otp validation).
-  static async loginOrRegister({
+  static async loginOrRegisterOtpRequest({
     email,
     cycloidControls,
     username,
-  }: LoginInterface & Partial<RegisterInterface>): Promise<User | null> {
+  }: LoginInterface & Partial<RegisterInterface>): Promise<string> {
     // We need a separate mapper because without one, changing one of the properties would instantly break,
     // the api.
 
@@ -78,8 +78,8 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       throw new Error(res.statusText);
     }
 
-    // const json = await res.json();
+    const json = (await res.json()) as LogInOrRegisterOtpResponse;
 
-    return Promise.resolve(null);
+    return json.otpToken;
   }
 }

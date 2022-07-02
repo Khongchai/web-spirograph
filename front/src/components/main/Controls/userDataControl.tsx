@@ -26,7 +26,7 @@ export function UserDataControl({
   }
 
   const onFormSubmit: onFormSubmitType = async ({ email, username }) => {
-    const user = await UserAuthenticationRepository.loginOrRegister({
+    const user = await UserAuthenticationRepository.loginOrRegisterOtpRequest({
       email,
       username,
       cycloidControls,
