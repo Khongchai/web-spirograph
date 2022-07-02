@@ -22,6 +22,9 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     cycloidControls,
     username,
   }: LoginInterface & Partial<RegisterInterface>): Promise<User | null> {
+    // We need a separate mapper because without one, changing one of the properties would instantly break,
+    // the api.
+
     const baseConfiguration = cycloidControls
       ? ({
           animationState: cycloidControls?.animationState,
@@ -51,8 +54,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
           traceAllCycloids: cycloidControls?.traceAllCycloids,
         } as BaseConfiguration)
       : null;
-
-    console.log(baseConfiguration);
 
     const res = await fetch(`${BASE_API_ENDPOINT}/user`, {
       method: "POST",
