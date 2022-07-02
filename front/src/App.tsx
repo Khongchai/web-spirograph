@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import BoundingCircle from "./classes/domain/BoundingCircle";
 import CycloidControls from "./classes/domain/cycloidControls";
 import colors from "./constants/colors";

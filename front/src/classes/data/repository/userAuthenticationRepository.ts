@@ -1,4 +1,4 @@
-import { BASE_API_ENDPOINT } from "../../../environmentVariables";
+import { REACT_APP_BASE_API_ENDPOINT } from "../../../environmentVariables";
 import CycloidControls from "../../domain/cycloidControls";
 import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
@@ -55,7 +55,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as BaseConfiguration)
       : null;
 
-    const res = await fetch(`${BASE_API_ENDPOINT}/user`, {
+    const res = await fetch(`${REACT_APP_BASE_API_ENDPOINT}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,10 +68,14 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
 
     if (!res.ok) {
-      //TODO error handling.
+      console.warn(
+        `Operation failed for ${REACT_APP_BASE_API_ENDPOINT}, ${res.status}`
+      );
+      console.error(res);
+      throw new Error(res.statusText);
     }
 
-    const json = await res.json();
+    // const json = await res.json();
 
     return Promise.resolve(null);
   }
