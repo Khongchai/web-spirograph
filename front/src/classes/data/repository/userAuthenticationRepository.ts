@@ -57,7 +57,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as BaseConfiguration)
       : null;
 
-    const url = `https://${REACT_APP_BASE_API_ENDPOINT}/user`;
+    const url = `http://${REACT_APP_BASE_API_ENDPOINT}/user`;
     const res = await fetch(url, {
       method: "POST",
       headers: {

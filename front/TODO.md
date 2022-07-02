@@ -1,4 +1,4 @@
-Lookfor TODO in userAuthenticationRepository
+Connected Fe to be now. Begin working with the BE to ensure a pretty solid specs before coming back to FE
 
 Combine types folder with interfaces folder and change the name of the "classes"folder to "models
 
