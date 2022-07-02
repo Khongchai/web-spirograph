@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static reactor.core.publisher.Mono.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTests {
@@ -35,7 +34,12 @@ class UserControllerTests {
     @BeforeEach
     void setUp() {
         final String mockId = "mock_id";
-        mockUser = new User(mockId, "user@user.com", "user");
+        mockUser = User
+                .builder()
+                .id(mockId)
+                .username("mock_username")
+                .email("mock_email@email.com")
+                .build();
         mockRegisterUserRequest = RegisterUserRequest
                 .builder()
                 .username(mockUser.getUsername())
@@ -73,8 +77,18 @@ class UserControllerTests {
     @Test
     public void testGettingUserWithoutQueryParamsShouldReturnAllUsers(){
         final var mockUsers = new User[]{
-                new User("mock_id", "mock_email_1@mock.com", "user1"),
-                new User("mock_id2", "mock_email_2@mock.com", "user2")
+                User
+                    .builder()
+                    .id("mock_id")
+                    .username("user1")
+                    .email("mock_email_2@mock.com")
+                    .build(),
+                User
+                    .builder()
+                    .id("mock_id2")
+                    .username("user2")
+                    .email("mock_email_2@mock.com")
+                    .build(),
         };
         given(userRepository.findAll()).willReturn(Flux.just( mockUsers ));
 

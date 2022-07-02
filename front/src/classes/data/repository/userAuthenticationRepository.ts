@@ -4,6 +4,7 @@ import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
+import GenericRepositoryModalErrorHandling from "./genericModalErrorHandling";
 
 interface LoginInterface {
   email: string;
@@ -15,6 +16,7 @@ interface RegisterInterface {
   cycloidControls: CycloidControls;
 }
 
+@GenericRepositoryModalErrorHandling("UserAuthenticationRepository", "static")
 export class UserAuthenticationRepository extends BaseNetworkRepository {
   // TODO Make this work without any otp for now, and then open a websocket and wait for a response (after otp validation).
   static async loginOrRegister({
@@ -55,7 +57,8 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as BaseConfiguration)
       : null;
 
-    const res = await fetch(`${REACT_APP_BASE_API_ENDPOINT}/user`, {
+    const url = `https://${REACT_APP_BASE_API_ENDPOINT}/user`;
+    const res = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -68,7 +71,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
 
     if (!res.ok) {
-      console.warn(
+      console.error(
         `Operation failed for ${REACT_APP_BASE_API_ENDPOINT}, ${res.status}`
       );
       console.error(res);
