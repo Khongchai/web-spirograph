@@ -37,8 +37,9 @@ public class UserController {
                                                 request.getEmail() + " " + request.getId()))));
     }
 
+    // Login and register shares the same endpoint
     @PostMapping("${endpoint.user}")
-    public Mono<User> register(@NonNull @RequestBody RegisterUserRequest registerUserRequest) {
+    public Mono<User> loginOrRegister(@NonNull @RequestBody RegisterUserRequest registerUserRequest) {
         return userRepository.findByEmail(registerUserRequest.getEmail()).switchIfEmpty(
                 Mono.defer(() -> userRepository.save(
                         User

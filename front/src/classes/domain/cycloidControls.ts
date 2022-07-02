@@ -1,9 +1,15 @@
 import BoundingCircle from "./BoundingCircle";
 import { BaseConfiguration } from "../DTOInterfaces/ConfigurationInterface";
-import { CycloidParamsManager } from "./CycloidParams";
+import CycloidParams, { CycloidParamsManager } from "./CycloidParams";
+import { CycloidParamsArgs } from "../DTOInterfaces/CycloidParamsInterface";
 
-export interface CycloidControlsInterface
-  extends Omit<BaseConfiguration, "cycloids"> {}
+export type CycloidControlsInterface = Omit<
+  BaseConfiguration,
+  "cycloids" | "outermostBoundingCircle"
+> & {
+  cycloidManager: CycloidParamsManager;
+  outermostBoundingCircle: BoundingCircle;
+};
 
 // CycloidControlsData but turned into a class
 export default class CycloidControls implements CycloidControlsInterface {
@@ -20,6 +26,7 @@ export default class CycloidControls implements CycloidControlsInterface {
   programOnly: {
     tracePath: boolean;
   };
+  cycloidsIdMap: any;
   constructor({
     globalTimeStepScale: globalTimeStep,
     animationState,
@@ -27,13 +34,15 @@ export default class CycloidControls implements CycloidControlsInterface {
     currentCycloidId,
     cycloids,
     mode,
-    outermostBoundingCircle: outerMostBoundingCircle,
+    outermostBoundingCircle,
     scaffold,
     programOnly,
     showAllCycloids,
     traceAllCycloids,
-  }: BaseConfiguration) {
-    this.outermostBoundingCircle = outerMostBoundingCircle;
+  }: Omit<CycloidControlsInterface, "cycloidManager"> & {
+    cycloids: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[];
+  }) {
+    this.outermostBoundingCircle = outermostBoundingCircle;
     this.globalTimeStepScale = globalTimeStep;
     this.currentCycloidId = currentCycloidId;
     this.mode = mode;
@@ -48,7 +57,7 @@ export default class CycloidControls implements CycloidControlsInterface {
     this.cycloidManager.loadCycloidParamsFromArgs(
       cycloids,
       -1,
-      outerMostBoundingCircle
+      this.outermostBoundingCircle
     );
   }
 
@@ -97,44 +106,42 @@ export default class CycloidControls implements CycloidControlsInterface {
   //   ]);
   // }
   // /**
-  //  * Retrieve both the distance from the root and the objects that are in the path.
-  //  */
-  // private getTreeDistanceFromRoot(
-  //   thisCycloidId: number | string,
-  //   distanceAsLevel = 0,
-  //   objsAlongPath: CycloidParams[] = []
-  // ): { distanceAsLevel: number; objsAlongPath: CycloidParams[] } {
-  //   const cycloid = this.cycloidsIdMap[thisCycloidId] as
-  //     | CycloidParams
-  //     | undefined;
+  getTreeDistanceFromRoot(
+    thisCycloidId: number | string,
+    distanceAsLevel = 0,
+    objsAlongPath: CycloidParams[] = []
+  ): { distanceAsLevel: number; objsAlongPath: CycloidParams[] } {
+    const cycloid = this.cycloidsIdMap[thisCycloidId] as
+      | CycloidParams
+      | undefined;
 
-  //   if (!cycloid) {
-  //     throw new Error("Cycloid not found");
-  //   }
+    if (!cycloid) {
+      throw new Error("Cycloid not found");
+    }
 
-  //   const idIsRootId = thisCycloidId === -1;
+    const idIsRootId = thisCycloidId === -1;
 
-  //   if (idIsRootId) {
-  //     return {
-  //       distanceAsLevel: 0,
-  //       objsAlongPath: [],
-  //     };
-  //   }
+    if (idIsRootId) {
+      return {
+        distanceAsLevel: 0,
+        objsAlongPath: [],
+      };
+    }
 
-  //   const { boundingCircleId } = cycloid;
-  //   objsAlongPath.unshift(cycloid);
+    const { boundingCircleId } = cycloid;
+    objsAlongPath.unshift(cycloid);
 
-  //   const parentIsBoundingCircle = cycloid.boundingCircleId === -1;
-  //   if (parentIsBoundingCircle)
-  //     return {
-  //       distanceAsLevel,
-  //       objsAlongPath,
-  //     };
+    const parentIsBoundingCircle = cycloid.boundingCircleId === -1;
+    if (parentIsBoundingCircle)
+      return {
+        distanceAsLevel,
+        objsAlongPath,
+      };
 
-  //   return this.getTreeDistanceFromRoot(
-  //     boundingCircleId,
-  //     distanceAsLevel + 1,
-  //     objsAlongPath
-  //   );
-  // }
+    return this.getTreeDistanceFromRoot(
+      boundingCircleId,
+      distanceAsLevel + 1,
+      objsAlongPath
+    );
+  }
 }

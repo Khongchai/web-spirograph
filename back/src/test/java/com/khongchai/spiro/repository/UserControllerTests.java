@@ -47,7 +47,7 @@ class UserControllerTests {
     public void testNotCallingSaveIfUserAlreadyExists() {
         given(userRepository.findByEmail(anyString())).willReturn(Mono.just(mockUser));
 
-        StepVerifier.create(userController.register(mockRegisterUserRequest))
+        StepVerifier.create(userController.loginOrRegister(mockRegisterUserRequest))
             .assertNext(user -> {
                 assert(user.equals(mockUser));
                 verify(userRepository, times(1)).findByEmail(anyString());
@@ -61,7 +61,7 @@ class UserControllerTests {
         given(userRepository.save(any(User.class))).willReturn(Mono.just(mockUser));
         given(userRepository.findByEmail(anyString())).willReturn(Mono.empty());
 
-        StepVerifier.create(userController.register(mockRegisterUserRequest))
+        StepVerifier.create(userController.loginOrRegister(mockRegisterUserRequest))
                 .assertNext(user -> {
                     assert(user.equals(mockUser));
                     verify(userRepository, times(1)).findByEmail(anyString());

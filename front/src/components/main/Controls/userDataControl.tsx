@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
+import CycloidControls from "../../../classes/domain/cycloidControls";
 import { userContext } from "../../../contexts/userContext";
 import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
@@ -8,15 +9,21 @@ import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
 import { UserModal } from "./UserModal";
 
-export function UserDataControl({ tooltipText }: { tooltipText: string }) {
+export function UserDataControl({
+  tooltipText,
+  cycloidControls,
+}: {
+  tooltipText: string;
+  cycloidControls: CycloidControls;
+}) {
   const [isLogInRegisterModalOpen, setIsLogInRegisterModalOpen] =
     useState(false);
 
   const user = useContext(userContext);
 
-  const onModalBackgroundClicked = () => {
+  function onModalBackgroundClicked() {
     setIsLogInRegisterModalOpen(false);
-  };
+  }
 
   const onFormSubmit: onFormSubmitType = async ({ email, username }) => {
     const user = await UserAuthenticationRepository.loginOrRegister({

@@ -42,7 +42,10 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
         showScaffoldTooltipText="When off, only the traced path will be shown."
         cycloidControls={cycloidControls.current}
       />
-      <UserDataControl tooltipText="Save the current configuration. If not logged in, this will save locally." />
+      <UserDataControl
+        tooltipText="Save the current configuration. If not logged in, this will save locally."
+        cycloidControls={cycloidControls.current}
+      />
     </div>
   );
 };
