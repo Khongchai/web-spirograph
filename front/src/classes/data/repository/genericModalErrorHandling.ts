@@ -6,8 +6,8 @@
 export default function GenericRepositoryModalErrorHandling(
   tag: string,
   methodType: "static" | "instance"
-) {
-  return function <T extends { new (...args: any[]): {} }>(constructor: T) {
+): ClassDecorator {
+  return function (constructor) {
     const prototype =
       methodType === "static" ? constructor : constructor.prototype;
 

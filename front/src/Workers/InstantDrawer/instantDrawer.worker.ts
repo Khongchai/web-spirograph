@@ -37,27 +37,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         throw new Error("Call initializeDrawer first");
       }
 
-      const { cycloids, pointsAmount, theta, timeStepScalar } =
-        data.setParametersPayload as SetParametersPayload;
-
-      // Zero inclusive
-      if (timeStepScalar != null) {
-        drawerData.timeStepScalar = timeStepScalar;
-      }
-      // Zero inclusive
-      if (pointsAmount != null || pointsAmount != undefined) {
-        drawerData.pointsAmount = pointsAmount;
-      }
-
-      // Zero inclusive
-      if (theta != null || theta != undefined) {
-        drawerData.theta = theta;
-      }
-
-      // TODO only assign some fields, man
-      if (cycloids) {
-        drawerData.cycloids = cycloids;
-      }
+      Object.assign(drawerData, data.setParametersPayload);
 
       const { ctx, canvasHeight: h, canvasWidth: w } = drawerData;
       ctx.clearRect(w / 2, h / 2, w, h);
