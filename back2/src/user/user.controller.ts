@@ -1,10 +1,8 @@
 import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
-import { UserService } from './app.service';
-import { SavedConfiguration } from './models/SavedConfiguration';
-import { User } from './models/User';
-import './requestsDTO/LoginOrRegisterRequest';
-import { LoginOrRegisterRequest } from './requestsDTO/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from './requestsDTO/UpdateConfigurationRequest';
+import { User } from 'src/models/User';
+import { LoginOrRegisterRequest } from 'src/requestsDTO/LoginOrRegisterRequest';
+import { SaveConfigurationRequest } from 'src/requestsDTO/UpdateConfigurationRequest';
+import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
@@ -18,7 +16,7 @@ export class UserController {
 
   /**
    *
-   * If user doesn't exist, create one else log in and update the user's config.
+   * If user doesn't exist, create one, else log in and update the user's config.
    */
   @Post('/user')
   async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
@@ -29,12 +27,17 @@ export class UserController {
 
     if (user) {
       if (newConfig) {
-        await this.saveConfiguration({
+        await this.userService.update({
           newConfig,
           email,
         });
       }
       //TODO
+
+      // To login, we just check if the token in the header is the same as the current user's authentication session.
+      // We assume that the user has already gone through the otp step before arriving here.
+
+      // The otp step is how we obtain the token.
       await this.userService.login(user);
     } else {
       await this.userService.register(body);
