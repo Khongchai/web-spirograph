@@ -4,11 +4,11 @@ import { LoginOrRegisterRequest } from 'src/requestsDTO/LoginOrRegisterRequest';
 import { SaveConfigurationRequest } from 'src/requestsDTO/UpdateConfigurationRequest';
 import { UserService } from './user.service';
 
-@Controller()
+@Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/user')
+  @Get()
   async getUser(): Promise<User[]> {
     //TODO
     throw new Error('Method not implemented.');
@@ -18,7 +18,7 @@ export class UserController {
    *
    * If user doesn't exist, create one, else log in and update the user's config.
    */
-  @Post('/user')
+  @Post()
   async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
     const { email, serializedConfiguration: newConfig } = body;
     const user = await this.userService.findOne({
@@ -46,6 +46,7 @@ export class UserController {
     return await this.userService.findOne({ email });
   }
 
+  // Protected route
   @Post('/config')
   async saveConfiguration(@Body() body: SaveConfigurationRequest) {
     return await this.userService.update(body);
