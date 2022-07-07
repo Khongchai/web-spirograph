@@ -1,12 +1,26 @@
-import { Body, Controller, Get, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from 'src/auth/auth.service';
+import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { User } from 'src/models/User';
 import { LoginOrRegisterRequest } from 'src/requestsDTO/LoginOrRegisterRequest';
 import { SaveConfigurationRequest } from 'src/requestsDTO/UpdateConfigurationRequest';
-import { UserService } from './user.service';
+import { UserService } from './user/user.service';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+@Controller()
+export class Appcontroller {
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Get()
   async getUser(): Promise<User[]> {
@@ -18,8 +32,10 @@ export class UserController {
    *
    * If user doesn't exist, create one, else log in and update the user's config.
    */
-  @Post()
+  @UseGuards(LocalAuthguard)
+  @Post('auth')
   async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
+    return body.email;
     const { email, serializedConfiguration: newConfig } = body;
     const user = await this.userService.findOne({
       email,
@@ -32,13 +48,7 @@ export class UserController {
           email,
         });
       }
-      //TODO
-
-      // To login, we just check if the token in the header is the same as the current user's authentication session.
-      // We assume that the user has already gone through the otp step before arriving here.
-
-      // The otp step is how we obtain the token.
-      await this.userService.login(user);
+      await this.authService.login(user.email);
     } else {
       await this.userService.register(body);
     }

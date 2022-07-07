@@ -4,7 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { mockJwtSecret } from 'src/mock_services/secret';
 import { UserModule } from 'src/user/user.module';
 import { AuthService } from './auth.service';
-import { LocalStrategy } from './jwt.strategy';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
   imports: [
