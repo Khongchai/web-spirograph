@@ -47,6 +47,6 @@ export class UserService {
 export class SavedConfigurationService {
   constructor(
     @InjectRepository(SavedConfiguration)
-    private readonly savedConfigurationRepository: Repository<SavedConfiguration>,
+    private readonly savedConfigurationRepository: MongoRepository<SavedConfiguration>,
   ) {}
 }
