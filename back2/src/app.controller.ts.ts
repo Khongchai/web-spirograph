@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { User } from 'src/models/User';
@@ -26,7 +26,6 @@ export class Appcontroller {
   @UseGuards(LocalAuthguard)
   @Post('auth')
   async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
-    return body.email;
     const { email, serializedConfiguration: newConfig } = body;
     const user = await this.userService.findOne({
       email,
@@ -47,8 +46,9 @@ export class Appcontroller {
     return await this.userService.findOne({ email });
   }
 
+  // TODO distinction between put and post for configuration
   // Protected route
-  @Post('/config')
+  @Put('/config')
   async saveConfiguration(@Body() body: SaveConfigurationRequest) {
     return await this.userService.update(body);
   }

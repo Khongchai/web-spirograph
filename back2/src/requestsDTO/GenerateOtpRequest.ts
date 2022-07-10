@@ -1,0 +1,3 @@
+class GenerateOtpRequest {
+  email: string;
+}

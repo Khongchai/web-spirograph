@@ -5,6 +5,7 @@ import { User } from 'src/models/User';
 import { Appcontroller } from './app.controller.ts';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+    OtpModule,
   ],
   controllers: [Appcontroller],
 })
