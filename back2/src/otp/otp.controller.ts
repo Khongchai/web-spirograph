@@ -1,11 +1,15 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
+import { Body, Controller, Post } from '@nestjs/common';
 import { GenerateOtpRequest } from 'src/requestsDTO/GenerateOtpRequest';
+import { OtpService } from './otp.service';
 
-// @Controller()
+@Controller('otp')
 export class OtpController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly otpService: OtpService) {}
 
-  @Get()
-  async getOtp(@Body() body: GenerateOtpRequest) {}
+  @Post('/generate')
+  async getOtp(@Body() body: GenerateOtpRequest) {
+    await this.otpService.generateOtp(body.email);
+
+    return;
+  }
 }

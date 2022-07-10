@@ -4,10 +4,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { OtpController } from './otp.controller';
+import { OtpService } from './otp.service';
 
-// @Module({
-//   controllers: [OtpController],
-//   providers: [AuthService, UserService],
-//   imports: [AuthModule, UserModule],
-// })
+@Module({
+  controllers: [OtpController],
+  providers: [OtpService],
+  exports: [OtpService],
+})
 export class OtpModule {}
