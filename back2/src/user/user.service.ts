@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SavedConfiguration } from 'src/models/SavedConfiguration';
 import { User } from 'src/models/User';
-import { LoginOrRegisterRequest } from 'src/requestsDTO/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from 'src/requestsDTO/UpdateConfigurationRequest';
+import { LoginOrRegisterRequest } from 'src/models/requestsDTO/LoginOrRegisterRequest';
+import { SaveConfigurationRequest } from 'src/models/requestsDTO/UpdateConfigurationRequest';
 import { MongoRepository, Repository } from 'typeorm';
 
 @Injectable()

@@ -5,6 +5,9 @@ export default class DecoratorUtils {
   private static _baseLoggingMethod(
     logger: Function,
     description: string,
+    { stringifyLog } = {
+      stringifyLog: true,
+    },
   ): MethodDecorator {
     if (!logger) throw new Error('Logger is not defined');
 
@@ -16,12 +19,16 @@ export default class DecoratorUtils {
       descriptor.value = isMethodAsync
         ? async (...args) => {
             const result = await originalMethod.apply(this, args);
-            logger(`${description}${result}`);
+            logger(
+              `${description}${stringifyLog ? JSON.stringify(result) : result}`,
+            );
             return result;
           }
         : (...args) => {
             const result = originalMethod.apply(this, args);
-            logger(`${description}${result}`);
+            logger(
+              `${description}${stringifyLog ? JSON.stringify(result) : result}`,
+            );
             return result;
           };
     };
@@ -30,7 +37,7 @@ export default class DecoratorUtils {
   /**
    * Logs the return value of the current method
    */
-  static log = {
+  static returnLog = {
     debug: (description = '') =>
       DecoratorUtils._baseLoggingMethod(
         (str: string) => Logger.debug(str),

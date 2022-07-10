@@ -7,7 +7,7 @@ export class AuthService {
   constructor(private jwtTokenService: JwtService) {}
 
   async validateUserWithOtp(email: string, otpCode: string) {
-    return redis.otp[email] === otpCode;
+    return redis.otp[email].value === otpCode;
   }
 
   async login(email: string) {

@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { User } from 'src/models/User';
-import { LoginOrRegisterRequest } from 'src/requestsDTO/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from 'src/requestsDTO/UpdateConfigurationRequest';
+import { LoginOrRegisterRequest } from 'src/models/requestsDTO/LoginOrRegisterRequest';
+import { SaveConfigurationRequest } from 'src/models/requestsDTO/UpdateConfigurationRequest';
 import { UserService } from './user/user.service';
 
 @Controller()

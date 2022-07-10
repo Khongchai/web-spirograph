@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { GenerateOtpRequest } from 'src/requestsDTO/GenerateOtpRequest';
+import { Body, Controller, Get } from '@nestjs/common';
+import { GenerateOtpRequest } from 'src/models/requestsDTO/GenerateOtpRequest';
 import { OtpService } from './otp.service';
 
 @Controller('otp')
@@ -9,7 +9,5 @@ export class OtpController {
   @Get()
   async getOtp(@Body() body: GenerateOtpRequest) {
     await this.otpService.generateOtp(body.email);
-
-    return;
   }
 }

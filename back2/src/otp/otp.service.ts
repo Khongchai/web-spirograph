@@ -1,4 +1,5 @@
 import { Get, Injectable, Logger } from '@nestjs/common';
+import { Otp } from 'src/models/Otp';
 import DecoratorUtils from 'src/utils/decoratorUtils';
 import OtpUtils from 'src/utils/otpUtils';
 import { redis } from '../mock_services/redis';
@@ -12,11 +13,16 @@ export class OtpService {
    *
    * Returns the newly generated otp
    */
-  @DecoratorUtils.log.debug('Generated Otp is ')
-  async generateOtp(email: string) {
+  @DecoratorUtils.returnLog.debug('Generated Otp object is ')
+  async generateOtp(email: string): Promise<Otp> {
     const _redis = redis;
     const newOtp = OtpUtils.generate();
 
-    return (_redis.otp[email] = newOtp);
+    const newOtpObject = (_redis.otp[email] = new Otp({
+      associatedEmail: email,
+      value: newOtp,
+    }));
+
+    return newOtpObject;
   }
 }
