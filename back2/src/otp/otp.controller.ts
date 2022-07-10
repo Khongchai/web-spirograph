@@ -1,5 +1,5 @@
 import { Body, Controller, Get } from '@nestjs/common';
-import { GenerateOtpRequest } from 'src/models/requestsDTO/GenerateOtpRequest';
+import { GenerateOtpRequest } from 'src/models/requestDTOs/GenerateOtpRequest';
 import { OtpService } from './otp.service';
 
 @Controller('otp')

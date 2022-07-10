@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { User } from 'src/models/User';
-import { LoginOrRegisterRequest } from 'src/models/requestsDTO/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from 'src/models/requestsDTO/UpdateConfigurationRequest';
+import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
+import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
 import { UserService } from './user/user.service';
 
 @Controller()
@@ -25,15 +25,17 @@ export class Appcontroller {
    */
   @UseGuards(LocalAuthguard)
   @Post('auth')
-  async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
+  async loginOrRegister(
+    @Body() body: LoginOrRegisterRequest,
+  ): Promise<LoginOrRegisterResponse> {
     const jwt: { accessToken: string } = await this.authService.login(
       body.email,
     );
 
-    // const { email, serializedConfiguration: newConfig } = body;
-    // const user = await this.userService.findOne({
-    //   email,
-    // });
+    const { email, serializedConfiguration: newConfig } = body;
+    const user = await this.userService.findOne({
+      email,
+    });
 
     // if (user) {
     //   if (newConfig) {
@@ -47,7 +49,11 @@ export class Appcontroller {
     //   await this.userService.register(body);
     // }
 
-    return jwt;
+    return {
+      ...jwt,
+      email: body.email,
+      processType: user ? 'login' : 'register',
+    };
   }
 
   // TODO distinction between put and post for configuration
