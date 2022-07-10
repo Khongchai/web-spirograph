@@ -28,31 +28,33 @@ export class Appcontroller {
   async loginOrRegister(
     @Body() body: LoginOrRegisterRequest,
   ): Promise<LoginOrRegisterResponse> {
-    const jwt: { accessToken: string } = await this.authService.login(
+    const jwt: { accessToken: string } = await this.authService.generateJwt(
       body.email,
     );
 
     const { email, serializedConfiguration: newConfig } = body;
-    const user = await this.userService.findOne({
+    const queriedUser = await this.userService.findOne({
       email,
     });
 
-    // if (user) {
-    //   if (newConfig) {
-    //     await this.userService.update({
-    //       newConfig,
-    //       email,
-    //     });
-    //   }
-    //   await this.authService.login(user.email);
-    // } else {
-    //   await this.userService.register(body);
-    // }
+    // We will also update the configuration if the user exists
+    if (queriedUser) {
+      if (newConfig) {
+        await this.userService.update({
+          newConfig,
+          email,
+        });
+      }
+
+      await this.authService.generateJwt(queriedUser.email);
+    } else {
+      await this.userService.createUser(body);
+    }
 
     return {
       ...jwt,
       email: body.email,
-      processType: user ? 'login' : 'register',
+      processType: queriedUser ? 'login' : 'register',
     };
   }
 

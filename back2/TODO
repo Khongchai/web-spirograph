@@ -1,4 +1,3 @@
-Resolve module imports dependency
+Continue here: https://docs.nestjs.com/security/authentication#implementing-passport-jwt
 
-Check if login route returns a user
-https://docs.nestjs.com/security/authentication
+Also, for postman, grab the stringified configuration object from the frontend log

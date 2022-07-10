@@ -17,7 +17,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   }
 
-  async register(body: LoginOrRegisterRequest): Promise<User> {
+  async createUser(body: LoginOrRegisterRequest): Promise<User> {
     const newUser = new User({
       email: body.email,
       savedConfigurations: [
