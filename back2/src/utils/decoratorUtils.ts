@@ -1,0 +1,40 @@
+import { Logger } from '@nestjs/common';
+import ReflectionUtils from './reflectionUtils';
+
+export default class DecoratorUtils {
+  private static _baseLoggingMethod(
+    logger: Function,
+    description: string,
+  ): MethodDecorator {
+    if (!logger) throw new Error('Logger is not defined');
+
+    return (_, __, descriptor) => {
+      const originalMethod: any = descriptor.value;
+      const isMethodAsync = ReflectionUtils.isFunctionAsync(originalMethod);
+
+      //@ts-ignore
+      descriptor.value = isMethodAsync
+        ? async (...args) => {
+            const result = await originalMethod.apply(this, args);
+            logger(`${description}${result}`);
+            return result;
+          }
+        : (...args) => {
+            const result = originalMethod.apply(this, args);
+            logger(`${description}${result}`);
+            return result;
+          };
+    };
+  }
+
+  /**
+   * Logs the return value of the current method
+   */
+  static log = {
+    debug: (description = '') =>
+      DecoratorUtils._baseLoggingMethod(
+        (str: string) => Logger.debug(str),
+        description,
+      ),
+  };
+}

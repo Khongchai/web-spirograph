@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { GenerateOtpRequest } from 'src/requestsDTO/GenerateOtpRequest';
 import { OtpService } from './otp.service';
 
@@ -6,7 +6,7 @@ import { OtpService } from './otp.service';
 export class OtpController {
   constructor(private readonly otpService: OtpService) {}
 
-  @Post('/generate')
+  @Get()
   async getOtp(@Body() body: GenerateOtpRequest) {
     await this.otpService.generateOtp(body.email);
 
