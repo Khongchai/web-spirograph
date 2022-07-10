@@ -7,6 +7,9 @@ export class LoginOrRegisterRequest {
   @IsNotEmpty()
   username: string;
 
+  @IsNotEmpty()
+  otpCode: string;
+
   /** No need to de-serialize this as we're just gonna be saving into the db as is. */
   serializedConfiguration: string | null;
 }

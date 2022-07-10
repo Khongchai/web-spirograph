@@ -26,24 +26,28 @@ export class Appcontroller {
   @UseGuards(LocalAuthguard)
   @Post('auth')
   async loginOrRegister(@Body() body: LoginOrRegisterRequest) {
-    const { email, serializedConfiguration: newConfig } = body;
-    const user = await this.userService.findOne({
-      email,
-    });
+    const jwt: { accessToken: string } = await this.authService.login(
+      body.email,
+    );
 
-    if (user) {
-      if (newConfig) {
-        await this.userService.update({
-          newConfig,
-          email,
-        });
-      }
-      await this.authService.login(user.email);
-    } else {
-      await this.userService.register(body);
-    }
+    // const { email, serializedConfiguration: newConfig } = body;
+    // const user = await this.userService.findOne({
+    //   email,
+    // });
 
-    return await this.userService.findOne({ email });
+    // if (user) {
+    //   if (newConfig) {
+    //     await this.userService.update({
+    //       newConfig,
+    //       email,
+    //     });
+    //   }
+    //   await this.authService.login(user.email);
+    // } else {
+    //   await this.userService.register(body);
+    // }
+
+    return jwt;
   }
 
   // TODO distinction between put and post for configuration
