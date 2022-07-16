@@ -24,10 +24,15 @@ export class AuthService {
 
   @DecoratorUtils.returnLog.debug('Generated JWT object: ')
   async generateJwt(email: string) {
-    const payload: JwtSignOptions = { issuer: email, subject: email };
+    const payload: JwtSignOptions = {
+      issuer: email,
+      subject: email,
+    };
     //TODO store jwt for later use
     return {
-      accessToken: this.jwtTokenService.sign(payload),
+      accessToken: this.jwtTokenService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+      }),
     };
   }
 }

@@ -16,7 +16,5 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const { issuer, subject } = payload;
 
     return { issuer, subject };
-    //TODO remove
-    return { userId: payload.sub, username: payload.username };
   }
 }
