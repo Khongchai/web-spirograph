@@ -1,5 +1,9 @@
-Test the super otpCode and find out why tf collection variables are not working in postman
+Synchronize true doesn't reset the database...
 
 Write the IsNotEmtpy decorator yourself and remove the class-validator package.
 
-Continue here: https://docs.nestjs.com/security/authentication#implementing-passport-jwt
+Play around with everything and simulate the whole process (means you'll also have to implement the user get endpoint so that we can validate whether the user exists.)
+
+write unit tests
+
+Integrate redis

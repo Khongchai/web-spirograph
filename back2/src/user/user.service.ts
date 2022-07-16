@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SavedConfiguration } from 'src/models/SavedConfiguration';
 import { User } from 'src/models/User';
@@ -18,6 +18,13 @@ export class UserService {
   }
 
   async createUser(body: LoginOrRegisterRequest): Promise<User> {
+    if (!body.username) {
+      throw new HttpException(
+        'A username is required for a new user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newUser = new User({
       email: body.email,
       savedConfigurations: [

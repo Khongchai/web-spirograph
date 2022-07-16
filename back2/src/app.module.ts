@@ -16,7 +16,7 @@ import { ConfigModule } from '@nestjs/config';
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT),
       entities: [User, SavedConfiguration],
-
+      dropSchema: true,
       synchronize: true,
       database: process.env.DB_NAME,
     }),

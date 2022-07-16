@@ -8,8 +8,8 @@ export class LoginOrRegisterRequest {
   @IsNotEmpty()
   otpCode: string;
 
-  username: string;
+  username?: string;
 
   /** No need to de-serialize this as we're just gonna be saving into the db as is. */
-  serializedConfiguration: string | null;
+  serializedConfiguration?: string;
 }
