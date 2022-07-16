@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { User } from 'src/models/User';
@@ -61,5 +69,11 @@ export class Appcontroller {
   @Put('config')
   async saveConfiguration(@Body() body: SaveConfigurationRequest) {
     return await this.userService.update(body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('config')
+  async deleteconfiguration(@Body() body: SaveConfigurationRequest) {
+    throw new Error('Method not implemented.');
   }
 }

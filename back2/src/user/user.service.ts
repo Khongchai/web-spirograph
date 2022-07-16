@@ -39,6 +39,11 @@ export class UserService {
   async update(body: SaveConfigurationRequest): Promise<User> {
     const { email, newConfig } = body;
     const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     await this.userRepository.update(user.id, {
       savedConfigurations: [
         ...user.savedConfigurations,
@@ -46,7 +51,11 @@ export class UserService {
       ],
     });
 
-    return user;
+    const updatedUser = await this.userRepository.findOne({
+      where: { id: user.id },
+    });
+
+    return updatedUser;
   }
 }
 

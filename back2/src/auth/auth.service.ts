@@ -28,11 +28,14 @@ export class AuthService {
       issuer: email,
       subject: email,
     };
-    //TODO store jwt for later use
-    return {
+
+    const jwt = {
       accessToken: this.jwtTokenService.sign(payload, {
         secret: process.env.JWT_SECRET,
       }),
     };
+
+    //TODO set expiry date too for the real thing.
+    return jwt;
   }
 }

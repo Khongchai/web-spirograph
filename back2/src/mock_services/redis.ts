@@ -11,4 +11,5 @@ export const redis = {
       value: '654321',
     }),
   } as Record<string, Otp>,
+  token: {},
 };
