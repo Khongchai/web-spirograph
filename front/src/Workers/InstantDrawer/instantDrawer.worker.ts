@@ -1,13 +1,10 @@
-import computedEpitrochoid from "./utils/computeEpitrochoid";
 import {
   InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
-  SetParametersPayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
-import { createTextChangeRange } from "typescript";
 
 export interface DrawerData {
   cycloids: InstantDrawCycloid[];

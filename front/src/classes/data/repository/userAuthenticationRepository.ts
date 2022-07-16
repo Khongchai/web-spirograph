@@ -18,7 +18,6 @@ interface RegisterInterface {
 
 @GenericRepositoryModalErrorHandling("UserAuthenticationRepository", "static")
 export class UserAuthenticationRepository extends BaseNetworkRepository {
-  // TODO Make this work without any otp for now, and then open a websocket and wait for a response (after otp validation).
   static async loginOrRegisterOtpRequest({
     email,
     cycloidControls,
@@ -66,7 +65,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       body: JSON.stringify({
         email,
         username,
-        baseConfiguration: baseConfiguration,
+        baseConfiguration,
       }),
     });
 

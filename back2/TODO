@@ -1,4 +1,8 @@
-Synchronize true doesn't reset the database...
+GET user
+
+DELETE Config
+
+DELETE User
 
 Write the IsNotEmtpy decorator yourself and remove the class-validator package.
 
