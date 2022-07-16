@@ -1,3 +1,5 @@
 Test the super otpCode and find out why tf collection variables are not working in postman
 
+Write the IsNotEmtpy decorator yourself and remove the class-validator package.
+
 Continue here: https://docs.nestjs.com/security/authentication#implementing-passport-jwt

@@ -5,6 +5,7 @@ import { User } from 'src/models/User';
 import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
 import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
 import { UserService } from './user/user.service';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Controller()
 export class Appcontroller {
@@ -56,10 +57,8 @@ export class Appcontroller {
     };
   }
 
-  // TODO distinction between put and post for configuration
-  // Protected route
-  //TODO protect this with jwt
-  @Put('/config')
+  @UseGuards(JwtAuthGuard)
+  @Put('config')
   async saveConfiguration(@Body() body: SaveConfigurationRequest) {
     return await this.userService.update(body);
   }
