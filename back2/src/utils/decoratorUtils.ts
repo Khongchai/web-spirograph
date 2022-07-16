@@ -17,22 +17,20 @@ export default class DecoratorUtils {
 
       //@ts-ignore
       descriptor.value = isMethodAsync
-        ? async (...args) => {
+        ? async function (...args) {
             const result = await originalMethod.apply(this, args);
             logger(
               `${description}${stringifyLog ? JSON.stringify(result) : result}`,
             );
             return result;
           }
-        : (...args) => {
+        : function (...args) {
             const result = originalMethod.apply(this, args);
             logger(
               `${description}${stringifyLog ? JSON.stringify(result) : result}`,
             );
             return result;
           };
-
-      return object;
     };
   }
 
@@ -40,10 +38,11 @@ export default class DecoratorUtils {
    * Logs the return value of the current method
    */
   static returnLog = {
-    debug: (description = '') =>
-      DecoratorUtils._baseLoggingMethod(
+    debug: function (description = '') {
+      return DecoratorUtils._baseLoggingMethod(
         (str: string) => Logger.debug(str),
         description,
-      ),
+      );
+    },
   };
 }
