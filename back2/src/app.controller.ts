@@ -45,8 +45,6 @@ export class Appcontroller {
           email,
         });
       }
-
-      await this.authService.generateJwt(queriedUser.email);
     } else {
       await this.userService.createUser(body);
     }
@@ -60,6 +58,7 @@ export class Appcontroller {
 
   // TODO distinction between put and post for configuration
   // Protected route
+  //TODO protect this with jwt
   @Put('/config')
   async saveConfiguration(@Body() body: SaveConfigurationRequest) {
     return await this.userService.update(body);

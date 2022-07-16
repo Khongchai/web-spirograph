@@ -5,20 +5,20 @@ import DecoratorUtils from 'src/utils/decoratorUtils';
 
 @Injectable()
 export class AuthService {
-  private static _superPassword = '999999';
-  private static env = process.env.NODE_ENV;
+  private static superOtpPassword = '999999';
 
   constructor(private jwtTokenService: JwtService) {}
 
   async validateUserWithOtp(email: string, otpCode: string) {
+    const env = process.env.NODE_ENV;
+
     if (
-      AuthService.env === 'development' &&
-      AuthService._superPassword === otpCode &&
+      env === 'development' &&
+      AuthService.superOtpPassword === otpCode &&
       redis.otp[email]
     ) {
       return true;
     }
-
     return redis.otp[email]?.value === otpCode;
   }
 

@@ -11,7 +11,7 @@ export default class DecoratorUtils {
   ): MethodDecorator {
     if (!logger) throw new Error('Logger is not defined');
 
-    return (_, __, descriptor) => {
+    return (object, __, descriptor) => {
       const originalMethod: any = descriptor.value;
       const isMethodAsync = ReflectionUtils.isFunctionAsync(originalMethod);
 
@@ -31,6 +31,8 @@ export default class DecoratorUtils {
             );
             return result;
           };
+
+      return object;
     };
   }
 
