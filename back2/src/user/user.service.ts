@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SavedConfiguration } from 'src/models/SavedConfiguration';
-import { User } from 'src/models/User';
-import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
-import { MongoRepository, Repository } from 'typeorm';
+import { LoginOrRegisterRequest } from '../models/requestDTOs/LoginOrRegisterRequest';
+import { SavedConfiguration } from '../models/SavedConfiguration';
+import { User } from '../models/User';
+import { MongoRepository } from 'typeorm';
 
 @Injectable()
 export class UserService {
