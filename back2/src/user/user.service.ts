@@ -13,8 +13,18 @@ export class UserService {
     private readonly userRepository: MongoRepository<User>,
   ) {}
 
-  async findOne({ email }: { email: string }): Promise<User> {
-    return await this.userRepository.findOne({ where: { email } });
+  async findOne({
+    email,
+    throwErrorIfNotExist: checkExist = true,
+  }: {
+    email: string;
+    throwErrorIfNotExist?: boolean;
+  }): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user && checkExist) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 
   async createUser(body: LoginOrRegisterRequest): Promise<User> {

@@ -1,9 +1,18 @@
-import { Body, Controller, Delete, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
 import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { LoginOrRegisterResponse } from './models/responseDTOs/LoginOrRegisterResponse';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
 
@@ -30,6 +39,7 @@ export class Appcontroller {
     const { serializedConfiguration: newConfig, email } = body;
     const queriedUser = await this.userService.findOne({
       email,
+      throwErrorIfNotExist: false,
     });
 
     // We will also update the configuration if the user exists
@@ -52,12 +62,25 @@ export class Appcontroller {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('config')
+  async getConfiguration(@DecoratorUtils.user.authUser() email: string) {
+    const user = await this.userService.findOne({ email });
+
+    return {
+      savedConfigurations: user.savedConfigurations,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Put('config')
   async saveConfiguration(
     @Body() body: SaveConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
   ) {
-    return await this.userService.update({ email, newConfig: body.newConfig });
+    await this.userService.update({ email, newConfig: body.newConfig });
+    const updatedUser = await this.userService.findOne({ email: email });
+
+    return updatedUser;
   }
 
   @UseGuards(JwtAuthGuard)

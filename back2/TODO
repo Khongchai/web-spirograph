@@ -1,9 +1,9 @@
+write unit tests
+
 DELETE Config
 
 DELETE User
 
 Play around with everything and simulate the whole process (means you'll also have to implement the user get endpoint so that we can validate whether the user exists.)
-
-write unit tests
 
 Integrate redis

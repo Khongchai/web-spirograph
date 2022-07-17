@@ -1,4 +1,6 @@
-class LoginOrRegisterResponse {
+import { SavedConfiguration } from '../SavedConfiguration';
+
+export class LoginOrRegisterResponse {
   constructor(
     public accessToken: string,
     public email: string,
