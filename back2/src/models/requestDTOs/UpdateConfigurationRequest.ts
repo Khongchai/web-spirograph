@@ -1,9 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
+import DecoratorUtils from 'src/utils/decoratorUtils';
 
 export class SaveConfigurationRequest {
-  @IsNotEmpty()
-  email: string;
-
   @IsNotEmpty()
   newConfig: string;
 }

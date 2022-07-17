@@ -1,19 +1,11 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
-import { User } from 'src/models/User';
 import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
 import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
-import { UserService } from './user/user.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { UserService } from './user/user.service';
+import DecoratorUtils from './utils/decoratorUtils';
 
 @Controller()
 export class Appcontroller {
@@ -21,12 +13,6 @@ export class Appcontroller {
     private readonly userService: UserService,
     private readonly authService: AuthService,
   ) {}
-
-  @Get()
-  async getUser(): Promise<User[]> {
-    //TODO
-    throw new Error('Method not implemented.');
-  }
 
   /**
    *
@@ -41,7 +27,7 @@ export class Appcontroller {
       body.email,
     );
 
-    const { email, serializedConfiguration: newConfig } = body;
+    const { serializedConfiguration: newConfig, email } = body;
     const queriedUser = await this.userService.findOne({
       email,
     });
@@ -67,8 +53,11 @@ export class Appcontroller {
 
   @UseGuards(JwtAuthGuard)
   @Put('config')
-  async saveConfiguration(@Body() body: SaveConfigurationRequest) {
-    return await this.userService.update(body);
+  async saveConfiguration(
+    @Body() body: SaveConfigurationRequest,
+    @DecoratorUtils.user.authUser() email: string,
+  ) {
+    return await this.userService.update({ email, newConfig: body.newConfig });
   }
 
   @UseGuards(JwtAuthGuard)

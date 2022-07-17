@@ -36,7 +36,7 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  async update(body: SaveConfigurationRequest): Promise<User> {
+  async update(body: { email: string; newConfig: string }): Promise<User> {
     const { email, newConfig } = body;
     const user = await this.userRepository.findOne({ where: { email } });
 

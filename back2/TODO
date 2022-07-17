@@ -1,10 +1,6 @@
-GET user
-
 DELETE Config
 
 DELETE User
-
-Write the IsNotEmtpy decorator yourself and remove the class-validator package.
 
 Play around with everything and simulate the whole process (means you'll also have to implement the user get endpoint so that we can validate whether the user exists.)
 

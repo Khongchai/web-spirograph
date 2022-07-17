@@ -35,7 +35,6 @@ export class AuthService {
       }),
     };
 
-    //TODO set expiry date too for the real thing.
     return jwt;
   }
 }

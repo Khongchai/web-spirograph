@@ -1,4 +1,10 @@
-import { Logger } from '@nestjs/common';
+import {
+  createParamDecorator,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import ReflectionUtils from './reflectionUtils';
 
 export default class DecoratorUtils {
@@ -11,7 +17,7 @@ export default class DecoratorUtils {
   ): MethodDecorator {
     if (!logger) throw new Error('Logger is not defined');
 
-    return (object, __, descriptor) => {
+    return (_, __, descriptor) => {
       const originalMethod: any = descriptor.value;
       const isMethodAsync = ReflectionUtils.isFunctionAsync(originalMethod);
 
@@ -44,5 +50,12 @@ export default class DecoratorUtils {
         description,
       );
     },
+  };
+
+  static user = {
+    authUser: createParamDecorator((_, req) => {
+      const userEmail = req.switchToHttp().getRequest().user.issuer;
+      return userEmail;
+    }),
   };
 }
