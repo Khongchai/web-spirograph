@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { GenerateOtpRequest } from 'src/models/requestDTOs/GenerateOtpRequest';
 import { OtpController } from './otp.controller';
 import { OtpService } from './otp.service';
 
