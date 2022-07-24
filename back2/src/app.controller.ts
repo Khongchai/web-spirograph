@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Put,
   UseGuards,
@@ -10,12 +12,15 @@ import {
 import { AuthService } from 'src/auth/auth.service';
 import { LocalAuthguard } from 'src/auth/local-auth.guard';
 import { LoginOrRegisterRequest } from 'src/models/requestDTOs/LoginOrRegisterRequest';
-import { SaveConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
+import { UpdateConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigurationRequest';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { DeleteConfigurationRequest } from './models/requestDTOs/DeleteConfigurationRequest';
 import { LoginOrRegisterResponse } from './models/responseDTOs/LoginOrRegisterResponse';
+import { SavedConfiguration } from './models/SavedConfiguration';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
 
+//TODO non-http logic from these controllers should be moved to a service.
 @Controller()
 export class Appcontroller {
   constructor(
@@ -46,7 +51,7 @@ export class Appcontroller {
     if (queriedUser) {
       if (newConfig) {
         await this.userService.update({
-          newConfig,
+          newConfigs: [new SavedConfiguration({ data: newConfig })],
           email,
         });
       }
@@ -64,28 +69,44 @@ export class Appcontroller {
   @UseGuards(JwtAuthGuard)
   @Get('config')
   async getConfiguration(@DecoratorUtils.user.authUser() email: string) {
-    const user = await this.userService.findOne({ email });
-
-    return {
-      savedConfigurations: user.savedConfigurations,
-    };
+    return await this.userService.getConfigurations(email);
   }
 
   @UseGuards(JwtAuthGuard)
   @Put('config')
   async saveConfiguration(
-    @Body() body: SaveConfigurationRequest,
+    @Body() body: UpdateConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
   ) {
-    await this.userService.update({ email, newConfig: body.newConfig });
-    const updatedUser = await this.userService.findOne({ email: email });
+    const savedConfigurations = await this.userService.getConfigurations(email);
+    const updatedConfigs: SavedConfiguration[] = [
+      ...savedConfigurations,
+      new SavedConfiguration({ data: body.newConfig }),
+    ];
+    const updatedUser = await this.userService.update({
+      email,
+      newConfigs: updatedConfigs,
+    });
 
     return updatedUser;
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('config')
-  async deleteconfiguration(@Body() body: SaveConfigurationRequest) {
-    throw new Error('Method not implemented.');
+  async deleteconfiguration(
+    @Body() body: DeleteConfigurationRequest,
+    @DecoratorUtils.user.authUser() email: string,
+  ) {
+    const savedConfigurations = await this.userService.getConfigurations(email);
+    const updatedConfigs: SavedConfiguration[] = savedConfigurations.filter(
+      (config) => config.id !== body.configurationId,
+    );
+    if (updatedConfigs === savedConfigurations) {
+      throw new HttpException(
+        'Configs of given UUID not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return await this.userService.update({ email, newConfigs: updatedConfigs });
   }
 }

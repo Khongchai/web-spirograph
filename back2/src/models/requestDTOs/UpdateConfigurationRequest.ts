@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class SaveConfigurationRequest {
+export class UpdateConfigurationRequest {
   @IsNotEmpty()
   newConfig: string;
 }

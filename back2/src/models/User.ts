@@ -12,7 +12,7 @@ export class User {
   @Column()
   username: string;
 
-  @Column(() => SavedConfiguration)
+  @Column()
   savedConfigurations: SavedConfiguration[];
 
   constructor(user: Omit<User, 'id'>) {

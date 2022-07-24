@@ -26,6 +26,18 @@ export class UserService {
     return user;
   }
 
+  async getConfigurations(email: string): Promise<SavedConfiguration[]> {
+    return await this.userRepository
+      .findOne({ where: { email } })
+      .then((user) => {
+        if (!user) {
+          throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+        return user;
+      })
+      .then((user) => user.savedConfigurations);
+  }
+
   async createUser(body: LoginOrRegisterRequest): Promise<User> {
     if (!body.username) {
       throw new HttpException(
@@ -45,33 +57,25 @@ export class UserService {
     return await this.userRepository.save(newUser);
   }
 
-  async update(body: { email: string; newConfig: string }): Promise<User> {
-    const { email, newConfig } = body;
-    const user = await this.userRepository.findOne({ where: { email } });
+  async update(body: {
+    email: string;
+    newConfigs: SavedConfiguration[];
+  }): Promise<User> {
+    const { email, newConfigs } = body;
+    let user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     await this.userRepository.update(user.id, {
-      savedConfigurations: [
-        ...user.savedConfigurations,
-        new SavedConfiguration({ data: newConfig }),
-      ],
+      savedConfigurations: newConfigs,
     });
 
-    const updatedUser = await this.userRepository.findOne({
-      where: { id: user.id },
+    user = await this.userRepository.findOne({
+      where: { email },
     });
 
-    return updatedUser;
+    return user;
   }
-}
-
-@Injectable()
-export class SavedConfigurationService {
-  constructor(
-    @InjectRepository(SavedConfiguration)
-    private readonly savedConfigurationRepository: MongoRepository<SavedConfiguration>,
-  ) {}
 }

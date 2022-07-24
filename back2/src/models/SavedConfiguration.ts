@@ -1,14 +1,15 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { randomUUID } from 'crypto';
 
-@Entity()
 export class SavedConfiguration {
-  @ObjectIdColumn()
-  id: ObjectID;
+  //Just a unique identifier, as this is not a typeORM entity
+  id: string;
 
-  @Column()
   data: string;
 
   constructor(savedConfiguration: Omit<SavedConfiguration, 'id'>) {
-    Object.assign(this, savedConfiguration);
+    Object.assign(this, {
+      id: randomUUID(),
+      data: savedConfiguration.data,
+    } as SavedConfiguration);
   }
 }
