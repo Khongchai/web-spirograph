@@ -101,7 +101,7 @@ export class Appcontroller {
     const updatedConfigs: SavedConfiguration[] = savedConfigurations.filter(
       (config) => config.id !== body.configurationId,
     );
-    if (updatedConfigs === savedConfigurations) {
+    if (updatedConfigs.length === savedConfigurations.length) {
       throw new HttpException(
         'Configs of given UUID not found',
         HttpStatus.NOT_FOUND,
