@@ -33,7 +33,7 @@ export class Appcontroller {
   async loginOrRegister(
     @Body() body: LoginOrRegisterRequest,
   ): Promise<LoginOrRegisterResponse> {
-    return await this.userService.loginOrRegister({
+    return await this.authService.loginOrRegister({
       email: body.email,
       newConfiguration: body.serializedConfiguration,
       username: body.username,

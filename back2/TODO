@@ -1,12 +1,10 @@
-write unit tests
-
-Separate HTTP logic from business logic << this
+This service is in dire need of unit tests....
 
 DELETE User
 
-Play around with everything and simulate the whole process (means you'll also have to implement the user get endpoint so that we can validate whether the user exists.)
-
 Integrate with frontend
+
+> > > > > really need some unit tests here before integrating with redis.
 
 Integrate redis
 

@@ -1,7 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
-import { LoginOrRegisterResponse } from 'src/models/responseDTOs/LoginOrRegisterResponse';
 import { MongoRepository } from 'typeorm';
 import { SavedConfiguration } from '../models/SavedConfiguration';
 import { User } from '../models/User';
@@ -9,60 +13,9 @@ import { User } from '../models/User';
 @Injectable()
 export class UserService {
   constructor(
-    private readonly authService: AuthService,
     @InjectRepository(User)
     private readonly userRepository: MongoRepository<User>,
   ) {}
-
-  //TODO move to auth service
-  async loginOrRegister({
-    email,
-    newConfiguration,
-    username,
-  }: {
-    email: string;
-    newConfiguration?: string;
-    username?: string;
-  }) {
-    const jwt: { accessToken: string } = await this.authService.generateJwt(
-      email,
-    );
-
-    const queriedUser = await this.findOne({
-      email,
-      throwErrorIfNotExist: false,
-    });
-
-    // We will also update the configuration if the user exists
-    if (queriedUser) {
-      if (newConfiguration) {
-        await this.updateConfigurations({
-          newConfigs: [newConfiguration],
-          email,
-          addNewOrReplace: 'replace',
-        });
-      }
-    } else {
-      if (!username) {
-        throw new HttpException(
-          'A username is required for a new user',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      await this.createNewUser({
-        email,
-        username,
-        configuration: newConfiguration,
-      });
-    }
-
-    return new LoginOrRegisterResponse(
-      jwt.accessToken,
-      email,
-      queriedUser ? 'login' : 'register',
-    );
-  }
 
   async findOne({
     email,
