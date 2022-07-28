@@ -38,6 +38,26 @@ export class UserService {
       .then((user) => user.savedConfigurations);
   }
 
+  async updateConfiguration({
+    email,
+    newConfig,
+  }: {
+    email: string;
+    newConfig: string;
+  }): Promise<User> {
+    const savedConfigurations = await this.getConfigurations(email);
+    const updatedConfigs: SavedConfiguration[] = [
+      ...savedConfigurations,
+      new SavedConfiguration({ data: newConfig }),
+    ];
+    const updatedUser = await this.update({
+      email,
+      newConfigs: updatedConfigs,
+    });
+
+    return updatedUser;
+  }
+
   async createUser(body: LoginOrRegisterRequest): Promise<User> {
     if (!body.username) {
       throw new HttpException(

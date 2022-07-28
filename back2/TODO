@@ -1,9 +1,13 @@
 write unit tests
 
-DELETE Config
+Separate HTTP logic from business logic << this
 
 DELETE User
 
 Play around with everything and simulate the whole process (means you'll also have to implement the user get endpoint so that we can validate whether the user exists.)
 
+Integrate with frontend
+
 Integrate redis
+
+DEPLOYMENT!

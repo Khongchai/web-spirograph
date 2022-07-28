@@ -20,7 +20,6 @@ import { SavedConfiguration } from './models/SavedConfiguration';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
 
-//TODO non-http logic from these controllers should be moved to a service.
 @Controller()
 export class Appcontroller {
   constructor(
@@ -78,17 +77,10 @@ export class Appcontroller {
     @Body() body: UpdateConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
   ) {
-    const savedConfigurations = await this.userService.getConfigurations(email);
-    const updatedConfigs: SavedConfiguration[] = [
-      ...savedConfigurations,
-      new SavedConfiguration({ data: body.newConfig }),
-    ];
-    const updatedUser = await this.userService.update({
+    return await this.userService.updateConfiguration({
       email,
-      newConfigs: updatedConfigs,
+      newConfig: body.newConfig,
     });
-
-    return updatedUser;
   }
 
   @UseGuards(JwtAuthGuard)
