@@ -3,6 +3,7 @@ import CycloidControls from "../classes/domain/cycloidControls";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
+import { NetworkErrorBoundary } from "../components/main/Shared/NetworkErrorBoundary";
 import {
   Rerender,
   RerenderToggle,

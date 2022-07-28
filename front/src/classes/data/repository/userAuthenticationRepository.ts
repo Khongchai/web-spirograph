@@ -1,10 +1,11 @@
 import { REACT_APP_BASE_API_ENDPOINT } from "../../../environmentVariables";
+import { UndefinedError } from "../../customEvents";
 import CycloidControls from "../../domain/cycloidControls";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
-import GenericRepositoryModalErrorHandling from "./genericModalErrorHandling";
+import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
 
 interface LoginInterface {
   email: string;
@@ -16,7 +17,7 @@ interface RegisterInterface {
   cycloidControls: CycloidControls;
 }
 
-@GenericRepositoryModalErrorHandling("UserAuthenticationRepository", "static")
+@NetworkErrorPropagatorDelegate("UserAuthenticationRepository", "static")
 export class UserAuthenticationRepository extends BaseNetworkRepository {
   static async loginOrRegisterOtpRequest({
     email,
@@ -70,11 +71,8 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
 
     if (!res.ok) {
-      console.error(
-        `Operation failed for ${REACT_APP_BASE_API_ENDPOINT}, ${res.status}`
-      );
-      console.error(res);
-      throw new Error(res.statusText);
+      console.error(`Operation failed for ${REACT_APP_BASE_API_ENDPOINT}`);
+      throw new UndefinedError(res);
     }
 
     const json = (await res.json()) as LogInOrRegisterOtpResponse;

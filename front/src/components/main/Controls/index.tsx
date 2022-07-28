@@ -1,6 +1,7 @@
 import React, { MutableRefObject } from "react";
 import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
+import { NetworkErrorBoundary } from "../Shared/NetworkErrorBoundary";
 import Global from "./global";
 import Local from "./local";
 import NonCycloidControls from "./nonCycloidControls";
@@ -42,10 +43,12 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
         showScaffoldTooltipText="When off, only the traced path will be shown."
         cycloidControls={cycloidControls.current}
       />
-      <UserDataControl
-        tooltipText="Save the current configuration. If not logged in, this will save locally."
-        cycloidControls={cycloidControls.current}
-      />
+      <NetworkErrorBoundary>
+        <UserDataControl
+          tooltipText="Save the current configuration. If not logged in, this will save locally."
+          cycloidControls={cycloidControls.current}
+        />
+      </NetworkErrorBoundary>
     </div>
   );
 };
