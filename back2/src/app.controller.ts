@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Post,
   Put,
   UseGuards,
@@ -16,7 +14,7 @@ import { UpdateConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigu
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { DeleteConfigurationRequest } from './models/requestDTOs/DeleteConfigurationRequest';
 import { LoginOrRegisterResponse } from './models/responseDTOs/LoginOrRegisterResponse';
-import { SavedConfiguration } from './models/SavedConfiguration';
+import { User } from './models/User';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
 
@@ -28,7 +26,6 @@ export class Appcontroller {
   ) {}
 
   /**
-   *
    * If user doesn't exist, create one, else log in and update the user's config.
    */
   @UseGuards(LocalAuthguard)
@@ -36,33 +33,11 @@ export class Appcontroller {
   async loginOrRegister(
     @Body() body: LoginOrRegisterRequest,
   ): Promise<LoginOrRegisterResponse> {
-    const jwt: { accessToken: string } = await this.authService.generateJwt(
-      body.email,
-    );
-
-    const { serializedConfiguration: newConfig, email } = body;
-    const queriedUser = await this.userService.findOne({
-      email,
-      throwErrorIfNotExist: false,
-    });
-
-    // We will also update the configuration if the user exists
-    if (queriedUser) {
-      if (newConfig) {
-        await this.userService.update({
-          newConfigs: [new SavedConfiguration({ data: newConfig })],
-          email,
-        });
-      }
-    } else {
-      await this.userService.createUser(body);
-    }
-
-    return {
-      ...jwt,
+    return await this.userService.loginOrRegister({
       email: body.email,
-      processType: queriedUser ? 'login' : 'register',
-    };
+      newConfiguration: body.serializedConfiguration,
+      username: body.username,
+    });
   }
 
   @UseGuards(JwtAuthGuard)
@@ -77,9 +52,10 @@ export class Appcontroller {
     @Body() body: UpdateConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
   ) {
-    return await this.userService.updateConfiguration({
+    return await this.userService.updateConfigurations({
       email,
-      newConfig: body.newConfig,
+      newConfigs: [body.newConfig],
+      addNewOrReplace: 'add',
     });
   }
 
@@ -88,17 +64,10 @@ export class Appcontroller {
   async deleteconfiguration(
     @Body() body: DeleteConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
-  ) {
-    const savedConfigurations = await this.userService.getConfigurations(email);
-    const updatedConfigs: SavedConfiguration[] = savedConfigurations.filter(
-      (config) => config.id !== body.configurationId,
-    );
-    if (updatedConfigs.length === savedConfigurations.length) {
-      throw new HttpException(
-        'Configs of given UUID not found',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-    return await this.userService.update({ email, newConfigs: updatedConfigs });
+  ): Promise<User> {
+    return await this.userService.deleteConfiguration({
+      configurationId: body.configurationId,
+      email,
+    });
   }
 }

@@ -1,5 +1,3 @@
-import { SavedConfiguration } from '../SavedConfiguration';
-
 export class LoginOrRegisterResponse {
   constructor(
     public accessToken: string,
