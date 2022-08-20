@@ -79,7 +79,7 @@ function Wrapper({
   paramName: string;
 }) {
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row items-start">
       <h2 className="font-bold text-base mr-1.5">{paramName}: </h2>
       <div>{children}</div>
     </div>
