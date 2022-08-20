@@ -1,13 +1,17 @@
+import BoundingCircle from "../../domain/BoundingCircle";
 import CycloidControls from "../../domain/cycloidControls";
 import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
+import { LoginOrRegisterRequest } from "../request/logInOrRegisterRequest";
 import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
+import { SessionManager } from "../services/sessionManager";
 
 interface LoginInterface {
   email: string;
+  enteredOtp: string;
 }
 
 interface RegisterInterface {
@@ -66,12 +70,54 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       await UserAuthenticationRepository.handle<LogInOrRegisterOtpResponse>({
         path: "/auth",
         method: "POST",
-        body: { email, username, baseConfiguration, otpCode: enteredOtp },
+        body: {
+          email,
+          otpCode: enteredOtp,
+          serializedConfiguration: JSON.stringify(baseConfiguration),
+          username,
+        } as LoginOrRegisterRequest,
       });
 
-    //TODO will fail because the returned base config is not yet mapped.
-    console.log(json.user);
-    return json.user;
+    SessionManager.sessionToken = json.accessToken;
+
+    const user = new User({
+      currentConfigs: json.savedConfigurations.map((config) => {
+        const {
+          animationState,
+          clearTracedPathOnParamsChange,
+          currentCycloidId,
+          cycloids,
+          globalTimeStepScale,
+          mode,
+          outermostBoundingCircle,
+          programOnly,
+          scaffold,
+          showAllCycloids,
+          traceAllCycloids,
+        } = JSON.parse(config) as BaseConfiguration;
+        return new CycloidControls({
+          animationState,
+          clearTracedPathOnParamsChange,
+          currentCycloidId,
+          cycloids,
+          globalTimeStepScale,
+          mode,
+          outermostBoundingCircle: new BoundingCircle(
+            outermostBoundingCircle.centerPoint,
+            outermostBoundingCircle.radius,
+            outermostBoundingCircle.boundingColor
+          ),
+          programOnly,
+          scaffold,
+          showAllCycloids,
+          traceAllCycloids,
+        });
+      }),
+      email: json.email,
+      username: json.username,
+    });
+
+    return user;
   }
 
   static async otpRequest({ email }: OtpRequestsInterface): Promise<void> {
