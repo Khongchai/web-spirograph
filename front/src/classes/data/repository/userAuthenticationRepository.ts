@@ -1,5 +1,3 @@
-import { REACT_APP_BASE_API_ENDPOINT } from "../../../environmentVariables";
-import { UndefinedError } from "../../customEvents";
 import CycloidControls from "../../domain/cycloidControls";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
@@ -17,9 +15,13 @@ interface RegisterInterface {
   cycloidControls: CycloidControls;
 }
 
+interface OtpRequestsInterface {
+  email: string;
+}
+
 @NetworkErrorPropagatorDelegate("UserAuthenticationRepository", "static")
 export class UserAuthenticationRepository extends BaseNetworkRepository {
-  static async loginOrRegisterOtpRequest({
+  static async loginOrRegisterRequest({
     email,
     cycloidControls,
     username,
@@ -57,26 +59,21 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as BaseConfiguration)
       : null;
 
-    const url = `http://${REACT_APP_BASE_API_ENDPOINT}/user`;
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        username,
-        baseConfiguration,
-      }),
-    });
-
-    if (!res.ok) {
-      console.error(`Operation failed for ${REACT_APP_BASE_API_ENDPOINT}`);
-      throw new UndefinedError(res);
-    }
-
-    const json = (await res.json()) as LogInOrRegisterOtpResponse;
+    const json =
+      await UserAuthenticationRepository.handle<LogInOrRegisterOtpResponse>({
+        path: "/user",
+        method: "POST",
+        body: { email, username, baseConfiguration },
+      });
 
     return json.otpToken;
+  }
+
+  static async otpRequest({ email }: OtpRequestsInterface): Promise<void> {
+    await UserAuthenticationRepository.handle<void>({
+      path: "/otp",
+      method: "POST",
+      body: { email },
+    });
   }
 }
