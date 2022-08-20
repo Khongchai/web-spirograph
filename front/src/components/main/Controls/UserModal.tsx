@@ -1,27 +1,78 @@
 import React from "react";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 
+export type UserModalType = "OtpRequest" | "OtpVerify";
+
 export function UserModal({
   onBgClicked,
-  onFormSubmit,
+  onRequestOtpFormSubmit,
+  onOtpVerificationFormSubmit,
+  isLoading,
+  type,
 }: {
   onBgClicked: VoidFunction;
-  onFormSubmit: onFormSubmitType;
+  onRequestOtpFormSubmit: onFormSubmitType;
+  onOtpVerificationFormSubmit: ({ otp }: { otp: string }) => Promise<void>;
+  isLoading: boolean;
+  type: UserModalType;
 }) {
+  if (type === "OtpVerify") {
+    return (
+      <OtpVerificationModal
+        isLoading={isLoading}
+        onFormSubmit={onOtpVerificationFormSubmit}
+        onBgClicked={onBgClicked}
+      />
+    );
+  }
+
   return (
     <RegisterAndLoginModal
-      onFormSubmit={onFormSubmit}
+      isLoading={isLoading}
+      onFormSubmit={onRequestOtpFormSubmit}
       onBgClicked={onBgClicked}
     />
+  );
+}
+
+export function OtpVerificationModal({
+  onBgClicked,
+  onFormSubmit,
+  isLoading,
+}: {
+  onBgClicked: VoidFunction;
+  onFormSubmit: ({ otp }: { otp: string }) => Promise<void>;
+  isLoading: boolean;
+}) {
+  return (
+    <ModalBackground onBgClicked={onBgClicked}>
+      <div className="space-y-3">
+        <div className="space-y-2 text-center">
+          <h1 className="text-lg font-bold">
+            An Otp has been sent to your email.{" "}
+          </h1>
+          <h1 className="text-lg font-bold">
+            Plese check your email and enter the otp.
+          </h1>
+        </div>
+        <OtpVerificationModal
+          onFormSubmit={onFormSubmit}
+          onBgClicked={onBgClicked}
+          isLoading={isLoading}
+        />
+      </div>
+    </ModalBackground>
   );
 }
 
 export function RegisterAndLoginModal({
   onBgClicked,
   onFormSubmit,
+  isLoading,
 }: {
   onBgClicked: VoidFunction;
   onFormSubmit: onFormSubmitType;
+  isLoading: boolean;
 }) {
   return (
     <>
@@ -35,7 +86,10 @@ export function RegisterAndLoginModal({
               Leave Username Empty If Already Registered
             </h1>
           </div>
-          <LoginRegisterForm onFormSubmit={onFormSubmit} />
+          <LoginRegisterForm
+            onFormSubmit={onFormSubmit}
+            isSubmitting={isLoading}
+          />
         </div>
       </ModalBackground>
     </>

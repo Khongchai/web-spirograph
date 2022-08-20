@@ -6,9 +6,7 @@ import {
 } from "../../customEvents";
 
 /**
- * Shows an alert dialog when we intercept a network error
- *
- * We also make an assumption that all classes methods are async
+ * Intercepts network errors and propagates them to the caller as custom error types.
  */
 export default function NetworkErrorPropagatorDelegate(
   tag: string,
