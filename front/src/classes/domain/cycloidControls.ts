@@ -13,6 +13,8 @@ export type CycloidControlsInterface = Omit<
 
 // CycloidControlsData but turned into a class
 export default class CycloidControls implements CycloidControlsInterface {
+  /** Id used by the backend. Can be null inititally  */
+  databaseId?: string;
   outermostBoundingCircle: BoundingCircle;
   cycloidManager: CycloidParamsManager;
   globalTimeStepScale: number;
