@@ -65,7 +65,8 @@ export class AuthService {
       throwErrorIfNotExist: false,
     });
 
-    // We will also update the configuration if the user exists
+    // We won't use the provided username if the user already exists.
+    // We will also update the configuration if the user exists.
     if (queriedUser) {
       if (newConfiguration) {
         await this.userService.updateConfigurations({
