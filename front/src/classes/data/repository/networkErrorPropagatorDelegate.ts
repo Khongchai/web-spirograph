@@ -1,3 +1,5 @@
+import { resourceUsage } from "process";
+import { resourceLimits } from "worker_threads";
 import {
   ClientError,
   GenericNetworkError,
@@ -22,11 +24,12 @@ export default function NetworkErrorPropagatorDelegate(
 
       const originalMethod = prototype[name];
       prototype[name] = async function (...args: any[]) {
+        let result: any;
         try {
           if (methodType === "static") {
-            await originalMethod(...args);
+            result = await originalMethod(...args);
           } else {
-            await originalMethod.apply(this, args);
+            result = await originalMethod.apply(this, args);
           }
         } catch (e: any) {
           console.error("Something went wrong in the " + tag + " class.");
@@ -39,6 +42,8 @@ export default function NetworkErrorPropagatorDelegate(
             throw e;
           }
         }
+
+        return result;
       };
     });
 
