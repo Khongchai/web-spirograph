@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { ClientError } from "../../../classes/customEvents";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { userContext } from "../../../contexts/userContext";
@@ -63,7 +64,13 @@ export function UserDataControl({
       .then((user) => {
         alert("Login success!");
       })
-      .catch(() => {});
+      .catch((e) => {
+        if (e instanceof ClientError) {
+          alert("Wrong otp, please try again.");
+        } else {
+          alert("Sorry, something went wrong on our side.");
+        }
+      });
 
     setIsLoading(false);
   };
