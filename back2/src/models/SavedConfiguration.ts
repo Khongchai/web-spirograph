@@ -6,10 +6,10 @@ export class SavedConfiguration {
 
   data: string;
 
-  constructor(savedConfiguration: Omit<SavedConfiguration, 'id'>) {
+  constructor({ id, data }: { id?: string; data?: string }) {
     Object.assign(this, {
-      id: randomUUID(),
-      data: savedConfiguration.data,
+      id: id ?? randomUUID(),
+      data: data,
     } as SavedConfiguration);
   }
 }
