@@ -27,6 +27,8 @@ const screenCenter: Vector2 = {
   x: 0,
   y: 0,
 };
+let canvasReference: OffscreenCanvas;
+let canvasContextReference: OffscreenCanvasRenderingContext2D;
 
 /**
  *
@@ -42,15 +44,16 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         canvasHeight: height,
         canvasWidth: width,
       } = data.initPayload!;
+      canvasReference = canvas;
       canvas.height = height;
       canvas.width = width;
       screenSize.width = width;
       screenSize.height = height;
 
-      const ctx = canvas.getContext("2d")!;
+      canvasContextReference = canvas.getContext("2d")!;
 
       drawParticles({
-        ctx,
+        ctx: canvasContextReference,
         mousePos,
         screenSize,
         repellerData,
@@ -79,11 +82,13 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
     }
 
     case ParticlesWorkerOperation.Resize: {
-      //TODO figure out later why this shit doesn't work.
-      break;
       const { newWidth, newHeight } = data.resizePayload!;
+
       screenSize.width = newWidth;
       screenSize.height = newHeight;
+      canvasReference.width = newWidth;
+      canvasReference.height = newHeight;
+      canvasContextReference.translate(newWidth / 2, newHeight / 2);
 
       break;
     }

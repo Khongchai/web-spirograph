@@ -1,4 +1,14 @@
-Check for TODO in userAuthenticationRepository.
+The scale for the stars and the instant drawer.
+
+Fetch for current user configs.
+
+After fetching, the UI state for the configs should reflect the fetched result.
+
+After logging out, the UI state should return to the default value.
+
+Algo for determining the complexity of a shape (we need to find out how many points to draw) but also clamp it at some value because otherwise for some shapes, it'll just take forever.
+
+> > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > >
 
 Write test a test for the instant.tsx Look for todo in instantDrawerCanvas test, once that's done, work on the rerender of the instantdrawer canvas and then springboot time!<<< After this, integrate the otp thing for now.
 
