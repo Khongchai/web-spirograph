@@ -94,6 +94,7 @@ export class AuthService {
       jwt.accessToken,
       email,
       queriedUser ? 'login' : 'register',
+      username,
     );
   }
 }
