@@ -8,6 +8,7 @@ import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpRespon
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
 import { SessionManager } from "../services/sessionManager";
+import { SavedConfiguration } from "../response/GetSavedConfigurationsResponse";
 
 interface LoginInterface {
   email: string;
@@ -81,38 +82,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     SessionManager.sessionToken = json.accessToken;
 
     const user = new User({
-      currentConfigs: json.savedConfigurations.map((config) => {
-        const {
-          animationState,
-          clearTracedPathOnParamsChange,
-          currentCycloidId,
-          cycloids,
-          globalTimeStepScale,
-          mode,
-          outermostBoundingCircle,
-          programOnly,
-          scaffold,
-          showAllCycloids,
-          traceAllCycloids,
-        } = JSON.parse(config) as BaseConfiguration;
-        return new CycloidControls({
-          animationState,
-          clearTracedPathOnParamsChange,
-          currentCycloidId,
-          cycloids,
-          globalTimeStepScale,
-          mode,
-          outermostBoundingCircle: new BoundingCircle(
-            outermostBoundingCircle.centerPoint,
-            outermostBoundingCircle.radius,
-            outermostBoundingCircle.boundingColor
-          ),
-          programOnly,
-          scaffold,
-          showAllCycloids,
-          traceAllCycloids,
-        });
-      }),
       email: json.email,
       username: json.username,
     });
