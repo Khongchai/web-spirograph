@@ -1,4 +1,5 @@
 import CycloidControls from "../../domain/cycloidControls";
+import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
@@ -13,6 +14,7 @@ interface RegisterInterface {
   email: string;
   username: string;
   cycloidControls: CycloidControls;
+  enteredOtp: string;
 }
 
 interface OtpRequestsInterface {
@@ -25,7 +27,8 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     email,
     cycloidControls,
     username,
-  }: LoginInterface & Partial<RegisterInterface>): Promise<string> {
+    enteredOtp,
+  }: LoginInterface & Partial<RegisterInterface>): Promise<User> {
     // We need a separate mapper because without one, changing one of the properties would instantly break,
     // the api.
 
@@ -61,12 +64,14 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
 
     const json =
       await UserAuthenticationRepository.handle<LogInOrRegisterOtpResponse>({
-        path: "/user",
+        path: "/auth",
         method: "POST",
-        body: { email, username, baseConfiguration },
+        body: { email, username, baseConfiguration, otpCode: enteredOtp },
       });
 
-    return json.otpToken;
+    //TODO will fail because the returned base config is not yet mapped.
+    console.log(json.user);
+    return json.user;
   }
 
   static async otpRequest({ email }: OtpRequestsInterface): Promise<void> {

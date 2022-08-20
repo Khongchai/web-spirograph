@@ -7,7 +7,7 @@ import Button from "../Shared/Button";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
 import Heading from "./shared/heading";
-import { UserModal } from "./UserModal";
+import { UserModal, UserModalType } from "./UserModal";
 
 export function UserDataControl({
   tooltipText,
@@ -18,21 +18,54 @@ export function UserDataControl({
 }) {
   const [isLogInRegisterModalOpen, setIsLogInRegisterModalOpen] =
     useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userModalType, setUserModalType] =
+    useState<UserModalType>("OtpRequest");
+  const [userCredentails, setUserCredentials] = useState<{
+    email: string;
+    username?: string;
+  }>();
 
   const user = useContext(userContext);
 
   function onModalBackgroundClicked() {
     setIsLogInRegisterModalOpen(false);
+    setUserModalType("OtpRequest");
   }
 
-  const onFormSubmit: onFormSubmitType = async ({ email, username }) => {
-    const user = await UserAuthenticationRepository.loginOrRegisterOtpRequest({
-      email,
-      username,
-      cycloidControls,
-    });
+  const onOtpRequestFormSubmit: onFormSubmitType = async ({
+    email,
+    username,
+  }) => {
+    setIsLoading(true);
 
-    return Promise.resolve(false);
+    await UserAuthenticationRepository.otpRequest({ email })
+      .then(() => {
+        setUserModalType("OtpVerify");
+        setUserCredentials({ email, username });
+      })
+      .catch(() => {
+        alert("Sorry, something went wrong on our side.");
+      });
+
+    setIsLoading(false);
+  };
+
+  const onOtpVerificatonFormSubmit = async ({ otp }: { otp: string }) => {
+    setIsLoading(true);
+
+    await UserAuthenticationRepository.loginOrRegisterRequest({
+      email: userCredentails!.email,
+      username: userCredentails?.username,
+      cycloidControls,
+      enteredOtp: otp,
+    })
+      .then((user) => {
+        alert("Login success!");
+      })
+      .catch(() => {});
+
+    setIsLoading(false);
   };
 
   const onSaveConfigButtonClicked = () => {
@@ -46,37 +79,51 @@ export function UserDataControl({
 
   return (
     <_UserDataControl
-      onFormSubmit={onFormSubmit}
+      isLoading={isLoading}
+      onOtpVerificationFormSubmit={onOtpVerificatonFormSubmit}
+      onOtpRequestFormSubmit={onOtpRequestFormSubmit}
       onModalBackgroundClicked={onModalBackgroundClicked}
       onSaveConfigButtonClicked={onSaveConfigButtonClicked}
-      state={{ isModalOpen: isLogInRegisterModalOpen, tooltipText }}
+      state={{
+        isModalOpen: isLogInRegisterModalOpen,
+        tooltipText,
+        userModalType,
+      }}
     />
   );
 }
 
 interface _UserDataControlsUIEvents {
+  isLoading: boolean;
+  onOtpVerificationFormSubmit: ({ otp }: { otp: string }) => Promise<void>;
   state: {
     isModalOpen: boolean;
     tooltipText: string;
+    userModalType: UserModalType;
   };
   onSaveConfigButtonClicked: () => void;
   onModalBackgroundClicked: () => void;
-  onFormSubmit: onFormSubmitType;
+  onOtpRequestFormSubmit: onFormSubmitType;
 }
 
 function _UserDataControl({
-  onFormSubmit,
+  onOtpRequestFormSubmit,
   onModalBackgroundClicked,
   onSaveConfigButtonClicked,
-  state: { isModalOpen, tooltipText },
+  onOtpVerificationFormSubmit,
+  state: { isModalOpen, tooltipText, userModalType },
+  isLoading,
 }: _UserDataControlsUIEvents) {
   return (
     <ControlSection>
       <SettingsContainer>
         {isModalOpen ? (
           <UserModal
+            type={userModalType}
             onBgClicked={onModalBackgroundClicked}
-            onFormSubmit={onFormSubmit}
+            onRequestOtpFormSubmit={onOtpRequestFormSubmit}
+            onOtpVerificationFormSubmit={onOtpVerificationFormSubmit}
+            isLoading={isLoading}
           />
         ) : null}
         <Heading tooltipText={tooltipText}>Save Config</Heading>

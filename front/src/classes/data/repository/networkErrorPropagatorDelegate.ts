@@ -31,6 +31,7 @@ export default function NetworkErrorPropagatorDelegate(
         } catch (e: any) {
           console.error("Something went wrong in the " + tag + " class.");
           console.warn("Error details below");
+          console.log(e);
 
           if (e instanceof UndefinedError) {
             throw mapNetworkError(e.details);

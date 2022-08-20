@@ -1,5 +1,6 @@
 import React from "react";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
+import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
 
 export type UserModalType = "OtpRequest" | "OtpVerify";
 
@@ -55,10 +56,9 @@ export function OtpVerificationModal({
             Plese check your email and enter the otp.
           </h1>
         </div>
-        <OtpVerificationModal
+        <OtpVerificationForm
+          isSubmitting={isLoading}
           onFormSubmit={onFormSubmit}
-          onBgClicked={onBgClicked}
-          isLoading={isLoading}
         />
       </div>
     </ModalBackground>

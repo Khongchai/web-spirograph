@@ -11,13 +11,15 @@ export class BaseNetworkRepository {
     method: "GET" | "POST";
     body?: any;
   }): Promise<T> {
+    const stringifiedBody = body ? JSON.stringify(body) : undefined;
     const url = `http://${REACT_APP_BASE_API_ENDPOINT}${path}`;
     const res = await fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      mode: "cors",
+      body: stringifiedBody,
     });
 
     if (!res.ok) {

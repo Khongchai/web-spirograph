@@ -1,3 +1,5 @@
+import { User } from "../../domain/userData/User";
+
 export interface LogInOrRegisterOtpResponse {
-  otpToken: string;
+  user: User;
 }

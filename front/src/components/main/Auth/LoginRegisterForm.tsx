@@ -7,24 +7,24 @@ export type onFormSubmitType = ({
 }: {
   email: string;
   username: string;
-}) => Promise<boolean>;
+}) => Promise<void>;
 
 export function LoginRegisterForm({
   onFormSubmit,
+  isSubmitting,
 }: {
   onFormSubmit: onFormSubmitType;
+  isSubmitting: boolean;
 }) {
   const [inputEmail, setInputEmail] = useState<string>("");
   const [inputUsername, setInputUsername] = useState<string>("");
 
   const _onFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const result = await onFormSubmit({
+    await onFormSubmit({
       email: inputEmail!,
       username: inputUsername!,
     });
-
-    console.log(result);
   };
 
   return (
@@ -77,7 +77,10 @@ export function LoginRegisterForm({
       <div className="md:flex md:items-center">
         <div className="md:w-1/3" />
         <div className="md:w-2/3">
-          <Button buttonText="Save Config" isFormSubmitButton={true} />
+          <Button
+            buttonText={isSubmitting ? "Submitting" : "Save Config"}
+            isFormSubmitButton={true}
+          />
         </div>
       </div>
     </form>
