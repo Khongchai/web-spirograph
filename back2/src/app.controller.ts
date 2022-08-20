@@ -43,7 +43,9 @@ export class Appcontroller {
   @UseGuards(JwtAuthGuard)
   @Get('config')
   async getConfiguration(@DecoratorUtils.user.authUser() email: string) {
-    return await this.userService.getConfigurations(email);
+    return {
+      savedConfigurations: await this.userService.getConfigurations(email),
+    };
   }
 
   @UseGuards(JwtAuthGuard)
