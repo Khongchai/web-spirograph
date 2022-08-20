@@ -1,5 +1,8 @@
 import { User } from "../../domain/userData/User";
 
 export interface LogInOrRegisterOtpResponse {
-  user: User;
+  email: string;
+  accessToken: string;
+  username: string;
+  savedConfigurations: string[];
 }
