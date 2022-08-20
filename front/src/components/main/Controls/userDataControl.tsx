@@ -1,8 +1,9 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ClientError } from "../../../classes/customEvents";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
-import { userContext } from "../../../contexts/userContext";
+import { User } from "../../../classes/domain/userData/User";
+import { setUserContext, userContext } from "../../../contexts/userContext";
 import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
 import SettingsContainer from "./shared/ControlContainer";
@@ -28,6 +29,7 @@ export function UserDataControl({
   }>();
 
   const user = useContext(userContext);
+  const setUser = useContext(setUserContext);
 
   function onModalBackgroundClicked() {
     setIsLogInRegisterModalOpen(false);
@@ -62,6 +64,7 @@ export function UserDataControl({
       enteredOtp: otp,
     })
       .then((user) => {
+        setUser(user);
         alert("Login success!");
       })
       .catch((e) => {

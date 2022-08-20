@@ -1,14 +1,12 @@
-import BoundingCircle from "../../domain/BoundingCircle";
 import CycloidControls from "../../domain/cycloidControls";
 import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
 import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
 import { LoginOrRegisterRequest } from "../request/logInOrRegisterRequest";
 import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
+import { SessionManager } from "../services/sessionManager";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
-import { SessionManager } from "../services/sessionManager";
-import { SavedConfiguration } from "../response/GetSavedConfigurationsResponse";
 
 interface LoginInterface {
   email: string;
@@ -34,9 +32,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     username,
     enteredOtp,
   }: LoginInterface & Partial<RegisterInterface>): Promise<User> {
-    // We need a separate mapper because without one, changing one of the properties would instantly break,
-    // the api.
-
     const baseConfiguration = cycloidControls
       ? ({
           animationState: cycloidControls?.animationState,
