@@ -1,3 +1,7 @@
+Add the new canvas size manager to the particles canvas to see if it actually works (also remove it after).
+
+Main canvas, on resize, should move itself like the stars
+
 The scale for the stars and the instant drawer.
 
 Fetch for current user configs.
