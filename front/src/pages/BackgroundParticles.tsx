@@ -1,15 +1,18 @@
 import React, { useRef } from "react";
+import { useEffect } from "react";
 import { NaivgationStage } from "../types/Stage";
 import useOnMouseMove from "../utils/BackgroundParticles/useOnMouseMove";
 import useOnResize from "../utils/BackgroundParticles/useOnResize";
 import useOnStageChanged from "../utils/BackgroundParticles/useOnStageChanged";
 import useSetupParticlesWorker from "../utils/BackgroundParticles/useSetupParticlesWorker";
+import { CanvasSizeManagers } from "../utils/CanvasSizeManager";
 
 // Assume canvas is always the same size as the window.
 
 //TODO refactor into separate hooks and cancel the eventlisteners.
 export default function BackgroundParticles({
   stage,
+
 }: {
   stage: NaivgationStage;
 }) {

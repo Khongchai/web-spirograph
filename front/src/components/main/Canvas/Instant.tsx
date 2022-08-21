@@ -1,7 +1,8 @@
-import { MutableRefObject, useContext, useRef } from "react";
+import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
+import { CanvasSizeManagers } from "../../../utils/CanvasSizeManager";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
@@ -59,6 +60,7 @@ export default function InstantCanvas({
   parent: MutableRefObject<HTMLElement | null>;
   pointsAmount: number;
 }) {
+
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const workerRef = useSetupInstantDrawerCanvas({

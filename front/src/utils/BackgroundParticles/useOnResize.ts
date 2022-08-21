@@ -23,6 +23,7 @@ export default function useOnResize({
       };
       worker!.postMessage(resizePayload);
     }
+    
 
     window.addEventListener("resize", onResize);
   }, dependencyList);

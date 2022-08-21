@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CycloidControls from "../classes/domain/cycloidControls";
 import { User } from "../classes/domain/userData/User";
 import AnimatedCanvas from "../components/main/Canvas/Animated";

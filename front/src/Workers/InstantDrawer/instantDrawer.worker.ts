@@ -2,6 +2,7 @@ import {
   InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
+  SetCanvasSizePayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
@@ -25,6 +26,7 @@ export interface DrawerData {
   timeStepScalar: number;
 }
 
+let drawer: OffscreenCanvas;
 let drawerData: DrawerData;
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
@@ -75,5 +77,26 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
 
       break;
     }
+
+    // case InstantDrawerWorkerOperations.setCanvasSize: {
+    //   const params  = data.setCanvasSizePayload as SetCanvasSizePayload;
+    //   const {
+    //     canvasHeight,
+    //     canvasWidth
+    //   } = params;
+
+    //   drawerData.canvasWidth = canvasWidth;
+    //   drawerData.canvasHeight = canvasHeight;
+    //   drawer.width = canvasWidth;
+    //   drawer.height = canvasHeight;
+
+    //   drawerData.ctx.translate(canvasWidth/ 2, canvasHeight/ 2);
+
+    //   break;
+    // }
+
+    // case InstantDrawerWorkerOperations.pan: {
+    //   break;
+    // }
   }
 };
