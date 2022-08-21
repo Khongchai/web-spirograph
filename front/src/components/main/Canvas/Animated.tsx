@@ -12,6 +12,7 @@ import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
+import { CanvasSizeManagers } from "../../../utils/CanvasSizeManager";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;
@@ -24,6 +25,10 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
   parent,
   parentWrapper,
 }) => {
+  useEffect(() => {
+    return () => CanvasSizeManagers.mainThreadCanvasSizeManager.clearListener();
+  }, []);
+
   const rerender = useContext(Rerender);
 
   const panRef = useRef<Vector2>({ x: 0, y: 0 });
