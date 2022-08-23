@@ -3,7 +3,7 @@
  *
  * Have to do this because webpack5 doesn't support polyfills :(
  */
-abstract class _SimpleIdGenerator {
+export abstract class SimpleIdGenerator {
   simpleSeed: string;
   count: number;
 
@@ -24,7 +24,7 @@ abstract class _SimpleIdGenerator {
   }
 }
 
-class CanvasSizeManager extends _SimpleIdGenerator {
+class CanvasSizeManager extends SimpleIdGenerator {
   constructor(simpleIdSeed: string) {
     super(simpleIdSeed);
   }
