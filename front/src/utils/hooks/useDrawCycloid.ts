@@ -1,7 +1,7 @@
 import React, { MutableRefObject, useEffect, useRef } from "react";
 import CycloidControlsData from "../../classes/domain/cycloidControls";
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
-import {CanvasSizeManagers} from "../CanvasSizeManager";
+import { CanvasSizeManagers } from "../CanvasSizeManager";
 import useGenerateCycloids from "./useGenerateCycloids";
 import useLoadCycloidParams from "./useLoadCycloidParams";
 import useSetOutermostBoundingCirclePosition from "./useSetOutermostBoundingCirclePosition";
@@ -33,13 +33,17 @@ export default function useDrawCanvas(
 
       let time = 0;
 
-      CanvasSizeManagers.mainThreadCanvasSizeManager.setCanvasSize(canvas, () => {
-        const parent = canvas.parentElement;
-        const parentWidth = parent!.clientWidth;
-        const parentHeight = parent!.clientHeight;
-        canvas.width = parentWidth;
-        canvas.height = parentHeight;
-      }, true);
+      CanvasSizeManagers.mainThreadCanvasSizeManager.setCanvasSize(
+        canvas,
+        () => {
+          const parent = canvas.parentElement;
+          const parentWidth = parent!.clientWidth;
+          const parentHeight = parent!.clientHeight;
+          canvas.width = parentWidth;
+          canvas.height = parentHeight;
+        },
+        true
+      );
 
       const draw = () => {
         const curControls = cycloidControls.current;

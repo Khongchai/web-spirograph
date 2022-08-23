@@ -26,7 +26,9 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
   parentWrapper,
 }) => {
   useEffect(() => {
-    return () => CanvasSizeManagers.mainThreadCanvasSizeManager.clearListener();
+    return () => {
+      CanvasSizeManagers.mainThreadCanvasSizeManager.clearListener();
+    };
   }, []);
 
   const rerender = useContext(Rerender);

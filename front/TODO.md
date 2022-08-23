@@ -1,4 +1,5 @@
-Add the new canvas size manager to the particles canvas to see if it actually works (also remove it after).
+Resize handler (done),
+pan handler and zoom handler for the instant canvas.
 
 Main canvas, on resize, should move itself like the stars
 

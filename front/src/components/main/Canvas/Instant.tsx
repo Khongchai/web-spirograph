@@ -60,8 +60,12 @@ export default function InstantCanvas({
   parent: MutableRefObject<HTMLElement | null>;
   pointsAmount: number;
 }) {
-
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    return () =>
+      CanvasSizeManagers.instantDrawerCanvasSizeManager.clearListener();
+  }, []);
 
   const workerRef = useSetupInstantDrawerCanvas({
     cycloidControlsRef: cycloidControls,
