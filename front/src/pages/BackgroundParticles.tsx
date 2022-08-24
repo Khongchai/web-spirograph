@@ -30,9 +30,8 @@ export default function BackgroundParticles({
 
   useEffect(() => {
     if (canvasRef.current && worker) {
-      CanvasSizeManagers.particlesWorkerCanvasSizeManager.onEvent({
+      CanvasSizeManagers.particlesWorkerThread.addOnEventCallback({
         call: "onceAndOnEvent",
-        canvas: canvasRef.current!,
         eventCallback: onResize,
       });
     }

@@ -24,15 +24,16 @@ export abstract class SimpleIdGenerator {
   }
 }
 
-interface BaseCanvasEventManager {
+export interface BaseCanvasEventManager {
   clearListener: VoidFunction;
-  onEvent: ({
+  addOnEventCallback: ({
     call,
-    canvas,
+    elementToAttachEventListener,
     eventCallback,
   }: {
     call: "once" | "onEvent" | "onceAndOnEvent";
-    canvas: HTMLCanvasElement;
+    elementToAttachEventListener: HTMLElement | (Window & typeof globalThis);
+
     eventCallback: VoidFunction;
   }) => void;
 }
@@ -42,7 +43,7 @@ export class CanvasManager
   implements BaseCanvasEventManager
 {
   private forEvent: keyof WindowEventMap;
-  protected mainThreadCanvasAttributeName = "setCanvasSize-id";
+  protected canvasName = "setCanvasSize-id";
 
   constructor(
     simpleSeed: string,
@@ -53,51 +54,48 @@ export class CanvasManager
     this.forEvent = forEvent;
   }
 
-  protected canvasAndListenerCallbackMap: Record<
-    string,
-    VoidFunction | undefined
-  > = {};
+  protected callbacksAndListener: {
+    callback: VoidFunction;
+    target: HTMLElement | (Window & typeof globalThis);
+  }[] = [];
 
   /**
    * Remove listener of all canvas that have been set up by this class.
    */
   clearListener() {
-    for (const key in this.canvasAndListenerCallbackMap) {
-      const callback = this.canvasAndListenerCallbackMap[key];
-      this.canvasAndListenerCallbackMap[key] = undefined;
-
-      window.removeEventListener(this.forEvent, callback!);
+    for (const elem of this.callbacksAndListener) {
+      elem.target.removeEventListener(this.forEvent, elem.callback);
     }
 
+    this.callbacksAndListener = [];
     this.resetId();
   }
 
-  onEvent(
+  addOnEventCallback(
     /**
      *  We just need this to set the HTML attribute, so passing in
      *  canvases that have moved their controls to offscreen is fine.
      **/
     {
       call,
-      canvas,
+      elementToAttachEventListener,
       eventCallback,
     }: {
       call: "once" | "onEvent" | "onceAndOnEvent";
-      canvas: HTMLCanvasElement;
-      eventCallback: VoidFunction;
+      elementToAttachEventListener?: HTMLElement | (Window & typeof globalThis);
+      eventCallback: (e?: Event) => void;
     }
   ) {
-    eventCallback();
     if (["once", "onceAndOnEvent"].includes(call)) eventCallback();
 
     if (["onEvent", "onceAndOnEvent"].includes(call)) {
-      window.addEventListener(this.forEvent, eventCallback);
+      const target = elementToAttachEventListener ?? window;
+      target.addEventListener(this.forEvent, eventCallback, { passive: false });
 
-      canvas.setAttribute(this.mainThreadCanvasAttributeName, this.getId());
-
-      this.canvasAndListenerCallbackMap[
-        canvas.getAttribute(this.mainThreadCanvasAttributeName)!
-      ] = eventCallback;
+      this.callbacksAndListener.push({
+        callback: eventCallback,
+        target: target,
+      });
     }
   }
 }

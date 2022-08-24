@@ -27,7 +27,7 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
 }) => {
   useEffect(() => {
     return () => {
-      CanvasSizeManagers.mainThreadCanvasSizeManager.clearListener();
+      CanvasSizeManagers.mainThread.clearListener();
     };
   }, []);
 

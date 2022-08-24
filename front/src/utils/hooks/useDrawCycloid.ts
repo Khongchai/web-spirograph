@@ -33,7 +33,7 @@ export default function useDrawCanvas(
 
       let time = 0;
 
-      CanvasSizeManagers.mainThreadCanvasSizeManager.onEvent({
+      CanvasSizeManagers.mainThread.addOnEventCallback({
         eventCallback: () => {
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
@@ -41,7 +41,6 @@ export default function useDrawCanvas(
           canvas.width = parentWidth;
           canvas.height = parentHeight;
         },
-        canvas,
         call: "onceAndOnEvent",
       });
 

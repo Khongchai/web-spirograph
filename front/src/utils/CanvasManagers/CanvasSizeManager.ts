@@ -8,22 +8,12 @@ class CanvasResizeManager extends CanvasManager {
   }
 }
 
-class CanvasMouseMove extends CanvasManager {
-  constructor(simpleSeed: string) {
-    super(simpleSeed, {
-      forEvent: "mousemove",
-    });
-  }
-}
-
 export class CanvasSizeManagers {
-  static mainThreadCanvasSizeManager = new CanvasResizeManager(
-    "mainThreadCanvasSizeManager"
-  );
-  static particlesWorkerCanvasSizeManager = new CanvasResizeManager(
+  static mainThread = new CanvasResizeManager("mainThreadCanvasSizeManager");
+  static particlesWorkerThread = new CanvasResizeManager(
     "particlesWorkerCanvasSizeManager"
   );
-  static instantDrawerCanvasSizeManager = new CanvasResizeManager(
+  static instantDrawerWorkerThread = new CanvasResizeManager(
     "instantDrawerCanvasSizeManager"
   );
 }

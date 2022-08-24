@@ -39,8 +39,7 @@ export default function useTraceCycloidPath(
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d")!;
 
-      CanvasSizeManagers.mainThreadCanvasSizeManager.onEvent({
-        canvas,
+      CanvasSizeManagers.mainThread.addOnEventCallback({
         call: "onceAndOnEvent",
         eventCallback: () => {
           const parent = canvas.parentElement;
