@@ -12,7 +12,7 @@ import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
 import useHandlePan from "../../../utils/hooks/useHandlePan";
 import useHandleZoom from "../../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
-import { CanvasSizeManagers } from "../../../utils/CanvasSizeManager";
+import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
 
 interface CanvasProps {
   cycloidControls: MutableRefObject<CycloidControlsData>;

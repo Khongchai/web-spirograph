@@ -1,4 +1,4 @@
-import { SimpleIdGenerator } from "../../utils/CanvasSizeManager";
+import { SimpleIdGenerator } from "../../utils/CanvasManagers/base";
 
 export {};
 

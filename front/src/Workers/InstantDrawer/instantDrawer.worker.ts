@@ -2,7 +2,6 @@ import {
   InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
-  SetCanvasSizePayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";

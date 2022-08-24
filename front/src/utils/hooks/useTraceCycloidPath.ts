@@ -3,7 +3,7 @@ import colors from "../../constants/colors";
 import { Rerender } from "../../contexts/rerenderToggle";
 import CycloidControlsData from "../../classes/domain/cycloidControls";
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
-import { CanvasSizeManagers } from "../CanvasSizeManager";
+import { CanvasSizeManagers } from "../CanvasManagers/CanvasSizeManager";
 
 export default function useTraceCycloidPath(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
@@ -39,17 +39,17 @@ export default function useTraceCycloidPath(
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d")!;
 
-      CanvasSizeManagers.mainThreadCanvasSizeManager.setCanvasSize(
+      CanvasSizeManagers.mainThreadCanvasSizeManager.onEvent({
         canvas,
-        () => {
+        call: "onceAndOnEvent",
+        eventCallback: () => {
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
           const parentHeight = parent!.clientHeight;
           canvas.width = parentWidth;
           canvas.height = parentHeight;
         },
-        true
-      );
+      });
 
       const draw = () => {
         if (cycloidControls.current.programOnly.tracePath) {

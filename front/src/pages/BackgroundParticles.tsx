@@ -3,7 +3,7 @@ import { NaivgationStage } from "../types/Stage";
 import useOnMouseMove from "../utils/BackgroundParticles/useOnMouseMove";
 import useOnStageChanged from "../utils/BackgroundParticles/useOnStageChanged";
 import useSetupParticlesWorker from "../utils/BackgroundParticles/useSetupParticlesWorker";
-import { CanvasSizeManagers } from "../utils/CanvasSizeManager";
+import { CanvasSizeManagers } from "../utils/CanvasManagers/CanvasSizeManager";
 import ParticlesWorkerPayload, {
   ParticlesWorkerOperation,
 } from "../Workers/BackgroundParticles/particlesWorkerPayloads";
@@ -30,11 +30,11 @@ export default function BackgroundParticles({
 
   useEffect(() => {
     if (canvasRef.current && worker) {
-      CanvasSizeManagers.particlesWorkerCanvasSizeManager.setCanvasSize(
-        canvasRef.current,
-        onResize,
-        true
-      );
+      CanvasSizeManagers.particlesWorkerCanvasSizeManager.onEvent({
+        call: "onceAndOnEvent",
+        canvas: canvasRef.current!,
+        eventCallback: onResize,
+      });
     }
   }, [worker]);
 

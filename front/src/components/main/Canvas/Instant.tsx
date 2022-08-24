@@ -2,7 +2,7 @@ import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
-import { CanvasSizeManagers } from "../../../utils/CanvasSizeManager";
+import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
