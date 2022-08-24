@@ -10,6 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "noImplicitOverride": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
