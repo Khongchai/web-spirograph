@@ -19,7 +19,11 @@ export default function useDrawCanvas(
 
   useLoadCycloidParams(cycloids, outermostBoundingCircle, cycloidControls);
 
-  useSetOutermostBoundingCirclePosition(outermostBoundingCircle, parent, 300);
+  useSetOutermostBoundingCirclePosition(
+    outermostBoundingCircle,
+    parent,
+    outermostBoundingCircle.radius
+  );
 
   const cycloidsRefForCanvas = useRef<Cycloid[] | null>();
   useEffect(() => {
