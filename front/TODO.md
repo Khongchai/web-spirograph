@@ -1,5 +1,7 @@
 pan handler and zoom handler for the instant canvas.
 
+Set the default initial zoom value for the new preset.
+
 Instant drawer worker needs a refactor.
 
 - The new pan handler seems to be working, remove the ID and apply it to the background canvas.
