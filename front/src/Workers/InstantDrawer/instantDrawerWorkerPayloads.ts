@@ -1,3 +1,5 @@
+import { Vector2 } from "../../classes/DTOInterfaces/vector2";
+import { CanvasPanState } from "../../utils/CanvasManagers/CanvasPanManagers";
 import { DrawerData } from "./instantDrawer.worker";
 
 export interface InstantDrawerWorkerPayload {
@@ -5,12 +7,18 @@ export interface InstantDrawerWorkerPayload {
   setParametersPayload?: SetParametersPayload;
   initializeDrawerPayload?: InitializeDrawerPayload;
   setCanvasSizePayload?: SetCanvasSizePayload;
+  panPayload?: PanPayload;
 }
+
+export type PanPayload = {
+  panState: CanvasPanState;
+};
 
 export enum InstantDrawerWorkerOperations {
   setParameters,
   initializeDrawer,
   setCanvasSize,
+  pan,
 }
 
 export type SetParametersPayload = Partial<

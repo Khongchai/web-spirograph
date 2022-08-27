@@ -1,5 +1,7 @@
 pan handler and zoom handler for the instant canvas.
 
+Instant drawer worker needs a refactor.
+
 - The new pan handler seems to be working, remove the ID and apply it to the background canvas.
 
 Main canvas, on resize, should move itself like the stars

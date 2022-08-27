@@ -1,35 +1,50 @@
+import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import {
-  InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
 
+//TODO this file needs a refactor.
+
 export interface DrawerData {
   cycloids: InstantDrawCycloid[];
   theta: number;
-
   /**
    * Number of points to draw.
    *
    * More points = more processing time.
    */
   pointsAmount: number;
-
   ctx: OffscreenCanvasRenderingContext2D;
-
+  canvas: OffscreenCanvas;
   canvasWidth: number;
   canvasHeight: number;
-
   timeStepScalar: number;
+  translation: Vector2;
 }
 
-let drawer: OffscreenCanvas;
-let drawerData: DrawerData;
+let drawerData: DrawerData | undefined;
+
+/**
+ * Creates a snapshot of the current image for panning.
+ *
+ * We have to include the current information about the image's translation
+ * so that we can offset that from our next pan translation as our translation value
+ * does not get reset when this worker is re-created.
+ *
+ * So this is basically the data about the image in this worker's lifecycle.
+ */
+let cachedImageData: {
+  image?: Promise<ImageBitmap>;
+  imageTranslation?: Vector2;
+} = {};
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
   switch (data.operation) {
+    //Cache the current data as a bitmap, render that for subsequent frames
+    // until panning stops.
     case InstantDrawerWorkerOperations.setParameters: {
       if (!drawerData) {
         throw new Error("Call initializeDrawer first");
@@ -37,17 +52,19 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
 
       Object.assign(drawerData, data.setParametersPayload);
 
-      const { ctx, canvasHeight: h, canvasWidth: w } = drawerData;
-      ctx.clearRect(w / 2, h / 2, w, h);
       beginDrawingEpitrochoid(drawerData);
 
+      cachedImageData.image = drawerData.canvas
+        .convertToBlob()
+        .then(createImageBitmap);
+      cachedImageData.imageTranslation = drawerData.translation;
       break;
     }
 
     // 1. assign values to params
     // 2. begin canvas
     case InstantDrawerWorkerOperations.initializeDrawer: {
-      const params = data.initializeDrawerPayload as InitializeDrawerPayload;
+      const params = data.initializeDrawerPayload!;
       const {
         canvas,
         canvasHeight,
@@ -56,6 +73,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         initialTheta,
         pointsAmount,
         timeStepScalar,
+        translation,
       } = params;
 
       canvas.width = canvasWidth;
@@ -63,39 +81,62 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       const ctx = canvas.getContext("2d")!;
 
       drawerData = {
+        canvas,
         ctx,
         cycloids: cycloids,
-        pointsAmount: pointsAmount,
+        pointsAmount,
         theta: initialTheta,
         canvasHeight,
         canvasWidth,
         timeStepScalar,
+        // Use the previous value if exists already.
+        translation: translation ?? { x: 0, y: 0 },
       };
 
       beginDrawingEpitrochoid(drawerData);
 
+      cachedImageData.image = drawerData.canvas
+        .convertToBlob()
+        .then(createImageBitmap);
+      cachedImageData.imageTranslation = drawerData.translation;
+
       break;
     }
 
-    // case InstantDrawerWorkerOperations.setCanvasSize: {
-    //   const params  = data.setCanvasSizePayload as SetCanvasSizePayload;
-    //   const {
-    //     canvasHeight,
-    //     canvasWidth
-    //   } = params;
+    case InstantDrawerWorkerOperations.pan: {
+      if (!drawerData) {
+        throw new Error("Call initializeDrawer first");
+      }
 
-    //   drawerData.canvasWidth = canvasWidth;
-    //   drawerData.canvasHeight = canvasHeight;
-    //   drawer.width = canvasWidth;
-    //   drawer.height = canvasHeight;
+      const { panState } = data.panPayload!;
 
-    //   drawerData.ctx.translate(canvasWidth/ 2, canvasHeight/ 2);
+      if (panState.mouseState == "mouseup") {
+        beginDrawingEpitrochoid(drawerData);
 
-    //   break;
-    // }
+        cachedImageData.image = drawerData.canvas
+          .convertToBlob()
+          .then(createImageBitmap);
+        cachedImageData.imageTranslation = drawerData.translation;
+        return;
+      }
 
-    // case InstantDrawerWorkerOperations.pan: {
-    //   break;
-    // }
+      const { canvasHeight, canvasWidth, ctx } = drawerData;
+      drawerData.translation = panState.newCanvasPos;
+
+      cachedImageData.image?.then((image) => {
+        const previousTranslation = cachedImageData.imageTranslation;
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.save();
+
+        ctx.translate(
+          panState.newCanvasPos.x - (previousTranslation?.x ?? 0),
+          panState.newCanvasPos.y - (previousTranslation?.y ?? 0)
+        );
+        ctx.drawImage(image, 0, 0);
+        ctx.restore();
+      });
+
+      break;
+    }
   }
 };

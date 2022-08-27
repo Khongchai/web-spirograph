@@ -1,13 +1,19 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/domain/cycloidControls";
+import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
+import {
+  CanvasPanManagers,
+  CanvasPanState,
+} from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
+  PanPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
 
@@ -63,7 +69,9 @@ export default function InstantCanvas({
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    return () => CanvasSizeManagers.instantDrawerWorkerThread.clearListener();
+    return function () {
+      CanvasSizeManagers.instantDrawerWorkerThread.clearListener();
+    };
   }, []);
 
   const workerRef = useSetupInstantDrawerCanvas({
@@ -100,6 +108,17 @@ export default function InstantCanvas({
     [rerender]
   );
 
+  _useHandlePan(parent, (panState) => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        panPayload: {
+          panState,
+        } as PanPayload,
+        operation: InstantDrawerWorkerOperations.pan,
+      });
+    }
+  });
+
   return (
     <canvas
       id="instant-draw-canvas"
@@ -107,4 +126,21 @@ export default function InstantCanvas({
       className="absolute"
     ></canvas>
   );
+}
+
+function _useHandlePan(
+  parentWrapper: MutableRefObject<HTMLElement | null>,
+  onPanCallback: (newCanvasPos: CanvasPanState) => void
+) {
+  useEffect(() => {
+    if (parentWrapper.current) {
+      CanvasPanManagers.instantDrawerWorkerThread.addOnEventCallback({
+        call: "onEvent",
+        elementToAttachEventListener: parentWrapper!.current,
+        eventCallback: onPanCallback,
+      });
+    }
+
+    return () => CanvasPanManagers.instantDrawerWorkerThread.clearListener();
+  }, []);
 }
