@@ -1,4 +1,5 @@
 import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
+import colors from "../../../constants/colors";
 import { DrawerData } from "../instantDrawer.worker";
 import computedEpitrochoid from "./computeEpitrochoid";
 
@@ -39,7 +40,7 @@ export default function beginDrawingEpitrochoid({
       ctx.beginPath();
       ctx.moveTo(previousPoints.x, previousPoints.y);
       ctx.lineTo(currentPoint.x, currentPoint.y);
-      ctx.strokeStyle = "pink";
+      ctx.strokeStyle = colors.purple.vivid;
       ctx.stroke();
 
       previousPoints = currentPoint;
