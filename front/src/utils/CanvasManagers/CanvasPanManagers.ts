@@ -87,6 +87,7 @@ class CanvasPanManager implements BaseCanvasEventManager {
             y: castedE.y,
           });
           const newCanvasPos = this._getTranslatedCanvasPosition(newMousePos);
+          //TODO might need to increase the translation speed the more the canvas is zoomed out.
           this._canvasTranslatedPosition.x = newCanvasPos.x;
           this._canvasTranslatedPosition.y = newCanvasPos.y;
 
