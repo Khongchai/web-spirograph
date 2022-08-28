@@ -26,6 +26,15 @@ export abstract class SimpleIdGenerator {
   }
 }
 
+/**
+ * This can be used to create a composited event, like
+ * "pan" (mousedown, mouseup, mousemove),
+ * "zoom" (mousemove, wheel)
+ * etc.
+ *
+ * To create a composited event, implements BaseCanvasEventManager and
+ * within that class, define the needed event managers.
+ */
 export interface BaseCanvasEventManager {
   clearListener: VoidFunction;
   addOnEventCallback: ({
