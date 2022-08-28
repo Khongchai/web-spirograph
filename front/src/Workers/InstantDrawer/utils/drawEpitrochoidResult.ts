@@ -41,6 +41,8 @@ export default function beginDrawingEpitrochoid({
       ctx.moveTo(previousPoints.x, previousPoints.y);
       ctx.lineTo(currentPoint.x, currentPoint.y);
       ctx.strokeStyle = colors.purple.vivid;
+      ctx.lineWidth = 2;
+      ctx.shadowBlur = 10;
       ctx.stroke();
 
       previousPoints = currentPoint;

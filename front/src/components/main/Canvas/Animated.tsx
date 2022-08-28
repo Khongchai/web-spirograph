@@ -4,8 +4,8 @@ import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CanvasPanManagers } from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
+import { CanvasZoomManagers } from "../../../utils/CanvasManagers/CanvasZoomManagers";
 import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
-import useHandleZoom from "../../../utils/hooks/useHandleZoom";
 import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
 
 interface CanvasProps {
@@ -46,7 +46,7 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
   useTraceCycloidPath(traceCanvasRef, pointsToTrace, panRef, cycloidControls);
 
-  useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
+  _useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
   _useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
 
   useEffect(() => {
@@ -122,5 +122,39 @@ function _useHandlePan(
     }
 
     return () => CanvasPanManagers.mainThread.clearListener();
+  }, []);
+}
+
+function _useHandleZoom(
+  canvases: MutableRefObject<HTMLCanvasElement | null>[],
+  // Parent wrapper is solely for listening to events in lieu of document.addEventListener
+  parentWrapper: MutableRefObject<HTMLElement | null>
+) {
+  useEffect(() => {
+    if (!parentWrapper?.current) {
+      return;
+    }
+
+    CanvasZoomManagers.mainThread.addOnEventCallback({
+      call: "onEvent",
+      elementToAttachEventListener: parentWrapper.current,
+      eventCallback: function (zoomData) {
+        const { mouseCurrentPos, zoomLevel } = zoomData;
+        for (let i = 0; i < canvases.length; i++) {
+          if (canvases[i]?.current) {
+            const canvas = canvases[i].current as HTMLCanvasElement;
+            var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.restore();
+
+            ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+            ctx.scale(zoomLevel, zoomLevel);
+            ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
+          }
+        }
+      },
+    });
   }, []);
 }

@@ -7,25 +7,20 @@ export type CanvasPanState = {
 };
 
 class CanvasPanManager implements BaseCanvasEventManager {
+  // TODO move these to the static manager to share the position betwee animated and instant canvas.
   private _mouseDownPos: Vector2 = { x: 0, y: 0 };
   private _canvasTranslatedPosition: Vector2 = { x: 0, y: 0 };
   private _mouseDown = false;
 
-  private _mouseMoveManager = new CanvasManager(
-    "canvas-pan-mouse-move-manager",
-    {
-      forEvent: "mousemove",
-    }
-  );
-  private _mouseUpManager = new CanvasManager("canvas-pan-mouse-up-manager", {
+  private _mouseMoveManager = new CanvasManager({
+    forEvent: "mousemove",
+  });
+  private _mouseUpManager = new CanvasManager({
     forEvent: "mouseup",
   });
-  private _mouseDownManager = new CanvasManager(
-    "canvas-pan-mouse-down-manager",
-    {
-      forEvent: "mousedown",
-    }
-  );
+  private _mouseDownManager = new CanvasManager({
+    forEvent: "mousedown",
+  });
   private _panState: CanvasPanState = {
     newCanvasPos: { x: 0, y: 0 },
     mouseState: "mouseup",
@@ -45,8 +40,8 @@ class CanvasPanManager implements BaseCanvasEventManager {
     this._mouseMoveManager.addOnEventCallback({
       call,
       elementToAttachEventListener,
-      eventCallback: (e?) => {
-        const castedE = e as MouseEvent;
+      eventCallback: (e) => {
+        const castedE = e as unknown as MouseEvent;
         if (!this._mouseDown) return;
 
         castedE.preventDefault();
@@ -64,7 +59,7 @@ class CanvasPanManager implements BaseCanvasEventManager {
       call,
       elementToAttachEventListener,
       eventCallback: (e?) => {
-        const castedE = e as MouseEvent;
+        const castedE = e as unknown as MouseEvent;
         const leftMouseButton = 0;
         if (castedE!.button !== leftMouseButton) return;
 
@@ -80,7 +75,7 @@ class CanvasPanManager implements BaseCanvasEventManager {
       call,
       elementToAttachEventListener,
       eventCallback: (e?) => {
-        const castedE = e as MouseEvent;
+        const castedE = e as unknown as MouseEvent;
         if (this._mouseDown) {
           const newMousePos = this._getMousePositionMoved({
             x: castedE.x,

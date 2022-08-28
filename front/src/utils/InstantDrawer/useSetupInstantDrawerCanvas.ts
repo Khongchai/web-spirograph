@@ -5,7 +5,6 @@ import {
   InstantDrawerWorkerPayload,
 } from "../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
-import InstantDrawCycloid from "../../Workers/InstantDrawer/models/Cycloid";
 import { CanvasPanManagers } from "../CanvasManagers/CanvasPanManagers";
 
 export function useSetupInstantDrawerCanvas({

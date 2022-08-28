@@ -2,6 +2,8 @@
  * Add an integer to simpleSeed everytime increment is called.
  *
  * Have to do this because webpack5 doesn't support polyfills :(
+ *
+ * @deprecated This is unnecessary
  */
 export abstract class SimpleIdGenerator {
   simpleSeed: string;
@@ -38,19 +40,11 @@ export interface BaseCanvasEventManager {
   }) => void;
 }
 
-export class CanvasManager
-  extends SimpleIdGenerator
-  implements BaseCanvasEventManager
-{
+export class CanvasManager implements BaseCanvasEventManager {
   private forEvent: keyof WindowEventMap;
   protected canvasName = "setCanvasSize-id";
 
-  constructor(
-    simpleSeed: string,
-    { forEvent }: { forEvent: keyof WindowEventMap }
-  ) {
-    super(simpleSeed);
-
+  constructor({ forEvent }: { forEvent: keyof WindowEventMap }) {
     this.forEvent = forEvent;
   }
 
@@ -68,7 +62,6 @@ export class CanvasManager
     }
 
     this.callbacksAndListener = [];
-    this.resetId();
   }
 
   addOnEventCallback(
@@ -83,7 +76,7 @@ export class CanvasManager
     }: {
       call: "once" | "onEvent" | "onceAndOnEvent";
       elementToAttachEventListener?: HTMLElement | (Window & typeof globalThis);
-      eventCallback: (e?: Event) => void;
+      eventCallback: <T extends Event>(e?: T | any) => void;
     }
   ) {
     if (["once", "onceAndOnEvent"].includes(call)) eventCallback();
