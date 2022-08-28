@@ -1,3 +1,5 @@
+Try writing a test for the base.test.ts
+
 pan handler and zoom handler for the instant canvas.
 
 Set the default initial zoom value for the new preset.
