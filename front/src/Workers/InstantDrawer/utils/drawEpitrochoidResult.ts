@@ -17,8 +17,11 @@ export default function beginDrawingEpitrochoid({
   let currentPoint: Vector2 | undefined;
   const BASE_STEP = (Math.PI * 2) / 60;
   const step = timeStepScalar * BASE_STEP;
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.translate(0, 0);
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  ctx.restore();
 
   ctx.save();
 

@@ -1,7 +1,7 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import { BaseCanvasEventManager, CanvasManager } from "./base";
 
-interface ZoomData {
+export interface ZoomData {
   mouseCurrentPos: Vector2;
   zoomLevel: number;
 }

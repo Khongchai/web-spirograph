@@ -8,12 +8,17 @@ import {
   CanvasPanState,
 } from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
+import {
+  CanvasZoomManagers,
+  ZoomData,
+} from "../../../utils/CanvasManagers/CanvasZoomManagers";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
   PanPayload,
+  ZoomPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
 
@@ -119,6 +124,17 @@ export default function InstantCanvas({
     }
   });
 
+  _useHandleZoom(parent, (zoomData) => {
+    if (workerRef.current) {
+      workerRef.current.postMessage({
+        zoomPayload: {
+          zoomData,
+        } as ZoomPayload,
+        operation: InstantDrawerWorkerOperations.zoom,
+      });
+    }
+  });
+
   return (
     <canvas
       id="instant-draw-canvas"
@@ -142,5 +158,22 @@ function _useHandlePan(
     }
 
     return () => CanvasPanManagers.instantDrawerWorkerThread.clearListener();
+  }, []);
+}
+
+function _useHandleZoom(
+  parentWrapper: MutableRefObject<HTMLElement | null>,
+  onZoomCallback: (zoomData: ZoomData) => void
+) {
+  useEffect(() => {
+    if (!parentWrapper?.current) {
+      return;
+    }
+
+    CanvasZoomManagers.instantDrawerWorkerThread.addOnEventCallback({
+      call: "onEvent",
+      elementToAttachEventListener: parentWrapper.current,
+      eventCallback: onZoomCallback,
+    });
   }, []);
 }

@@ -39,6 +39,7 @@ let drawerData: DrawerData | undefined;
 let cachedImageData: {
   image?: Promise<ImageBitmap>;
   imageTranslation?: Vector2;
+  imageTransform?: DOMMatrix2DInit;
 } = {};
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
@@ -58,6 +59,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         .convertToBlob()
         .then(createImageBitmap);
       cachedImageData.imageTranslation = drawerData.translation;
+
       break;
     }
 
@@ -125,9 +127,12 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
 
       cachedImageData.image?.then((image) => {
         const previousTranslation = cachedImageData.imageTranslation;
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.restore();
 
+        ctx.save();
         ctx.translate(
           panState.newCanvasPos.x - (previousTranslation?.x ?? 0),
           panState.newCanvasPos.y - (previousTranslation?.y ?? 0)
@@ -135,6 +140,36 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         ctx.drawImage(image, 0, 0);
         ctx.restore();
       });
+
+      break;
+    }
+
+    case InstantDrawerWorkerOperations.zoom: {
+      if (!drawerData) {
+        throw new Error("Call initializeDrawer first");
+      }
+
+      const {
+        zoomData: { mouseCurrentPos, zoomLevel },
+      } = data.zoomPayload!;
+      const { ctx, canvasWidth, canvasHeight } = drawerData;
+
+      // cachedImageData.image?.then((image) => {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.restore();
+
+      ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+      ctx.scale(zoomLevel, zoomLevel);
+      ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
+      ctx.save();
+
+      cachedImageData.imageTransform = ctx.getTransform();
+      // ctx.drawImage(image, 0, 0);
+      // });
+
+      beginDrawingEpitrochoid(drawerData);
 
       break;
     }

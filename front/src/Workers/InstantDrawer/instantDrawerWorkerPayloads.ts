@@ -1,5 +1,6 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import { CanvasPanState } from "../../utils/CanvasManagers/CanvasPanManagers";
+import { ZoomData } from "../../utils/CanvasManagers/CanvasZoomManagers";
 import { DrawerData } from "./instantDrawer.worker";
 
 export interface InstantDrawerWorkerPayload {
@@ -8,6 +9,7 @@ export interface InstantDrawerWorkerPayload {
   initializeDrawerPayload?: InitializeDrawerPayload;
   setCanvasSizePayload?: SetCanvasSizePayload;
   panPayload?: PanPayload;
+  zoomPayload?: ZoomPayload;
 }
 
 export type PanPayload = {
@@ -19,6 +21,7 @@ export enum InstantDrawerWorkerOperations {
   initializeDrawer,
   setCanvasSize,
   pan,
+  zoom,
 }
 
 export type SetParametersPayload = Partial<
@@ -35,4 +38,8 @@ export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "ctx"> & {
   canvas: OffscreenCanvas;
   canvasWidth: number;
   canvasHeight: number;
+};
+
+export type ZoomPayload = {
+  zoomData: ZoomData;
 };
