@@ -1,3 +1,5 @@
+Continue with capturing image when moving after zoom AFTER you have matched the pan rate between unzoomed and zoomed in canvas.
+
 Try writing a test for the base.test.ts
 
 pan handler and zoom handler for the instant canvas.
