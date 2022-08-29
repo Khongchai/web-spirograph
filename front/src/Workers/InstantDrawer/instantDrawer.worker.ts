@@ -133,9 +133,14 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         ctx.restore();
 
         ctx.save();
-        ctx.translate(
-          panState.newCanvasPos.x - (previousTranslation?.x ?? 0),
-          panState.newCanvasPos.y - (previousTranslation?.y ?? 0)
+        const previousTransform = ctx.getTransform();
+        ctx.setTransform(
+          previousTransform.a,
+          0,
+          0,
+          previousTransform.d,
+          panState.newCanvasPos.x + previousTransform.e,
+          panState.newCanvasPos.y + previousTransform.f
         );
         ctx.drawImage(image, 0, 0);
         ctx.restore();

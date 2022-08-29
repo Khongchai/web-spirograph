@@ -53,7 +53,15 @@ export default function useTraceCycloidPath(
       const draw = () => {
         if (cycloidControls.current.programOnly.tracePath) {
           ctx.save();
-          ctx.translate(panRef.current.x, panRef.current.y);
+          const previousTransform = ctx.getTransform();
+          ctx.setTransform(
+            previousTransform.a,
+            0,
+            0,
+            previousTransform.d,
+            panRef.current.x + previousTransform.e,
+            panRef.current.y + previousTransform.f
+          );
 
           for (let i = 0; i < currentPoints.current.length; i++) {
             const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };

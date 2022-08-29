@@ -1,4 +1,3 @@
-import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import { CanvasPanState } from "../../utils/CanvasManagers/CanvasPanManagers";
 import { ZoomData } from "../../utils/CanvasManagers/CanvasZoomManagers";
 import { DrawerData } from "./instantDrawer.worker";

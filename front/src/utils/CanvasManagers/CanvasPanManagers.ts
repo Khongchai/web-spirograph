@@ -82,7 +82,6 @@ class CanvasPanManager implements BaseCanvasEventManager {
             y: castedE.y,
           });
           const newCanvasPos = this._getTranslatedCanvasPosition(newMousePos);
-          //TODO might need to increase the translation speed the more the canvas is zoomed out.
           this._canvasTranslatedPosition.x = newCanvasPos.x;
           this._canvasTranslatedPosition.y = newCanvasPos.y;
 
@@ -109,15 +108,10 @@ class CanvasPanManager implements BaseCanvasEventManager {
   }
 
   private _getMousePositionMoved(pos: Vector2): Vector2 {
-    const mouseMovePos: Vector2 = {
+    return {
       x: pos.x - this._mouseDownPos.x,
       y: pos.y - this._mouseDownPos.y,
     };
-    const newPos: Vector2 = {
-      x: mouseMovePos.x,
-      y: mouseMovePos.y,
-    };
-    return newPos;
   }
 
   private _getTranslatedCanvasPosition(pos: Vector2): Vector2 {

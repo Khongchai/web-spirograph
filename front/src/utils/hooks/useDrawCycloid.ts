@@ -58,7 +58,15 @@ export default function useDrawCanvas(
 
         ctx.save();
 
-        ctx.translate(panRef.current.x, panRef.current.y);
+        const previousTransform = ctx.getTransform();
+        ctx.setTransform(
+          previousTransform.a,
+          0,
+          0,
+          previousTransform.d,
+          panRef.current.x + previousTransform.e,
+          panRef.current.y + previousTransform.f
+        );
 
         ctx.lineWidth = 1.5;
 
