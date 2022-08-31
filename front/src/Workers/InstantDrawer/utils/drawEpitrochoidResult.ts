@@ -25,7 +25,12 @@ export default function beginDrawingEpitrochoid({
 
   ctx.save();
 
-  ctx.translate(
+  const { a, b, c, d } = ctx.getTransform();
+  ctx.setTransform(
+    a,
+    b,
+    c,
+    d,
     canvasWidth / 2 + translation.x,
     canvasHeight / 2 + translation.y
   );

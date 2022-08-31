@@ -7,6 +7,7 @@ import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
 
 //TODO this file needs a refactor.
+//TODO all the convert to blob logic needs to be throttled.
 
 export interface DrawerData {
   cycloids: InstantDrawCycloid[];
@@ -39,7 +40,6 @@ let drawerData: DrawerData | undefined;
 let cachedImageData: {
   image?: Promise<ImageBitmap>;
   imageTranslation?: Vector2;
-  imageTransform?: DOMMatrix2DInit;
 } = {};
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
@@ -160,22 +160,24 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       } = data.zoomPayload!;
       const { ctx, canvasWidth, canvasHeight } = drawerData;
 
-      // cachedImageData.image?.then((image) => {
-      // ctx.save();
-      // ctx.setTransform(1, 0, 0, 1, 0, 0);
-      // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      // ctx.restore();
+      // cachedImageData.image?.then((_) => {
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.restore();
 
-      // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-      // ctx.scale(zoomLevel, zoomLevel);
-      // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
-      // ctx.save();
+      ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+      ctx.scale(zoomLevel, zoomLevel);
+      ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
+      ctx.save();
 
-      // cachedImageData.imageTransform = ctx.getTransform();
-      // ctx.drawImage(image, 0, 0);
+      beginDrawingEpitrochoid(drawerData!);
+
+      cachedImageData.image = drawerData.canvas
+        .convertToBlob()
+        .then(createImageBitmap);
+      cachedImageData.imageTranslation = drawerData.translation;
       // });
-
-      beginDrawingEpitrochoid(drawerData);
 
       break;
     }

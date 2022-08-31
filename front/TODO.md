@@ -1,4 +1,4 @@
-Continue with capturing image when moving after zoom AFTER you have matched the pan rate between unzoomed and zoomed in canvas.
+Mouse focus when zooming in and out can be a bit wonky sometimes.
 
 Try writing a test for the base.test.ts
 
