@@ -123,25 +123,26 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       }
 
       const { canvasHeight, canvasWidth, ctx } = drawerData;
-      drawerData.translation = panState.newCanvasPos;
+      drawerData!.translation = {
+        x: panState.newCanvasPos.x,
+        y: panState.newCanvasPos.y,
+      };
 
       cachedImageData.image?.then((image) => {
         const previousTranslation = cachedImageData.imageTranslation;
+
+        const translateX =
+          panState.newCanvasPos.x - (previousTranslation?.x ?? 0);
+        const translateY =
+          panState.newCanvasPos.y - (previousTranslation?.y ?? 0);
+
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         ctx.restore();
 
         ctx.save();
-        const previousTransform = ctx.getTransform();
-        ctx.setTransform(
-          previousTransform.a,
-          0,
-          0,
-          previousTransform.d,
-          panState.newCanvasPos.x + previousTransform.e,
-          panState.newCanvasPos.y + previousTransform.f
-        );
+        ctx.setTransform(1, 0, 0, 1, translateX, translateY);
         ctx.drawImage(image, 0, 0);
         ctx.restore();
       });
@@ -160,17 +161,17 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       const { ctx, canvasWidth, canvasHeight } = drawerData;
 
       // cachedImageData.image?.then((image) => {
-      ctx.save();
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.restore();
+      // ctx.save();
+      // ctx.setTransform(1, 0, 0, 1, 0, 0);
+      // ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      // ctx.restore();
 
-      ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-      ctx.scale(zoomLevel, zoomLevel);
-      ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
-      ctx.save();
+      // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+      // ctx.scale(zoomLevel, zoomLevel);
+      // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
+      // ctx.save();
 
-      cachedImageData.imageTransform = ctx.getTransform();
+      // cachedImageData.imageTransform = ctx.getTransform();
       // ctx.drawImage(image, 0, 0);
       // });
 
