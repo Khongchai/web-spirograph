@@ -1,10 +1,12 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
+import { Throttler } from "../../utils/throttler";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
+import { FunctionThrottler } from "./utils/functionThrottler";
 
 //TODO this file needs a refactor.
 //TODO all the convert to blob logic needs to be throttled.
@@ -41,6 +43,8 @@ let cachedImageData: {
   image?: Promise<ImageBitmap>;
   imageTranslation?: Vector2;
 } = {};
+
+const throttler = new Throttler();
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
   switch (data.operation) {
@@ -160,24 +164,35 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       } = data.zoomPayload!;
       const { ctx, canvasWidth, canvasHeight } = drawerData;
 
-      // cachedImageData.image?.then((_) => {
-      ctx.save();
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-      ctx.restore();
+      cachedImageData.image?.then((image) => {
+        ctx.save();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.restore();
 
-      ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-      ctx.scale(zoomLevel, zoomLevel);
-      ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
-      ctx.save();
+        ctx.save();
+        //TODO this is the reason you're not moving to center, try grabbing new widths and heights.
+        ctx.translate(canvasWidth / 2, canvasHeight / 2);
+        ctx.scale(zoomLevel, zoomLevel);
+        ctx.translate(-(canvasWidth / 2), -(canvasHeight / 2));
+        ctx.drawImage(image, 0, 0);
+        // const { a, b, c, d } = ctx.getTransform();
+        // ctx.setTransform(a, b, c, d, canvasWidth / 2, canvasHeight / 2);
+        ctx.restore();
 
-      beginDrawingEpitrochoid(drawerData!);
+        throttler.throttle(() => {
+          // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
+          ctx.scale(zoomLevel, zoomLevel);
+          // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
 
-      cachedImageData.image = drawerData.canvas
-        .convertToBlob()
-        .then(createImageBitmap);
-      cachedImageData.imageTranslation = drawerData.translation;
-      // });
+          beginDrawingEpitrochoid(drawerData!);
+
+          cachedImageData.image = drawerData!.canvas
+            .convertToBlob()
+            .then(createImageBitmap);
+          cachedImageData.imageTranslation = drawerData!.translation;
+        }, 500);
+      });
 
       break;
     }
