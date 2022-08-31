@@ -171,7 +171,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         ctx.restore();
 
         ctx.save();
-        //TODO this is the reason you're not moving to center, try grabbing new widths and heights.
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.translate(canvasWidth / 2, canvasHeight / 2);
         ctx.scale(zoomLevel, zoomLevel);
         ctx.translate(-(canvasWidth / 2), -(canvasHeight / 2));
