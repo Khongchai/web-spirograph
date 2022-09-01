@@ -1,3 +1,4 @@
+import { createTextChangeRange } from "typescript";
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import { BaseCanvasEventManager, CanvasManager } from "./base";
 
@@ -39,14 +40,8 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
       elementToAttachEventListener,
       eventCallback: (e: WheelEvent) => {
         e.preventDefault();
-        const delta = Math.max(-1, Math.min(1, e.deltaY));
-        if (delta === 1) {
-          this._zoomData.zoomLevel = Math.min(1.0, this._zoomData.zoomLevel);
-          this._zoomData.zoomLevel -= 0.008;
-        } else if (delta === -1) {
-          this._zoomData.zoomLevel = Math.max(1.0, this._zoomData.zoomLevel);
-          this._zoomData.zoomLevel += 0.008;
-        }
+
+        this._zoomData.zoomLevel -= e.deltaY * 0.00035;
 
         eventCallback(this._zoomData);
       },

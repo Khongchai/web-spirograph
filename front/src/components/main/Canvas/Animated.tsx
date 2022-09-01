@@ -5,6 +5,7 @@ import { Rerender } from "../../../contexts/rerenderToggle";
 import { CanvasPanManagers } from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
 import { CanvasZoomManagers } from "../../../utils/CanvasManagers/CanvasZoomManagers";
+import { CanvasTransformUtils } from "../../../utils/CanvasTransformsUtils";
 import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
 import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
 
@@ -144,14 +145,13 @@ function _useHandleZoom(
           if (canvases[i]?.current) {
             const canvas = canvases[i].current as HTMLCanvasElement;
             var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-            ctx.save();
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            ctx.restore();
+            CanvasTransformUtils.clear(
+              ctx,
+              window.innerWidth,
+              window.innerHeight
+            );
 
-            ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-            ctx.scale(zoomLevel, zoomLevel);
-            ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
+            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, zoomLevel);
           }
         }
       },
