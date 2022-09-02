@@ -4,6 +4,7 @@ import { Throttler } from "../../utils/throttler";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
+  SetCanvasSizePayload,
 } from "./instantDrawerWorkerPayloads";
 import InstantDrawCycloid from "./models/Cycloid";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
@@ -54,6 +55,21 @@ const throttler = new Throttler();
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
   switch (data.operation) {
+    case InstantDrawerWorkerOperations.setCanvasSize: {
+      if (!drawerData) {
+        throw new Error("Call initializeDrawer first");
+      }
+
+      const { canvasHeight, canvasWidth } = data.setCanvasSizePayload!;
+
+      //TODO this does not log when the window resizes.
+      console.log(canvasHeight, canvasWidth);
+
+      drawerData.canvas.width = canvasWidth;
+      drawerData.canvas.height = canvasHeight;
+
+      break;
+    }
     //Cache the current data as a bitmap, render that for subsequent frames
     // until panning stops.
     case InstantDrawerWorkerOperations.setParameters: {

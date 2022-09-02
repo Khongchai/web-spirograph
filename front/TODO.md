@@ -1,5 +1,6 @@
-Mouse focus when zooming in and out can be a bit wonky sometimes + zooming out is still not 100% accurate.
-Zooming out should center its focal point exactly at the cursor.
+look for TODO in instantDrawer.worker.ts
+
+Take care of the instatdrawer resize + refactor the instant drawer worker file and then move on to backend stuff.
 
 Try writing a test for the base.test.ts
 

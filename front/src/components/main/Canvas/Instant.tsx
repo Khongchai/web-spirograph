@@ -74,6 +74,20 @@ export default function InstantCanvas({
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    CanvasSizeManagers.mainThread.addOnEventCallback({
+      eventCallback: () => {
+        if (!workerRef.current || !parent.current) return;
+
+        workerRef.current!.postMessage({
+          setCanvasSizePayload: {
+            canvasHeight: parent.current!.clientWidth,
+            canvasWidth: parent.current!.clientHeight,
+          },
+        } as InstantDrawerWorkerPayload);
+      },
+      call: "onceAndOnEvent",
+    });
+
     return function () {
       CanvasSizeManagers.instantDrawerWorkerThread.clearListener();
     };
