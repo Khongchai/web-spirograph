@@ -39,9 +39,16 @@ let drawerData: DrawerData | undefined;
  */
 let cachedImageData: {
   image?: Promise<ImageBitmap>;
-  imageTranslation?: Vector2;
-  imageZoomLevel?: number;
-} = {};
+  imageTranslation: Vector2;
+  imageZoomLevel: number;
+} = {
+  image: undefined,
+  imageTranslation: {
+    x: 0,
+    y: 0,
+  },
+  imageZoomLevel: 1,
+};
 
 const throttler = new Throttler();
 
@@ -166,10 +173,13 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       cachedImageData.image?.then((image) => {
         CanvasTransformUtils.clear(ctx, canvasWidth, canvasHeight);
 
-        //TODO refactor to use the utils.
+        const previousTranslation = cachedImageData.imageTranslation ?? {
+          x: 0,
+          y: 0,
+        };
         const zoomCenter = {
-          x: canvasWidth / 2,
-          y: canvasHeight / 2,
+          x: canvasWidth / 2 + previousTranslation.x,
+          y: canvasHeight / 2 + previousTranslation.y,
         };
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -200,7 +210,6 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
             .convertToBlob()
             .then(createImageBitmap);
           cachedImageData.imageTranslation = drawerData!.translation;
-          const prevZoomLevel = cachedImageData.imageZoomLevel;
           cachedImageData.imageZoomLevel = zoomLevel;
         }, 300);
       });
