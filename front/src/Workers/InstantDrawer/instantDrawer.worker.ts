@@ -1,4 +1,5 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
+import { CanvasTransformUtils } from "../../utils/CanvasTransformsUtils";
 import { Throttler } from "../../utils/throttler";
 import {
   InstantDrawerWorkerOperations,
@@ -33,15 +34,13 @@ let drawerData: DrawerData | undefined;
 /**
  * Creates a snapshot of the current image for panning.
  *
- * We have to include the current information about the image's translation
- * so that we can offset that from our next pan translation as our translation value
- * does not get reset when this worker is re-created.
- *
- * So this is basically the data about the image in this worker's lifecycle.
+ * We have to include the current information about the image's translation and zoom
+ * so that we can offset that from our transformation.
  */
 let cachedImageData: {
   image?: Promise<ImageBitmap>;
   imageTranslation?: Vector2;
+  imageZoomLevel?: number;
 } = {};
 
 const throttler = new Throttler();
@@ -165,24 +164,34 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       const { ctx, canvasWidth, canvasHeight } = drawerData;
 
       cachedImageData.image?.then((image) => {
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.restore();
+        CanvasTransformUtils.clear(ctx, canvasWidth, canvasHeight);
 
+        //TODO refactor to use the utils.
+        const zoomCenter = {
+          x: canvasWidth / 2,
+          y: canvasHeight / 2,
+        };
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.translate(canvasWidth / 2, canvasHeight / 2);
-        ctx.scale(zoomLevel, zoomLevel);
-        ctx.translate(-(canvasWidth / 2), -(canvasHeight / 2));
+        ctx.translate(zoomCenter.x, zoomCenter.y);
+        const prevTransform = ctx.getTransform();
+        const compensatedZoomLevel =
+          zoomLevel / (cachedImageData.imageZoomLevel ?? 1);
+        ctx.setTransform(
+          compensatedZoomLevel,
+          0,
+          0,
+          compensatedZoomLevel,
+          prevTransform.e,
+          prevTransform.f
+        );
+        ctx.translate(-zoomCenter.x, -zoomCenter.y);
         ctx.drawImage(image, 0, 0);
-        // const { a, b, c, d } = ctx.getTransform();
-        // ctx.setTransform(a, b, c, d, canvasWidth / 2, canvasHeight / 2);
         ctx.restore();
 
         throttler.throttle(() => {
           // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-          ctx.scale(zoomLevel, zoomLevel);
+          ctx.setTransform(zoomLevel, 0, 0, zoomLevel, 0, 0);
           // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
 
           beginDrawingEpitrochoid(drawerData!);
@@ -191,7 +200,9 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
             .convertToBlob()
             .then(createImageBitmap);
           cachedImageData.imageTranslation = drawerData!.translation;
-        }, 500);
+          const prevZoomLevel = cachedImageData.imageZoomLevel;
+          cachedImageData.imageZoomLevel = zoomLevel;
+        }, 300);
       });
 
       break;

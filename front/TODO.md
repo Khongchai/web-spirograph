@@ -1,4 +1,5 @@
-Mouse focus when zooming in and out can be a bit wonky sometimes.
+Mouse focus when zooming in and out can be a bit wonky sometimes + zooming out is still not 100% accurate.
+Zooming out should center its focal point exactly at the cursor.
 
 Try writing a test for the base.test.ts
 
