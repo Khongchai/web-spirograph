@@ -1,6 +1,6 @@
 import { CanvasPanState } from "../../utils/CanvasManagers/CanvasPanManagers";
 import { ZoomData } from "../../utils/CanvasManagers/CanvasZoomManagers";
-import { DrawerData } from "./instantDrawer.worker";
+import { DrawerData } from "./models/DrawerData";
 
 export interface InstantDrawerWorkerPayload {
   operation: InstantDrawerWorkerOperations;

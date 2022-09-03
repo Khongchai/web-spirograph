@@ -4,29 +4,9 @@ import { Throttler } from "../../utils/throttler";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
-  SetCanvasSizePayload,
 } from "./instantDrawerWorkerPayloads";
-import InstantDrawCycloid from "./models/Cycloid";
+import { DrawerData } from "./models/DrawerData";
 import beginDrawingEpitrochoid from "./utils/drawEpitrochoidResult";
-import { FunctionThrottler } from "./utils/functionThrottler";
-
-//TODO this file needs a refactor.
-//TODO all the convert to blob logic needs to be throttled.
-
-export interface DrawerData {
-  cycloids: InstantDrawCycloid[];
-  theta: number;
-  /**
-   * Number of points to draw.
-   *
-   * More points = more processing time.
-   */
-  pointsAmount: number;
-  ctx: OffscreenCanvasRenderingContext2D;
-  canvas: OffscreenCanvas;
-  timeStepScalar: number;
-  translation: Vector2;
-}
 
 let drawerData: DrawerData | undefined;
 

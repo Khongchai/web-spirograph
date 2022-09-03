@@ -3,6 +3,8 @@ import colors from "../../../constants/colors";
 import { DrawerData } from "../instantDrawer.worker";
 import computedEpitrochoid from "./computeEpitrochoid";
 
+const BASE_STEP = (Math.PI * 2) / 60;
+
 export default function beginDrawingEpitrochoid({
   cycloids,
   pointsAmount,
@@ -14,7 +16,6 @@ export default function beginDrawingEpitrochoid({
 }: DrawerData) {
   let previousPoints: Vector2 | undefined;
   let currentPoint: Vector2 | undefined;
-  const BASE_STEP = (Math.PI * 2) / 60;
   const step = timeStepScalar * BASE_STEP;
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
