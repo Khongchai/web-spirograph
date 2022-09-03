@@ -80,9 +80,10 @@ export default function InstantCanvas({
 
         workerRef.current!.postMessage({
           setCanvasSizePayload: {
-            canvasHeight: parent.current!.clientWidth,
-            canvasWidth: parent.current!.clientHeight,
+            canvasHeight: parent.current!.clientHeight,
+            canvasWidth: parent.current!.clientWidth,
           },
+          operation: InstantDrawerWorkerOperations.setCanvasSize,
         } as InstantDrawerWorkerPayload);
       },
       call: "onceAndOnEvent",
@@ -123,7 +124,7 @@ export default function InstantCanvas({
           } as InstantDrawerWorkerPayload);
         }
     },
-    300,
+    250,
     [rerender]
   );
 

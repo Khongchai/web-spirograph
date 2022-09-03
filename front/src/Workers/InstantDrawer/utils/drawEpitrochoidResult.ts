@@ -9,8 +9,7 @@ export default function beginDrawingEpitrochoid({
   theta,
   timeStepScalar,
   ctx,
-  canvasHeight,
-  canvasWidth,
+  canvas: { width: canvasWidth, height: canvasHeight },
   translation,
 }: DrawerData) {
   let previousPoints: Vector2 | undefined;

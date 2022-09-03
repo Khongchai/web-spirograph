@@ -27,11 +27,10 @@ export type SetParametersPayload = Partial<
   Omit<DrawerData, "ctx" | "canvasHeight" | "canvasWidth">
 >;
 
-export type SetCanvasSizePayload = Pick<
-  DrawerData,
-  "canvasHeight" | "canvasWidth"
->;
-
+export type SetCanvasSizePayload = {
+  canvasWidth: number;
+  canvasHeight: number;
+};
 export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "ctx"> & {
   initialTheta: number;
   canvas: OffscreenCanvas;

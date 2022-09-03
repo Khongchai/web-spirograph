@@ -24,8 +24,6 @@ export interface DrawerData {
   pointsAmount: number;
   ctx: OffscreenCanvasRenderingContext2D;
   canvas: OffscreenCanvas;
-  canvasWidth: number;
-  canvasHeight: number;
   timeStepScalar: number;
   translation: Vector2;
 }
@@ -51,40 +49,51 @@ let cachedImageData: {
   imageZoomLevel: 1,
 };
 
-const throttler = new Throttler();
+const zoomThrottler = new Throttler();
+const resizeThrottler = new Throttler();
+const setParametersThrottler = new Throttler();
 
 onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
   switch (data.operation) {
     case InstantDrawerWorkerOperations.setCanvasSize: {
-      if (!drawerData) {
-        throw new Error("Call initializeDrawer first");
-      }
-
       const { canvasHeight, canvasWidth } = data.setCanvasSizePayload!;
 
-      //TODO this does not log when the window resizes.
-      console.log(canvasHeight, canvasWidth);
+      resizeThrottler.throttle(() => {
+        if (!drawerData) {
+          throw new Error("Call initializeDrawer first");
+        }
 
-      drawerData.canvas.width = canvasWidth;
-      drawerData.canvas.height = canvasHeight;
+        drawerData!.canvas.width = canvasWidth;
+        drawerData!.canvas.height = canvasHeight;
+        CanvasTransformUtils.clear(drawerData!.ctx, canvasWidth, canvasHeight);
+
+        beginDrawingEpitrochoid(drawerData);
+
+        cachedImageData.image = drawerData.canvas
+          .convertToBlob()
+          .then(createImageBitmap);
+        cachedImageData.imageTranslation = drawerData.translation;
+      }, 500);
 
       break;
     }
     //Cache the current data as a bitmap, render that for subsequent frames
     // until panning stops.
     case InstantDrawerWorkerOperations.setParameters: {
-      if (!drawerData) {
-        throw new Error("Call initializeDrawer first");
-      }
+      setParametersThrottler.throttle(() => {
+        if (!drawerData) {
+          throw new Error("Call initializeDrawer first");
+        }
 
-      Object.assign(drawerData, data.setParametersPayload);
+        Object.assign(drawerData, data.setParametersPayload);
 
-      beginDrawingEpitrochoid(drawerData);
+        beginDrawingEpitrochoid(drawerData);
 
-      cachedImageData.image = drawerData.canvas
-        .convertToBlob()
-        .then(createImageBitmap);
-      cachedImageData.imageTranslation = drawerData.translation;
+        cachedImageData.image = drawerData.canvas
+          .convertToBlob()
+          .then(createImageBitmap);
+        cachedImageData.imageTranslation = drawerData.translation;
+      }, 100);
 
       break;
     }
@@ -114,8 +123,6 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         cycloids: cycloids,
         pointsAmount,
         theta: initialTheta,
-        canvasHeight,
-        canvasWidth,
         timeStepScalar,
         // Use the previous value if exists already.
         translation: translation ?? { x: 0, y: 0 },
@@ -148,7 +155,7 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         return;
       }
 
-      const { canvasHeight, canvasWidth, ctx } = drawerData;
+      const { ctx, canvas } = drawerData;
       drawerData!.translation = {
         x: panState.newCanvasPos.x,
         y: panState.newCanvasPos.y,
@@ -164,9 +171,12 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
 
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.restore();
 
+        //TODO if the pan starts right after zoom, the image prior to the scale translation
+        // will be shown. We should also apply the zoom translation here. This should tell you
+        // already that the code here should be refactored to facilitate this change.
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, translateX, translateY);
         ctx.drawImage(image, 0, 0);
@@ -184,18 +194,18 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
       const {
         zoomData: { mouseCurrentPos, zoomLevel },
       } = data.zoomPayload!;
-      const { ctx, canvasWidth, canvasHeight } = drawerData;
+      const { ctx, canvas } = drawerData;
 
       cachedImageData.image?.then((image) => {
-        CanvasTransformUtils.clear(ctx, canvasWidth, canvasHeight);
+        CanvasTransformUtils.clear(ctx, canvas.width, canvas.height);
 
         const previousTranslation = cachedImageData.imageTranslation ?? {
           x: 0,
           y: 0,
         };
         const zoomCenter = {
-          x: canvasWidth / 2 + previousTranslation.x,
-          y: canvasHeight / 2 + previousTranslation.y,
+          x: canvas.width / 2 + previousTranslation.x,
+          y: canvas.height / 2 + previousTranslation.y,
         };
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -215,7 +225,8 @@ onmessage = ({ data }: { data: InstantDrawerWorkerPayload }) => {
         ctx.drawImage(image, 0, 0);
         ctx.restore();
 
-        throttler.throttle(() => {
+        zoomThrottler.throttle(() => {
+          //TODO
           // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
           ctx.setTransform(zoomLevel, 0, 0, zoomLevel, 0, 0);
           // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
