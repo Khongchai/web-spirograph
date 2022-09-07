@@ -1,8 +1,8 @@
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import CycloidParams from "../../../classes/domain/CycloidParams";
 import { RerenderReason } from "../../../types/contexts/rerenderReasons";
-import { DrawerData } from "../instantDrawer.worker";
 import InstantDrawCycloid from "../models/Cycloid";
+import { DrawerData } from "../models/DrawerData";
 
 // This is not yet aplied
 
