@@ -4,10 +4,10 @@ import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 import InstantDrawCycloid from "../models/Cycloid";
 import { DrawerData } from "../models/DrawerData";
 
-// This is not yet aplied
 
 // A mapper that spits out InstantDrawCycloid
 export class InstantDrawCycloidMapper {
+  // TODO very likely it's this mapper here.
   static fromCycloidParams(cycloidParams: CycloidParams[]) {
     const instantDrawCycloids = cycloidParams.map((param) => {
       const {
@@ -22,7 +22,7 @@ export class InstantDrawCycloidMapper {
         isOutsideOfParent: moveOutSideOfParent,
         radius,
         rodLength: rodLengthScale * radius,
-        thetaScale: animationSpeedScale,
+        thetaScale: animationSpeedScale ?? 1,
       } as InstantDrawCycloid;
     });
 

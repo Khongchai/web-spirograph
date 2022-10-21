@@ -1,10 +1,12 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import colors from "../../constants/colors";
+import { fractionalLcm } from "../../utils/math";
 import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
 
 export class InstantDrawerEpitrochoidRenderer {
-  private BASE_STEP = (Math.PI * 2) / 60;
+  private BASE_POINTS_FOR_A_CIRCLE = 60;
+  private BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
 
   render({
     cycloids,
@@ -14,7 +16,7 @@ export class InstantDrawerEpitrochoidRenderer {
     ctx,
     canvas: { width: canvasWidth, height: canvasHeight },
     translation,
-  }: DrawerData) {
+  }: DrawerData): void {
     let previousPoints: Vector2 | undefined;
     let currentPoint: Vector2 | undefined;
     const step = timeStepScalar * this.BASE_STEP;
@@ -36,7 +38,14 @@ export class InstantDrawerEpitrochoidRenderer {
       canvasHeight / 2 + translation.y
     );
 
-    for (let _ = 0; _ < pointsAmount; _++) {
+    const circlePointsCompensated =
+      this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
+    const points =
+      circlePointsCompensated *
+        fractionalLcm(cycloids.map((c) => c.thetaScale)) +
+      1;
+
+    for (let _ = 0; _ < points; _++) {
       const newPoint = this._computeEpitrochoid({
         cycloids,
         theta,
