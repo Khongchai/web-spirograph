@@ -39,7 +39,7 @@ export class InstantDrawerEpitrochoidRenderer {
     );
 
     const circlePointsCompensated =
-      this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
+      this.BASE_POINTS_FOR_A_CIRCLE / Math.max(0.001, timeStepScalar);
     const points =
       circlePointsCompensated *
         fractionalLcm(cycloids.map((c) => c.thetaScale)) +
