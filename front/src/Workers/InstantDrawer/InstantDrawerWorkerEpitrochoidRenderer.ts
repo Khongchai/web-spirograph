@@ -10,7 +10,6 @@ export class InstantDrawerEpitrochoidRenderer {
 
   render({
     cycloids,
-    pointsAmount,
     theta,
     timeStepScalar,
     ctx,
@@ -19,7 +18,7 @@ export class InstantDrawerEpitrochoidRenderer {
   }: DrawerData): void {
     let previousPoints: Vector2 | undefined;
     let currentPoint: Vector2 | undefined;
-    const step = timeStepScalar * this.BASE_STEP;
+    const step = Math.max(timeStepScalar * this.BASE_STEP, 0.01);
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.translate(0, 0);
@@ -39,7 +38,7 @@ export class InstantDrawerEpitrochoidRenderer {
     );
 
     const circlePointsCompensated =
-      this.BASE_POINTS_FOR_A_CIRCLE / Math.max(0.001, timeStepScalar);
+      this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const points =
       circlePointsCompensated *
         fractionalLcm(cycloids.map((c) => c.thetaScale)) +
@@ -82,6 +81,7 @@ export class InstantDrawerEpitrochoidRenderer {
     if (cycloids.length < 2) {
       throw new Error("Provide at least 2 cycloids");
     }
+    
 
     const finalPoint = { x: 0, y: 0 };
 

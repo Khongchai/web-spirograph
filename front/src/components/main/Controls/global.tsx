@@ -28,6 +28,10 @@ const Global: React.FC<globalProps> = ({
         <Settings
           paramName={"Global Timestep"}
           numberValue={cycloidControls.globalTimeStepScale}
+          constraints={{
+            max: Infinity,
+            min: 0.1,
+          }}
           step={0.1}
           onDrag={(newValue: number) => {
             cycloidControls.globalTimeStepScale = newValue;

@@ -88,7 +88,6 @@ export class InstantDrawerWorkerMessageHandler
       canvasWidth,
       cycloids,
       initialTheta,
-      pointsAmount,
       timeStepScalar,
       translation,
     } = payload;
@@ -101,7 +100,6 @@ export class InstantDrawerWorkerMessageHandler
       canvas,
       ctx,
       cycloids: cycloids,
-      pointsAmount,
       theta: initialTheta,
       timeStepScalar,
       translation: translation ?? { x: 0, y: 0 },

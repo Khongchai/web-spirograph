@@ -41,11 +41,16 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
       eventCallback: (e: WheelEvent) => {
         e.preventDefault();
 
-        this._zoomData.zoomLevel -= e.deltaY * 0.00035;
+        this._zoomData.zoomLevel = Math.max(
+          this._zoomData.zoomLevel - e.deltaY * 0.00035,
+          0.1
+        );
 
         eventCallback(this._zoomData);
       },
     });
+
+    // TODO mouse wheel hold and drag.
 
     this._mouseMoveManager.addOnEventCallback({
       call,
