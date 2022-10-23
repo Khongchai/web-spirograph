@@ -37,7 +37,6 @@ export class Appcontroller {
     return await this.authService.loginOrRegister({
       email: body.email,
       newConfiguration: body.serializedConfiguration,
-      username: body.username,
     });
   }
 

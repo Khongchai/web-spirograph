@@ -3,6 +3,5 @@ export class LoginOrRegisterResponse {
     public accessToken: string,
     public email: string,
     public processType: 'login' | 'register',
-    public username: string,
   ) {}
 }

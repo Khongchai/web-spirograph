@@ -15,7 +15,6 @@ describe('UserService', () => {
         data: '',
       }),
     ],
-    username: '',
   });
 
   beforeEach(async () => {

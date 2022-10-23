@@ -45,16 +45,13 @@ export class UserService {
 
   async createNewUser({
     email,
-    username,
     configuration,
   }: {
     email: string;
-    username: string;
     configuration?: string;
   }): Promise<User> {
     const newUser = new User({
       email,
-      username,
       savedConfigurations: configuration
         ? [new SavedConfiguration({ data: configuration })]
         : [],

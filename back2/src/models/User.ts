@@ -10,9 +10,6 @@ export class User {
   email: string;
 
   @Column()
-  username: string;
-
-  @Column()
   savedConfigurations: SavedConfiguration[];
 
   constructor(user: Omit<User, 'id'>) {

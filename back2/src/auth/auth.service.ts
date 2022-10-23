@@ -58,11 +58,9 @@ export class AuthService {
   async loginOrRegister({
     email,
     newConfiguration,
-    username,
   }: {
     email: string;
     newConfiguration?: string;
-    username?: string;
   }) {
     const jwt: { accessToken: string } = await this.generateJwt(email);
 
@@ -71,8 +69,6 @@ export class AuthService {
       throwErrorIfNotExist: false,
     });
 
-    // We won't use the provided username if the user already exists.
-    // We will also update the configuration if the user exists.
     if (queriedUser) {
       if (newConfiguration) {
         await this.userService.updateConfigurations({
@@ -82,16 +78,8 @@ export class AuthService {
         });
       }
     } else {
-      if (!username) {
-        throw new HttpException(
-          'A username is required for a new user',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
       await this.userService.createNewUser({
         email,
-        username,
         configuration: newConfiguration,
       });
     }
@@ -100,7 +88,6 @@ export class AuthService {
       jwt.accessToken,
       email,
       queriedUser ? 'login' : 'register',
-      username,
     );
   }
 }
