@@ -14,6 +14,7 @@ import { UpdateConfigurationRequest } from 'src/models/requestDTOs/UpdateConfigu
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { DeleteConfigurationRequest } from './models/requestDTOs/DeleteConfigurationRequest';
 import { LoginOrRegisterResponse } from './models/responseDTOs/LoginOrRegisterResponse';
+import { SavedConfiguration } from './models/SavedConfiguration';
 import { User } from './models/User';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
@@ -53,12 +54,15 @@ export class Appcontroller {
   async saveConfiguration(
     @Body() body: UpdateConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
-  ) {
-    return await this.userService.updateConfigurations({
-      email,
-      newConfigs: [body.newConfig],
-      addNewOrReplace: 'add',
-    });
+  ): Promise<SavedConfiguration[]> {
+    const updatedConfigurations: SavedConfiguration[] =
+      await this.userService.updateConfigurations({
+        email,
+        newConfigs: [body.newConfig],
+        addNewOrReplace: 'add',
+      });
+
+    return updatedConfigurations;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -66,7 +70,7 @@ export class Appcontroller {
   async deleteconfiguration(
     @Body() body: DeleteConfigurationRequest,
     @DecoratorUtils.user.authUser() email: string,
-  ): Promise<User> {
+  ): Promise<SavedConfiguration[]> {
     return await this.userService.deleteConfiguration({
       configurationId: body.configurationId,
       email,

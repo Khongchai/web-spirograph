@@ -71,7 +71,7 @@ export class UserService {
     email: string;
     newConfigs: string[] | SavedConfiguration[];
     addNewOrReplace: 'add' | 'replace';
-  }): Promise<User> {
+  }): Promise<SavedConfiguration[]> {
     const previousConfigurations = await this.getConfigurations(email);
     const newData = newConfigs.map((n: string | SavedConfiguration) =>
       n instanceof SavedConfiguration ? n : new SavedConfiguration({ data: n }),
@@ -93,7 +93,7 @@ export class UserService {
     const updatedUser = await this.userRepository.findOne({
       where: { email },
     });
-    return updatedUser;
+    return updatedUser.savedConfigurations;
   }
 
   async deleteConfiguration({
@@ -102,7 +102,7 @@ export class UserService {
   }: {
     email: string;
     configurationId: string;
-  }): Promise<User> {
+  }): Promise<SavedConfiguration[]> {
     const savedConfigurations = await this.getConfigurations(email);
     const updatedConfigs: SavedConfiguration[] = savedConfigurations.filter(
       (config) => config.id !== configurationId,
