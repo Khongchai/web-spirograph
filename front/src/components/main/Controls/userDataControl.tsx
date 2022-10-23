@@ -3,6 +3,10 @@ import { ClientError } from "../../../classes/customEvents";
 import { ConfigurationsRepository } from "../../../classes/data/repository/configurationsRepository";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
+import {
+  configurationContext,
+  setConfigurationContext,
+} from "../../../contexts/configurationContext";
 import { setUserContext, userContext } from "../../../contexts/userContext";
 import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
@@ -26,6 +30,7 @@ export function UserDataControl({
   const [userCredentails, setUserCredentials] = useState<{
     email: string;
   }>();
+  const setConfig = useContext(setConfigurationContext);
 
   const user = useContext(userContext);
   const setUser = useContext(setUserContext);
@@ -39,9 +44,7 @@ export function UserDataControl({
     return await ConfigurationsRepository.saveConfiguration(cycloidControls);
   }
 
-  const onOtpRequestFormSubmit: onFormSubmitType = async ({
-    email,
-  }) => {
+  const onOtpRequestFormSubmit: onFormSubmitType = async ({ email }) => {
     setIsLoading(true);
 
     await UserAuthenticationRepository.otpRequest({ email })
@@ -83,10 +86,20 @@ export function UserDataControl({
   const onSaveConfigButtonClicked = async () => {
     //check the status of the user first
     if (user) {
-      const controls = await saveConfig().catch((e) => {
-          alert("Sorry, something went wrong on our side.");
-      });
-      // TODO save to global state.
+      setIsLoading(true);
+
+      let controls: CycloidControls[];
+
+      try {
+        controls = await saveConfig();
+      } catch (e) {
+        alert("Sorry, something went wrong on our side.");
+        return;
+      }
+
+      setIsLoading(false);
+
+      setConfig(controls);
     } else {
       setIsLogInRegisterModalOpen(true);
     }

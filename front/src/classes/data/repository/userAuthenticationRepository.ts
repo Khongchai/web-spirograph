@@ -15,7 +15,7 @@ interface LoginInterface {
 
 interface RegisterInterface {
   email: string;
-  cycloidControls: CycloidControls;
+  cycloidControls?: CycloidControls;
   enteredOtp: string;
 }
 

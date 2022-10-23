@@ -1,6 +1,86 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { ClientError } from "../../../classes/customEvents";
+import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
+import { UITrigger } from "../../../classes/domain/UITrigger";
+import { setConfigurationContext } from "../../../contexts/configurationContext";
+import { userContext, setUserContext } from "../../../contexts/userContext";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
+
+// TODO try putting this in userDataControl.tsx
+export function useLoginModal(
+  props: { defaultShowState: boolean } = { defaultShowState: false }
+): UITrigger {
+  const [isModalShown, setIsModalShown] = useState(props.defaultShowState);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userModalType, setUserModalType] =
+    useState<UserModalType>("OtpRequest");
+  const [userCredentails, setUserCredentials] = useState<{
+    email: string;
+  }>();
+  //TODO setConfig after login??
+  const setConfig = useContext(setConfigurationContext);
+  const user = useContext(userContext);
+  const setUser = useContext(setUserContext);
+
+  const onOtpRequestFormSubmit: onFormSubmitType = async ({ email }) => {
+    setIsLoading(true);
+
+    await UserAuthenticationRepository.otpRequest({ email })
+      .then(() => {
+        setUserModalType("OtpVerify");
+        setUserCredentials({ email });
+      })
+      .catch(() => {
+        alert("Sorry, something went wrong on our side.");
+      });
+
+    setIsLoading(false);
+  };
+
+  const onOtpVerificatonFormSubmit = async ({ otp }: { otp: string }) => {
+    setIsLoading(true);
+
+    await UserAuthenticationRepository.loginOrRegisterRequest({
+      email: userCredentails!.email,
+      enteredOtp: otp,
+    })
+      .then((user) => {
+        setUser(user);
+        alert("You are now logged in");
+        setIsModalShown(false);
+      })
+      .catch((e) => {
+        if (e instanceof ClientError) {
+          alert("Wrong otp, please try again.");
+        } else {
+          alert("Sorry, something went wrong on our side.");
+        }
+      });
+
+    setIsLoading(false);
+  };
+
+  return {
+    UI: () =>
+      isModalShown ? (
+        <UserModal
+          onOtpVerificationFormSubmit={onOtpVerificatonFormSubmit}
+          onRequestOtpFormSubmit={onOtpRequestFormSubmit}
+          type={userModalType}
+          isLoading={isLoading}
+          onBgClicked={() => {
+            setIsModalShown(false);
+          }}
+        />
+      ) : (
+        <></>
+      ),
+    trigger: (show) => {
+      setIsModalShown(show);
+    },
+  };
+}
 
 export type UserModalType = "OtpRequest" | "OtpVerify";
 
