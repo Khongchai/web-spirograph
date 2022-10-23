@@ -86,7 +86,9 @@ export function UserDataControl({
   const onSaveConfigButtonClicked = async () => {
     //check the status of the user first
     if (user) {
-      const controls = await saveConfig();
+      const controls = await saveConfig().catch((e) => {
+          alert("Sorry, something went wrong on our side.");
+      });
       // TODO save to global state.
     } else {
       setIsLogInRegisterModalOpen(true);

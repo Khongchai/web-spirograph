@@ -21,6 +21,7 @@ export class CycliodControlsBaseConfigurationMapper {
 
   static toCycloidControls(config: BaseConfiguration): CycloidControls {
     return new CycloidControls({
+      id: config.id,
       animationState: config.animationState,
       clearTracedPathOnParamsChange: config.clearTracedPathOnParamsChange,
       currentCycloidId: config.currentCycloidId,

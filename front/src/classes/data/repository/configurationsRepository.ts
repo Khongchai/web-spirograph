@@ -14,13 +14,11 @@ export class ConfigurationsRepository {
     const json = await BaseNetworkRepository.handle<SavedConfiguration[]>({
       path: "/config",
       method: "PUT",
-      body: JSON.stringify({
-        newconfig: new SaveConfigurationRequest(
-          CycliodControlsBaseConfigurationMapper.toBaseConfiguration(
-            cycloidControls
-          )
-        ),
-      }),
+      body: new SaveConfigurationRequest(
+        CycliodControlsBaseConfigurationMapper.toBaseConfiguration(
+          cycloidControls
+        )
+      ),
     });
 
     return json.map((config) => {

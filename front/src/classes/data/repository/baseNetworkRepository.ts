@@ -12,7 +12,7 @@ export class BaseNetworkRepository {
     method: "DELETE" | "PUT" | "GET" | "POST";
     body?: any;
   }): Promise<T> {
-    const stringifiedBody = body ? JSON.stringify(body) : undefined;
+    const stringifiedBody = typeof body != 'string' ? JSON.stringify(body) : body;
     const url = `http://${REACT_APP_BASE_API_ENDPOINT}${path}`;
     const res = await fetch(url, {
       method,
@@ -22,6 +22,7 @@ export class BaseNetworkRepository {
       },
       body: stringifiedBody,
     });
+
 
     if (!res.ok) {
       console.error(`Operation failed for ${REACT_APP_BASE_API_ENDPOINT}`);

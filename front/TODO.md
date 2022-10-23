@@ -1,3 +1,5 @@
+Take care of the login and register and save config flow first as it is the biggest one.
+
 Make the window resize-able.
 
 Find out what happens to the instant's canvas transform when you zoom and zoom in. For now, it seems that every zoom out zeems to be larger and larger, does not feel linear at all.

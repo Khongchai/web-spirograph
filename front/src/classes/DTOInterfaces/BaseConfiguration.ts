@@ -1,10 +1,12 @@
-import { Transform } from "stream";
-import BoundingCircle from "../domain/BoundingCircle";
-import CycloidControls from "../domain/cycloidControls";
 import { BoundingCircleInterface } from "./BoundingCircleInterface";
 import { CycloidParamsArgs } from "./CycloidParamsInterface";
 
 export class BaseConfiguration {
+  /**
+   * Database id, only for objects that are returned from the backend.
+   */ 
+  id?: string;
+
   /**
    * Base parent of all cycloids.
    */
