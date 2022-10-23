@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import CycloidControls from "../classes/domain/cycloidControls";
 import { User } from "../classes/domain/userData/User";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
@@ -7,9 +7,9 @@ import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelations
 import {
   Rerender,
   RerenderToggle,
-  RerenderType,
+  RerenderType
 } from "../contexts/rerenderToggle";
-import { userContext, setUserContext } from "../contexts/userContext";
+import { setUserContext, userContext } from "../contexts/userContext";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
 
@@ -71,21 +71,21 @@ function Main({
                     )}
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "75px 75px 20px 75px",
-                    overflow: "auto",
-                    flex: 0.4,
-                  }}
-                >
-                  <ControlsOrRelationshipEditor
-                    onRelationshipEditorToggle={
-                      handleOnRelationshipEditorToggle
-                    }
-                    onControlsToggle={handleOnControlsToggle}
-                    cycloidControls={cycloidControls}
-                  />
-                </div>
+                  <div
+                    style={{
+                      padding: "75px 75px 20px 75px",
+                      overflow: "auto",
+                      flex: 0.4,
+                    }}
+                  >
+                    <ControlsOrRelationshipEditor
+                      onRelationshipEditorToggle={
+                        handleOnRelationshipEditorToggle
+                      }
+                      onControlsToggle={handleOnControlsToggle}
+                      cycloidControls={cycloidControls}
+                    />
+                  </div>
               </div>
             </div>
           </RerenderToggle.Provider>

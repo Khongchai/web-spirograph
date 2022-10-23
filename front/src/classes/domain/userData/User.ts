@@ -1,5 +1,3 @@
-import CycloidControls from "../cycloidControls";
-
 export class User {
   readonly email: string;
 

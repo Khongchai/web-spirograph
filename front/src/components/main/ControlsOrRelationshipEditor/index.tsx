@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import CycloidControlsData from "../../../classes/domain/cycloidControls";
+import { LoginRegisterLogoutButton } from "../Auth/LoginRegisterLogoutButton";
 import Controls from "../Controls";
 import RelationShipEditor from "../RelationshipEditor";
 import Button from "../Shared/Button";
@@ -31,31 +32,34 @@ const ControlsOrRelationshipEditor: React.FC<
           wrapperRef={wrapperRef}
         />
       )}
-      <div
-        style={{ height: "fit-content" }}
-        className="hover:rotate-2 cursor-pointer"
-        onClick={() => {
-          const isControls = controlsOrRelationshipEditor === "controls";
-          if (isControls) {
-            onRelationshipEditorToggle();
-            setControlsOrRelationshipEditor("relationship-editor");
-          } else {
-            onControlsToggle();
-            setControlsOrRelationshipEditor("controls");
-          }
-        }}
-      >
-        {controlsOrRelationshipEditor === "controls" ? (
-          <IconButton
-            iconUrl="relationship-editor-icon.svg"
-            alt="An icon used to open the relationship editor section"
-          />
-        ) : (
-          <IconButton
-            iconUrl="controls-icon.svg"
-            alt="An icon used to open the controls section"
-          />
-        )}
+      <div className="flex-row flex h-fit items-center gap-4">
+        <div
+          style={{ height: "fit-content" }}
+          className="hover:scale-105 cursor-pointer"
+          onClick={() => {
+            const isControls = controlsOrRelationshipEditor === "controls";
+            if (isControls) {
+              onRelationshipEditorToggle();
+              setControlsOrRelationshipEditor("relationship-editor");
+            } else {
+              onControlsToggle();
+              setControlsOrRelationshipEditor("controls");
+            }
+          }}
+        >
+          {controlsOrRelationshipEditor === "controls" ? (
+            <IconButton
+              iconUrl="relationship-editor-icon.svg"
+              alt="An icon used to open the relationship editor section"
+            />
+          ) : (
+            <IconButton
+              iconUrl="controls-icon.svg"
+              alt="An icon used to open the controls section"
+            />
+          )}
+        </div>
+        <LoginRegisterLogoutButton />
       </div>
     </div>
   );

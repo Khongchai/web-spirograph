@@ -27,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
       style={additionalStyle}
       className="px-3 py-2 bg-purple-dull text-purple-dark rounded mr-2 
                       hover-no-blur transition-all shadow-md hover:opacity-80 
-                      active:bg-purple-light 
+                      active:bg-purple-light h-10
                       "
     >
       {buttonText}
