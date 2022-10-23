@@ -1,8 +1,10 @@
+import { Transform } from "stream";
 import BoundingCircle from "../domain/BoundingCircle";
+import CycloidControls from "../domain/cycloidControls";
 import { BoundingCircleInterface } from "./BoundingCircleInterface";
 import { CycloidParamsArgs } from "./CycloidParamsInterface";
 
-export interface BaseConfiguration {
+export class BaseConfiguration {
   /**
    * Base parent of all cycloids.
    */
@@ -60,4 +62,8 @@ export interface BaseConfiguration {
   programOnly: {
     tracePath: boolean;
   };
+
+  constructor(config: BaseConfiguration) {
+    Object.assign(this, config);
+  }
 }

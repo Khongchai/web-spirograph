@@ -1,8 +1,12 @@
-import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../../DTOInterfaces/BaseConfiguration";
 
-interface SaveConfigurationRequest {
+export class SaveConfigurationRequest {
   /**
    * JSON-serialized configuration.
    */
-  serializedConfiguration: string;
+  newconfig: BaseConfiguration;
+
+  constructor(newconfig: BaseConfiguration) {
+    this.newconfig = newconfig;
+  }
 }

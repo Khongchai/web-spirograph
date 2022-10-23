@@ -48,7 +48,7 @@ export function OtpVerificationModal({
   return (
     <ModalBackground onBgClicked={onBgClicked}>
       <div className="space-y-3">
-        <div className="space-y-2 text-center">
+        <div className="space-y-2 text-left">
           <h1 className="text-lg font-bold">
             An Otp has been sent to your email.{" "}
           </h1>
@@ -78,7 +78,7 @@ export function RegisterAndLoginModal({
     <>
       <ModalBackground onBgClicked={onBgClicked}>
         <div className="space-y-3">
-          <div className="space-y-2 text-center">
+          <div className="space-y-2 text-left">
             <h1 className="text-lg font-bold">
               Enter Your Email to Sign Up / Log In
             </h1>

@@ -1,7 +1,7 @@
 import CycloidControls from "../../domain/cycloidControls";
 import { User } from "../../domain/userData/User";
 import { BoundingCircleInterface } from "../../DTOInterfaces/BoundingCircleInterface";
-import { BaseConfiguration } from "../../DTOInterfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../../DTOInterfaces/BaseConfiguration";
 import { LoginOrRegisterRequest } from "../request/logInOrRegisterRequest";
 import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpResponse";
 import { SessionManager } from "../services/sessionManager";

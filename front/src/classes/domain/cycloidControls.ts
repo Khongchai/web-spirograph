@@ -1,11 +1,11 @@
 import BoundingCircle from "./BoundingCircle";
-import { BaseConfiguration } from "../DTOInterfaces/ConfigurationInterface";
+import { BaseConfiguration } from "../DTOInterfaces/BaseConfiguration";
 import CycloidParams, { CycloidParamsManager } from "./CycloidParams";
 import { CycloidParamsArgs } from "../DTOInterfaces/CycloidParamsInterface";
 
 export type CycloidControlsInterface = Omit<
   BaseConfiguration,
-  "cycloids" | "outermostBoundingCircle"
+  "cycloids" | "outermostBoundingCircle" | "toCycloidControls"
 > & {
   cycloidManager: CycloidParamsManager;
   outermostBoundingCircle: BoundingCircle;

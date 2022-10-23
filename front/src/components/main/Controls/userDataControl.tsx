@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ClientError } from "../../../classes/customEvents";
+import { ConfigurationsRepository } from "../../../classes/data/repository/configurationsRepository";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
-import { User } from "../../../classes/domain/userData/User";
 import { setUserContext, userContext } from "../../../contexts/userContext";
 import { onFormSubmitType } from "../Auth/LoginRegisterForm";
 import Button from "../Shared/Button";
@@ -36,6 +36,10 @@ export function UserDataControl({
     setUserModalType("OtpRequest");
   }
 
+  async function saveConfig(): Promise<CycloidControls[]> {
+    return await ConfigurationsRepository.saveConfiguration(cycloidControls);
+  }
+
   const onOtpRequestFormSubmit: onFormSubmitType = async ({
     email,
     username,
@@ -65,7 +69,8 @@ export function UserDataControl({
     })
       .then((user) => {
         setUser(user);
-        alert("Login success!");
+        alert("You are now logged in");
+        setIsLogInRegisterModalOpen(false);
       })
       .catch((e) => {
         if (e instanceof ClientError) {
@@ -78,10 +83,11 @@ export function UserDataControl({
     setIsLoading(false);
   };
 
-  const onSaveConfigButtonClicked = () => {
+  const onSaveConfigButtonClicked = async () => {
     //check the status of the user first
     if (user) {
-      //TODO save data
+      const controls = await saveConfig();
+      // TODO save to global state.
     } else {
       setIsLogInRegisterModalOpen(true);
     }

@@ -9,7 +9,7 @@ export class BaseNetworkRepository {
     body,
   }: {
     path: string;
-    method: "GET" | "POST";
+    method: "DELETE" | "PUT" | "GET" | "POST";
     body?: any;
   }): Promise<T> {
     const stringifiedBody = body ? JSON.stringify(body) : undefined;
