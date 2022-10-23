@@ -25,7 +25,6 @@ export function UserDataControl({
     useState<UserModalType>("OtpRequest");
   const [userCredentails, setUserCredentials] = useState<{
     email: string;
-    username?: string;
   }>();
 
   const user = useContext(userContext);
@@ -42,14 +41,13 @@ export function UserDataControl({
 
   const onOtpRequestFormSubmit: onFormSubmitType = async ({
     email,
-    username,
   }) => {
     setIsLoading(true);
 
     await UserAuthenticationRepository.otpRequest({ email })
       .then(() => {
         setUserModalType("OtpVerify");
-        setUserCredentials({ email, username });
+        setUserCredentials({ email });
       })
       .catch(() => {
         alert("Sorry, something went wrong on our side.");
@@ -63,7 +61,6 @@ export function UserDataControl({
 
     await UserAuthenticationRepository.loginOrRegisterRequest({
       email: userCredentails!.email,
-      username: userCredentails?.username,
       cycloidControls,
       enteredOtp: otp,
     })

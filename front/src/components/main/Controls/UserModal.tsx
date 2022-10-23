@@ -82,9 +82,6 @@ export function RegisterAndLoginModal({
             <h1 className="text-lg font-bold">
               Enter Your Email to Sign Up / Log In
             </h1>
-            <h1 className="text-lg font-bold">
-              Leave Username Empty If Already Registered
-            </h1>
           </div>
           <LoginRegisterForm
             onFormSubmit={onFormSubmit}

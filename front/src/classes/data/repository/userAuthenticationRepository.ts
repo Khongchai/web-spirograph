@@ -15,7 +15,6 @@ interface LoginInterface {
 
 interface RegisterInterface {
   email: string;
-  username: string;
   cycloidControls: CycloidControls;
   enteredOtp: string;
 }
@@ -29,7 +28,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
   static async loginOrRegisterRequest({
     email,
     cycloidControls,
-    username,
     enteredOtp,
   }: LoginInterface & Partial<RegisterInterface>): Promise<User> {
     const baseConfiguration = cycloidControls
@@ -70,7 +68,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
           email,
           otpCode: enteredOtp,
           serializedConfiguration: JSON.stringify(baseConfiguration),
-          username,
         } as LoginOrRegisterRequest,
       });
 
@@ -78,7 +75,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
 
     const user = new User({
       email: json.email,
-      username: json.username,
     });
 
     return user;

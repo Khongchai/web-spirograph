@@ -8,8 +8,5 @@ export interface LoginOrRegisterRequest {
 
   email: string;
 
-  // If logging in, username is not needed.
-  username?: string;
-
   otpCode: string;
 }
