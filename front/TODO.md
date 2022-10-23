@@ -1,16 +1,6 @@
-look for TODO in instantDrawer.worker.ts
+Make the window resize-able.
 
-Take care of the instatdrawer resize + refactor the instant drawer worker file and then move on to backend stuff.
-
-Try writing a test for the base.test.ts
-
-pan handler and zoom handler for the instant canvas.
-
-Set the default initial zoom value for the new preset.
-
-Instant drawer worker needs a refactor.
-
-- The new pan handler seems to be working, remove the ID and apply it to the background canvas.
+Find out what happens to the instant's canvas transform when you zoom and zoom in. For now, it seems that every zoom out zeems to be larger and larger, does not feel linear at all.
 
 Main canvas, on resize, should move itself like the stars
 

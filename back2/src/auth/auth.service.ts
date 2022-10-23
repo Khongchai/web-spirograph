@@ -1,15 +1,16 @@
 import {
-  forwardRef,
+  CACHE_MANAGER,
   HttpException,
   HttpStatus,
   Inject,
   Injectable,
 } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { redis } from 'src/mock_services/redis';
 import { LoginOrRegisterResponse } from 'src/models/responseDTOs/LoginOrRegisterResponse';
 import { UserService } from 'src/user/user.service';
 import DecoratorUtils from 'src/utils/decoratorUtils';
+import NestJSCache from 'cache-manager';
+import { Otp } from 'src/models/Otp';
 
 @Injectable()
 export class AuthService {
@@ -18,19 +19,21 @@ export class AuthService {
   constructor(
     private readonly jwtTokenService: JwtService,
     private readonly userService: UserService,
+    @Inject(CACHE_MANAGER) private cacheManager: NestJSCache.Cache,
   ) {}
 
   async validateUserWithOtp(email: string, otpCode: string) {
     const env = process.env.NODE_ENV;
 
-    if (
-      env === 'development' &&
-      AuthService.superOtpPassword === otpCode &&
-      redis.otp[email]
-    ) {
+    if (env === 'development' && AuthService.superOtpPassword === otpCode) {
       return true;
     }
-    return redis.otp[email]?.value === otpCode;
+
+    const {associatedEmail, value}: Otp | null = await this.cacheManager.get(email);
+
+    const validated = (value == otpCode) && (associatedEmail == email);
+
+    return validated;
   }
 
   @DecoratorUtils.returnLog.debug('Generated JWT object: ')

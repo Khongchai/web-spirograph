@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SavedConfiguration } from 'src/models/SavedConfiguration';
 import { User } from 'src/models/User';
@@ -28,6 +28,10 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     UserModule,
     OtpModule,
+    CacheModule.register({
+      ttl: 60 * 5,
+      isGlobal: true,
+    }),
   ],
   controllers: [Appcontroller],
 })
