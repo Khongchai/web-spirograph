@@ -31,7 +31,7 @@ export class AuthService {
 
     const otp: Otp | null = await this.cacheManager.get(email);
 
-    if (otp === null) return false;
+    if (!otp) return false;
 
     const {associatedEmail, value} = otp;
     const validated = (value == otpCode) && (associatedEmail == email);
