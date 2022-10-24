@@ -12,7 +12,12 @@ export class BaseNetworkRepository {
     method: "DELETE" | "PUT" | "GET" | "POST";
     body?: any;
   }): Promise<T> {
-    const stringifiedBody = typeof body != 'string' ? JSON.stringify(body) : body;
+    // if body is null or undefined, null, else try to stringify it if not already a string.
+    const stringifiedBody = !body
+      ? null
+      : typeof body != "string"
+      ? JSON.stringify(body)
+      : body;
     const url = `http://${REACT_APP_BASE_API_ENDPOINT}${path}`;
     const res = await fetch(url, {
       method,
@@ -20,9 +25,8 @@ export class BaseNetworkRepository {
         "Content-Type": "application/json",
         Authorization: `Bearer ${SessionManager.sessionToken}`,
       },
-      body: stringifiedBody,
+      body: stringifiedBody
     });
-
 
     if (!res.ok) {
       console.error(`Operation failed for ${REACT_APP_BASE_API_ENDPOINT}`);

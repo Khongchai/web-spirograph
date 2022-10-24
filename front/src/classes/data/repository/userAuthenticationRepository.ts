@@ -71,7 +71,6 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as LoginOrRegisterRequest,
       });
 
-
     const user = new User({
       email: json.email,
     });
@@ -86,7 +85,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     await UserAuthenticationRepository.handle<void>({
       path: "/logout",
       method: "POST",
-    })
+    });
 
     SessionManager.sessionToken = null;
     SessionManager.user = null;
