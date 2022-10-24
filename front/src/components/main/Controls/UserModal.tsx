@@ -1,17 +1,17 @@
 import React, { useContext, useState } from "react";
 import { ClientError } from "../../../classes/customEvents";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
+import CycloidControls from "../../../classes/domain/cycloidControls";
 import { UITrigger } from "../../../classes/domain/UITrigger";
 import { setConfigurationContext } from "../../../contexts/configurationContext";
 import { userContext, setUserContext } from "../../../contexts/userContext";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
 
-// TODO try putting this in userDataControl.tsx once logout is done.
 export function useLoginModal(
-  props: { defaultShowState: boolean } = { defaultShowState: false }
+  props: { defaultShowState?: boolean, cycloidControls?: CycloidControls } = { defaultShowState: false }
 ): UITrigger {
-  const [isModalShown, setIsModalShown] = useState(props.defaultShowState);
+  const [isModalShown, setIsModalShown] = useState(!!props.defaultShowState);
   const [isLoading, setIsLoading] = useState(false);
   const [userModalType, setUserModalType] =
     useState<UserModalType>("OtpRequest");
@@ -43,6 +43,7 @@ export function useLoginModal(
 
     await UserAuthenticationRepository.loginOrRegisterRequest({
       email: userCredentails!.email,
+      cycloidControls: props.cycloidControls,
       enteredOtp: otp,
     })
       .then((user) => {

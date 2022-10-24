@@ -98,4 +98,11 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       body: { email },
     });
   }
+
+  static async me(): Promise<void> {
+    const user = await UserAuthenticationRepository.handle<User>({
+      path: "/me",
+      method: "GET",
+    });
+  }
 }
