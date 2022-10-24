@@ -23,6 +23,7 @@ export function LoginRegisterLogoutButton() {
       return;
     }
 
+    alert("You are logged out.");
     setUser(null);
   }
 

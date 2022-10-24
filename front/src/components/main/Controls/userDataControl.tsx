@@ -108,6 +108,7 @@ export function UserDataControl({
   return (
     <_UserDataControl
       isLoading={isLoading}
+      showSaveConfigurationButton={!!user}
       onOtpVerificationFormSubmit={onOtpVerificatonFormSubmit}
       onOtpRequestFormSubmit={onOtpRequestFormSubmit}
       onModalBackgroundClicked={onModalBackgroundClicked}
@@ -132,6 +133,7 @@ interface _UserDataControlsUIEvents {
   onSaveConfigButtonClicked: () => void;
   onModalBackgroundClicked: () => void;
   onOtpRequestFormSubmit: onFormSubmitType;
+  showSaveConfigurationButton: boolean;
 }
 
 function _UserDataControl({
@@ -139,6 +141,7 @@ function _UserDataControl({
   onModalBackgroundClicked,
   onSaveConfigButtonClicked,
   onOtpVerificationFormSubmit,
+  showSaveConfigurationButton,
   state: { isModalOpen, tooltipText, userModalType },
   isLoading,
 }: _UserDataControlsUIEvents) {
@@ -154,11 +157,19 @@ function _UserDataControl({
             isLoading={isLoading}
           />
         ) : null}
-        <Heading tooltipText={tooltipText}>Save Config</Heading>
+        <Heading tooltipText={tooltipText}>Config</Heading>
         <Button
           buttonText="Save Config"
           onClick={onSaveConfigButtonClicked}
         ></Button>
+        {showSaveConfigurationButton ? (
+          <Button
+            buttonText="Show Saved Configurations"
+            onClick={() => {}}
+          ></Button>
+        ) : (
+          <></>
+        )}
       </SettingsContainer>
     </ControlSection>
   );
