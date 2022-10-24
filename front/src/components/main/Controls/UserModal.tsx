@@ -7,7 +7,7 @@ import { userContext, setUserContext } from "../../../contexts/userContext";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
 
-// TODO try putting this in userDataControl.tsx
+// TODO try putting this in userDataControl.tsx once logout is done.
 export function useLoginModal(
   props: { defaultShowState: boolean } = { defaultShowState: false }
 ): UITrigger {

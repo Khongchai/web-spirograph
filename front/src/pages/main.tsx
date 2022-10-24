@@ -42,54 +42,54 @@ function Main({
   return (
     <userContext.Provider value={user}>
       <setUserContext.Provider value={setCurrentUser}>
-        <Rerender.Provider value={rerender}>
-          <RerenderToggle.Provider value={handleClearCanvasToggle}>
-            <div className="text-purple-light h-full w-full">
-              <div className="w-full h-full relative flex md:flex-row sm:flex-col">
-                <div
-                  style={{ flex: 0.6 }}
-                  className="relative canvas-container-flex-wrapper"
-                  ref={canvasContainerFlexWrapper as any}
-                >
-                  <div
-                    ref={allCanvasContainer as any}
-                    className="w-full h-full absolute canvas-container"
-                  >
-                    {cycloidControls.current.mode === "Instant" ||
-                    cycloidControls.current.mode === "AnimatedInstant" ? (
-                      <InstantCanvas
-                        parent={allCanvasContainer}
-                        cycloidControls={cycloidControls}
-                        pointsAmount={6000}
-                      />
-                    ) : (
-                      <AnimatedCanvas
-                        cycloidControls={cycloidControls}
-                        parent={allCanvasContainer}
-                        parentWrapper={canvasContainerFlexWrapper}
-                      />
-                    )}
-                  </div>
-                </div>
-                  <div
-                    style={{
-                      padding: "75px 75px 20px 75px",
-                      overflow: "auto",
-                      flex: 0.4,
-                    }}
-                  >
-                    <ControlsOrRelationshipEditor
+    <Rerender.Provider value={rerender}>
+      <RerenderToggle.Provider value={handleClearCanvasToggle}>
+        <div className="text-purple-light h-full w-full">
+          <div className="w-full h-full relative flex md:flex-row sm:flex-col">
+            <div
+              style={{ flex: 0.6 }}
+              className="relative canvas-container-flex-wrapper"
+              ref={canvasContainerFlexWrapper as any}
+            >
+              <div
+                ref={allCanvasContainer as any}
+                className="w-full h-full absolute canvas-container"
+              >
+                {cycloidControls.current.mode === "Instant" ||
+                cycloidControls.current.mode === "AnimatedInstant" ? (
+                  <InstantCanvas
+                    parent={allCanvasContainer}
+                    cycloidControls={cycloidControls}
+                    pointsAmount={6000}
+                  />
+                ) : (
+                  <AnimatedCanvas
+                    cycloidControls={cycloidControls}
+                    parent={allCanvasContainer}
+                    parentWrapper={canvasContainerFlexWrapper}
+                  />
+                )}
+              </div>
+            </div>
+            <div
+              style={{
+                padding: "75px 75px 20px 75px",
+                overflow: "auto",
+                flex: 0.4,
+              }}
+            >
+              <ControlsOrRelationshipEditor
                       onRelationshipEditorToggle={
                         handleOnRelationshipEditorToggle
                       }
-                      onControlsToggle={handleOnControlsToggle}
-                      cycloidControls={cycloidControls}
-                    />
-                  </div>
-              </div>
+                onControlsToggle={handleOnControlsToggle}
+                cycloidControls={cycloidControls}
+              />
             </div>
-          </RerenderToggle.Provider>
-        </Rerender.Provider>
+          </div>
+        </div>
+      </RerenderToggle.Provider>
+    </Rerender.Provider>
       </setUserContext.Provider>
     </userContext.Provider>
   );

@@ -71,13 +71,25 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         } as LoginOrRegisterRequest,
       });
 
-    SessionManager.sessionToken = json.accessToken;
 
     const user = new User({
       email: json.email,
     });
 
+    SessionManager.sessionToken = json.accessToken;
+    SessionManager.user = user;
+
     return user;
+  }
+
+  static async logout() {
+    await UserAuthenticationRepository.handle<void>({
+      path: "/logout",
+      method: "POST",
+    })
+
+    SessionManager.sessionToken = null;
+    SessionManager.user = null;
   }
 
   static async otpRequest({ email }: OtpRequestsInterface): Promise<void> {
