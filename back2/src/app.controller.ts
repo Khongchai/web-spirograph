@@ -40,8 +40,7 @@ export class Appcontroller {
     });
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(BlackListedJwtGuard)
+  @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Get('config')
   async getConfiguration(@DecoratorUtils.user.email() email: string) {
     return {
@@ -49,12 +48,9 @@ export class Appcontroller {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(BlackListedJwtGuard)
+  @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Post('logout')
-  async logout(
-    @DecoratorUtils.user.jwt() jwt: string,
-  ) {
+  async logout(@DecoratorUtils.user.jwt() jwt: string) {
     await this.authService.logout({
       jwt,
     });
@@ -62,8 +58,17 @@ export class Appcontroller {
     return {};
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(BlackListedJwtGuard)
+  @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
+  @Post('me')
+  async me(@DecoratorUtils.user.email() email: string) {
+    const user = await this.userService.findOne({
+      email,
+      throwErrorIfNotExist: true,
+    });
+    return user;
+  }
+
+  @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Put('config')
   async saveConfiguration(
     @Body() body: UpdateConfigurationRequest,
@@ -79,8 +84,7 @@ export class Appcontroller {
     return updatedConfigurations;
   }
 
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(BlackListedJwtGuard)
+  @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Delete('config')
   async deleteconfiguration(
     @Body() body: DeleteConfigurationRequest,
