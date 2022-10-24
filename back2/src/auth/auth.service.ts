@@ -20,7 +20,7 @@ export class AuthService {
     @Inject(CACHE_MANAGER) private cacheManager: NestJSCache.Cache,
   ) {}
 
-  async logout({ jwt }: { jwt: string }) {
+  async logout({ jwt }: { jwt: string }): Promise<void> {
     // If not yet expired, store it in a black-list cache.
     const now = Date.now();
     const nowDate = new Date(now);
@@ -33,6 +33,8 @@ export class AuthService {
         ttl: (exp - now),
       });
     }
+
+    return;
   }
 
   async validateUserWithOtp(email: string, otpCode: string) {

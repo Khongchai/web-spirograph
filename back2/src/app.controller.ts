@@ -55,9 +55,11 @@ export class Appcontroller {
   async logout(
     @DecoratorUtils.user.jwt() jwt: string,
   ) {
-    return await this.authService.logout({
+    await this.authService.logout({
       jwt,
     });
+
+    return {};
   }
 
   @UseGuards(JwtAuthGuard)
