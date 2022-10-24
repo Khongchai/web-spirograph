@@ -47,9 +47,13 @@ export default class DecoratorUtils {
   };
 
   static user = {
-    authUser: createParamDecorator((_, req) => {
+    email: createParamDecorator((_, req) => {
       const userEmail = req.switchToHttp().getRequest().user.issuer;
       return userEmail;
     }),
+    jwt: createParamDecorator((_, req) => {
+      const jwt = req.args[0].headers.authorization.replace('Bearer ', '');
+      return jwt;
+    })
   };
 }

@@ -7,3 +7,10 @@ Integrate with frontend
 Integrate redis
 
 DEPLOYMENT!
+
+
+------------------------------------
+- Set a reasonable expiration time on tokens
+- Delete the stored token from client side upon log out
+- Have DB of no longer active tokens that still have some time to live
+- Query provided token against The Blacklist on every authorized request

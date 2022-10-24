@@ -1,26 +1,39 @@
 import {
-  CACHE_MANAGER,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
+  CACHE_MANAGER, Inject,
+  Injectable
 } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import NestJSCache from 'cache-manager';
+import { Otp } from 'src/models/Otp';
 import { LoginOrRegisterResponse } from 'src/models/responseDTOs/LoginOrRegisterResponse';
 import { UserService } from 'src/user/user.service';
 import DecoratorUtils from 'src/utils/decoratorUtils';
-import NestJSCache from 'cache-manager';
-import { Otp } from 'src/models/Otp';
 
 @Injectable()
 export class AuthService {
   private static superOtpPassword = '999999';
+  static blackListedKey = 'black-listed';
 
   constructor(
     private readonly jwtTokenService: JwtService,
     private readonly userService: UserService,
     @Inject(CACHE_MANAGER) private cacheManager: NestJSCache.Cache,
   ) {}
+
+  async logout({ jwt }: { jwt: string }) {
+    // If not yet expired, store it in a black-list cache.
+    const now = Date.now();
+    const nowDate = new Date(now);
+
+    // exp is in seconds, not milliseconds.
+    const exp: number = this.jwtTokenService.decode(jwt)['exp'] * 1000;
+    const expiryDate = new Date(exp);
+    if (expiryDate > nowDate) {
+      await this.cacheManager.set(jwt + AuthService.blackListedKey, jwt, {
+        ttl: (exp - now),
+      });
+    }
+  }
 
   async validateUserWithOtp(email: string, otpCode: string) {
     const env = process.env.NODE_ENV;
@@ -33,10 +46,14 @@ export class AuthService {
 
     if (!otp) return false;
 
-    const {associatedEmail, value} = otp;
-    const validated = (value == otpCode) && (associatedEmail == email);
+    const { associatedEmail, value } = otp;
+    const validated = value == otpCode && associatedEmail == email;
 
     return validated;
+  }
+
+  async validateUserNotInBlackList(jwt: string) {
+    return !!(await this.cacheManager.get(jwt + AuthService.blackListedKey));
   }
 
   @DecoratorUtils.returnLog.debug('Generated JWT object: ')
