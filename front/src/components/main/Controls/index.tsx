@@ -46,7 +46,6 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
       <NetworkErrorBoundary>
         <UserDataControl
           tooltipText="Save the current configuration. If not logged in, this will save locally."
-          cycloidControls={cycloidControls.current}
         />
       </NetworkErrorBoundary>
     </div>
