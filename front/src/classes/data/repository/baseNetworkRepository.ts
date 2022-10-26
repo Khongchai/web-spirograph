@@ -23,9 +23,9 @@ export class BaseNetworkRepository {
       method,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${SessionManager.sessionToken}`,
+        Authorization: `Bearer ${SessionManager.getSessionToken()}`,
       },
-      body: stringifiedBody
+      body: stringifiedBody,
     });
 
     if (!res.ok) {

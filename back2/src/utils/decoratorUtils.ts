@@ -17,7 +17,7 @@ export default class DecoratorUtils {
 
       //@ts-ignore
       descriptor.value = isMethodAsync
-        ? async function (...args) {
+        ? async function (...args: any) {
             const result = await originalMethod.apply(this, args);
             logger(
               `${description}${stringifyLog ? JSON.stringify(result) : result}`,
