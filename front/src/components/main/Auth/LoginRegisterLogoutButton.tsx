@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import { setUserContext, userContext } from "../../../contexts/userContext";
 import { useLoginModal } from "../Controls/UserModal";
@@ -18,7 +18,7 @@ export function LoginRegisterLogoutButton() {
     try {
       await UserAuthenticationRepository.logout();
     } catch (e) {
-      alert("Sorry, something went wrong on our side. Please try again.")
+      alert("Sorry, something went wrong on our side. Please try again.");
       console.error(e);
       return;
     }

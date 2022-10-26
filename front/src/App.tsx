@@ -1,16 +1,45 @@
-import { useRef, useState } from "react";
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { UserAuthenticationRepository } from "./classes/data/repository/userAuthenticationRepository";
 import BoundingCircle from "./classes/domain/BoundingCircle";
 import CycloidControls from "./classes/domain/cycloidControls";
+import { User } from "./classes/domain/userData/User";
 import colors from "./constants/colors";
+import {
+  Rerender,
+  RerenderToggle,
+  RerenderType,
+} from "./contexts/rerenderToggle";
+import { setUserContext, userContext } from "./contexts/userContext";
 import "./index.css";
 import BackgroundParticles from "./pages/BackgroundParticles";
 import Landing from "./pages/Landing";
 import Main from "./pages/main";
+import { RerenderReason } from "./types/contexts/rerenderReasons";
 import { NaivgationStage } from "./types/Stage";
+import useMeHooks from "./utils/hooks/useMeHooks";
 
 /// Switch between main and landing with custom animation.
 function App() {
   const [stage, setStage] = useState<NaivgationStage>("landing");
+
+  const [user, setUser] = useState<User | null>(null);
+  const setCurrentUser = useCallback((user: User | null) => {
+    setUser(user);
+  }, []);
+
+  const [rerender, setRerender] = useState<RerenderType>({
+    reason: RerenderReason.appStart,
+    toggle: false,
+  });
+  const handleClearCanvasToggle = useCallback((reason: RerenderReason) => {
+    setRerender((state) => (state = { ...state, reason: reason }));
+  }, []);
 
   // Huge mistake to be separating bounding circle from everything else....may require a huge refactor later on.
 
@@ -83,7 +112,15 @@ function App() {
           <Landing onBeginClicked={changeNavigationStage} />
         ) : (
           //TODO => animation or something.
-          <Main cycloidControls={cycloidControls} />
+          <userContext.Provider value={user}>
+            <setUserContext.Provider value={setCurrentUser}>
+              <Rerender.Provider value={rerender}>
+                <RerenderToggle.Provider value={handleClearCanvasToggle}>
+                  <Main cycloidControls={cycloidControls} />
+                </RerenderToggle.Provider>
+              </Rerender.Provider>
+            </setUserContext.Provider>
+          </userContext.Provider>
         )}
       </section>
     </div>

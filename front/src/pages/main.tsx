@@ -1,97 +1,73 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useContext, useRef } from "react";
 import CycloidControls from "../classes/domain/cycloidControls";
-import { User } from "../classes/domain/userData/User";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
-import {
-  Rerender,
-  RerenderToggle,
-  RerenderType
-} from "../contexts/rerenderToggle";
-import { setUserContext, userContext } from "../contexts/userContext";
+import { Rerender, RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
+import useMeHooks from "../utils/hooks/useMeHooks";
 
 function Main({
   cycloidControls,
 }: {
   cycloidControls: React.MutableRefObject<CycloidControls>;
 }) {
-  const [rerender, setRerender] = useState<RerenderType>({
-    reason: RerenderReason.appStart,
-    toggle: false,
-  });
-  const handleClearCanvasToggle = useCallback((reason: RerenderReason) => {
-    setRerender((state) => (state = { ...state, reason: reason }));
-  }, []);
+  const { done: _ } = useMeHooks();
 
-  const [user, setUser] = useState<User | null>(null);
-  const setCurrentUser = useCallback((user: User | null) => {
-    setUser(user);
-  }, []);
+  const rerender = useContext(RerenderToggle);
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
   const canvasContainerFlexWrapper = useRef<null | HTMLElement>(null);
 
   const { handleOnControlsToggle, handleOnRelationshipEditorToggle } =
     useAnimateMenuToggling(cycloidControls, () => {
-      handleClearCanvasToggle(RerenderReason.switchMenu);
+      rerender(RerenderReason.switchMenu);
     });
 
   return (
-    <userContext.Provider value={user}>
-      <setUserContext.Provider value={setCurrentUser}>
-    <Rerender.Provider value={rerender}>
-      <RerenderToggle.Provider value={handleClearCanvasToggle}>
-        <div className="text-purple-light h-full w-full">
-          <div className="w-full h-full relative flex md:flex-row sm:flex-col">
-            <div
-              style={{ flex: 0.6 }}
-              className="relative canvas-container-flex-wrapper"
-              ref={canvasContainerFlexWrapper as any}
-            >
-              <div
-                ref={allCanvasContainer as any}
-                className="w-full h-full absolute canvas-container"
-              >
-                {cycloidControls.current.mode === "Instant" ||
-                cycloidControls.current.mode === "AnimatedInstant" ? (
-                  <InstantCanvas
-                    parent={allCanvasContainer}
-                    cycloidControls={cycloidControls}
-                    pointsAmount={6000}
-                  />
-                ) : (
-                  <AnimatedCanvas
-                    cycloidControls={cycloidControls}
-                    parent={allCanvasContainer}
-                    parentWrapper={canvasContainerFlexWrapper}
-                  />
-                )}
-              </div>
-            </div>
-            <div
-              style={{
-                padding: "75px 75px 20px 75px",
-                overflow: "auto",
-                flex: 0.4,
-              }}
-            >
-              <ControlsOrRelationshipEditor
-                      onRelationshipEditorToggle={
-                        handleOnRelationshipEditorToggle
-                      }
-                onControlsToggle={handleOnControlsToggle}
+    <div className="text-purple-light h-full w-full">
+      <div className="w-full h-full relative flex md:flex-row sm:flex-col">
+        <div
+          style={{ flex: 0.6 }}
+          className="relative canvas-container-flex-wrapper"
+          ref={canvasContainerFlexWrapper as any}
+        >
+          <div
+            ref={allCanvasContainer as any}
+            className="w-full h-full absolute canvas-container"
+          >
+            {cycloidControls.current.mode === "Instant" ||
+            cycloidControls.current.mode === "AnimatedInstant" ? (
+              <InstantCanvas
+                parent={allCanvasContainer}
                 cycloidControls={cycloidControls}
+                pointsAmount={6000}
               />
-            </div>
+            ) : (
+              <AnimatedCanvas
+                cycloidControls={cycloidControls}
+                parent={allCanvasContainer}
+                parentWrapper={canvasContainerFlexWrapper}
+              />
+            )}
           </div>
         </div>
-      </RerenderToggle.Provider>
-    </Rerender.Provider>
-      </setUserContext.Provider>
-    </userContext.Provider>
+        <div
+          style={{
+            padding: "75px 75px 20px 75px",
+            overflow: "auto",
+            flex: 0.4,
+          }}
+        >
+          <ControlsOrRelationshipEditor
+            onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
+            onControlsToggle={handleOnControlsToggle}
+            cycloidControls={cycloidControls}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 

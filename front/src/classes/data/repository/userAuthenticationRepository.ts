@@ -7,6 +7,7 @@ import { LogInOrRegisterOtpResponse } from "../response/loginOrRegisterOtpRespon
 import { SessionManager } from "../services/sessionManager";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
+import { MeResponse } from "../response/MeResponse";
 
 interface LoginInterface {
   email: string;
@@ -67,7 +68,9 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
         body: {
           email,
           otpCode: enteredOtp,
-          serializedConfiguration: JSON.stringify(baseConfiguration),
+          serializedConfiguration: baseConfiguration
+            ? JSON.stringify(baseConfiguration)
+            : null,
         } as LoginOrRegisterRequest,
       });
 
@@ -99,10 +102,15 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
   }
 
-  static async me(): Promise<void> {
-    const user = await UserAuthenticationRepository.handle<User>({
-      path: "/me",
-      method: "GET",
-    });
+  static async me(): Promise<MeResponse | null> {
+    try {
+      const meResponse = await UserAuthenticationRepository.handle<MeResponse>({
+        path: "/me",
+        method: "POST",
+      });
+      return meResponse;
+    } catch (e) {
+      return null;
+    }
   }
 }

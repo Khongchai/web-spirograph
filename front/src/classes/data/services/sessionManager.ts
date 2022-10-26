@@ -1,7 +1,7 @@
 import { User } from "../../domain/userData/User";
 
 export class SessionManager {
-  private static sessionTokenKey = "t-" + Date.now().toString();
+  private static sessionTokenKey = "session";
 
   static getSessionToken(): string | null {
     return localStorage.getItem(SessionManager.sessionTokenKey);

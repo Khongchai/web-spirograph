@@ -1,5 +1,5 @@
-export interface MeResponse{
-    id: string;
-    email: string;
-    savedConfigurations: string[];
+export interface MeResponse {
+  id: string;
+  email: string;
+  savedConfigurations: string[];
 }

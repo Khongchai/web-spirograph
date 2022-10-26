@@ -58,6 +58,11 @@ export class Appcontroller {
     return {};
   }
 
+  /**
+   * We only have 401 and 200 for this.
+   * No 404 because if the jwt is invalid or missing, we already know that
+   * the jwt, or lack thereof, can be ignored.
+   */
   @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Post('me')
   async me(@DecoratorUtils.user.email() email: string) {
