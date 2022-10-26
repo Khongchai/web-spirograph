@@ -75,7 +75,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       email: json.email,
     });
 
-    SessionManager.sessionToken = json.accessToken;
+    SessionManager.setSessionToken(json.accessToken);
     SessionManager.user = user;
 
     return user;
@@ -87,7 +87,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       method: "POST",
     });
 
-    SessionManager.sessionToken = null;
+    SessionManager.setSessionToken(null);
     SessionManager.user = null;
   }
 

@@ -1,8 +1,8 @@
 Send configuration as string from postman.
 
 Me endpoint for on app start (check localStorage).
-Call get nofig after logging in.
 
+Call get nofig after logging in (everytime, so bundle the logic together).
 
 Take care of the login and register and save config flow first as it is the biggest one.
 
@@ -20,7 +20,7 @@ After fetching, the UI state for the configs should reflect the fetched result.
 
 After logging out, the UI state should return to the default value.
 
-Algo for determining the complexity of a shape (we need to find out how many points to draw) but also clamp it at some value because otherwise for some shapes, it'll just take forever.
+Replace all alert with a nice pop up box.
 
 > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > >
 
