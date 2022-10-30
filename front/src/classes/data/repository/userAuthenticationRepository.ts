@@ -101,7 +101,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
   }
 
-  static async me(): Promise<string | null> {
+  static async me(): Promise<User | null> {
     try {
       const meResponse = await UserAuthenticationRepository.handle<MeResponse>({
         path: "/me",
@@ -109,7 +109,9 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       });
 
       SessionManager.setSessionToken(meResponse.newToken);
-      return meResponse.user.email;
+      return new User({
+        email: meResponse.user.email,
+      });
     } catch (e) {
       UserAuthenticationRepository.clearSessionData();
 

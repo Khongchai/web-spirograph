@@ -16,13 +16,9 @@ export default function useMeHooks(): {
   }, []);
 
   async function me() {
-    const resp = await UserAuthenticationRepository.me();
+    setDone(false);
 
-    const user = resp
-      ? new User({
-          email: resp.email,
-        })
-      : null;
+    const user: User | null = await UserAuthenticationRepository.me();
     setUser(user);
 
     setDone(true);
