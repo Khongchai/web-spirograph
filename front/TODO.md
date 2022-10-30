@@ -1,10 +1,6 @@
-Send configuration as string from postman.
-
-Me endpoint for on app start (check localStorage).
+Show saved configuraitons.
 
 Call get nofig after logging in (everytime, so bundle the logic together).
-
-Take care of the login and register and save config flow first as it is the biggest one.
 
 Make the window resize-able.
 

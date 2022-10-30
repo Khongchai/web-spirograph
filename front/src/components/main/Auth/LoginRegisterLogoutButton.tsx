@@ -8,7 +8,7 @@ export function LoginRegisterLogoutButton() {
   const user = useContext(userContext);
   const setUser = useContext(setUserContext);
 
-  const { UI: LoginModal, trigger } = useLoginModal();
+  const { UI: LoginModal, trigger, isLoading } = useLoginModal();
 
   function triggerLoginOrRegisterUI() {
     trigger(true);
@@ -31,10 +31,14 @@ export function LoginRegisterLogoutButton() {
     <div>
       <LoginModal />
       {!user ? (
-        <Button
-          buttonText="Register/Login"
-          onClick={triggerLoginOrRegisterUI}
-        />
+        isLoading ? (
+          <Button buttonText="loading" />
+        ) : (
+          <Button
+            buttonText="Register/Login"
+            onClick={triggerLoginOrRegisterUI}
+          />
+        )
       ) : (
         <Button buttonText="Logout" onClick={logout} />
       )}

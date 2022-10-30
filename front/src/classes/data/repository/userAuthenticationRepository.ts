@@ -90,8 +90,7 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
       method: "POST",
     });
 
-    SessionManager.setSessionToken(null);
-    SessionManager.user = null;
+    UserAuthenticationRepository.clearSessionData();
   }
 
   static async otpRequest({ email }: OtpRequestsInterface): Promise<void> {
@@ -102,15 +101,24 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
     });
   }
 
-  static async me(): Promise<MeResponse | null> {
+  static async me(): Promise<string | null> {
     try {
       const meResponse = await UserAuthenticationRepository.handle<MeResponse>({
         path: "/me",
         method: "POST",
       });
-      return meResponse;
+
+      SessionManager.setSessionToken(meResponse.newToken);
+      return meResponse.user.email;
     } catch (e) {
+      UserAuthenticationRepository.clearSessionData();
+
       return null;
     }
+  }
+
+  static clearSessionData(): void {
+    SessionManager.setSessionToken(null);
+    SessionManager.user = null;
   }
 }

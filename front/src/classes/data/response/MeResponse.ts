@@ -1,5 +1,8 @@
 export interface MeResponse {
-  id: string;
-  email: string;
-  savedConfigurations: string[];
+  user: {
+    id: string;
+    email: string;
+    savedConfigurations: string[];
+  };
+  newToken: string;
 }

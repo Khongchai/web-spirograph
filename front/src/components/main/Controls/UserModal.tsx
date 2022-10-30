@@ -3,14 +3,15 @@ import { ClientError } from "../../../classes/customEvents";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { UITrigger } from "../../../classes/domain/UITrigger";
-import { setConfigurationContext } from "../../../contexts/configurationContext";
-import { userContext, setUserContext } from "../../../contexts/userContext";
+import { setUserContext } from "../../../contexts/userContext";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
 
 export function useLoginModal(
-  props: { defaultShowState?: boolean, cycloidControls?: CycloidControls } = { defaultShowState: false }
-): UITrigger {
+  props: { defaultShowState?: boolean; cycloidControls?: CycloidControls } = {
+    defaultShowState: false,
+  }
+): UITrigger & { isLoading: boolean } {
   const [isModalShown, setIsModalShown] = useState(!!props.defaultShowState);
   const [isLoading, setIsLoading] = useState(false);
   const [userModalType, setUserModalType] =
@@ -18,9 +19,6 @@ export function useLoginModal(
   const [userCredentails, setUserCredentials] = useState<{
     email: string;
   }>();
-  //TODO setConfig after login??
-  const setConfig = useContext(setConfigurationContext);
-  const user = useContext(userContext);
   const setUser = useContext(setUserContext);
 
   const onOtpRequestFormSubmit: onFormSubmitType = async ({ email }) => {
@@ -80,6 +78,7 @@ export function useLoginModal(
     trigger: (show) => {
       setIsModalShown(show);
     },
+    isLoading,
   };
 }
 

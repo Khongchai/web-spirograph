@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { useContext } from "react";
 import { ConfigurationsRepository } from "../../../classes/data/repository/configurationsRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
@@ -17,21 +18,30 @@ export function UserDataControl({
 }) {
   const user = useContext(userContext);
 
-  const { UI: LoginModal, trigger } = useLoginModal({ cycloidControls });
+  const { UI: LoginModal, trigger: loginModalTrigger } = useLoginModal({
+    cycloidControls,
+  });
 
   async function onSaveConfigurationClicked() {
     if (user) {
       await ConfigurationsRepository.saveConfiguration(cycloidControls);
       alert("Data saved successfully");
     } else {
-      trigger(true);
+      loginModalTrigger(true);
     }
   }
+
+  // const { UI: ShowConfigurationsOverlay, trigger: showConfigurationsTrigger } =
+  //   useShowConfigurationsOverlay();
+  // function onShowConfiguraionsClicked() {
+  //   showConfigurationsTrigger(true);
+  // }
 
   return (
     <ControlSection>
       <SettingsContainer>
         <LoginModal />
+        {/* <ShowConfigurationsOverlay /> */}
         <Heading tooltipText={tooltipText}>Config</Heading>
         <Button
           buttonText="Save Config"
@@ -40,7 +50,7 @@ export function UserDataControl({
         {user!! ? (
           <Button
             buttonText="Show Saved Configurations"
-            onClick={() => {}}
+            // onClick={onShowConfiguraionsClicked}
           ></Button>
         ) : (
           <></>

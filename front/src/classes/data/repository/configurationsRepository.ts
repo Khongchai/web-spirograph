@@ -1,8 +1,10 @@
 import CycloidControls from "../../domain/cycloidControls";
 import { BaseConfiguration } from "../../DTOInterfaces/BaseConfiguration";
+import defaultCycloidControls from "../defaults/cycloidControls";
 import { CycliodControlsBaseConfigurationMapper } from "../mapper/cycloidControlsBaseConfigurationMapper";
 import { SaveConfigurationRequest } from "../request/saveConfigurationRequest";
 import { SavedConfiguration } from "../response/GetSavedConfigurationsResponse";
+import { SessionManager } from "../services/sessionManager";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
 
@@ -11,7 +13,7 @@ export class ConfigurationsRepository {
   static async saveConfiguration(
     cycloidControls: CycloidControls
   ): Promise<CycloidControls[]> {
-    const json = await BaseNetworkRepository.handle<SavedConfiguration[]>({
+    const resp = await BaseNetworkRepository.handle<SavedConfiguration[]>({
       path: "/config",
       method: "PUT",
       body: new SaveConfigurationRequest(
@@ -21,7 +23,7 @@ export class ConfigurationsRepository {
       ),
     });
 
-    return json.map((config) => {
+    return resp.map((config) => {
       const baseConfig = JSON.parse(config.data) as BaseConfiguration;
 
       return CycliodControlsBaseConfigurationMapper.toCycloidControls(
@@ -30,13 +32,30 @@ export class ConfigurationsRepository {
     });
   }
 
+  // TODO check if this is cached.
   static async getSavedConfigurations(): Promise<CycloidControls[]> {
-    const json = await BaseNetworkRepository.handle<SavedConfiguration[]>({
-      path: "/config",
-      method: "GET",
-    });
+    const defaultVal = [defaultCycloidControls];
 
-    return json.map((config) => {
+    if (!SessionManager.getSessionToken()) {
+      return defaultVal;
+    }
+
+    let resp: SavedConfiguration[];
+
+    try {
+      resp = await BaseNetworkRepository.handle<SavedConfiguration[]>({
+        path: "/config",
+        method: "GET",
+      });
+    } catch (_) {
+      return defaultVal;
+    }
+
+    if (resp.length === 0) {
+      return defaultVal;
+    }
+
+    return resp.map((config) => {
       const baseConfig = JSON.parse(config.data) as BaseConfiguration;
 
       return CycliodControlsBaseConfigurationMapper.toCycloidControls(
