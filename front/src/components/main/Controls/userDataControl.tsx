@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { ConfigurationsRepository } from "../../../classes/data/repository/configurationsRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { userContext } from "../../../contexts/userContext";
+import useShowConfigurationsOverlay from "../../../utils/hooks/useShowConfigurationsOverlay";
 import Button from "../Shared/Button";
 import SettingsContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
@@ -31,17 +32,17 @@ export function UserDataControl({
     }
   }
 
-  // const { UI: ShowConfigurationsOverlay, trigger: showConfigurationsTrigger } =
-  //   useShowConfigurationsOverlay();
-  // function onShowConfiguraionsClicked() {
-  //   showConfigurationsTrigger(true);
-  // }
+  const { UI: ShowConfigurationsOverlay, trigger: showConfigurationsTrigger } =
+    useShowConfigurationsOverlay();
+  function onShowConfiguraionsClicked() {
+    showConfigurationsTrigger(true);
+  }
 
   return (
     <ControlSection>
       <SettingsContainer>
         <LoginModal />
-        {/* <ShowConfigurationsOverlay /> */}
+        <ShowConfigurationsOverlay />
         <Heading tooltipText={tooltipText}>Config</Heading>
         <Button
           buttonText="Save Config"
@@ -50,7 +51,7 @@ export function UserDataControl({
         {user!! ? (
           <Button
             buttonText="Show Saved Configurations"
-            // onClick={onShowConfiguraionsClicked}
+            onClick={onShowConfiguraionsClicked}
           ></Button>
         ) : (
           <></>

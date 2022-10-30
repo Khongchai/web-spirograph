@@ -1,8 +1,14 @@
+Use web animations api to transition UI on page load.
+
 Show saved configuraitons.
+
+Grab configurations after logging in (add the logic to the login hook).
 
 Call get nofig after logging in (everytime, so bundle the logic together).
 
 Make the window resize-able.
+
+Try computing the lcm with Rust-webassembly.
 
 Find out what happens to the instant's canvas transform when you zoom and zoom in. For now, it seems that every zoom out zeems to be larger and larger, does not feel linear at all.
 

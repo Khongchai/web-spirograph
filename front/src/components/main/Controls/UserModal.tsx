@@ -1,11 +1,13 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { ClientError } from "../../../classes/customEvents";
 import { UserAuthenticationRepository } from "../../../classes/data/repository/userAuthenticationRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import { UITrigger } from "../../../classes/domain/UITrigger";
+import { RerenderToggle } from "../../../contexts/rerenderToggle";
 import { setUserContext } from "../../../contexts/userContext";
 import { LoginRegisterForm, onFormSubmitType } from "../Auth/LoginRegisterForm";
 import { OtpVerificationForm } from "../Auth/OtpVerificationForm";
+import ModalBackground from "../Shared/ModalBackground";
 
 export function useLoginModal(
   props: { defaultShowState?: boolean; cycloidControls?: CycloidControls } = {
@@ -19,6 +21,7 @@ export function useLoginModal(
   const [userCredentails, setUserCredentials] = useState<{
     email: string;
   }>();
+  const rerender = useContext(RerenderToggle);
   const setUser = useContext(setUserContext);
 
   const onOtpRequestFormSubmit: onFormSubmitType = async ({ email }) => {
@@ -170,22 +173,5 @@ export function RegisterAndLoginModal({
         </div>
       </ModalBackground>
     </>
-  );
-}
-
-interface ModalBackgroundProps {
-  children: React.ReactNode;
-  onBgClicked: () => void;
-}
-
-function ModalBackground({ children, onBgClicked }: ModalBackgroundProps) {
-  return (
-    <div className="fixed w-full h-full grid place-items-center top-0 left-0">
-      <div className="z-20">{children}</div>
-      <div
-        className="fixed w-full h-full bg-purple-dark opacity-80 top-0 left-0 z-1"
-        onClick={onBgClicked}
-      />
-    </div>
   );
 }
