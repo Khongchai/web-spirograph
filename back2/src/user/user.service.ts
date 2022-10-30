@@ -50,7 +50,6 @@ export class UserService {
     email: string;
     configuration?: string;
   }): Promise<User> {
-    
     const newUser = new User({
       email,
       savedConfigurations: configuration

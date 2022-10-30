@@ -1,11 +1,9 @@
-import {
-  CACHE_MANAGER, Inject,
-  Injectable
-} from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import NestJSCache from 'cache-manager';
 import { Otp } from 'src/models/Otp';
 import { LoginOrRegisterResponse } from 'src/models/responseDTOs/LoginOrRegisterResponse';
+import { User } from 'src/models/User';
 import { UserService } from 'src/user/user.service';
 import DecoratorUtils from 'src/utils/decoratorUtils';
 
@@ -30,7 +28,7 @@ export class AuthService {
     const expiryDate = new Date(exp);
     if (expiryDate > nowDate) {
       await this.cacheManager.set(jwt + AuthService.blackListedKey, jwt, {
-        ttl: (exp - now),
+        ttl: exp - now,
       });
     }
 
@@ -52,6 +50,29 @@ export class AuthService {
     const validated = value == otpCode && associatedEmail == email;
 
     return validated;
+  }
+
+  async me({ email, jwt }: { email: string; jwt: string }): Promise<{
+    user: User | null;
+    jwt: string | null;
+  }> {
+    const user = await this.userService.findOne({
+      email,
+      throwErrorIfNotExist: true,
+    });
+
+    const newJwt = await this.generateJwt(email);
+
+    if (user) {
+      await this.logout({ jwt });
+
+      return {
+        user,
+        jwt: newJwt.accessToken,
+      };
+    }
+
+    return { user: null, jwt: null };
   }
 
   async validateUserNotInBlackList(jwt: string) {
@@ -93,7 +114,7 @@ export class AuthService {
         await this.userService.updateConfigurations({
           newConfigs: [newConfiguration],
           email,
-          addNewOrReplace: 'replace',
+          addNewOrReplace: 'add',
         });
       }
     } else {
