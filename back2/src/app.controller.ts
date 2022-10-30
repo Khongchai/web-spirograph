@@ -43,9 +43,7 @@ export class Appcontroller {
   @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Get('config')
   async getConfiguration(@DecoratorUtils.user.email() email: string) {
-    return {
-      savedConfigurations: await this.userService.getConfigurations(email),
-    };
+    return await this.userService.getConfigurations(email);
   }
 
   @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
@@ -62,15 +60,21 @@ export class Appcontroller {
    * We only have 401 and 200 for this.
    * No 404 because if the jwt is invalid or missing, we already know that
    * the jwt, or lack thereof, can be ignored.
+   *
+   * This method also invalidates the old jwt and send back a new one.
    */
   @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
   @Post('me')
-  async me(@DecoratorUtils.user.email() email: string) {
-    const user = await this.userService.findOne({
-      email,
-      throwErrorIfNotExist: true,
-    });
-    return user;
+  async me(
+    @DecoratorUtils.user.email() email: string,
+    @DecoratorUtils.user.jwt() jwt: string,
+  ) {
+    const result = await this.authService.me({ email, jwt });
+
+    return {
+      user: result.user,
+      newToken: result.jwt,
+    };
   }
 
   @UseGuards(JwtAuthGuard, BlackListedJwtGuard)
