@@ -33,7 +33,7 @@ export function UserDataControl({
 
   const { UI: ShowConfigurationsOverlay, trigger: showConfigurationsTrigger } =
     useShowConfigurationsOverlay();
-  function onShowConfiguraionsClicked() {
+  function onShowConfigurationsClicked() {
     showConfigurationsTrigger(true);
   }
 
@@ -50,8 +50,8 @@ export function UserDataControl({
         {user!! ? (
           <Button
             buttonText="Show Saved Configurations"
-            onClick={onShowConfiguraionsClicked}
-          ></Button>
+            onClick={onShowConfigurationsClicked}
+          />
         ) : (
           <></>
         )}

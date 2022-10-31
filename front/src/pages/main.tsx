@@ -35,7 +35,7 @@ function Main() {
   }, [meHookDone]);
   async function loadCycloidControls() {
     const savedValue = await ConfigurationsRepository.getSavedConfigurations();
-    cycloidControls.current = savedValue[0];
+    cycloidControls.current = savedValue.controls[0];
     rerender(RerenderReason.appStart);
   }
 

@@ -33,7 +33,9 @@ export default function ModalBackground({
 
   return (
     <div className="fixed w-full h-full grid place-items-center top-0 left-0">
-      <div className="z-20">{children}</div>
+      <div className="z-20 w-full h-full grid place-items-center top-0 left-0">
+        {children}
+      </div>
       <div
         ref={obj}
         className="fixed w-full h-full bg-purple-dark top-0 left-0 z-1
