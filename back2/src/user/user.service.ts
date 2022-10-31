@@ -55,6 +55,7 @@ export class UserService {
       savedConfigurations: configuration
         ? [new SavedConfiguration({ data: configuration })]
         : [],
+      selectedConfiguration: 0,
     });
 
     return await this.userRepository.save(newUser);
