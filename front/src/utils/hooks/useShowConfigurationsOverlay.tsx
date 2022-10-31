@@ -12,8 +12,10 @@ export default function useShowConfigurationsOverlay(): UITrigger {
     useState<CycloidControlsAndCreatedDate>();
 
   useEffect(() => {
-    getConfigurations();
-  }, []);
+    if (show) {
+      getConfigurations();
+    }
+  }, [show]);
 
   async function getConfigurations() {
     const configs = await ConfigurationsRepository.getSavedConfigurations();
@@ -25,22 +27,18 @@ export default function useShowConfigurationsOverlay(): UITrigger {
       show ? (
         <ModalBackground>
           {/* TODO this is temporary */}
-          <li>
+          <ul>
             {configurations?.controls.map((config, i) => {
               return (
-                <ul
-                  onClick={() => {
-                    console.log("clicked");
-                  }}
-                >
+                <li key={configurations?.createdDate[i]} onClick={() => {}}>
                   <p>
                     This is a temp list:
                     {`${new Date(configurations?.createdDate[i])}`}
                   </p>
-                </ul>
+                </li>
               );
             })}
-          </li>
+          </ul>
           <Button
             className="w-4/5 lg:w-fit"
             buttonText="Done"
