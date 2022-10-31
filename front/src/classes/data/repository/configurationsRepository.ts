@@ -34,7 +34,6 @@ export class ConfigurationsRepository {
     });
   }
 
-  // TODO check if this is cached.
   static async getSavedConfigurations(): Promise<CycloidControlsAndCreatedDate> {
     const defaultVal = {
       controls: [defaultCycloidControls],

@@ -1,4 +1,4 @@
-Use web animations api to transition UI on page load.
+Manage state global state for the currently-selected configuration.
 
 Show saved configuraitons.
 

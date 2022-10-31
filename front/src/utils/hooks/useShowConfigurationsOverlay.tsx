@@ -12,6 +12,7 @@ export default function useShowConfigurationsOverlay(): UITrigger {
     useState<CycloidControlsAndCreatedDate>();
 
   useEffect(() => {
+    // TODO cache this.
     if (show) {
       getConfigurations();
     }
