@@ -1,4 +1,3 @@
-import { assert } from "console";
 import { useContext } from "react";
 import { ConfigurationsRepository } from "../../../classes/data/repository/configurationsRepository";
 import CycloidControls from "../../../classes/domain/cycloidControls";

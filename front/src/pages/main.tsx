@@ -45,7 +45,6 @@ function Main() {
     });
 
   if (!cycloidControls.current) {
-    console.log(cycloidControls.current);
     return (
       <>
         <div className="grid place-items-center text-white">

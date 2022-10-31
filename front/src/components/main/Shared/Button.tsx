@@ -1,6 +1,6 @@
 import React from "react";
 
-type ButtonProps =
+type ButtonProps = (
   | {
       onClick?: VoidFunction;
       additionalStyle?: any;
@@ -12,16 +12,25 @@ type ButtonProps =
       additionalStyle?: any;
       buttonText: string;
       isFormSubmitButton: true;
-    };
+    }
+) & {
+  onEnterPressed?: VoidFunction;
+};
 
 const Button: React.FC<ButtonProps> = ({
   onClick,
   additionalStyle,
   buttonText,
   isFormSubmitButton,
+  onEnterPressed,
 }) => {
   return (
     <button
+      onKeyUp={(e) => {
+        if (e.code === "Enter") {
+          onEnterPressed?.();
+        }
+      }}
       type={isFormSubmitButton ? "submit" : "button"}
       onClick={onClick}
       style={{ ...additionalStyle, minHeight: "2.5rem" }}

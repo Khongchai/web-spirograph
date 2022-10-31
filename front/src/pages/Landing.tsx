@@ -16,6 +16,7 @@ export default function Landing({
       </h1>
       <Button
         onClick={onBeginClicked}
+        onEnterPressed={onBeginClicked}
         additionalStyle={{
           color: "white",
           fontWeight: "bold",

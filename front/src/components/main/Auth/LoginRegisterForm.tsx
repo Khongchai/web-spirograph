@@ -30,7 +30,7 @@ export function LoginRegisterForm({
             Email*
           </label>
         </div>
-        <div className="md:w-2/3">
+        <div className="md:w-2/3 xl:w-5/6">
           <input
             required
             className="bg-gray-200 appearance-none border-2 

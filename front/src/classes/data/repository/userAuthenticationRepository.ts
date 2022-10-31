@@ -102,6 +102,8 @@ export class UserAuthenticationRepository extends BaseNetworkRepository {
   }
 
   static async me(): Promise<User | null> {
+    if (!SessionManager.getSessionToken()) return null;
+
     try {
       const meResponse = await UserAuthenticationRepository.handle<MeResponse>({
         path: "/me",
