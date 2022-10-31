@@ -128,7 +128,6 @@ export class AuthService {
       jwt.accessToken,
       email,
       queriedUser ? 'login' : 'register',
-      queriedUser?.selectedConfiguration ?? 0,
     );
   }
 }

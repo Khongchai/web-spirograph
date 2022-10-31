@@ -12,9 +12,6 @@ export class User {
   @Column()
   savedConfigurations: SavedConfiguration[];
 
-  @Column()
-  selectedConfiguration: number;
-
   constructor(user: Omit<User, 'id'>) {
     Object.assign(this, user);
   }
