@@ -81,7 +81,6 @@ export class InstantDrawerEpitrochoidRenderer {
     if (cycloids.length < 2) {
       throw new Error("Provide at least 2 cycloids");
     }
-    
 
     const finalPoint = { x: 0, y: 0 };
 

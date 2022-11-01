@@ -17,8 +17,9 @@ export enum RerenderReason {
   rodLength = 1 << 10,
   // Life cycle
   appStart = 1 << 11,
+  redraw = 1 << 12,
   // For values that don't need to be dealt with specially.
-  undefined = 1 << 12,
+  undefined = 1 << 13,
 }
 
 export const CHANGE_SETTINGS_REASON: number =
@@ -29,4 +30,5 @@ export const CHANGE_SETTINGS_REASON: number =
   RerenderReason.rotationDirection |
   RerenderReason.addOrRemoveCycloid |
   RerenderReason.timeStep |
-  RerenderReason.changedFocusedCycloid;
+  RerenderReason.changedFocusedCycloid |
+  RerenderReason.redraw;

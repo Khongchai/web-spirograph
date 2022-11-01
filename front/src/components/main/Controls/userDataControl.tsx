@@ -14,17 +14,17 @@ export function UserDataControl({
   cycloidControls,
 }: {
   tooltipText: string;
-  cycloidControls: CycloidControls;
+  cycloidControls: React.MutableRefObject<CycloidControls>;
 }) {
   const user = useContext(userContext);
 
   const { UI: LoginModal, trigger: loginModalTrigger } = useLoginModal({
-    cycloidControls,
+    cycloidControls: cycloidControls.current,
   });
 
   async function onSaveConfigurationClicked() {
     if (user) {
-      await ConfigurationsRepository.saveConfiguration(cycloidControls);
+      await ConfigurationsRepository.saveConfiguration(cycloidControls.current);
       alert("Data saved successfully");
     } else {
       loginModalTrigger(true);
@@ -32,7 +32,7 @@ export function UserDataControl({
   }
 
   const { UI: ShowConfigurationsOverlay, trigger: showConfigurationsTrigger } =
-    useShowConfigurationsOverlay();
+    useShowConfigurationsOverlay(cycloidControls);
   function onShowConfigurationsClicked() {
     showConfigurationsTrigger(true);
   }
