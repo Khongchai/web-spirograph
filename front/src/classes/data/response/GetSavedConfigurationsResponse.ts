@@ -1,8 +1,3 @@
-export type GetSavedConfigurationsResponse = SavedConfiguration[];
+import { SavedConfiguration } from "./SavedConfiguration";
 
-export interface SavedConfiguration {
-  id: string;
-  data: string;
-  // milliseconds
-  date: number;
-}
+export type GetSavedConfigurationsResponse = SavedConfiguration[];

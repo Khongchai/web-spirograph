@@ -32,6 +32,13 @@ export default function useShowConfigurationsOverlay(
     rerenderToggle(RerenderReason.redraw);
   }
 
+  async function deleteConfiguration(id: string) {
+    const configs = await ConfigurationsRepository.deleteSavedConfiguration({
+      configurationId: id,
+    });
+    setConfigurations(configs);
+  }
+
   return {
     UI: () =>
       show ? (
@@ -50,6 +57,16 @@ export default function useShowConfigurationsOverlay(
                     This is a temp list:
                     {`${new Date(configurations?.createdDate[i])}`}
                   </p>
+                  {/* Don't delete if there's only one left */}
+                  {configurations.controls.length != 0 ? (
+                    <button
+                      onClick={() => {
+                        deleteConfiguration(config.databaseId!);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  ) : null}
                 </li>
               );
             })}
