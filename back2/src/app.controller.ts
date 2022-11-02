@@ -19,6 +19,10 @@ import { SavedConfiguration } from './models/SavedConfiguration';
 import { UserService } from './user/user.service';
 import DecoratorUtils from './utils/decoratorUtils';
 
+/**
+ * Bro, we need to refactor out controllers.
+ */
+
 @Controller()
 export class Appcontroller {
   constructor(
