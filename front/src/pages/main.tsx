@@ -10,6 +10,7 @@ import CycloidControls from "../classes/domain/cycloidControls";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
+import ResizeBar from "../components/main/ResizeBar";
 import { RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
@@ -87,7 +88,9 @@ function Main() {
             )}
           </div>
         </div>
+        <ResizeBar />
         <div
+          className="control-flex-wrapper"
           style={{
             padding: "75px 75px 20px 75px",
             overflow: "auto",
