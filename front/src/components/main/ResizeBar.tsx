@@ -4,7 +4,7 @@ export default function ResizeBar() {
   return (
     <DragWrapper className="w-4 relative" onDrag={onDrag}>
       <div
-        className="bg-purple-vivid w-4 h-full cursor-w-resize z-50 opacity-20 absolute right-4
+        className="bg-purple-vivid w-4 h-full cursor-w-resize z-50 opacity-10 absolute right-4
         transition-opacity hover:opacity-70
       "
       ></div>

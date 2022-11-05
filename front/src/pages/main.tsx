@@ -60,7 +60,7 @@ function Main() {
     <div className="text-purple-light h-full w-full">
       <div className="w-full h-full relative flex md:flex-row sm:flex-col">
         <div
-          style={{ flex: 0.6 }}
+          style={{ flex: 0.7 }}
           className="relative canvas-container-flex-wrapper"
           ref={canvasContainerFlexWrapper as any}
         >
@@ -94,7 +94,7 @@ function Main() {
           style={{
             padding: "75px 75px 20px 55px",
             overflow: "auto",
-            flex: 0.4,
+            flex: 0.3,
           }}
         >
           <ControlsOrRelationshipEditor
