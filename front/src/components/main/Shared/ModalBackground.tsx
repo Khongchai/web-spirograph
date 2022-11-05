@@ -33,7 +33,7 @@ export default function ModalBackground({
 
   return (
     <div className="fixed w-full h-full grid place-items-center top-0 left-0">
-      <div className="z-20 w-full h-full grid place-items-center top-0 left-0">
+      <div className="z-20 w-full h-full grid place-items-center top-0 left-0 pointer-events-none">
         {children}
       </div>
       <div

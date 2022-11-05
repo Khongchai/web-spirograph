@@ -2,11 +2,10 @@
 //TODO refactor this humongous mess.
 
 import { Vector2 } from "../../../../classes/DTOInterfaces/vector2";
-import RepellerData from "../../models/RepellerData";
 import Delta from "../../models/Delta";
 import MousePos from "../../models/MousePos";
 import Particle from "../../models/particle";
-import RotationAngles from "../../models/RotationAngles";
+import RepellerData from "../../models/RepellerData";
 import ScreenSize from "../../models/ScreenSize";
 import manageInteractionsAndDrawParticles from "./manageInteractionsAndDrawParticles";
 
