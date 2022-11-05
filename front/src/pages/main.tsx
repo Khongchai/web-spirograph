@@ -92,7 +92,7 @@ function Main() {
         <div
           className="control-flex-wrapper"
           style={{
-            padding: "75px 75px 20px 75px",
+            padding: "75px 75px 20px 55px",
             overflow: "auto",
             flex: 0.4,
           }}

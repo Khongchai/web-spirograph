@@ -37,6 +37,7 @@ function DragWrapper({
   }
 
   function onMouseMove(e: MouseEvent) {
+    e.preventDefault();
     const mousePos = {
       x: Math.max(0, e.x / window.innerWidth),
       y: Math.max(0, e.y / window.innerHeight),
