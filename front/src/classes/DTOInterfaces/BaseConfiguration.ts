@@ -4,8 +4,8 @@ import { CycloidParamsArgs } from "./CycloidParamsInterface";
 export class BaseConfiguration {
   /**
    * Database id, only for objects that are returned from the backend.
-   */ 
-  id?: string;
+   */
+  databaseId?: string;
 
   /**
    * Base parent of all cycloids.

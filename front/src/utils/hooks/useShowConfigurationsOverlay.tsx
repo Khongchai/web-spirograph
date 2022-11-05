@@ -24,6 +24,7 @@ export default function useShowConfigurationsOverlay(
   // No need to show any loading screen.
   async function getConfigurations() {
     const configs = await ConfigurationsRepository.getSavedConfigurations();
+    console.log(configs);
     setConfigurations(configs);
   }
 

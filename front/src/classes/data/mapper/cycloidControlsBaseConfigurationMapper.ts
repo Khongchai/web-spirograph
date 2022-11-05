@@ -19,9 +19,15 @@ export class CycliodControlsBaseConfigurationMapper {
     });
   }
 
-  static toCycloidControls(config: BaseConfiguration): CycloidControls {
+  static toCycloidControls({
+    config,
+    id,
+  }: {
+    config: BaseConfiguration;
+    id: string;
+  }): CycloidControls {
     return new CycloidControls({
-      id: config.id,
+      databaseId: id,
       animationState: config.animationState,
       clearTracedPathOnParamsChange: config.clearTracedPathOnParamsChange,
       currentCycloidId: config.currentCycloidId,

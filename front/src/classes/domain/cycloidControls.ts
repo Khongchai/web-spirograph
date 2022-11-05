@@ -41,9 +41,11 @@ export default class CycloidControls implements CycloidControlsInterface {
     programOnly,
     showAllCycloids,
     traceAllCycloids,
+    databaseId,
   }: Omit<CycloidControlsInterface, "cycloidManager"> & {
     cycloids: Omit<CycloidParamsArgs, "id" | "boundingCircleId">[];
   }) {
+    this.databaseId = databaseId;
     this.outermostBoundingCircle = outermostBoundingCircle;
     this.globalTimeStepScale = globalTimeStep;
     this.currentCycloidId = currentCycloidId;

@@ -7,7 +7,6 @@ import { DeleteConfigurationRequest } from "../request/deleteConfigurationReques
 import { SaveConfigurationRequest } from "../request/saveConfigurationRequest";
 import { deleteConfigurationResponse } from "../response/DeleteConfigurationResponse";
 import { GetSavedConfigurationsResponse } from "../response/GetSavedConfigurationsResponse";
-import { SavedConfiguration } from "../response/SavedConfiguration";
 import { SessionManager } from "../services/sessionManager";
 import { BaseNetworkRepository } from "./baseNetworkRepository";
 import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
@@ -16,7 +15,7 @@ import NetworkErrorPropagatorDelegate from "./networkErrorPropagatorDelegate";
 export class ConfigurationsRepository {
   static async saveConfiguration(
     cycloidControls: CycloidControls
-  ): Promise<CycloidControls[]> {
+  ): Promise<CycloidControlsAndCreatedDate> {
     const resp =
       await BaseNetworkRepository.handle<GetSavedConfigurationsResponse>({
         path: "/config",
@@ -28,13 +27,23 @@ export class ConfigurationsRepository {
         ),
       });
 
-    return resp.map((config) => {
-      const baseConfig = JSON.parse(config.data) as BaseConfiguration;
+    const returnVal: CycloidControlsAndCreatedDate = {
+      controls: [],
+      createdDate: [],
+    };
+    for (const val of resp) {
+      const baseConfig = JSON.parse(val.data) as BaseConfiguration;
+      const mappedConfig =
+        CycliodControlsBaseConfigurationMapper.toCycloidControls({
+          config: baseConfig,
+          id: val.id,
+        });
 
-      return CycliodControlsBaseConfigurationMapper.toCycloidControls(
-        baseConfig
-      );
-    });
+      returnVal.controls.push(mappedConfig);
+      returnVal.createdDate.push(val.date);
+    }
+
+    return returnVal;
   }
 
   static async getSavedConfigurations(): Promise<CycloidControlsAndCreatedDate> {
@@ -57,15 +66,34 @@ export class ConfigurationsRepository {
         }
       );
     } catch (_) {
+      SessionManager.setSessionToken(null);
       return defaultVal;
     }
 
+    const returnVal: CycloidControlsAndCreatedDate = {
+      controls: [],
+      createdDate: [],
+    };
+
+    // Save a default one.
     if (resp.length === 0) {
-      return defaultVal;
+      const resp = await ConfigurationsRepository.saveConfiguration(
+        defaultCycloidControls
+      );
+      return resp;
     }
 
-    const returnVal: CycloidControlsAndCreatedDate =
-      this.mappers.savedConfigurationsToCycloidcontrolsAndCreatedDate(resp);
+    for (const val of resp) {
+      const baseConfig = JSON.parse(val.data) as BaseConfiguration;
+      const mappedConfig =
+        CycliodControlsBaseConfigurationMapper.toCycloidControls({
+          config: baseConfig,
+          id: val.id,
+        });
+
+      returnVal.controls.push(mappedConfig);
+      returnVal.createdDate.push(val.date);
+    }
 
     return returnVal;
   }
@@ -84,30 +112,22 @@ export class ConfigurationsRepository {
         } as DeleteConfigurationRequest,
       });
 
-    const returnVal: CycloidControlsAndCreatedDate =
-      this.mappers.savedConfigurationsToCycloidcontrolsAndCreatedDate(resp);
+    const returnVal: CycloidControlsAndCreatedDate = {
+      controls: [],
+      createdDate: [],
+    };
+    for (const val of resp) {
+      const baseConfig = JSON.parse(val.data) as BaseConfiguration;
+      const mappedConfig =
+        CycliodControlsBaseConfigurationMapper.toCycloidControls({
+          config: baseConfig,
+          id: val.id,
+        });
+
+      returnVal.controls.push(mappedConfig);
+      returnVal.createdDate.push(val.date);
+    }
 
     return returnVal;
   }
-
-  private static mappers = {
-    savedConfigurationsToCycloidcontrolsAndCreatedDate: (
-      configs: SavedConfiguration[]
-    ) => {
-      const returnVal: CycloidControlsAndCreatedDate = {
-        controls: [],
-        createdDate: [],
-      };
-      for (const val of configs) {
-        const baseConfig = JSON.parse(val.data) as BaseConfiguration;
-        const mappedConfig =
-          CycliodControlsBaseConfigurationMapper.toCycloidControls(baseConfig);
-
-        returnVal.controls.push(mappedConfig);
-        returnVal.createdDate.push(val.date);
-      }
-
-      return returnVal;
-    },
-  };
 }
