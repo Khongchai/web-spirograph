@@ -3,10 +3,12 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
 } from "react";
 import { ConfigurationsRepository } from "../classes/data/repository/configurationsRepository";
 import CycloidControls from "../classes/domain/cycloidControls";
+import { Vector2 } from "../classes/DTOInterfaces/vector2";
 import AnimatedCanvas from "../components/main/Canvas/Animated";
 import InstantCanvas from "../components/main/Canvas/Instant";
 import ControlsOrRelationshipEditor from "../components/main/ControlsOrRelationshipEditor";
@@ -15,7 +17,6 @@ import { RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
 import useMeHooks from "../utils/hooks/useMeHooks";
-import init from "../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
 
 function Main() {
   const { done: meHookDone } = useMeHooks();
@@ -24,6 +25,7 @@ function Main() {
 
   const allCanvasContainer = useRef<null | HTMLElement>(null);
   const canvasContainerFlexWrapper = useRef<null | HTMLElement>(null);
+  const controlFlexWrapper = useRef<null | HTMLElement>(null);
 
   // Huge mistake to be separating bounding circle from everything else....may require a huge refactor later on.
   /**
@@ -89,14 +91,18 @@ function Main() {
             )}
           </div>
         </div>
-        <ResizeBar />
+        <MainWindowResizeBar
+          leftComponent={canvasContainerFlexWrapper}
+          rightComponent={controlFlexWrapper}
+        />
         <div
           className="control-flex-wrapper"
           style={{
-            padding: "75px 75px 20px 55px",
+            padding: "75px 0 20px 0",
             overflow: "auto",
             flex: 0.3,
           }}
+          ref={controlFlexWrapper as any}
         >
           <ControlsOrRelationshipEditor
             onRelationshipEditorToggle={handleOnRelationshipEditorToggle}
@@ -109,6 +115,38 @@ function Main() {
       </div>
     </div>
   );
+}
+
+function MainWindowResizeBar({
+  leftComponent,
+  rightComponent,
+}: {
+  leftComponent: MutableRefObject<HTMLElement | null>;
+  rightComponent: MutableRefObject<HTMLElement | null>;
+}) {
+  useEffect(() => {
+    const obj = new ResizeObserver(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    // Can observe either left or right component.
+    obj.observe(leftComponent.current!);
+
+    return () => obj.disconnect();
+  }, []);
+
+  const onResizeBarDragged = useCallback((e: Vector2) => {
+    const left = e.x;
+    const right = 1 - e.x;
+    try {
+      //@ts-ignore
+      leftComponent.current?.attributeStyleMap.set("flex-grow", left);
+      //@ts-ignore
+      rightComponent.current?.attributeStyleMap.set("flex-grow", right);
+    } catch (_) {}
+  }, []);
+
+  return <ResizeBar onResizeBarDragged={onResizeBarDragged} />;
 }
 
 export default Main;

@@ -1,10 +1,27 @@
-import React, { ReactNode, useEffect, useState } from "react";
-export default function ResizeBar() {
-  function onDrag(e: { x: number; y: number }) {}
+import { ReactNode, useRef } from "react";
+import { Vector2 } from "../../classes/DTOInterfaces/vector2";
+
+export default function ResizeBar({
+  onResizeBarDragged,
+}: {
+  onResizeBarDragged?: (e: Vector2) => void;
+}) {
+  const resizeBarRef = useRef<HTMLElement | null>(null);
+
+  function onDrag(e: Vector2) {
+    //TODO refactor to dynamic values.
+    const totalWidthAsFraction = 16 / window.innerWidth;
+
+    onResizeBarDragged?.({
+      x: e.x + totalWidthAsFraction,
+      y: e.y,
+    });
+  }
   return (
-    <DragWrapper className="w-4 relative" onDrag={onDrag}>
+    <DragWrapper className=" relative" onDrag={onDrag}>
       <div
-        className="bg-purple-vivid w-4 h-full cursor-w-resize z-50 opacity-10 absolute right-4
+        ref={resizeBarRef as any}
+        className="bg-purple-vivid w-4 h-full cursor-w-resize z-50 opacity-10 absolute right-1
         transition-opacity hover:opacity-70
       "
       ></div>
@@ -20,8 +37,12 @@ function DragWrapper({
   className: string;
   children: ReactNode;
   /**
-   * Where x and y are the absolute percentage of the cursor
-   * on the screen
+   * Where x and y are the absolute fraction of the cursor
+   * on the screen.
+   *
+   * Both x and y ranges from 0 to (1 - fractionOfFixedWidthElements)
+   * (0, 0) left top
+   * (1, 1) right bottom
    *
    */
   onDrag: (e: { x: number; y: number }) => void;

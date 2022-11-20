@@ -36,7 +36,7 @@ export abstract class SimpleIdGenerator {
  * within that class, define the needed event managers.
  */
 export interface BaseCanvasEventManager {
-  clearListener: VoidFunction;
+  clearAllListeners: VoidFunction;
   addOnEventCallback: ({
     call,
     elementToAttachEventListener,
@@ -50,27 +50,29 @@ export interface BaseCanvasEventManager {
 }
 
 export class CanvasManager implements BaseCanvasEventManager {
-  private forEvent: keyof WindowEventMap;
+  private _forEvent: keyof WindowEventMap;
   protected canvasName = "setCanvasSize-id";
-
-  constructor({ forEvent }: { forEvent: keyof WindowEventMap }) {
-    this.forEvent = forEvent;
-  }
-
-  protected callbacksAndListener: {
+  protected callbacksAndListeners: {
     callback: VoidFunction;
     target: HTMLElement | (Window & typeof globalThis);
   }[] = [];
 
+  constructor({ forEvent }: { forEvent: keyof WindowEventMap }) {
+    this._forEvent = forEvent;
+  }
+
   /**
-   * Remove listener of all canvas that have been set up by this class.
+   * Remove listeners of all elements that have been set up by this class.
    */
-  clearListener() {
-    for (const elem of this.callbacksAndListener) {
-      elem.target.removeEventListener(this.forEvent, elem.callback);
+  clearAllListeners() {
+    for (const elem of this.callbacksAndListeners) {
+      if (elem.target instanceof Window) {
+        elem.target.removeEventListener(this._forEvent, elem.callback);
+      } else {
+      }
     }
 
-    this.callbacksAndListener = [];
+    this.callbacksAndListeners = [];
   }
 
   addOnEventCallback(
@@ -84,17 +86,24 @@ export class CanvasManager implements BaseCanvasEventManager {
       eventCallback,
     }: {
       call: "once" | "onEvent" | "onceAndOnEvent";
-      elementToAttachEventListener?: HTMLElement | (Window & typeof globalThis);
+      elementToAttachEventListener?:
+        | HTMLElement
+        | (Window & typeof globalThis)
+        | null;
       eventCallback: <T extends Event>(e?: T | any) => void;
     }
   ) {
-    if (["once", "onceAndOnEvent"].includes(call)) eventCallback();
+    if (["once", "onceAndOnEvent"].includes(call)) {
+      eventCallback();
+    }
 
     if (["onEvent", "onceAndOnEvent"].includes(call)) {
       const target = elementToAttachEventListener ?? window;
-      target.addEventListener(this.forEvent, eventCallback, { passive: false });
+      target.addEventListener(this._forEvent, eventCallback, {
+        passive: false,
+      });
 
-      this.callbacksAndListener.push({
+      this.callbacksAndListeners.push({
         callback: eventCallback,
         target: target,
       });

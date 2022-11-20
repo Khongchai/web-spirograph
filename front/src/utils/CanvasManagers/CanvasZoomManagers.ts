@@ -62,9 +62,9 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
     });
   }
 
-  clearListener() {
-    this._mouseMoveManager.clearListener();
-    this._mouseWheelManager.clearListener();
+  clearAllListeners() {
+    this._mouseMoveManager.clearAllListeners();
+    this._mouseWheelManager.clearAllListeners();
   }
 }
 

@@ -22,7 +22,7 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
 }) => {
   useEffect(() => {
     return () => {
-      CanvasSizeManagers.mainThread.clearListener();
+      CanvasSizeManagers.mainThread.clearAllListeners();
     };
   }, []);
 
@@ -122,7 +122,7 @@ function _useHandlePan(
       });
     }
 
-    return () => CanvasPanManagers.mainThread.clearListener();
+    return () => CanvasPanManagers.mainThread.clearAllListeners();
   }, []);
 }
 

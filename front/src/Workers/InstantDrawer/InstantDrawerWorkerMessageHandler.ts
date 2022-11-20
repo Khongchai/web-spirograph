@@ -160,7 +160,7 @@ export class InstantDrawerWorkerMessageHandler
         this._computeImage({
           zoomLevel,
         });
-      }, 300);
+      }, 200);
     });
   }
 
@@ -208,7 +208,7 @@ export class InstantDrawerWorkerMessageHandler
 
       await super.render();
       this._computeImage({});
-    }, 100);
+    }, 50);
   }
 
   handleOnMessage({ data }: { data: InstantDrawerWorkerPayload }) {

@@ -21,7 +21,7 @@ const ControlsOrRelationshipEditor: React.FC<
   return (
     <div
       ref={wrapperRef}
-      className="flex justify-between align-top h-full w-full"
+      className="flex justify-around align-top h-full w-full"
     >
       {controlsOrRelationshipEditor === "controls" ? (
         <Controls cycloidControls={cycloidControls} />
@@ -31,7 +31,7 @@ const ControlsOrRelationshipEditor: React.FC<
           wrapperRef={wrapperRef}
         />
       )}
-      <div className="flex-row flex h-fit items-center gap-4">
+      <div className="flex-row flex h-fit items-center gap-4 ">
         <div
           style={{ height: "fit-content" }}
           className="hover:scale-105 cursor-pointer"

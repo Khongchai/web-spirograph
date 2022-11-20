@@ -74,7 +74,7 @@ export default function InstantCanvas({
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    CanvasSizeManagers.mainThread.addOnEventCallback({
+    CanvasSizeManagers.instantDrawerWorkerThread.addOnEventCallback({
       eventCallback: () => {
         if (!workerRef.current || !parent.current) return;
 
@@ -90,7 +90,7 @@ export default function InstantCanvas({
     });
 
     return function () {
-      CanvasSizeManagers.instantDrawerWorkerThread.clearListener();
+      CanvasSizeManagers.instantDrawerWorkerThread.clearAllListeners();
     };
   }, []);
 
@@ -172,7 +172,8 @@ function _useHandlePan(
       });
     }
 
-    return () => CanvasPanManagers.instantDrawerWorkerThread.clearListener();
+    return () =>
+      CanvasPanManagers.instantDrawerWorkerThread.clearAllListeners();
   }, []);
 }
 

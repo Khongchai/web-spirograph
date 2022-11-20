@@ -94,10 +94,10 @@ class CanvasPanManager implements BaseCanvasEventManager {
     });
   }
 
-  clearListener(): void {
-    this._mouseMoveManager.clearListener();
-    this._mouseDownManager.clearListener();
-    this._mouseUpManager.clearListener();
+  clearAllListeners(): void {
+    this._mouseMoveManager.clearAllListeners();
+    this._mouseDownManager.clearAllListeners();
+    this._mouseUpManager.clearAllListeners();
   }
 
   getTranslation(): Vector2 {
