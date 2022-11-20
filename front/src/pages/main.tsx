@@ -15,6 +15,7 @@ import { RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
 import useMeHooks from "../utils/hooks/useMeHooks";
+import init from "../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
 
 function Main() {
   const { done: meHookDone } = useMeHooks();

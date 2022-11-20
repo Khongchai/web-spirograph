@@ -20,6 +20,10 @@ const max = Math.max;
 const pow = Math.pow;
 const round = Math.round;
 
+/**
+ *
+ * @Deprecated use rust's fractional_lcm instead.
+ */
 export function fractionalLcm(numbers: number[]): number {
   let longestFractions = 0;
 

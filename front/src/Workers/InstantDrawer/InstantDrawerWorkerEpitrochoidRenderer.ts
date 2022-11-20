@@ -1,21 +1,33 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 import colors from "../../constants/colors";
 import { fractionalLcm } from "../../utils/math";
+import init, {
+  fractional_lcm,
+} from "../../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
 import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
+
+interface Renderer {
+  render(): void;
+}
 
 export class InstantDrawerEpitrochoidRenderer {
   private BASE_POINTS_FOR_A_CIRCLE = 60;
   private BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
+  private initDone = init();
 
-  render({
+  async render({
+    //TODO For this class to be able to implement the Renderer interface,
+    // these parameters should be passed through the constructor instead.
     cycloids,
     theta,
     timeStepScalar,
     ctx,
     canvas: { width: canvasWidth, height: canvasHeight },
     translation,
-  }: DrawerData): void {
+  }: DrawerData): Promise<void> {
+    await this.initDone;
+
     let previousPoints: Vector2 | undefined;
     let currentPoint: Vector2 | undefined;
     const step = Math.max(timeStepScalar * this.BASE_STEP, 0.01);
@@ -39,10 +51,8 @@ export class InstantDrawerEpitrochoidRenderer {
 
     const circlePointsCompensated =
       this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
-    const points =
-      circlePointsCompensated *
-        fractionalLcm(cycloids.map((c) => c.thetaScale)) +
-      1;
+    const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
+    const points = circlePointsCompensated * fractional_lcm(scalars) + 1;
 
     for (let _ = 0; _ < points; _++) {
       const newPoint = this._computeEpitrochoid({
