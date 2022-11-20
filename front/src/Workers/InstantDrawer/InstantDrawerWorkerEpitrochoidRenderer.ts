@@ -4,29 +4,35 @@ import { fractionalLcm } from "../../utils/math";
 import init, {
   fractional_lcm,
 } from "../../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
+import Renderer from "../Renderer";
 import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
 
-interface Renderer {
-  render(): void;
-}
+export class InstantDrawerEpitrochoidRenderer implements Renderer {
+  private readonly BASE_POINTS_FOR_A_CIRCLE = 60;
+  private readonly BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
+  private readonly lcmModuleInitPromise = init();
+  protected drawerData?: DrawerData;
 
-export class InstantDrawerEpitrochoidRenderer {
-  private BASE_POINTS_FOR_A_CIRCLE = 60;
-  private BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
-  private initDone = init();
+  constructor(drawerData?: DrawerData) {
+    this.drawerData = drawerData;
+  }
 
-  async render({
-    //TODO For this class to be able to implement the Renderer interface,
-    // these parameters should be passed through the constructor instead.
-    cycloids,
-    theta,
-    timeStepScalar,
-    ctx,
-    canvas: { width: canvasWidth, height: canvasHeight },
-    translation,
-  }: DrawerData): Promise<void> {
-    await this.initDone;
+  async render(): Promise<void> {
+    await this.lcmModuleInitPromise;
+    if (!this.drawerData) {
+      throw new Error(
+        "drawerData should be assigned a value before calling this method."
+      );
+    }
+    let {
+      cycloids,
+      theta,
+      timeStepScalar,
+      ctx,
+      canvas: { width: canvasWidth, height: canvasHeight },
+      translation,
+    } = this.drawerData;
 
     let previousPoints: Vector2 | undefined;
     let currentPoint: Vector2 | undefined;

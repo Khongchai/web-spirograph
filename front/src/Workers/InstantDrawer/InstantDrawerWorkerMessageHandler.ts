@@ -30,7 +30,6 @@ export class InstantDrawerWorkerMessageHandler
   extends InstantDrawerEpitrochoidRenderer
   implements EventHandler, MessageHandler
 {
-  private _drawerData?: DrawerData;
   private _cachedImageData: CachedImageData;
 
   private _zoomThrottler: Throttler;
@@ -56,33 +55,38 @@ export class InstantDrawerWorkerMessageHandler
 
   _computeImage({ zoomLevel }: { zoomLevel?: number }) {
     this._cachedImageData.image =
-      this._drawerData!.canvas.convertToBlob().then(createImageBitmap);
-    this._cachedImageData.imageTranslation = this._drawerData!.translation;
+      this.drawerData!.canvas.convertToBlob().then(createImageBitmap);
+    this._cachedImageData.imageTranslation = this.drawerData!.translation;
     if (zoomLevel) this._cachedImageData.imageZoomLevel = zoomLevel;
   }
 
   _onResize({ payload }: { payload: SetCanvasSizePayload }): void {
     const { canvasHeight, canvasWidth } = payload;
 
-    this._resizeThrottler.throttle(() => {
-      if (!this._drawerData) {
+    this._resizeThrottler.throttle(async () => {
+      if (!this.drawerData) {
         throw new Error("Call initializeDrawer first");
       }
 
-      this._drawerData!.canvas.width = canvasWidth;
-      this._drawerData!.canvas.height = canvasHeight;
+      this.drawerData!.canvas.width = canvasWidth;
+      this.drawerData!.canvas.height = canvasHeight;
       CanvasTransformUtils.clear(
-        this._drawerData!.ctx,
+        this.drawerData!.ctx,
         canvasWidth,
         canvasHeight
       );
 
-      super.render(this._drawerData);
+      await super.render();
+
       this._computeImage({});
     }, 200);
   }
 
-  _onInit({ payload }: { payload: InitializeDrawerPayload }): void {
+  async _onInit({
+    payload,
+  }: {
+    payload: InitializeDrawerPayload;
+  }): Promise<void> {
     const {
       canvas,
       canvasHeight,
@@ -97,7 +101,7 @@ export class InstantDrawerWorkerMessageHandler
     canvas.height = canvasHeight;
     const ctx = canvas.getContext("2d")!;
 
-    this._drawerData = {
+    this.drawerData = {
       canvas,
       ctx,
       cycloids: cycloids,
@@ -106,12 +110,12 @@ export class InstantDrawerWorkerMessageHandler
       translation: translation ?? { x: 0, y: 0 },
     };
 
-    super.render(this._drawerData);
+    await super.render();
     this._computeImage({});
   }
 
   _onZoom({ payload }: { payload: ZoomPayload }): void {
-    const { ctx, canvas } = this._drawerData!;
+    const { ctx, canvas } = this.drawerData!;
     const {
       zoomData: { mouseCurrentPos, zoomLevel },
     } = payload!;
@@ -145,13 +149,13 @@ export class InstantDrawerWorkerMessageHandler
       ctx.drawImage(image, 0, 0);
       ctx.restore();
 
-      this._zoomThrottler.throttle(() => {
+      this._zoomThrottler.throttle(async () => {
         //TODO
         // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
         ctx.setTransform(zoomLevel, 0, 0, zoomLevel, 0, 0);
         // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
 
-        super.render(this._drawerData!);
+        await super.render();
 
         this._computeImage({
           zoomLevel,
@@ -160,18 +164,18 @@ export class InstantDrawerWorkerMessageHandler
     });
   }
 
-  _onPan({ payload }: { payload: PanPayload }): void {
+  async _onPan({ payload }: { payload: PanPayload }): Promise<void> {
     const { panState } = payload!;
 
     if (panState.mouseState == "mouseup") {
-      super.render(this._drawerData!);
+      await super.render();
       this._computeImage({});
 
       return;
     }
 
-    const { ctx, canvas } = this._drawerData!;
-    this._drawerData!.translation = {
+    const { ctx, canvas } = this.drawerData!;
+    this.drawerData!.translation = {
       x: panState.newCanvasPos.x,
       y: panState.newCanvasPos.y,
     };
@@ -198,11 +202,11 @@ export class InstantDrawerWorkerMessageHandler
     });
   }
 
-  _onParamChanged({ payload }: { payload: SetParametersPayload }): void {
-    this._setParametersThrottler.throttle(() => {
-      Object.assign(this._drawerData!, payload);
+  _onParamChanged({ payload }: { payload: SetParametersPayload }) {
+    this._setParametersThrottler.throttle(async () => {
+      Object.assign(this.drawerData!, payload);
 
-      super.render(this._drawerData!);
+      await super.render();
       this._computeImage({});
     }, 100);
   }
