@@ -68,6 +68,7 @@ export class InstantDrawerWorkerMessageHandler
         throw new Error("Call initializeDrawer first");
       }
 
+      const transform = this.drawerData.ctx.getTransform();
       this.drawerData!.canvas.width = canvasWidth;
       this.drawerData!.canvas.height = canvasHeight;
       CanvasTransformUtils.clear(
@@ -75,6 +76,7 @@ export class InstantDrawerWorkerMessageHandler
         canvasWidth,
         canvasHeight
       );
+      this.drawerData.ctx.setTransform(transform);
 
       await super.render();
 

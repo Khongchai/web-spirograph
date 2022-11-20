@@ -25,6 +25,7 @@ export class InstantDrawerEpitrochoidRenderer implements Renderer {
         "drawerData should be assigned a value before calling this method."
       );
     }
+
     let {
       cycloids,
       theta,

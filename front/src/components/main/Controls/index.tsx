@@ -26,7 +26,7 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   const forceUpdateSettingsUI = useForceUpdate();
 
   return (
-    <div className="all-container">
+    <div className="all-container pl-4">
       <Local
         cycloid={cycloid}
         tooltipText="This controls cycloid-specific settings."

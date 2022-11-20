@@ -37,7 +37,7 @@ function App() {
   }
 
   return (
-    <div className="w-full h-full overflow-x-hidden">
+    <div className="w-full h-full overflow-x-hidden bg-purple-dark">
       <section className="absolute w-full h-full">
         <BackgroundParticles stage={stage} />
       </section>

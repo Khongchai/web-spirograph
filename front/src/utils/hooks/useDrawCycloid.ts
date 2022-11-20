@@ -39,11 +39,13 @@ export default function useDrawCanvas(
 
       CanvasSizeManagers.mainThread.addOnEventCallback({
         eventCallback: () => {
+          const transform = ctx.getTransform();
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
           const parentHeight = parent!.clientHeight;
           canvas.width = parentWidth;
           canvas.height = parentHeight;
+          ctx.setTransform(transform);
         },
         call: "onceAndOnEvent",
       });

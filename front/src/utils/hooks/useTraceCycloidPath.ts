@@ -42,11 +42,13 @@ export default function useTraceCycloidPath(
       CanvasSizeManagers.mainThread.addOnEventCallback({
         call: "onceAndOnEvent",
         eventCallback: () => {
+          const transform = ctx.getTransform();
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
           const parentHeight = parent!.clientHeight;
           canvas.width = parentWidth;
           canvas.height = parentHeight;
+          ctx.setTransform(transform);
         },
       });
 

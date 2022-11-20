@@ -17,6 +17,7 @@ import { RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
 import useMeHooks from "../utils/hooks/useMeHooks";
+import { Throttler } from "../utils/throttler";
 
 function Main() {
   const { done: meHookDone } = useMeHooks();
@@ -125,8 +126,13 @@ function MainWindowResizeBar({
   rightComponent: MutableRefObject<HTMLElement | null>;
 }) {
   useEffect(() => {
+    const throttler = new Throttler();
+
     const obj = new ResizeObserver(() => {
-      window.dispatchEvent(new Event("resize"));
+      // Throttle to prevent flashing.
+      throttler.throttle(() => {
+        window.dispatchEvent(new Event("resize"));
+      }, 100);
     });
 
     // Can observe either left or right component.
