@@ -1,5 +1,4 @@
 import { CanvasTransformUtils } from "../../utils/CanvasTransformsUtils";
-import init from "../../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
 import { Throttler } from "../../utils/throttler";
 import { InstantDrawerEpitrochoidRenderer } from "./InstantDrawerWorkerEpitrochoidRenderer";
 import {

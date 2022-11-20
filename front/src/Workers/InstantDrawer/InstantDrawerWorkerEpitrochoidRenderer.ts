@@ -19,6 +19,7 @@ export class InstantDrawerEpitrochoidRenderer implements Renderer {
   }
 
   async render(): Promise<void> {
+    const then = performance.now();
     await this.lcmModuleInitPromise;
     if (!this.drawerData) {
       throw new Error(
@@ -59,7 +60,14 @@ export class InstantDrawerEpitrochoidRenderer implements Renderer {
     const circlePointsCompensated =
       this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
-    const points = circlePointsCompensated * fractional_lcm(scalars) + 1;
+    const points = Math.floor(
+      circlePointsCompensated * fractional_lcm(scalars) + 1
+    );
+    // JavaScript version for easy debugging.
+    // const points =
+    //   circlePointsCompensated *
+    //     fractionalLcm(cycloids.map((c) => c.thetaScale)) +
+    //   1;
 
     for (let _ = 0; _ < points; _++) {
       const newPoint = this._computeEpitrochoid({
@@ -86,6 +94,14 @@ export class InstantDrawerEpitrochoidRenderer implements Renderer {
     }
 
     ctx.restore();
+
+    const now = performance.now();
+    console.log(
+      "For " +
+        points +
+        ", this operation took in seconds: " +
+        (now - then) / 1000
+    );
   }
 
   private _computeEpitrochoid({
