@@ -1,15 +1,20 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
-import init, {
+import calcPointsInit, {
   fractional_lcm,
 } from "../../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
+import calcLinesInit, {
+  calc_lines,
+} from "../../utils/PerformanceModules/wasm/calc_lines/calc_lines/pkg/calc_lines";
 import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
 
+// We don't care about the return value of the init methods.
+const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
+
 export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
   private readonly BASE_POINTS_FOR_A_CIRCLE = 550;
   private readonly BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
-  private readonly lcmModuleInitPromise = init();
   drawerData?: DrawerData;
 
   constructor(initialSize: Vector2, drawerData: DrawerData) {
@@ -25,7 +30,8 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
   override async render(): Promise<void> {
     const then = performance.now();
 
-    await this.lcmModuleInitPromise;
+    // Wait until wasm modules are initialized (will be slow only the first load).
+    await wasmModuleInit;
     if (!this.drawerData) {
       throw new Error(
         "drawerData should be assigned a value before calling this method."
@@ -51,33 +57,29 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
     const pointsAmount = Math.floor(
       circlePointsCompensated * fractional_lcm(scalars) + 1
     );
-    const points: number[] = [];
 
-    // TODO @khongchai change to rust function.
-    for (let _ = 0; _ < pointsAmount; _++) {
-      const newPoint = this._computeEpitrochoid({
-        cycloids,
-        theta,
-      });
-
-      if (!previousPoint) {
-        previousPoint = newPoint;
-      } else {
-        currentPoint = newPoint;
-
-        points.push(
-          previousPoint.x,
-          previousPoint.y,
-          currentPoint.x,
-          currentPoint.y
-        );
-
-        previousPoint = currentPoint;
-      }
-
-      theta += step;
+    const dataForComputedEpitrochoid = [];
+    for (let i = 1; i < cycloids.length; i++) {
+      const parentCycloid = cycloids[i - 1];
+      const thisCycloid = cycloids[i];
+      dataForComputedEpitrochoid.push([
+        parentCycloid.radius,
+        thisCycloid.isOutsideOfParent
+          ? thisCycloid.radius
+          : -thisCycloid.radius,
+        thisCycloid.isClockwise ? 1 : 0,
+        thisCycloid.thetaScale,
+      ]);
     }
-    super.setPoints(points);
+    const points = calc_lines(
+      pointsAmount,
+      theta,
+      step,
+      dataForComputedEpitrochoid,
+      this.drawerData!.cycloids[this.drawerData!.cycloids.length - 1].rodLength
+    );
+
+    super.setPoints(new Float64Array(points));
     super.render();
 
     const now = performance.now();
@@ -87,48 +89,5 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
         ", this operation took in seconds: " +
         (now - then) / 1000
     );
-  }
-
-  private _computeEpitrochoid({
-    cycloids,
-    theta,
-  }: {
-    cycloids: InstantDrawCycloid[];
-    theta: number;
-  }) {
-    if (cycloids.length < 2) {
-      throw new Error("Provide at least 2 cycloids");
-    }
-
-    const finalPoint = { x: 0, y: 0 };
-
-    // Skip i = 0 because we don't need to iterate over the bounding circle
-    for (let i = 1; i < cycloids.length; i++) {
-      const parentCycloid = cycloids[i - 1];
-      const thisCycloid = cycloids[i];
-      const childCycloidRadius = thisCycloid.isOutsideOfParent
-        ? thisCycloid.radius
-        : -thisCycloid.radius;
-
-      // We ask the child it needs the parent to scale its theta.
-      finalPoint.x +=
-        (parentCycloid.radius + childCycloidRadius) *
-        Math.cos(
-          theta * thisCycloid.thetaScale -
-            Math.PI * 0.5 * Number(thisCycloid.isClockwise)
-        );
-      finalPoint.y +=
-        (parentCycloid.radius + childCycloidRadius) *
-        Math.sin(
-          theta * thisCycloid.thetaScale +
-            Math.PI * 0.5 * Number(thisCycloid.isClockwise)
-        );
-    }
-    const rodLength = cycloids[cycloids.length - 1].rodLength;
-
-    return {
-      x: finalPoint.x + rodLength * Math.cos(theta),
-      y: finalPoint.y + rodLength * Math.sin(theta),
-    };
   }
 }

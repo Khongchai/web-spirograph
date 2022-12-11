@@ -33,7 +33,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
    * where p1, p2, and p3 are objects that conform to {x: number, y: number}
    * or [x: number, y: number];
    */
-  private _pointsToRender: number[];
+  private _pointsToRender: Float64Array;
 
   constructor({
     canvas,
@@ -99,7 +99,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._projectionMatrix = this._projectionAndTranslation(w, h, w / 2, h / 2);
   }
 
-  setPoints(pointsToRender: number[]) {
+  setPoints(pointsToRender: Float64Array): void {
     this._pointsToRender = pointsToRender;
   }
 

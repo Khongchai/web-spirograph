@@ -27,12 +27,13 @@ interface MessageHandler {
 export class InstantDrawerWorkerMessageHandler
   implements EventHandler, MessageHandler
 {
+  private renderer: InstantDrawerEpitrochoidRenderer;
+
   private _cachedImageData: CachedImageData;
 
   private _zoomThrottler: Throttler;
   private _resizeThrottler: Throttler;
   private _setParametersThrottler: Throttler;
-  private renderer: InstantDrawerEpitrochoidRenderer;
 
   constructor() {
     this._cachedImageData = {
@@ -188,6 +189,7 @@ export class InstantDrawerWorkerMessageHandler
   }
 
   _onParamChanged({ payload }: { payload: SetParametersPayload }) {
+    const then = performance.now();
     this._setParametersThrottler.throttle(async () => {
       Object.assign(this.renderer.drawerData!, payload);
 

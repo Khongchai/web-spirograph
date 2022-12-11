@@ -18,8 +18,12 @@ export default function NetworkErrorPropagatorDelegate(
     const prototype =
       methodType === "static" ? constructor : constructor.prototype;
 
-    Object.getOwnPropertyNames(prototype).forEach((name, i) => {
-      const isBaseImmutableProperty = i <= 2; // ['length', 'name', 'prototype']
+    console.log(Object.getOwnPropertyNames(prototype));
+
+    Object.getOwnPropertyNames(prototype).forEach((name, _) => {
+      const isBaseImmutableProperty = ["length", "name", "prototype"].includes(
+        name
+      );
       if (isBaseImmutableProperty) return;
 
       const originalMethod = prototype[name];

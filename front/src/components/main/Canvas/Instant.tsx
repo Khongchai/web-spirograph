@@ -124,7 +124,7 @@ export default function InstantCanvas({
           } as InstantDrawerWorkerPayload);
         }
     },
-    250,
+    0,
     [rerender]
   );
 
