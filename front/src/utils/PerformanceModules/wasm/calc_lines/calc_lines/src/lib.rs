@@ -1,5 +1,3 @@
-use core::panic;
-
 use std::f64::consts::PI;
 
 use wasm_bindgen::prelude::*;
@@ -20,9 +18,6 @@ pub fn calc_lines(
     let parsed_data: Vec<[f64; 4]> = serde_wasm_bindgen::from_value(data).unwrap();
 
     let parsed_data_len = parsed_data.len();
-    if parsed_data_len < 2 {
-        panic!("Provide at least 2 cycloids");
-    }
 
     let parsed_data_crunched: Vec<[f64; 3]> = parsed_data
         .iter()
