@@ -31,7 +31,7 @@ export type SetCanvasSizePayload = {
   canvasWidth: number;
   canvasHeight: number;
 };
-export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "ctx"> & {
+export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "gl"> & {
   initialTheta: number;
   canvas: OffscreenCanvas;
   canvasWidth: number;

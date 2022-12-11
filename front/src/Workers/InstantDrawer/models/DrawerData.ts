@@ -4,8 +4,9 @@ import InstantDrawCycloid from "./Cycloid";
 export interface DrawerData {
   cycloids: InstantDrawCycloid[];
   theta: number;
-  ctx: OffscreenCanvasRenderingContext2D;
+  gl: WebGL2RenderingContext;
   canvas: OffscreenCanvas;
   timeStepScalar: number;
   translation: Vector2;
+  devicePixelRatio: number;
 }

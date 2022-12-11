@@ -1,25 +1,30 @@
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
-import colors from "../../constants/colors";
-import { fractionalLcm } from "../../utils/math";
 import init, {
   fractional_lcm,
 } from "../../utils/PerformanceModules/wasm/calc_points/pkg/calc_points";
-import Renderer from "../Renderer";
 import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
+import WebGLMultiLinesRenderer from "./WebGLRenderer";
 
-export class InstantDrawerEpitrochoidRenderer implements Renderer {
-  private readonly BASE_POINTS_FOR_A_CIRCLE = 60;
+export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
+  private readonly BASE_POINTS_FOR_A_CIRCLE = 550;
   private readonly BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
   private readonly lcmModuleInitPromise = init();
-  protected drawerData?: DrawerData;
+  drawerData?: DrawerData;
 
-  constructor(drawerData?: DrawerData) {
+  constructor(initialSize: Vector2, drawerData: DrawerData) {
+    super({
+      canvas: drawerData!.canvas,
+      size: initialSize,
+      devicePixelRatio: drawerData!.devicePixelRatio,
+    });
+
     this.drawerData = drawerData;
   }
 
-  async render(): Promise<void> {
+  override async render(): Promise<void> {
     const then = performance.now();
+
     await this.lcmModuleInitPromise;
     if (!this.drawerData) {
       throw new Error(
@@ -31,74 +36,54 @@ export class InstantDrawerEpitrochoidRenderer implements Renderer {
       cycloids,
       theta,
       timeStepScalar,
-      ctx,
+      gl: _,
       canvas: { width: canvasWidth, height: canvasHeight },
       translation,
     } = this.drawerData;
 
-    let previousPoints: Vector2 | undefined;
+    let previousPoint: Vector2 | undefined;
     let currentPoint: Vector2 | undefined;
     const step = Math.max(timeStepScalar * this.BASE_STEP, 0.01);
-    ctx.save();
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.translate(0, 0);
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.restore();
-
-    ctx.save();
-
-    const { a, b, c, d } = ctx.getTransform();
-    ctx.setTransform(
-      a,
-      b,
-      c,
-      d,
-      canvasWidth / 2 + translation.x,
-      canvasHeight / 2 + translation.y
-    );
 
     const circlePointsCompensated =
       this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
-    const points = Math.floor(
+    const pointsAmount = Math.floor(
       circlePointsCompensated * fractional_lcm(scalars) + 1
     );
-    // JavaScript version for easy debugging.
-    // const points =
-    //   circlePointsCompensated *
-    //     fractionalLcm(cycloids.map((c) => c.thetaScale)) +
-    //   1;
+    const points: number[] = [];
 
-    for (let _ = 0; _ < points; _++) {
+    // TODO @khongchai change to rust function.
+    for (let _ = 0; _ < pointsAmount; _++) {
       const newPoint = this._computeEpitrochoid({
         cycloids,
         theta,
       });
 
-      if (!previousPoints) {
-        previousPoints = newPoint;
+      if (!previousPoint) {
+        previousPoint = newPoint;
       } else {
         currentPoint = newPoint;
-        ctx.beginPath();
-        ctx.moveTo(previousPoints.x, previousPoints.y);
-        ctx.lineTo(currentPoint.x, currentPoint.y);
-        ctx.strokeStyle = colors.purple.vivid;
-        ctx.lineWidth = 2;
-        ctx.shadowBlur = 10;
-        ctx.stroke();
 
-        previousPoints = currentPoint;
+        points.push(
+          previousPoint.x,
+          previousPoint.y,
+          currentPoint.x,
+          currentPoint.y
+        );
+
+        previousPoint = currentPoint;
       }
 
       theta += step;
     }
-
-    ctx.restore();
+    super.setPoints(points);
+    super.render();
 
     const now = performance.now();
     console.log(
       "For " +
-        points +
+        pointsAmount +
         ", this operation took in seconds: " +
         (now - then) / 1000
     );

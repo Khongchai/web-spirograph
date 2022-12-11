@@ -47,6 +47,7 @@ export function useSetupInstantDrawerCanvas({
         timeStepScalar: cycloidControls.globalTimeStepScale,
         translation:
           CanvasPanManagers.instantDrawerWorkerThread.getTranslation(),
+        devicePixelRatio,
       },
     } as InstantDrawerWorkerPayload;
 
