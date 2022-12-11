@@ -5,6 +5,7 @@ import CycloidControls from "../../domain/cycloidControls";
 const defaultCycloidControls = new CycloidControls({
   outermostBoundingCircle: new BoundingCircle(
     {
+      // These initial values will be eventually overwritten.
       x: 0,
       y: 0,
     },

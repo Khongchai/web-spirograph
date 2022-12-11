@@ -68,12 +68,14 @@ export function useSetupInstantDrawerCanvas({
     const offscreenCanvas =
       instantDrawCanvasRef.current.transferControlToOffscreen();
 
+    const rect = parentRef.current.getBoundingClientRect();
+
     const payload = getInstantDrawPayload(
       cycloidControlsRef.current!,
       offscreenCanvas,
       pointsAmount,
-      parentRef.current.clientHeight,
-      parentRef.current.clientWidth
+      rect.width,
+      rect.height
     );
 
     worker.postMessage(payload, [offscreenCanvas]);

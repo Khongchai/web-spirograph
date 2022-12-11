@@ -92,8 +92,6 @@ export class InstantDrawerWorkerMessageHandler
       devicePixelRatio,
     } = payload;
 
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
     const gl = canvas.getContext("webgl2")!;
 
     this.renderer = new InstantDrawerEpitrochoidRenderer(
@@ -195,7 +193,7 @@ export class InstantDrawerWorkerMessageHandler
 
       await this.renderer.render();
       this._computeImage({});
-    }, 50);
+    }, 0);
   }
 
   handleOnMessage({ data }: { data: InstantDrawerWorkerPayload }) {

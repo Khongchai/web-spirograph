@@ -7,7 +7,7 @@ export type CanvasPanState = {
 };
 
 class CanvasPanManager implements BaseCanvasEventManager {
-  // TODO move these to the static manager to share the position betwee animated and instant canvas.
+  // TODO move these to the static manager to share the position between animated and instant canvas.
   private _mouseDownPos: Vector2 = { x: 0, y: 0 };
   private _canvasTranslatedPosition: Vector2 = { x: 0, y: 0 };
   private _mouseDown = false;

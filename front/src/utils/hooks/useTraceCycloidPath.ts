@@ -46,8 +46,8 @@ export default function useTraceCycloidPath(
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
           const parentHeight = parent!.clientHeight;
-          canvas.width = parentWidth;
-          canvas.height = parentHeight;
+          canvas.width = parentWidth * devicePixelRatio;
+          canvas.height = parentHeight * devicePixelRatio;
           ctx.setTransform(transform);
         },
       });

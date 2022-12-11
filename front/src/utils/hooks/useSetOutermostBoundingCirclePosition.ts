@@ -8,8 +8,8 @@ export default function useSetOutermostBoundingCirclePosition(
 ) {
   useEffect(() => {
     outermostBoundingCircle.centerPoint = {
-      x: parent.current.clientWidth / 2,
-      y: window.innerHeight / 2,
+      x: (parent.current.clientWidth * devicePixelRatio) / 2,
+      y: (parent.current.clientHeight * devicePixelRatio) / 2,
     };
     outermostBoundingCircle.radius = radius;
   }, []);

@@ -62,14 +62,14 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
       drawRef?.clearRect(
         0,
         0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
+        parent.current!.clientWidth * devicePixelRatio,
+        parent.current!.clientHeight * devicePixelRatio
       );
       traceRef?.clearRect(
         0,
         0,
-        parent.current!.clientWidth,
-        parent.current!.clientHeight
+        parent.current!.clientWidth * devicePixelRatio,
+        parent.current!.clientHeight * devicePixelRatio
       );
 
       drawRef?.restore();
@@ -82,12 +82,12 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
       <canvas
         id="animation-draw-canvas"
         ref={drawCanvasRef}
-        className="absolute"
+        className="absolute w-full h-full"
       ></canvas>
       <canvas
         id="animation-trace-canvas"
         ref={traceCanvasRef}
-        className="absolute opacity-50"
+        className="absolute opacity-50 w-full h-full"
       ></canvas>
     </>
   );
@@ -114,7 +114,7 @@ function _useHandlePan(
               var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
               ctx.save();
               ctx.setTransform(1, 0, 0, 1, 0, 0);
-              ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+              ctx.clearRect(0, 0, window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio);
               ctx.restore();
             }
           }

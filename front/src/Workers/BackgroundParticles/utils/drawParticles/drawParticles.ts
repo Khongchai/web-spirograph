@@ -1,6 +1,3 @@
-//TODO on begin clicked, expand all dots to be farther from one another.
-//TODO refactor this humongous mess.
-
 import { Vector2 } from "../../../../classes/DTOInterfaces/vector2";
 import Delta from "../../models/Delta";
 import MousePos from "../../models/MousePos";

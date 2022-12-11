@@ -154,7 +154,7 @@ export default function InstantCanvas({
     <canvas
       id="instant-draw-canvas"
       ref={instantDrawCanvasRef}
-      className="absolute"
+      className="absolute w-full h-full"
     ></canvas>
   );
 }

@@ -43,8 +43,8 @@ export default function useDrawCanvas(
           const parent = canvas.parentElement;
           const parentWidth = parent!.clientWidth;
           const parentHeight = parent!.clientHeight;
-          canvas.width = parentWidth;
-          canvas.height = parentHeight;
+          canvas.width = parentWidth * devicePixelRatio;
+          canvas.height = parentHeight * devicePixelRatio;
           ctx.setTransform(transform);
         },
         call: "onceAndOnEvent",
@@ -55,7 +55,12 @@ export default function useDrawCanvas(
 
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(
+          0,
+          0,
+          canvas.width * devicePixelRatio,
+          canvas.height * devicePixelRatio
+        );
         ctx.restore();
 
         ctx.save();
