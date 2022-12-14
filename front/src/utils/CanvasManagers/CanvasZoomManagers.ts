@@ -41,10 +41,14 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
       eventCallback: (e: WheelEvent) => {
         e.preventDefault();
 
-        this._zoomData.zoomLevel = Math.max(
-          this._zoomData.zoomLevel - e.deltaY * 0.00035,
-          0.1
-        );
+        let newZoomLevel = this._zoomData.zoomLevel;
+        const sign = Math.sign(e.deltaY);
+
+        console.log(sign);
+        newZoomLevel = Math.max(newZoomLevel - e.deltaY * 0.00035, 0.1);
+        newZoomLevel +=
+          Math.log10(Math.max(1, this._zoomData.zoomLevel)) * -sign;
+        this._zoomData.zoomLevel = newZoomLevel;
 
         eventCallback(this._zoomData);
       },
