@@ -23,7 +23,6 @@ interface _ProgramInfo {
 export default class WebGLMultiLinesRenderer implements Renderer {
   private readonly _gl: WebGL2RenderingContext;
   private readonly _canvas: OffscreenCanvas;
-  private readonly _projectionMatrix: Float32Array;
   private readonly _programInfo: _ProgramInfo;
   private readonly _size: Vector2;
   private readonly _dpr: number;
@@ -93,10 +92,6 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._gl.enableVertexAttribArray(
       this._programInfo.attributeLocations.aPosition
     );
-
-    const w = this._gl.canvas.width;
-    const h = this._gl.canvas.height;
-    this._projectionMatrix = this._projectionAndTranslation(w, h, w / 2, h / 2);
   }
 
   setPoints(pointsToRender: Float64Array): void {
@@ -104,10 +99,13 @@ export default class WebGLMultiLinesRenderer implements Renderer {
   }
 
   render(): void {
+    const w = this._gl.canvas.width;
+    const h = this._gl.canvas.height;
+
     this._gl.uniformMatrix3fv(
       this._programInfo.uniformLocations.uMatrix,
       false,
-      this._projectionMatrix
+      this._projectionAndTranslation(w, h, w / 2, h / 2)
     );
     this._gl.bufferData(
       this._gl.ARRAY_BUFFER,

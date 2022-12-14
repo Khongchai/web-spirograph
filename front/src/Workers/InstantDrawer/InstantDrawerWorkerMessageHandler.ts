@@ -27,7 +27,7 @@ interface MessageHandler {
 export class InstantDrawerWorkerMessageHandler
   implements EventHandler, MessageHandler
 {
-  private renderer: InstantDrawerEpitrochoidRenderer;
+  private _renderer: InstantDrawerEpitrochoidRenderer;
 
   private _cachedImageData: CachedImageData;
 
@@ -58,6 +58,9 @@ export class InstantDrawerWorkerMessageHandler
   }
 
   _onResize({ payload }: { payload: SetCanvasSizePayload }): void {
+    const { canvasHeight, canvasWidth } = payload;
+    this._renderer.resize(canvasWidth, canvasHeight);
+    this._renderer.render();
     // const { canvasHeight, canvasWidth } = payload;
     // this._resizeThrottler.throttle(async () => {
     //   if (!this.drawerData) {
@@ -95,7 +98,7 @@ export class InstantDrawerWorkerMessageHandler
 
     const gl = canvas.getContext("webgl2")!;
 
-    this.renderer = new InstantDrawerEpitrochoidRenderer(
+    this._renderer = new InstantDrawerEpitrochoidRenderer(
       { x: canvasWidth, y: canvasHeight },
       {
         canvas,
@@ -108,7 +111,7 @@ export class InstantDrawerWorkerMessageHandler
       }
     );
 
-    this.renderer.render();
+    this._renderer.render();
     // this._computeImage({});
   }
 
@@ -191,9 +194,9 @@ export class InstantDrawerWorkerMessageHandler
   _onParamChanged({ payload }: { payload: SetParametersPayload }) {
     const then = performance.now();
     this._setParametersThrottler.throttle(async () => {
-      Object.assign(this.renderer.drawerData!, payload);
+      Object.assign(this._renderer.drawerData!, payload);
 
-      await this.renderer.render();
+      await this._renderer.render();
       this._computeImage({});
     }, 0);
   }

@@ -74,20 +74,21 @@ export default function InstantCanvas({
   const instantDrawCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    CanvasSizeManagers.instantDrawerWorkerThread.addOnEventCallback({
-      eventCallback: () => {
-        if (!workerRef.current || !parent.current) return;
+    CanvasSizeManagers.instantDrawerWorkerThread.addOnEventCallback(
+      {
+        eventCallback: () => {
+          if (!workerRef.current || !parent.current) return;
 
-        workerRef.current!.postMessage({
-          setCanvasSizePayload: {
-            canvasHeight: parent.current!.clientHeight,
-            canvasWidth: parent.current!.clientWidth,
-          },
-          operation: InstantDrawerWorkerOperations.setCanvasSize,
-        } as InstantDrawerWorkerPayload);
-      },
-      call: "onceAndOnEvent",
-    });
+          workerRef.current!.postMessage({
+            setCanvasSizePayload: {
+              canvasHeight: parent.current!.clientHeight,
+              canvasWidth: parent.current!.clientWidth,
+            },
+            operation: InstantDrawerWorkerOperations.setCanvasSize,
+          } as InstantDrawerWorkerPayload);
+        },
+        call: "onceAndOnEvent",
+      });
 
     return function () {
       CanvasSizeManagers.instantDrawerWorkerThread.clearAllListeners();

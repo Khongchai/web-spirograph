@@ -74,8 +74,8 @@ export function useSetupInstantDrawerCanvas({
       cycloidControlsRef.current!,
       offscreenCanvas,
       pointsAmount,
-      rect.width,
-      rect.height
+      rect.height,
+      rect.width
     );
 
     worker.postMessage(payload, [offscreenCanvas]);

@@ -73,7 +73,7 @@ function Main() {
             className="w-full h-full absolute canvas-container"
           >
             {cycloidControls.current!.mode === "Instant" ||
-            cycloidControls.current!.mode === "AnimatedInstant" ? (
+              cycloidControls.current!.mode === "AnimatedInstant" ? (
               <InstantCanvas
                 parent={allCanvasContainer}
                 cycloidControls={
@@ -126,13 +126,8 @@ function MainWindowResizeBar({
   rightComponent: MutableRefObject<HTMLElement | null>;
 }) {
   useEffect(() => {
-    const throttler = new Throttler();
-
     const obj = new ResizeObserver(() => {
-      // Throttle to prevent flashing.
-      throttler.throttle(() => {
-        window.dispatchEvent(new Event("resize"));
-      }, 100);
+      window.dispatchEvent(new Event("resize"));
     });
 
     // Can observe either left or right component.
@@ -149,7 +144,7 @@ function MainWindowResizeBar({
       leftComponent.current?.attributeStyleMap.set("flex-grow", left);
       //@ts-ignore
       rightComponent.current?.attributeStyleMap.set("flex-grow", right);
-    } catch (_) {}
+    } catch (_) { }
   }, []);
 
   return <ResizeBar onResizeBarDragged={onResizeBarDragged} />;

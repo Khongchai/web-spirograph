@@ -51,7 +51,6 @@ export interface BaseCanvasEventManager {
 
 export class CanvasManager implements BaseCanvasEventManager {
   private _forEvent: keyof WindowEventMap;
-  protected canvasName = "setCanvasSize-id";
   protected callbacksAndListeners: {
     callback: VoidFunction;
     target: HTMLElement | (Window & typeof globalThis);

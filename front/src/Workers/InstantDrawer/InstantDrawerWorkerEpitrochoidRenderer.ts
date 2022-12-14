@@ -38,6 +38,10 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       );
     }
 
+    if (this.drawerData!.cycloids.length < 2) {
+      throw new Error("Provide at least 2 cycloids.");
+    }
+
     let {
       cycloids,
       theta,
@@ -71,6 +75,7 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
         thisCycloid.thetaScale,
       ]);
     }
+
     const points = calc_lines(
       pointsAmount,
       theta,

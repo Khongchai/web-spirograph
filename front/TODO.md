@@ -1,3 +1,5 @@
+Find out what's causing the flashing.
+
 Manage state global state for the currently-selected configuration.
 
 Show saved configuraitons.
