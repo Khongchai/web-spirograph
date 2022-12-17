@@ -151,7 +151,9 @@ function _useHandleZoom(
               window.innerHeight
             );
 
-            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, zoomLevel);
+            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, zoomLevel, {
+              debug: true
+            });
           }
         }
       },

@@ -44,7 +44,6 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
         let newZoomLevel = this._zoomData.zoomLevel;
         const sign = Math.sign(e.deltaY);
 
-        console.log(sign);
         newZoomLevel = Math.max(newZoomLevel - e.deltaY * 0.00035, 0.1);
         newZoomLevel +=
           Math.log10(Math.max(1, this._zoomData.zoomLevel)) * -sign;
@@ -53,8 +52,6 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
         eventCallback(this._zoomData);
       },
     });
-
-    // TODO mouse wheel hold and drag.
 
     this._mouseMoveManager.addOnEventCallback({
       call,
