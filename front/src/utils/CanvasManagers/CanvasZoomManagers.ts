@@ -4,6 +4,8 @@ import { BaseCanvasEventManager, CanvasManager } from "./base";
 
 export interface ZoomData {
   mouseCurrentPos: Vector2;
+  // The 1st derivative of zoomLevel.
+  change: number;
   zoomLevel: number;
 }
 
@@ -16,6 +18,7 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
   });
   private _zoomData: ZoomData = {
     mouseCurrentPos: { x: 0, y: 0 },
+    change: 0,
     zoomLevel: 1,
   };
 
@@ -45,9 +48,11 @@ export class CanvasZoomManager implements BaseCanvasEventManager {
         const sign = Math.sign(e.deltaY);
 
         newZoomLevel = Math.max(newZoomLevel - e.deltaY * 0.00035, 0.1);
-        newZoomLevel +=
+        const change =
           Math.log10(Math.max(1, this._zoomData.zoomLevel)) * -sign;
+        newZoomLevel += change;
         this._zoomData.zoomLevel = newZoomLevel;
+        this._zoomData.change = change;
 
         eventCallback(this._zoomData);
       },

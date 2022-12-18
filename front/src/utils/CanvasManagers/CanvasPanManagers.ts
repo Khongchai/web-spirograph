@@ -45,11 +45,11 @@ class CanvasPanManager implements BaseCanvasEventManager {
         if (!this._mouseDown) return;
 
         castedE.preventDefault();
-        const newMousePos = this._getMousePositionMoved({
-          x: castedE.x,
-          y: castedE.y,
+        const mouseDxDy = this._getMousePositionMoved({
+          x: castedE.x * devicePixelRatio,
+          y: castedE.y * devicePixelRatio,
         });
-        const newCanvasPos = this._getTranslatedCanvasPosition(newMousePos);
+        const newCanvasPos = this._getTranslatedCanvasPosition(mouseDxDy);
         this._panState.newCanvasPos = newCanvasPos;
 
         eventCallback(this._panState);
@@ -63,8 +63,8 @@ class CanvasPanManager implements BaseCanvasEventManager {
         const leftMouseButton = 0;
         if (castedE!.button !== leftMouseButton) return;
 
-        this._mouseDownPos.x = castedE.clientX;
-        this._mouseDownPos.y = castedE.clientY;
+        this._mouseDownPos.x = castedE.clientX * devicePixelRatio;
+        this._mouseDownPos.y = castedE.clientY * devicePixelRatio;
         this._mouseDown = true;
         this._panState.mouseState = "mousedown";
 
@@ -77,11 +77,11 @@ class CanvasPanManager implements BaseCanvasEventManager {
       eventCallback: (e?) => {
         const castedE = e as unknown as MouseEvent;
         if (this._mouseDown) {
-          const newMousePos = this._getMousePositionMoved({
-            x: castedE.x,
-            y: castedE.y,
+          const mouseDxDy = this._getMousePositionMoved({
+            x: castedE.x * devicePixelRatio,
+            y: castedE.y * devicePixelRatio,
           });
-          const newCanvasPos = this._getTranslatedCanvasPosition(newMousePos);
+          const newCanvasPos = this._getTranslatedCanvasPosition(mouseDxDy);
           this._canvasTranslatedPosition.x = newCanvasPos.x;
           this._canvasTranslatedPosition.y = newCanvasPos.y;
 

@@ -140,7 +140,7 @@ function _useHandleZoom(
       call: "onEvent",
       elementToAttachEventListener: parentWrapper.current,
       eventCallback: function (zoomData) {
-        const { mouseCurrentPos, zoomLevel } = zoomData;
+        const { mouseCurrentPos, zoomLevel, change } = zoomData;
         for (let i = 0; i < canvases.length; i++) {
           if (canvases[i]?.current) {
             const canvas = canvases[i].current as HTMLCanvasElement;
@@ -151,7 +151,7 @@ function _useHandleZoom(
               window.innerHeight
             );
 
-            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, zoomLevel, {
+            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, change, zoomLevel, {
               debug: true
             });
           }
