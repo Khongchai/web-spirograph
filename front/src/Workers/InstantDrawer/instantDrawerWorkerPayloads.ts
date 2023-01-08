@@ -1,5 +1,3 @@
-import { CanvasPanState } from "../../utils/CanvasManagers/CanvasPanManagers";
-import { ZoomData } from "../../utils/CanvasManagers/CanvasZoomManagers";
 import { DrawerData } from "./models/DrawerData";
 
 export interface InstantDrawerWorkerPayload {
@@ -7,20 +5,14 @@ export interface InstantDrawerWorkerPayload {
   setParametersPayload?: SetParametersPayload;
   initializeDrawerPayload?: InitializeDrawerPayload;
   setCanvasSizePayload?: SetCanvasSizePayload;
-  panPayload?: PanPayload;
-  zoomPayload?: ZoomPayload;
+  tranformPayload?: TransformPayload;
 }
-
-export type PanPayload = {
-  panState: CanvasPanState;
-};
 
 export enum InstantDrawerWorkerOperations {
   setParameters,
   initializeDrawer,
   setCanvasSize,
-  pan,
-  zoom,
+  transform,
 }
 
 export type SetParametersPayload = Partial<
@@ -38,6 +30,11 @@ export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "gl"> & {
   canvasHeight: number;
 };
 
-export type ZoomPayload = {
-  zoomData: ZoomData;
+/**
+ * TODO migrate pan payload to this as well.
+ */
+export type TransformPayload = {
+  dx: number;
+  dy: number;
+  dz: number;
 };

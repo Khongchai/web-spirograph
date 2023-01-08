@@ -11,8 +11,7 @@ export default function useDrawCanvas(
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>,
   pointsToTrace: React.MutableRefObject<Vector2[]>,
   cycloidControls: MutableRefObject<CycloidControlsData>,
-  parent: MutableRefObject<HTMLElement>,
-  panRef: MutableRefObject<Vector2>
+  parent: MutableRefObject<HTMLElement>
 ) {
   let { generatedCycloids: cycloids, outermostBoundingCircle } =
     useGenerateCycloids(cycloidControls);
@@ -64,16 +63,6 @@ export default function useDrawCanvas(
         ctx.restore();
 
         ctx.save();
-
-        const previousTransform = ctx.getTransform();
-        ctx.setTransform(
-          previousTransform.a,
-          0,
-          0,
-          previousTransform.d,
-          panRef.current.x + previousTransform.e,
-          panRef.current.y + previousTransform.f
-        );
 
         ctx.lineWidth = 1.5;
 

@@ -144,8 +144,8 @@ function spread(
     ctxForDebugging.stroke();
   }
 
-  p.vx = dx * force * 0.01;
-  p.vy = dy * force * 0.01;
+  p.dx = dx * force * 0.01;
+  p.dy = dy * force * 0.01;
 
   return p;
 }

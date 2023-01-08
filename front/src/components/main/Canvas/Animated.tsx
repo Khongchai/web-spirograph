@@ -2,10 +2,8 @@ import React, { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControlsData from "../../../classes/domain/cycloidControls";
 import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
 import { Rerender } from "../../../contexts/rerenderToggle";
-import { CanvasPanManagers } from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
-import { CanvasZoomManagers } from "../../../utils/CanvasManagers/CanvasZoomManagers";
-import { CanvasTransformUtils } from "../../../utils/CanvasTransformsUtils";
+import canvasTransformer from "../../../utils/CanvasManagers/petite-transform";
 import useDrawCycloid from "../../../utils/hooks/useDrawCycloid";
 import useTraceCycloidPath from "../../../utils/hooks/useTraceCycloidPath";
 
@@ -28,8 +26,6 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
 
   const rerender = useContext(Rerender);
 
-  const panRef = useRef<Vector2>({ x: 0, y: 0 });
-
   /*
     Cycloids are drawn on one canvas and their paths are traced on another.
   */
@@ -41,14 +37,12 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
     pointsToTrace,
     cycloidControls,
     parent as MutableRefObject<HTMLElement>,
-    panRef
   );
 
   const traceCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  useTraceCycloidPath(traceCanvasRef, pointsToTrace, panRef, cycloidControls);
+  useTraceCycloidPath(traceCanvasRef, pointsToTrace, cycloidControls);
 
-  _useHandleZoom([drawCanvasRef, traceCanvasRef], parentWrapper);
-  _useHandlePan(parentWrapper, panRef, [drawCanvasRef, traceCanvasRef]);
+  _useHandleTransform([drawCanvasRef, traceCanvasRef], parentWrapper);
 
   useEffect(() => {
     if (cycloidControls.current.clearTracedPathOnParamsChange) {
@@ -95,38 +89,7 @@ const AnimatedCanvas: React.FC<CanvasProps> = ({
 
 export default AnimatedCanvas;
 
-function _useHandlePan(
-  parentWrapper: MutableRefObject<HTMLElement | null>,
-  panRef: MutableRefObject<Vector2 | null>,
-  canvases: MutableRefObject<HTMLCanvasElement | null>[]
-) {
-  useEffect(() => {
-    if (parentWrapper.current) {
-      CanvasPanManagers.mainThread.addOnEventCallback({
-        call: "onEvent",
-        elementToAttachEventListener: parentWrapper!.current,
-        eventCallback(panState) {
-          panRef.current = panState.newCanvasPos;
-
-          for (let i = 0; i < canvases.length; i++) {
-            if (canvases[i]?.current) {
-              const canvas = canvases[i].current as HTMLCanvasElement;
-              var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-              ctx.save();
-              ctx.setTransform(1, 0, 0, 1, 0, 0);
-              ctx.clearRect(0, 0, window.innerWidth * devicePixelRatio, window.innerHeight * devicePixelRatio);
-              ctx.restore();
-            }
-          }
-        },
-      });
-    }
-
-    return () => CanvasPanManagers.mainThread.clearAllListeners();
-  }, []);
-}
-
-function _useHandleZoom(
+function _useHandleTransform(
   canvases: MutableRefObject<HTMLCanvasElement | null>[],
   // Parent wrapper is solely for listening to events in lieu of document.addEventListener
   parentWrapper: MutableRefObject<HTMLElement | null>
@@ -136,27 +99,6 @@ function _useHandleZoom(
       return;
     }
 
-    CanvasZoomManagers.mainThread.addOnEventCallback({
-      call: "onEvent",
-      elementToAttachEventListener: parentWrapper.current,
-      eventCallback: function (zoomData) {
-        const { mouseCurrentPos, zoomLevel, change } = zoomData;
-        for (let i = 0; i < canvases.length; i++) {
-          if (canvases[i]?.current) {
-            const canvas = canvases[i].current as HTMLCanvasElement;
-            var ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-            CanvasTransformUtils.clear(
-              ctx,
-              window.innerWidth,
-              window.innerHeight
-            );
-
-            CanvasTransformUtils.zoom(ctx, mouseCurrentPos, change, zoomLevel, {
-              debug: true
-            });
-          }
-        }
-      },
-    });
+    canvasTransformer.updateOnTransform(canvases.map((c) => c.current?.getContext("2d")!));
   }, []);
 }

@@ -1,22 +1,19 @@
-import { CanvasTransformUtils } from "../../utils/CanvasTransformsUtils";
 import { Throttler } from "../../utils/throttler";
 import { InstantDrawerEpitrochoidRenderer } from "./InstantDrawerWorkerEpitrochoidRenderer";
 import {
   InitializeDrawerPayload,
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
-  PanPayload,
   SetCanvasSizePayload,
   SetParametersPayload,
-  ZoomPayload,
+  TransformPayload,
 } from "./instantDrawerWorkerPayloads";
 import { CachedImageData } from "./models/CachedImageData";
 
 interface EventHandler {
   _onResize({ payload }: { payload: SetCanvasSizePayload }): void;
   _onInit({ payload }: { payload: InitializeDrawerPayload }): void;
-  _onZoom({ payload }: { payload: ZoomPayload }): void;
-  _onPan({ payload }: { payload: PanPayload }): void;
+  _onTransform({ payload }: { payload: TransformPayload }): void;
   _onParamChanged({ payload }: { payload: SetParametersPayload }): void;
 }
 
@@ -115,7 +112,7 @@ export class InstantDrawerWorkerMessageHandler
     // this._computeImage({});
   }
 
-  _onZoom({ payload }: { payload: ZoomPayload }): void {
+  _onZoom({ payload }: { payload: TransformPayload }): void {
     // const { ctx, canvas } = this.drawerData!;
     // const {
     //   zoomData: { mouseCurrentPos, zoomLevel },
@@ -160,7 +157,11 @@ export class InstantDrawerWorkerMessageHandler
     // });
   }
 
-  async _onPan({ payload }: { payload: PanPayload }): Promise<void> {
+  async _onTransform({
+    payload,
+  }: {
+    payload: TransformPayload;
+  }): Promise<void> {
     // const { panState } = payload!;
     // if (panState.mouseState == "mouseup") {
     //   await super.render();
@@ -209,11 +210,8 @@ export class InstantDrawerWorkerMessageHandler
       case InstantDrawerWorkerOperations.setParameters:
         this._onParamChanged({ payload: data.setParametersPayload! });
         return;
-      case InstantDrawerWorkerOperations.pan:
-        this._onPan({ payload: data.panPayload! });
-        return;
-      case InstantDrawerWorkerOperations.zoom:
-        this._onZoom({ payload: data.zoomPayload! });
+      case InstantDrawerWorkerOperations.transform:
+        this._onTransform({ payload: data.tranformPayload! });
         return;
       case InstantDrawerWorkerOperations.setCanvasSize:
         this._onResize({ payload: data.setCanvasSizePayload! });

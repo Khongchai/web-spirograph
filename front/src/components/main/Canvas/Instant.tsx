@@ -1,24 +1,15 @@
 import { MutableRefObject, useContext, useEffect, useRef } from "react";
 import CycloidControls from "../../../classes/domain/cycloidControls";
-import { Vector2 } from "../../../classes/DTOInterfaces/vector2";
 import { Rerender } from "../../../contexts/rerenderToggle";
 import { CHANGE_SETTINGS_REASON as CHANGE_SETTINGS_REASONS } from "../../../types/contexts/rerenderReasons";
-import {
-  CanvasPanManagers,
-  CanvasPanState,
-} from "../../../utils/CanvasManagers/CanvasPanManagers";
 import { CanvasSizeManagers } from "../../../utils/CanvasManagers/CanvasSizeManager";
-import {
-  CanvasZoomManagers,
-  ZoomData,
-} from "../../../utils/CanvasManagers/CanvasZoomManagers";
+import canvasTransformer from "../../../utils/CanvasManagers/petite-transform";
 import { useDelayedCallback } from "../../../utils/InstantDrawer/useDelayedWorkerUpdate";
 import { useSetupInstantDrawerCanvas } from "../../../utils/InstantDrawer/useSetupInstantDrawerCanvas";
 import {
   InstantDrawerWorkerOperations,
   InstantDrawerWorkerPayload,
-  PanPayload,
-  ZoomPayload,
+  TransformPayload,
 } from "../../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
 
@@ -129,24 +120,13 @@ export default function InstantCanvas({
     [rerender]
   );
 
-  _useHandlePan(parent, (panState) => {
+  _useHandleTransform(parent, (dx: number, dy: number, dz: number) => {
     if (workerRef.current) {
       workerRef.current.postMessage({
-        panPayload: {
-          panState,
-        } as PanPayload,
-        operation: InstantDrawerWorkerOperations.pan,
-      });
-    }
-  });
-
-  _useHandleZoom(parent, (zoomData) => {
-    if (workerRef.current) {
-      workerRef.current.postMessage({
-        zoomPayload: {
-          zoomData,
-        } as ZoomPayload,
-        operation: InstantDrawerWorkerOperations.zoom,
+        transformPayload: {
+          dx, dy, dz
+        } as TransformPayload,
+        operation: InstantDrawerWorkerOperations.transform,
       });
     }
   });
@@ -160,37 +140,17 @@ export default function InstantCanvas({
   );
 }
 
-function _useHandlePan(
+function _useHandleTransform(
   parentWrapper: MutableRefObject<HTMLElement | null>,
-  onPanCallback: (newCanvasPos: CanvasPanState) => void
-) {
-  useEffect(() => {
-    if (parentWrapper.current) {
-      CanvasPanManagers.instantDrawerWorkerThread.addOnEventCallback({
-        call: "onEvent",
-        elementToAttachEventListener: parentWrapper!.current,
-        eventCallback: onPanCallback,
-      });
-    }
-
-    return () =>
-      CanvasPanManagers.instantDrawerWorkerThread.clearAllListeners();
-  }, []);
-}
-
-function _useHandleZoom(
-  parentWrapper: MutableRefObject<HTMLElement | null>,
-  onZoomCallback: (zoomData: ZoomData) => void
+  onTransformCallback: (dx: number, dy: number, dz: number) => void
 ) {
   useEffect(() => {
     if (!parentWrapper?.current) {
       return;
     }
 
-    CanvasZoomManagers.instantDrawerWorkerThread.addOnEventCallback({
-      call: "onEvent",
-      elementToAttachEventListener: parentWrapper.current,
-      eventCallback: onZoomCallback,
-    });
+    canvasTransformer.onTransform(onTransformCallback);
+
+    return () => canvasTransformer.disposeListener(onTransformCallback);
   }, []);
 }

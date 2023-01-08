@@ -1,4 +1,6 @@
-Find out what's causing the flashing.
+Modify the lib to use DOMmatrix
+
+Canvas managers are superfluous, now that a tiny lib has been made.
 
 Manage state global state for the currently-selected configuration.
 

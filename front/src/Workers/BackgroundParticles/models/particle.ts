@@ -5,9 +5,9 @@ export default class Particle implements Vector3 {
   initialX: number;
   initialY: number;
   initialZ: number;
-  vx: number;
-  vz: number;
-  vy: number;
+  dx: number;
+  dz: number;
+  dy: number;
   radius: number;
   x: number;
   y: number;
@@ -65,15 +65,15 @@ export default class Particle implements Vector3 {
     this.radius = radius;
     this.color = color;
     this.shadowColor = shadowColor;
-    this.vx = 0;
-    this.vy = 0;
-    this.vz = 0;
+    this.dx = 0;
+    this.dy = 0;
+    this.dz = 0;
   }
 
   update() {
-    this.x += this.vx ?? 0;
-    this.y += this.vy ?? 0;
-    this.z += this.vz ?? 0;
+    this.x += this.dx ?? 0;
+    this.y += this.dy ?? 0;
+    this.z += this.dz ?? 0;
   }
 
   getInitialPos() {

@@ -13,7 +13,6 @@ export default function useTraceCycloidPath(
     This hook is not aware of any cycloid bodies outside, only what it should be tracing.
   */
   pointsToTrace: React.MutableRefObject<Vector2[]>,
-  panRef: React.MutableRefObject<Vector2>,
 
   // Currently using this just for the trace bool.
   cycloidControls: React.MutableRefObject<CycloidControlsData>
@@ -55,15 +54,6 @@ export default function useTraceCycloidPath(
       const draw = () => {
         if (cycloidControls.current.programOnly.tracePath) {
           ctx.save();
-          const previousTransform = ctx.getTransform();
-          ctx.setTransform(
-            previousTransform.a,
-            0,
-            0,
-            previousTransform.d,
-            panRef.current.x + previousTransform.e,
-            panRef.current.y + previousTransform.f
-          );
 
           for (let i = 0; i < currentPoints.current.length; i++) {
             const { x: lx, y: ly } = lastPoints[i] || { x: 0, y: 0 };

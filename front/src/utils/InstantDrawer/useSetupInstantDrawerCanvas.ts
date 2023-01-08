@@ -5,7 +5,7 @@ import {
   InstantDrawerWorkerPayload,
 } from "../../Workers/InstantDrawer/instantDrawerWorkerPayloads";
 import { InstantDrawCycloidMapper } from "../../Workers/InstantDrawer/mappers/InstantDrawerMapper";
-import { CanvasPanManagers } from "../CanvasManagers/CanvasPanManagers";
+import canvasTransformer from "../CanvasManagers/petite-transform";
 
 export function useSetupInstantDrawerCanvas({
   instantDrawCanvasRef,
@@ -45,8 +45,7 @@ export function useSetupInstantDrawerCanvas({
         pointsAmount,
         initialTheta: 0,
         timeStepScalar: cycloidControls.globalTimeStepScale,
-        translation:
-          CanvasPanManagers.instantDrawerWorkerThread.getTranslation(),
+        translation: canvasTransformer.getTransform(),
         devicePixelRatio,
       },
     } as InstantDrawerWorkerPayload;
