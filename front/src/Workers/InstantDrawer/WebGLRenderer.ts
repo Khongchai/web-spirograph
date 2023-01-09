@@ -26,6 +26,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
   private readonly _programInfo: _ProgramInfo;
   private readonly _size: Vector2;
   private readonly _dpr: number;
+  private readonly _3dMatrix: Float32Array;
   /**
    * ex: pointsToRender = [...p1, ...p2, ...p3];
    *
@@ -94,18 +95,35 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     );
   }
 
+  applyTransformation(mat = { dx: 0, dy: 0, dz: 1 }): void {
+    const width = this._gl.canvas.width;
+    const height = this._gl.canvas.height;
+
+    // TODO ask chatGPT why 2/width, like why is 2 the full width? (width * 2 / width == 2)
+    // 2 / width is the only one that gives the correct dimension.
+    const tW = 2 / width;
+    const tH = 2 / height;
+
+    this._3dMatrix[0] = 1 * tW;
+    this._3dMatrix[1] = 0;
+    this._3dMatrix[2] = 0;
+    this._3dMatrix[3] = 0;
+    this._3dMatrix[4] = -1 * tH;
+    this._3dMatrix[5] = 0;
+    this._3dMatrix[6] += mat.dx * tW;
+    this._3dMatrix[7] -= mat.dy * tH;
+    this._3dMatrix[8] = 0;
+  }
+
   setPoints(pointsToRender: Float64Array): void {
     this._pointsToRender = pointsToRender;
   }
 
   render(): void {
-    const w = this._gl.canvas.width;
-    const h = this._gl.canvas.height;
-
     this._gl.uniformMatrix3fv(
       this._programInfo.uniformLocations.uMatrix,
       false,
-      this._projectionAndTranslation(w, h, w / 2, h / 2)
+      this._3dMatrix
     );
     this._gl.bufferData(
       this._gl.ARRAY_BUFFER,
@@ -121,6 +139,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._canvas.width = newWidth * (dpr ?? this._dpr);
     this._canvas.height = newHeight * (dpr ?? this._dpr);
     this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
+    this.applyTransformation();
   }
 
   protected _initShaderProgram(
@@ -148,29 +167,5 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     gl.shaderSource(shader, shaderSource);
     gl.compileShader(shader);
     return shader;
-  }
-
-  private _projectionAndTranslation(
-    width: number,
-    height: number,
-    x: number,
-    y: number
-  ) {
-    const dst = new Float32Array(9);
-
-    const _x = (x / width) * 2 - 1;
-    const _y = (y / height) * 2 - 1;
-
-    dst[0] = 2 / width;
-    dst[1] = 0;
-    dst[2] = 0;
-    dst[3] = 0;
-    dst[4] = -2 / height;
-    dst[5] = 0;
-    dst[6] = _x;
-    dst[7] = _y;
-    dst[8] = 1;
-
-    return dst;
   }
 }

@@ -5,7 +5,6 @@ import calcPointsInit, {
 import calcLinesInit, {
   calc_lines,
 } from "../../utils/PerformanceModules/wasm/calc_lines/calc_lines/pkg/calc_lines";
-import InstantDrawCycloid from "./models/Cycloid";
 import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
 
@@ -22,6 +21,7 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       canvas: drawerData!.canvas,
       size: initialSize,
       devicePixelRatio: drawerData!.devicePixelRatio,
+      initialTransformation: initialTransformation,
     });
 
     this.drawerData = drawerData;
@@ -42,17 +42,8 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       throw new Error("Provide at least 2 cycloids.");
     }
 
-    let {
-      cycloids,
-      theta,
-      timeStepScalar,
-      gl: _,
-      canvas: { width: canvasWidth, height: canvasHeight },
-      translation,
-    } = this.drawerData;
+    let { cycloids, theta, timeStepScalar, gl: _ } = this.drawerData;
 
-    let previousPoint: Vector2 | undefined;
-    let currentPoint: Vector2 | undefined;
     const step = Math.max(timeStepScalar * this.BASE_STEP, 0.01);
 
     const circlePointsCompensated =

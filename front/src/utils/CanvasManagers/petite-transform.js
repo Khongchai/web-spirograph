@@ -329,7 +329,7 @@ const canvasTransformer = {
     },
   }),
 
-  getTransform: function () {
+  getAbsoluteTransform: function () {
     return this._instance.currentAbsoluteTransform;
   },
 
@@ -382,7 +382,7 @@ const canvasTransformer = {
 
 // TODO use a listener, but throttled to be 60fps.
 function forcedLoop() {
-  canvasTransformer.getTransform();
+  canvasTransformer.getAbsoluteTransform();
   requestAnimationFrame(forcedLoop);
 }
 

@@ -45,7 +45,7 @@ export function useSetupInstantDrawerCanvas({
         pointsAmount,
         initialTheta: 0,
         timeStepScalar: cycloidControls.globalTimeStepScale,
-        translation: canvasTransformer.getTransform(),
+        initialTransform: canvasTransformer.getAbsoluteTransform(),
         devicePixelRatio,
       },
     } as InstantDrawerWorkerPayload;

@@ -89,7 +89,7 @@ export class InstantDrawerWorkerMessageHandler
       cycloids,
       initialTheta,
       timeStepScalar,
-      translation,
+      initialTransform,
       devicePixelRatio,
     } = payload;
 
@@ -103,7 +103,7 @@ export class InstantDrawerWorkerMessageHandler
         cycloids: cycloids,
         theta: initialTheta,
         timeStepScalar,
-        translation: translation ?? { x: 0, y: 0 },
+        initialTransform,
         devicePixelRatio,
       }
     );
@@ -117,35 +117,8 @@ export class InstantDrawerWorkerMessageHandler
   }: {
     payload: TransformPayload;
   }): Promise<void> {
-    console.log(payload);
-    // const { panState } = payload!;
-    // if (panState.mouseState == "mouseup") {
-    //   await super.render();
-    //   this._computeImage({});
-    //   return;
-    // }
-    // const { ctx, canvas } = this.drawerData!;
-    // this.drawerData!.translation = {
-    //   x: panState.newCanvasPos.x,
-    //   y: panState.newCanvasPos.y,
-    // };
-    // this._cachedImageData.image?.then((image) => {
-    //   const previousTranslation = this._cachedImageData.imageTranslation;
-    //   const translateX =
-    //     panState.newCanvasPos.x - (previousTranslation?.x ?? 0);
-    //   const translateY =
-    //     panState.newCanvasPos.y - (previousTranslation?.y ?? 0);
-    //   ctx.save();
-    //   ctx.setTransform(1, 0, 0, 1, 0, 0);
-    //   ctx.clearRect(0, 0, canvas.width, canvas.height);
-    //   ctx.restore();
-    //   //TODO if the pan starts right after zoom, the image prior to the scale translation
-    //   // will be shown. We should also apply the zoom translation here.
-    //   ctx.save();
-    //   ctx.setTransform(1, 0, 0, 1, translateX, translateY);
-    //   ctx.drawImage(image, 0, 0);
-    //   ctx.restore();
-    // });
+    this._renderer.applyTransformation(payload!);
+    await this._renderer.render();
   }
 
   _onParamChanged({ payload }: { payload: SetParametersPayload }) {

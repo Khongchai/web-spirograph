@@ -7,6 +7,6 @@ export interface DrawerData {
   gl: WebGL2RenderingContext;
   canvas: OffscreenCanvas;
   timeStepScalar: number;
-  translation: Vector2;
+  initialTransform: { x: number; y: number; z: number };
   devicePixelRatio: number;
 }

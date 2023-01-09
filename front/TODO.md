@@ -1,4 +1,6 @@
-Modify the lib to use DOMmatrix
+Find out how excalidraw deals with translating and zooming || take an image before zoom or pan.
+
+Modify the lib to use DOMmatrix (maybe?)
 
 Canvas managers are superfluous, now that a tiny lib has been made.
 

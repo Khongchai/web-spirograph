@@ -99,6 +99,13 @@ function _useHandleTransform(
       return;
     }
 
-    canvasTransformer.updateOnTransform(canvases.map((c) => c.current?.getContext("2d")!));
+
+    const contexts = canvases.map((c) => c.current?.getContext("2d")!);
+
+    canvasTransformer.updateOnTransform(contexts);
+    contexts.forEach((ctx) => {
+      const { x, y } = canvasTransformer.getAbsoluteTransform();
+      ctx.translate(x, y);
+    });
   }, []);
 }
