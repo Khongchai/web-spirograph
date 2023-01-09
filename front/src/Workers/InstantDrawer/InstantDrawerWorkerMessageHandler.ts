@@ -112,56 +112,12 @@ export class InstantDrawerWorkerMessageHandler
     // this._computeImage({});
   }
 
-  _onZoom({ payload }: { payload: TransformPayload }): void {
-    // const { ctx, canvas } = this.drawerData!;
-    // const {
-    //   zoomData: { mouseCurrentPos, zoomLevel },
-    // } = payload!;
-    // this._cachedImageData.image?.then((image) => {
-    //   CanvasTransformUtils.clear(ctx, canvas.width, canvas.height);
-    //   const previousTranslation = this._cachedImageData.imageTranslation ?? {
-    //     x: 0,
-    //     y: 0,
-    //   };
-    //   const zoomCenter = {
-    //     x: canvas.width / 2 + previousTranslation.x,
-    //     y: canvas.height / 2 + previousTranslation.y,
-    //   };
-    //   ctx.save();
-    //   ctx.setTransform(1, 0, 0, 1, 0, 0);
-    //   ctx.translate(zoomCenter.x, zoomCenter.y);
-    //   const prevTransform = ctx.getTransform();
-    //   const compensatedZoomLevel =
-    //     zoomLevel / (this._cachedImageData.imageZoomLevel ?? 1);
-    //   ctx.setTransform(
-    //     compensatedZoomLevel,
-    //     0,
-    //     0,
-    //     compensatedZoomLevel,
-    //     prevTransform.e,
-    //     prevTransform.f
-    //   );
-    //   ctx.translate(-zoomCenter.x, -zoomCenter.y);
-    //   ctx.drawImage(image, 0, 0);
-    //   ctx.restore();
-    //   this._zoomThrottler.throttle(async () => {
-    //     //TODO
-    //     // ctx.translate(mouseCurrentPos.x, mouseCurrentPos.y);
-    //     ctx.setTransform(zoomLevel, 0, 0, zoomLevel, 0, 0);
-    //     // ctx.translate(-mouseCurrentPos.x, -mouseCurrentPos.y);
-    //     await super.render();
-    //     this._computeImage({
-    //       zoomLevel,
-    //     });
-    //   }, 200);
-    // });
-  }
-
   async _onTransform({
     payload,
   }: {
     payload: TransformPayload;
   }): Promise<void> {
+    console.log(payload);
     // const { panState } = payload!;
     // if (panState.mouseState == "mouseup") {
     //   await super.render();
@@ -193,7 +149,6 @@ export class InstantDrawerWorkerMessageHandler
   }
 
   _onParamChanged({ payload }: { payload: SetParametersPayload }) {
-    const then = performance.now();
     this._setParametersThrottler.throttle(async () => {
       Object.assign(this._renderer.drawerData!, payload);
 
@@ -211,7 +166,7 @@ export class InstantDrawerWorkerMessageHandler
         this._onParamChanged({ payload: data.setParametersPayload! });
         return;
       case InstantDrawerWorkerOperations.transform:
-        this._onTransform({ payload: data.tranformPayload! });
+        this._onTransform({ payload: data.transformPayload! });
         return;
       case InstantDrawerWorkerOperations.setCanvasSize:
         this._onResize({ payload: data.setCanvasSizePayload! });

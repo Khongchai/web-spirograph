@@ -5,7 +5,7 @@ export interface InstantDrawerWorkerPayload {
   setParametersPayload?: SetParametersPayload;
   initializeDrawerPayload?: InitializeDrawerPayload;
   setCanvasSizePayload?: SetCanvasSizePayload;
-  tranformPayload?: TransformPayload;
+  transformPayload?: TransformPayload;
 }
 
 export enum InstantDrawerWorkerOperations {

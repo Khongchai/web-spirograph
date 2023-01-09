@@ -120,14 +120,14 @@ export default function InstantCanvas({
     [rerender]
   );
 
-  _useHandleTransform(parent, (dx: number, dy: number, dz: number) => {
+  _useHandleTransform(parent, ({ relative: { dx, dy, dz } }) => {
     if (workerRef.current) {
       workerRef.current.postMessage({
         transformPayload: {
           dx, dy, dz
         } as TransformPayload,
         operation: InstantDrawerWorkerOperations.transform,
-      });
+      } as InstantDrawerWorkerPayload);
     }
   });
 
@@ -142,7 +142,17 @@ export default function InstantCanvas({
 
 function _useHandleTransform(
   parentWrapper: MutableRefObject<HTMLElement | null>,
-  onTransformCallback: (dx: number, dy: number, dz: number) => void
+  onTransformCallback: ({
+    absolute,
+    relative
+  }: {
+    absolute: {
+      x: number, y: number, z: number
+    },
+    relative: {
+      dx: number, dy: number, dz: number
+    }
+  }) => void
 ) {
   useEffect(() => {
     if (!parentWrapper?.current) {

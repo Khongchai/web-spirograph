@@ -350,7 +350,7 @@ const canvasTransformer = {
 
   /**
    *
-   * @param {(dx: number, dy: number, dz: number) => any} callback
+   * @param {({absolute: {x: number, y: number, z: number,}, relative: {dx: number, dy: number, dz: number}}) => any} callback
    */
   onTransform: function (callback) {
     this._instance.onUpdate(callback);
@@ -373,7 +373,7 @@ const canvasTransformer = {
 
   /**
    * Dispose only the given additional callback.
-   * @param {(dx: number, dy: number, dz: number) => any} callback
+   * @param {({absolute: {x: number, y: number, z: number,}, relative: {dx: number, dy: number, dz: number}}) => any} callback
    */
   disposeListener: function (callback) {
     this._instance.disposeAdditionalListener(callback);
