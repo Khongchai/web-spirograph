@@ -1,3 +1,5 @@
+Apply initial transformation and zooming
+
 Find out how excalidraw deals with translating and zooming || take an image before zoom or pan.
 
 Modify the lib to use DOMmatrix (maybe?)
