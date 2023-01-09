@@ -3,11 +3,20 @@
 // Managed mode, where the lib manages all canvas transformations.
 // Check if the listeners are actually being removed.
 // TODO another level of abstraction above this.
+// TODO :
+// Simplify API find a way to simplify things further
+// Managed mode, where the lib manages all canvas transformations.
+// Check if the listeners are actually being removed.
+// TODO another level of abstraction above this.
 class PetiteTransform {
   /**
    * @type {() => {x: number, y: number, z: number}} `x` is the x offset, `y` the y offset, and `z` the zoom scale.
    */
   #getTransformReference;
+  /**
+   * @type {{max: number, min: number}}
+   */
+  #zoomSettings;
   // TODO
   #easeFactor = 1;
   /**
@@ -109,7 +118,7 @@ class PetiteTransform {
 
   /**
    *
-   * @param {{transformReference?: () => {x: number, y: number, z: number}, devicePixelRatio?: number, easeFactor?: 1, manageZoom?: boolean, managePan?: boolean}}
+   * @param {{transformReference?: () => {x: number, y: number, z: number}, devicePixelRatio?: number, easeFactor?: 1, manageZoom?: boolean, managePan?: boolean, zoomSettings?: {max: number, min: number}}}
    * `transformReference` a callback that returns the current transform of the canvas.
    * This sets up the two different modes, the relative mode, which uses the reference to the current transform outside
    * the control of this canvas, and the absolute mode, which does not care about anything else and will treat itself as the source of the transformational truth.
@@ -129,7 +138,12 @@ class PetiteTransform {
     managePan = true,
     manageZoom = true,
     eventTarget = document,
+    zoomSettings = {
+      max: Number.POSITIVE_INFINITY,
+      min: Number.NEGATIVE_INFINITY,
+    },
   }) {
+    this.#zoomSettings = zoomSettings;
     this.#easeFactor = easeFactor;
     if (transformReference) {
       this.#getTransformReference = transformReference;
@@ -273,6 +287,13 @@ class PetiteTransform {
       dy: ((y - e.y) * change) / z,
       dz: 1 + change,
     };
+
+    const { max, min } = this.#zoomSettings;
+    const futureZoom = wt.dz * z;
+    if (max < futureZoom || min > futureZoom) {
+      return;
+    }
+
     this.#cumulatedTransform.setTransform(wt.dx, wt.dy, wt.dz);
   }
 
@@ -292,6 +313,7 @@ class PetiteTransform {
     this.#onUpdateListeners.push(callback);
   }
 }
+
 const canvasTransformer = {
   /**
    * Initialize the absolute version.
@@ -301,6 +323,10 @@ const canvasTransformer = {
     devicePixelRatio,
     // Mark as absolute.
     transformReference: null,
+    zoomSettings: {
+      max: 10,
+      min: 0.1,
+    },
   }),
 
   getTransform: function () {
