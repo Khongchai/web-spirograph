@@ -30,9 +30,6 @@ export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "gl"> & {
   canvasHeight: number;
 };
 
-/**
- * TODO migrate pan payload to this as well.
- */
 export type TransformPayload = {
   dx: number;
   dy: number;

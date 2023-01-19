@@ -21,11 +21,11 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       canvas: drawerData!.canvas,
       size: initialSize,
       devicePixelRatio: drawerData!.devicePixelRatio,
-      // TODO @khongchai here.
-      // initialTransformation
+      initialTransformation: drawerData.initialTransform,
     });
 
     this.drawerData = drawerData;
+    console.log(drawerData.initialTransform);
   }
 
   override async render(): Promise<void> {
