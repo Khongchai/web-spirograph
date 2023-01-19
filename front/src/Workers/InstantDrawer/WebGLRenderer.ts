@@ -39,14 +39,17 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     canvas,
     size,
     devicePixelRatio,
+    initialTransformation = { dx: 0, dy: 0, dz: 1 },
   }: {
     canvas: OffscreenCanvas;
     size: Vector2;
     devicePixelRatio: number;
+    initialTransformation?: { dx: number; dy: number; dz: number };
   }) {
     this._dpr = devicePixelRatio;
     this._gl = canvas.getContext("webgl2")!;
     this._canvas = canvas;
+    this._3dMatrix = new Float32Array(new Array(9).fill(0));
 
     const vsSource = `
     attribute vec2 a_position;
@@ -99,8 +102,6 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     const width = this._gl.canvas.width;
     const height = this._gl.canvas.height;
 
-    // TODO ask chatGPT why 2/width, like why is 2 the full width? (width * 2 / width == 2)
-    // 2 / width is the only one that gives the correct dimension.
     const tW = 2 / width;
     const tH = 2 / height;
 

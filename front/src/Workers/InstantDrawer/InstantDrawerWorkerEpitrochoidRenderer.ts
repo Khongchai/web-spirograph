@@ -21,7 +21,8 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       canvas: drawerData!.canvas,
       size: initialSize,
       devicePixelRatio: drawerData!.devicePixelRatio,
-      initialTransformation: initialTransformation,
+      // TODO @khongchai here.
+      // initialTransformation
     });
 
     this.drawerData = drawerData;
