@@ -52,7 +52,6 @@ export default class WebGLMultiLinesRenderer implements Renderer {
 
     // Set initial transform.
     this._3dMatrix = new Float32Array(new Array(9).fill(0));
-    this.applyInitialTransformation(initialTransformation);
 
     const vsSource = `
     attribute vec2 a_position;
@@ -82,9 +81,8 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     };
 
     this._size = size;
-    this.resize(this._size.x, this._size.y);
-    // TODO think about how to restructure this code better.
-    this.applyInitialTransformation();
+    this.resize(this._size.x, this._size.y, undefined, false);
+    this.setTransformation(initialTransformation);
 
     this._gl.useProgram(this._programInfo.program);
 
@@ -103,7 +101,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     );
   }
 
-  private applyInitialTransformation(mat = { x: 0, y: 0, z: 1 }) {
+  setTransformation(mat = { x: 0, y: 0, z: 1 }): void {
     const width = this._gl.canvas.width;
     const height = this._gl.canvas.height;
 
@@ -113,42 +111,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._3dMatrix[0] = 1 * tW;
     this._3dMatrix[4] = -1 * tH;
     this._3dMatrix[6] = mat.x * tW;
-    this._3dMatrix[7] = mat.y * tH;
-  }
-
-  applyTransformation(mat = { dx: 0, dy: 0, dz: 1 }): void {
-    const width = this._gl.canvas.width;
-    const height = this._gl.canvas.height;
-
-    const tW = 2 / width;
-    const tH = 2 / height;
-
-    this._3dMatrix[0] *= mat.dz;
-    this._3dMatrix[4] *= mat.dz;
-    this._3dMatrix[6] += mat.dx * tW;
-    this._3dMatrix[7] -= mat.dy * tH;
-
-    // const width = this._gl.canvas.width;
-    // const height = this._gl.canvas.height;
-
-    // const tW = 2 / width;
-    // const tH = 2 / height;
-
-    // const dommatrix1 = new DOMMatrix([
-    //   this._3dMatrix[0],
-    //   0,
-    //   0,
-    //   this._3dMatrix[4],
-    //   this._3dMatrix[6],
-    //   this._3dMatrix[7],
-    // ]);
-    // const dommatrix2 = new DOMMatrix([mat.dz, 0, 0, mat.dz, mat.dx, mat.dy]);
-    // dommatrix1.multiplySelf(dommatrix2);
-
-    // this._3dMatrix[0] = dommatrix1.a;
-    // this._3dMatrix[4] = dommatrix1.d;
-    // this._3dMatrix[6] = dommatrix1.e;
-    // this._3dMatrix[7] = dommatrix1.f;
+    this._3dMatrix[7] = -mat.y * tH;
   }
 
   setPoints(pointsToRender: Float64Array): void {
@@ -171,11 +134,18 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._gl.drawArrays(this._gl.LINES, 0, this._pointsToRender.length / 2);
   }
 
-  resize(newWidth: number, newHeight: number, dpr?: number): void {
+  resize(
+    newWidth: number,
+    newHeight: number,
+    dpr?: number,
+    setTransform = true
+  ): void {
     this._canvas.width = newWidth * (dpr ?? this._dpr);
     this._canvas.height = newHeight * (dpr ?? this._dpr);
     this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
-    this.applyTransformation();
+    if (setTransform) {
+      this.setTransformation();
+    }
   }
 
   protected _initShaderProgram(

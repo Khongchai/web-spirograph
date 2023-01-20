@@ -120,12 +120,10 @@ export default function InstantCanvas({
     [rerender]
   );
 
-  _useHandleTransform(parent, ({ relative: { dx, dy, dz } }) => {
+  _useHandleTransform(parent, ({ absolute }) => {
     if (workerRef.current) {
       workerRef.current.postMessage({
-        transformPayload: {
-          dx, dy, dz
-        } as TransformPayload,
+        transformPayload: absolute as TransformPayload,
         operation: InstantDrawerWorkerOperations.transform,
       } as InstantDrawerWorkerPayload);
     }

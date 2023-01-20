@@ -31,7 +31,7 @@ export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "gl"> & {
 };
 
 export type TransformPayload = {
-  dx: number;
-  dy: number;
-  dz: number;
+  x: number;
+  y: number;
+  z: number;
 };

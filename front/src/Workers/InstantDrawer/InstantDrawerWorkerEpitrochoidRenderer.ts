@@ -25,7 +25,6 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
     });
 
     this.drawerData = drawerData;
-    console.log(drawerData.initialTransform);
   }
 
   override async render(): Promise<void> {

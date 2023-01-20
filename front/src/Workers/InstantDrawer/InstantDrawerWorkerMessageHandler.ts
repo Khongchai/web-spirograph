@@ -117,7 +117,7 @@ export class InstantDrawerWorkerMessageHandler
   }: {
     payload: TransformPayload;
   }): Promise<void> {
-    this._renderer.applyTransformation(payload!);
+    this._renderer.setTransformation(payload!);
     await this._renderer.render();
   }
 
