@@ -1,3 +1,5 @@
+Don't move the damn canvas while adjusting the values.
+
 Make everything silky smooth: optimize rendering(canvas caching, find out why it sometimes renders twice).
 Once everything works, back to the backend and how you save the data.
 
