@@ -104,8 +104,10 @@ function _useHandleTransform(
 
     canvasTransformer.updateOnTransform(contexts);
     contexts.forEach((ctx) => {
-      const { x, y } = canvasTransformer.getAbsoluteTransform();
-      ctx.translate(x, y);
+      const { x, y, z } = canvasTransformer.getAbsoluteTransform();
+      ctx.setTransform(
+        z, 0, 0, z, x, y
+      );
     });
   }, []);
 }
