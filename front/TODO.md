@@ -1,10 +1,7 @@
-Apply initial transformation and zooming
-
-Find out how excalidraw deals with translating and zooming || take an image before zoom or pan.
+Make everything silky smooth: optimize rendering(canvas caching, find out why it sometimes renders twice).
+Once everything works, back to the backend and how you save the data.
 
 Modify the lib to use DOMmatrix (maybe?)
-
-Canvas managers are superfluous, now that a tiny lib has been made.
 
 Manage state global state for the currently-selected configuration.
 

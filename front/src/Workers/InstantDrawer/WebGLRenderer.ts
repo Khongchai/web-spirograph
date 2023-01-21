@@ -7,7 +7,8 @@ interface _ProgramInfo {
     aPosition: number;
   };
   uniformLocations: {
-    uMatrix: WebGLUniformLocation | null;
+    uWorldSpaceMatrix: WebGLUniformLocation | null;
+    uOriginMatrix: WebGLUniformLocation | null;
   };
 }
 
@@ -55,11 +56,11 @@ export default class WebGLMultiLinesRenderer implements Renderer {
 
     const vsSource = `
     attribute vec2 a_position;
-
+    uniform vec2 u_originMatrix;
     uniform mat3 u_matrix;
 
     void main() {
-        gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
+        gl_Position = vec4((u_matrix * vec3(a_position + u_originMatrix, 1)).xy, 0, 1);
     }
     `;
     const fSource = `
@@ -76,7 +77,14 @@ export default class WebGLMultiLinesRenderer implements Renderer {
         aPosition: this._gl.getAttribLocation(shaderProgram, "a_position"),
       },
       uniformLocations: {
-        uMatrix: this._gl.getUniformLocation(shaderProgram, "u_matrix"),
+        uWorldSpaceMatrix: this._gl.getUniformLocation(
+          shaderProgram,
+          "u_matrix"
+        ),
+        uOriginMatrix: this._gl.getUniformLocation(
+          shaderProgram,
+          "u_originMatrix"
+        ),
       },
     };
 
@@ -108,8 +116,10 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     const tW = 2 / width;
     const tH = 2 / height;
 
-    this._3dMatrix[0] = 1 * tW;
-    this._3dMatrix[4] = -1 * tH;
+    mat.x -= width / 2;
+    mat.y -= height / 2;
+    this._3dMatrix[0] = 1 * tW * mat.z;
+    this._3dMatrix[4] = -1 * tH * mat.z;
     this._3dMatrix[6] = mat.x * tW;
     this._3dMatrix[7] = -mat.y * tH;
   }
@@ -120,9 +130,13 @@ export default class WebGLMultiLinesRenderer implements Renderer {
 
   render(): void {
     this._gl.uniformMatrix3fv(
-      this._programInfo.uniformLocations.uMatrix,
+      this._programInfo.uniformLocations.uWorldSpaceMatrix,
       false,
       this._3dMatrix
+    );
+    this._gl.uniform2fv(
+      this._programInfo.uniformLocations.uOriginMatrix,
+      new Float32Array([this._gl.canvas.width / 2, this._gl.canvas.height / 2])
     );
     this._gl.bufferData(
       this._gl.ARRAY_BUFFER,
