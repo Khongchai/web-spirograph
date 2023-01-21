@@ -27,7 +27,8 @@ export default class WebGLMultiLinesRenderer implements Renderer {
   private readonly _programInfo: _ProgramInfo;
   private readonly _size: Vector2;
   private readonly _dpr: number;
-  private readonly _3dMatrix: Float32Array;
+  private readonly _baseMatrix: Float32Array;
+  private _latestTransformationMatrix = { x: 0, y: 0, z: 1 };
   /**
    * ex: pointsToRender = [...p1, ...p2, ...p3];
    *
@@ -52,7 +53,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._canvas = canvas;
 
     // Set initial transform.
-    this._3dMatrix = new Float32Array(new Array(9).fill(0));
+    this._baseMatrix = new Float32Array(new Array(9).fill(0));
 
     const vsSource = `
     attribute vec2 a_position;
@@ -109,19 +110,24 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     );
   }
 
-  setTransformation(mat = { x: 0, y: 0, z: 1 }): void {
+  setTransformation(mat?: { x: number; y: number; z: number }): void {
+    if (!mat) {
+      mat = this._latestTransformationMatrix;
+    } else {
+      this._latestTransformationMatrix = mat;
+    }
+    const { x, y, z } = mat;
+
     const width = this._gl.canvas.width;
     const height = this._gl.canvas.height;
 
     const tW = 2 / width;
     const tH = 2 / height;
 
-    mat.x -= width / 2;
-    mat.y -= height / 2;
-    this._3dMatrix[0] = 1 * tW * mat.z;
-    this._3dMatrix[4] = -1 * tH * mat.z;
-    this._3dMatrix[6] = mat.x * tW;
-    this._3dMatrix[7] = -mat.y * tH;
+    this._baseMatrix[0] = 1 * tW * z;
+    this._baseMatrix[4] = -1 * tH * z;
+    this._baseMatrix[6] = (x - width / 2) * tW;
+    this._baseMatrix[7] = -(y - height / 2) * tH;
   }
 
   setPoints(pointsToRender: Float64Array): void {
@@ -132,7 +138,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     this._gl.uniformMatrix3fv(
       this._programInfo.uniformLocations.uWorldSpaceMatrix,
       false,
-      this._3dMatrix
+      this._baseMatrix
     );
     this._gl.uniform2fv(
       this._programInfo.uniformLocations.uOriginMatrix,
