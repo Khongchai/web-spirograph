@@ -50,7 +50,7 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
       this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
     const pointsAmount = Math.floor(
-      circlePointsCompensated * fractional_lcm(scalars) + 1
+      circlePointsCompensated * (fractional_lcm(scalars) + 1)
     );
 
     const dataForComputedEpitrochoid = [];
