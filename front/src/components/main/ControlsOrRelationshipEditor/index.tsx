@@ -18,9 +18,14 @@ const ControlsOrRelationshipEditor: React.FC<
     useState<"controls" | "relationship-editor">("controls");
   const wrapperRef = useRef<any>();
 
+  function absorbWrapperPointerEvents(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation();
+  }
+
   return (
     <div
       ref={wrapperRef}
+      onMouseMove={absorbWrapperPointerEvents}
       className="flex justify-around align-top h-full w-full"
     >
       {controlsOrRelationshipEditor === "controls" ? (

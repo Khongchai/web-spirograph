@@ -239,7 +239,7 @@ class PetiteTransform {
   }
 
   #addEventListener(type, callback, options) {
-    document.addEventListener(type, callback, options);
+    this.#eventTarget.addEventListener(type, callback, options);
     this.#listenersRefs.push({ type, callback, options });
   }
 
@@ -380,7 +380,6 @@ const canvasTransformer = {
   },
 };
 
-// TODO use a listener, but throttled to be 60fps.
 function forcedLoop() {
   canvasTransformer.getAbsoluteTransform();
   requestAnimationFrame(forcedLoop);
