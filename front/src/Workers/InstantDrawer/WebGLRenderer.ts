@@ -135,6 +135,9 @@ export default class WebGLMultiLinesRenderer implements Renderer {
   }
 
   render(): void {
+    this._gl.clearColor(0, 0, 0, 0);
+    this._gl.clear(this._gl.COLOR_BUFFER_BIT);
+
     this._gl.uniformMatrix3fv(
       this._programInfo.uniformLocations.uWorldSpaceMatrix,
       false,
