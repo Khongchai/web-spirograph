@@ -18,6 +18,7 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
   private cachedCanvas?: OffscreenCanvas;
 
   drawerData?: DrawerData;
+  private debouncer = new Debouncer();
 
   constructor(initialSize: Vector2, drawerData: DrawerData) {
     super({
@@ -30,10 +31,16 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
     this.drawerData = drawerData;
   }
 
-  /**
-   *  Every `render` call is implicitly cached.
-   */
   override async render(): Promise<OffscreenCanvas> {
+    return new Promise((resolve, _) => {
+      // Using deboucing to help discard some of the incoming render calls if they are coming too fast.
+      this.debouncer.debounce(async () => {
+        resolve(await this._render());
+      }, 0);
+    });
+  }
+
+  async _render(): Promise<OffscreenCanvas> {
     const then = performance.now();
 
     // Wait until wasm modules are initialized (will be slow only the first load).

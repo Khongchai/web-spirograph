@@ -1,13 +1,10 @@
-Don't move the damn canvas while adjusting the values.
-
+// Lowest priority
 Make everything silky smooth: optimize rendering(canvas caching, find out why it sometimes renders twice).
 Once everything works, back to the backend and how you save the data.
 
-Modify the lib to use DOMmatrix (maybe?)
-
 Manage state global state for the currently-selected configuration.
 
-Show saved configuraitons.
+Show saved configuraitons. <<< The priority right now.
 
 Grab configurations after logging in (add the logic to the login hook).
 
