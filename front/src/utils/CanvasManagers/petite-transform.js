@@ -324,7 +324,7 @@ const canvasTransformer = {
     // Mark as absolute.
     transformReference: null,
     zoomSettings: {
-      max: 10,
+      max: 20,
       min: 0.1,
     },
   }),
