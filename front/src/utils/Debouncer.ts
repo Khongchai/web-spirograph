@@ -1,7 +1,7 @@
-export class Throttler {
+export class Debouncer {
   private _timeoutHandle: any;
 
-  throttle(callback: VoidFunction, milliseconds: number) {
+  debounce(callback: VoidFunction, milliseconds: number) {
     clearTimeout(this._timeoutHandle);
     this._timeoutHandle = setTimeout(callback, milliseconds);
   }

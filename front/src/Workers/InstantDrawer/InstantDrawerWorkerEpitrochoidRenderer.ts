@@ -7,6 +7,7 @@ import calcLinesInit, {
 } from "../../utils/PerformanceModules/wasm/calc_lines/calc_lines/pkg/calc_lines";
 import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
+import { Debouncer } from "../../utils/Debouncer";
 
 // We don't care about the return value of the init methods.
 const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
@@ -14,6 +15,8 @@ const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
 export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
   private readonly BASE_POINTS_FOR_A_CIRCLE = 550;
   private readonly BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
+  private cachedCanvas?: OffscreenCanvas;
+
   drawerData?: DrawerData;
 
   constructor(initialSize: Vector2, drawerData: DrawerData) {
@@ -27,7 +30,10 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
     this.drawerData = drawerData;
   }
 
-  override async render(): Promise<void> {
+  /**
+   *  Every `render` call is implicitly cached.
+   */
+  override async render(): Promise<OffscreenCanvas> {
     const then = performance.now();
 
     // Wait until wasm modules are initialized (will be slow only the first load).
@@ -85,5 +91,9 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
         ", this operation took in seconds: " +
         (now - then) / 1000
     );
+
+    this.cachedCanvas = this.drawerData.canvas;
+
+    return this.cachedCanvas;
   }
 }

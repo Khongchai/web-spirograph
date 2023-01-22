@@ -1,4 +1,4 @@
-import { Throttler } from "../../utils/throttler";
+import { Debouncer } from "../../utils/Debouncer";
 import { InstantDrawerEpitrochoidRenderer } from "./InstantDrawerWorkerEpitrochoidRenderer";
 import {
   InitializeDrawerPayload,
@@ -8,13 +8,12 @@ import {
   SetParametersPayload,
   TransformPayload,
 } from "./instantDrawerWorkerPayloads";
-import { CachedImageData } from "./models/CachedImageData";
 
 interface EventHandler {
-  _onResize({ payload }: { payload: SetCanvasSizePayload }): void;
-  _onInit({ payload }: { payload: InitializeDrawerPayload }): void;
-  _onTransform({ payload }: { payload: TransformPayload }): void;
-  _onParamChanged({ payload }: { payload: SetParametersPayload }): void;
+  onResize({ payload }: { payload: SetCanvasSizePayload }): void;
+  onInit({ payload }: { payload: InitializeDrawerPayload }): void;
+  onTransform({ payload }: { payload: TransformPayload }): void;
+  onParamChanged({ payload }: { payload: SetParametersPayload }): void;
 }
 
 interface MessageHandler {
@@ -26,58 +25,17 @@ export class InstantDrawerWorkerMessageHandler
 {
   private _renderer: InstantDrawerEpitrochoidRenderer;
 
-  private _cachedImageData: CachedImageData;
-
-  private _zoomThrottler: Throttler;
-  private _resizeThrottler: Throttler;
-  private _setParametersThrottler: Throttler;
-
-  constructor() {
-    this._cachedImageData = {
-      image: undefined,
-      imageTranslation: {
-        x: 0,
-        y: 0,
-      },
-      imageZoomLevel: 1,
-    };
-
-    this._zoomThrottler = new Throttler();
-    this._resizeThrottler = new Throttler();
-    this._setParametersThrottler = new Throttler();
-  }
-
-  _computeImage({ zoomLevel }: { zoomLevel?: number }) {
-    // this._cachedImageData.image =
-    //   this.drawerData!.canvas.convertToBlob().then(createImageBitmap);
-    // this._cachedImageData.imageTranslation = this.drawerData!.translation;
-    // if (zoomLevel) this._cachedImageData.imageZoomLevel = zoomLevel;
-  }
-
-  _onResize({ payload }: { payload: SetCanvasSizePayload }): void {
+  async onResize({
+    payload,
+  }: {
+    payload: SetCanvasSizePayload;
+  }): Promise<void> {
     const { canvasHeight, canvasWidth } = payload;
     this._renderer.resize(canvasWidth, canvasHeight);
-    this._renderer.render();
-    // const { canvasHeight, canvasWidth } = payload;
-    // this._resizeThrottler.throttle(async () => {
-    //   if (!this.drawerData) {
-    //     throw new Error("Call initializeDrawer first");
-    //   }
-    //   const transform = this.drawerData.ctx.getTransform();
-    //   this.drawerData!.canvas.width = canvasWidth;
-    //   this.drawerData!.canvas.height = canvasHeight;
-    //   CanvasTransformUtils.clear(
-    //     this.drawerData!.ctx,
-    //     canvasWidth,
-    //     canvasHeight
-    //   );
-    //   this.drawerData.ctx.setTransform(transform);
-    //   await super.render();
-    //   this._computeImage({});
-    // }, 200);
+    await this._renderer.render();
   }
 
-  async _onInit({
+  async onInit({
     payload,
   }: {
     payload: InitializeDrawerPayload;
@@ -109,40 +67,36 @@ export class InstantDrawerWorkerMessageHandler
     );
 
     this._renderer.render();
-    // this._computeImage({});
   }
 
-  async _onTransform({
-    payload,
-  }: {
-    payload: TransformPayload;
-  }): Promise<void> {
+  async onTransform({ payload }: { payload: TransformPayload }): Promise<void> {
     this._renderer.setTransformation(payload!);
     await this._renderer.render();
   }
 
-  _onParamChanged({ payload }: { payload: SetParametersPayload }) {
-    this._setParametersThrottler.throttle(async () => {
-      Object.assign(this._renderer.drawerData!, payload);
+  async onParamChanged({
+    payload,
+  }: {
+    payload: SetParametersPayload;
+  }): Promise<OffscreenCanvas> {
+    Object.assign(this._renderer.drawerData!, payload);
 
-      await this._renderer.render();
-      this._computeImage({});
-    }, 0);
+    return this._renderer.render();
   }
 
   handleOnMessage({ data }: { data: InstantDrawerWorkerPayload }) {
     switch (data.operation) {
       case InstantDrawerWorkerOperations.initializeDrawer:
-        this._onInit({ payload: data.initializeDrawerPayload! });
+        this.onInit({ payload: data.initializeDrawerPayload! });
         return;
       case InstantDrawerWorkerOperations.setParameters:
-        this._onParamChanged({ payload: data.setParametersPayload! });
+        this.onParamChanged({ payload: data.setParametersPayload! });
         return;
       case InstantDrawerWorkerOperations.transform:
-        this._onTransform({ payload: data.transformPayload! });
+        this.onTransform({ payload: data.transformPayload! });
         return;
       case InstantDrawerWorkerOperations.setCanvasSize:
-        this._onResize({ payload: data.setCanvasSizePayload! });
+        this.onResize({ payload: data.setCanvasSizePayload! });
         return;
     }
   }

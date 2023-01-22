@@ -17,7 +17,7 @@ import { RerenderToggle } from "../contexts/rerenderToggle";
 import "../index.css";
 import { RerenderReason } from "../types/contexts/rerenderReasons";
 import useMeHooks from "../utils/hooks/useMeHooks";
-import { Throttler } from "../utils/throttler";
+import { Debouncer } from "../utils/Debouncer";
 
 function Main() {
   const { done: meHookDone } = useMeHooks();
