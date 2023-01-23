@@ -95,4 +95,12 @@ export default class Particle implements Vector3 {
       y: this.y * perspective,
     };
   }
+
+  distanceTo(x: number, y: number, perspective: number): number {
+    const { x: thisX, y: thisY } = this.getProjected2dCoordinate({
+      perspective,
+    });
+    const dist = Math.sqrt(Math.pow(x - thisX, 2) + Math.pow(y - thisY, 2));
+    return dist;
+  }
 }

@@ -1,3 +1,7 @@
+Loading indicator,
+
+Figure out how excalidraw do the resize thing while keeping everything in one place.
+
 // Lowest priority
 Make everything silky smooth: optimize rendering(canvas caching, find out why it sometimes renders twice).
 Once everything works, back to the backend and how you save the data.

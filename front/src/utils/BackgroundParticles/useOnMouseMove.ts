@@ -21,7 +21,9 @@ export default function useOnMouseMove({
           y: e.y,
         },
       };
-      worker!.postMessage(setMousePosPayload);
+      requestAnimationFrame(() => {
+        worker!.postMessage(setMousePosPayload);
+      });
     }
 
     window.addEventListener("mousemove", onMouseMove);

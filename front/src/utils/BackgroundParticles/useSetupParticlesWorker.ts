@@ -29,6 +29,7 @@ export default function useSetupParticlesWorker({
         canvasHeight: window.innerHeight,
         canvasWidth: window.innerWidth,
         canvas: offscreenCanvas,
+        devicePixelRatio,
       },
     };
 

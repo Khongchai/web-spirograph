@@ -79,14 +79,12 @@ function setFillIntensityBasedOnDistanceToCursor(
   ctx: OffscreenCanvasRenderingContext2D,
   perspective: number
 ) {
-  const { x, y } = p.getProjected2dCoordinate({ perspective });
-  const dist = Math.sqrt(
-    Math.pow(mousePos.x - x, 2) + Math.pow(mousePos.y - y, 2)
-  );
+  const dist = p.distanceTo(mousePos.x, mousePos.y, perspective);
   const distThreshold = 150;
   let alpha = distThreshold / Math.max(dist, distThreshold);
-  alpha = Math.max(Math.min(alpha, 0.6), 0.2);
+  alpha = Math.max(Math.min(alpha, 0.7), 0.2);
 
+  p.dz = alpha * 0.45;
   ctx.fillStyle = `rgba(${p.color.r}, ${p.color.g}, ${p.color.b}, ${
     0.1 + alpha
   })`;
@@ -97,7 +95,7 @@ function setFillIntensityBasedOnDistanceToCursor(
 
 function drawParticle(ctx: OffscreenCanvasRenderingContext2D, p: Particle) {
   ctx.beginPath();
-  ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+  ctx.arc(0, 0, p.radius + p.dz, 0, Math.PI * 2);
   ctx.fill();
 }
 

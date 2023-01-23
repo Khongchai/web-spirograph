@@ -25,6 +25,7 @@ export type InitPayload = {
   canvas: OffscreenCanvas;
   canvasWidth: number;
   canvasHeight: number;
+  devicePixelRatio: number;
 };
 
 export type ResizePayload = {

@@ -43,12 +43,13 @@ onmessage = ({ data }: { data: ParticlesWorkerPayload }) => {
         canvas,
         canvasHeight: height,
         canvasWidth: width,
+        devicePixelRatio,
       } = data.initPayload!;
       canvasReference = canvas;
-      canvas.height = height;
-      canvas.width = width;
-      screenSize.width = width;
-      screenSize.height = height;
+      canvas.height = height * devicePixelRatio;
+      canvas.width = width * devicePixelRatio;
+      screenSize.width = width * devicePixelRatio;
+      screenSize.height = height * devicePixelRatio;
 
       canvasContextReference = canvas.getContext("2d")!;
 
