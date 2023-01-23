@@ -26,8 +26,8 @@ export default class WebGLMultiLinesRenderer implements Renderer {
   private readonly _canvas: OffscreenCanvas;
   private readonly _programInfo: _ProgramInfo;
   private readonly _size: Vector2;
-  private readonly _dpr: number;
   private readonly _baseMatrix: Float32Array;
+  private _dpr: number;
   private _latestTransformationMatrix = { x: 0, y: 0, z: 1 };
   /**
    * ex: pointsToRender = [...p1, ...p2, ...p3];
@@ -163,6 +163,7 @@ export default class WebGLMultiLinesRenderer implements Renderer {
     dpr?: number,
     setTransform = true
   ): void {
+    this._dpr = dpr ?? this._dpr;
     this._canvas.width = newWidth * (dpr ?? this._dpr);
     this._canvas.height = newHeight * (dpr ?? this._dpr);
     this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
