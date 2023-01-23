@@ -1,6 +1,10 @@
-Loading indicator,
+When switching between animated and the instant mode, t te register tab should not move so much.
 
 Figure out how excalidraw do the resize thing while keeping everything in one place.
+
+Write the docs.
+
+Clear all the things below.
 
 // Lowest priority
 Make everything silky smooth: optimize rendering(canvas caching, find out why it sometimes renders twice).
