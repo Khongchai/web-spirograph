@@ -22,7 +22,9 @@ export type SetParametersPayload = Partial<
 export type SetCanvasSizePayload = {
   canvasWidth: number;
   canvasHeight: number;
+  devicePixelRatio: number;
 };
+
 export type InitializeDrawerPayload = Omit<DrawerData, "theta" | "gl"> & {
   initialTheta: number;
   canvas: OffscreenCanvas;

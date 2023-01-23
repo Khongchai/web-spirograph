@@ -74,6 +74,7 @@ export default function InstantCanvas({
             setCanvasSizePayload: {
               canvasHeight: parent.current!.clientHeight,
               canvasWidth: parent.current!.clientWidth,
+              devicePixelRatio
             },
             operation: InstantDrawerWorkerOperations.setCanvasSize,
           } as InstantDrawerWorkerPayload);

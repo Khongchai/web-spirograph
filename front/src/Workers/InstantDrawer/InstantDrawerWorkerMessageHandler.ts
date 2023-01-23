@@ -1,4 +1,3 @@
-import { Debouncer } from "../../utils/Debouncer";
 import { InstantDrawerEpitrochoidRenderer } from "./InstantDrawerWorkerEpitrochoidRenderer";
 import {
   InitializeDrawerPayload,
@@ -30,8 +29,8 @@ export class InstantDrawerWorkerMessageHandler
   }: {
     payload: SetCanvasSizePayload;
   }): Promise<void> {
-    const { canvasHeight, canvasWidth } = payload;
-    this._renderer.resize(canvasWidth, canvasHeight);
+    const { canvasHeight, canvasWidth, devicePixelRatio } = payload;
+    this._renderer.resize(canvasWidth, canvasHeight, devicePixelRatio);
     await this._renderer.render();
   }
 
