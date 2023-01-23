@@ -21,6 +21,7 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
   constraints,
 }) => {
   const [dragValue, setDragValue] = useStateEffect(value);
+  const [blockEvent, setBlockEvent] = useStateEffect(false);
   //For using outside of React
   const pointerDownPos = useRef(0);
 
@@ -39,26 +40,33 @@ const DraggableValue: React.FC<DraggableValueProps> = ({
   };
 
   return (
-    <div
-      style={{ cursor: "ew-resize" }}
-      onPointerDown={(e) => {
-        pointerDownPos.current = e.clientX;
-        window.addEventListener("pointermove", manageDrag);
-        document.body.style.cursor = "ew-resize";
-        document.body.style.userSelect = "none";
-        const pointerRef = function () {
-          document.body.style.cursor = "auto";
-          document.body.style.userSelect = "unset";
-          window.removeEventListener("pointermove", manageDrag);
-          window.removeEventListener("pointerup", pointerRef);
-        };
-        window.addEventListener("pointerup", pointerRef);
-      }}
-    >
-      <h3 className="text-white pointer-events-none select-none">
-        {dragValue}
-      </h3>
-    </div>
+    <>
+      {blockEvent ? <div className="fixed right-0 top-0 w-full h-full z-50" />
+        : <></>}
+      <div
+        style={{ cursor: "ew-resize" }}
+        onPointerDown={(e) => {
+          setBlockEvent(true);
+          pointerDownPos.current = e.clientX;
+          window.addEventListener("pointermove", manageDrag);
+          document.body.style.cursor = "ew-resize";
+          document.body.style.userSelect = "none";
+          const pointerRef = function () {
+            setBlockEvent(false);
+            document.body.style.cursor = "auto";
+            document.body.style.userSelect = "unset";
+            window.removeEventListener("pointermove", manageDrag);
+            window.removeEventListener("pointerup", pointerRef);
+          };
+          window.addEventListener("pointerup", pointerRef);
+        }}
+      >
+        <h3 className="text-white pointer-events-none select-none">
+          {dragValue}
+        </h3>
+      </div>
+    </>
+
   );
 };
 
