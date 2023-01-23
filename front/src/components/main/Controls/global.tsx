@@ -101,20 +101,14 @@ const Global: React.FC<globalProps> = ({
         />
 
         <ContentArray
-          paramName={"Current Cycloid"}
+          paramName={"Displayed Cycloid"}
           values={cycloidControls.cycloidManager.allCycloidParams.map(
             (cycloid) => cycloid.id
           )}
           targetValue={cycloidControls.currentCycloidId}
           onClick={(newId: number) => {
             cycloidControls.currentCycloidId = newId;
-            //If all are shown, there's no need to clear the canvas to repaint another one
-            //We'll just need to update the settings UI
-            if (!cycloidControls.showAllCycloids) {
-              rerenderToggle(RerenderReason.changedFocusedCycloid);
-            } else {
-              forceUpdateSettingsUI();
-            }
+            rerenderToggle(RerenderReason.changedFocusedCycloid);
           }}
         />
       </SettingsContainer>

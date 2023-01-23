@@ -1,8 +1,10 @@
-import { useContext } from "react";
+import { useContext, useMemo, useState } from "react";
+import CycloidControls from "../../../classes/domain/cycloidControls";
 import CycloidParams from "../../../classes/domain/CycloidParams";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
 import { RerenderReason } from "../../../types/contexts/rerenderReasons";
 import useForceUpdate from "../../../utils/hooks/useForceUpdate";
+import ContentArray from "./shared/contentArray";
 import Control from "./shared/control";
 import ControlContainer from "./shared/ControlContainer";
 import ControlSection from "./shared/ControlSection";
@@ -10,13 +12,22 @@ import Heading from "./shared/heading";
 import SelectionButton from "./shared/SelectionButton";
 
 const Local: React.FC<{
-  cycloid: CycloidParams;
+  cycloidControls: CycloidControls;
   tooltipText: string;
-}> = ({ cycloid, tooltipText }) => {
+}> = ({ cycloidControls: cycloidControls, tooltipText }) => {
   // Update everything.
   const rerenderToggle = useContext(RerenderToggle);
   // Update only this component's tree
   const forceUpdate = useForceUpdate();
+
+  const [currentCycloidId, setCurrentCycloidId] = useState(0);
+  // Current cycloid whose parameters are being controlled by the controls below.
+  const cycloid = useMemo(() => {
+    const c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(currentCycloidId);
+    if (!c) throw Error("The selected cycloid does not exist!");
+    return c;
+  }, [currentCycloidId]);
+
 
   return (
     <ControlSection>
@@ -79,6 +90,17 @@ const Local: React.FC<{
             }}
           />
         </div>
+        <ContentArray
+          paramName={"Selected Cycloid"}
+          values={cycloidControls.cycloidManager.allCycloidParams.map(
+            (cycloid) => cycloid.id
+          )}
+          targetValue={currentCycloidId}
+          onClick={(newId: number) => {
+            setCurrentCycloidId(newId);
+            rerenderToggle(RerenderReason.radius);
+          }}
+        />
       </ControlContainer>
     </ControlSection>
   );

@@ -28,7 +28,7 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
   return (
     <div className="all-container pl-4">
       <Local
-        cycloid={cycloid}
+        cycloidControls={cycloidControls.current}
         tooltipText="This controls cycloid-specific settings."
       />
       <Global
