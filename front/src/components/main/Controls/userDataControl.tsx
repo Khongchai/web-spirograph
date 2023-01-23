@@ -24,6 +24,7 @@ export function UserDataControl({
 
   async function onSaveConfigurationClicked() {
     await ConfigurationsRepository.saveConfiguration(cycloidControls.current);
+    alert("Saved!");
     return;
 
     if (user) {

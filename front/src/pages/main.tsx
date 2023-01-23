@@ -97,7 +97,7 @@ function Main() {
           rightComponent={controlFlexWrapper}
         />
         <div
-          className="control-flex-wrapper"
+          className="control-flex-wrapper select-none"
           style={{
             padding: "75px 0 20px 0",
             overflow: "auto",

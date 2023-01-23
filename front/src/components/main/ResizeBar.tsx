@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { Vector2 } from "../../classes/DTOInterfaces/vector2";
 
 export default function ResizeBar({
@@ -53,18 +53,23 @@ function DragWrapper({
    */
   onDrag: (e: { x: number; y: number }) => void;
 }) {
+  const [blockEvents, setBlockEvents] = useState(false);
+
   function onMouseUp() {
-    window.removeEventListener("mouseup", onMouseUp);
-    window.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+    document.removeEventListener("mousemove", onMouseMove);
+    setBlockEvents(false);
   }
 
   function onMouseDown() {
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mousemove", onMouseMove);
+    setBlockEvents(true);
   }
 
   function onMouseMove(e: MouseEvent) {
     e.preventDefault();
+    e.stopPropagation();
     const mousePos = {
       x: Math.max(0, e.x / window.innerWidth),
       y: Math.max(0, e.y / window.innerHeight),
@@ -74,8 +79,14 @@ function DragWrapper({
   }
 
   return (
-    <div className={className} onMouseDown={onMouseDown}>
-      {children}
-    </div>
+    <>
+      <div className={className} onMouseDown={onMouseDown}>
+        {children}
+      </div>
+      {
+        blockEvents ? <div className="fixed w-full h-full " > </div>
+          : <></>
+      }
+    </>
   );
 }
