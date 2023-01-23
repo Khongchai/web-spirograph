@@ -8,13 +8,12 @@ import calcLinesInit, {
 import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
 import { Debouncer } from "../../utils/Debouncer";
+import { BASE_POINTS_FOR_A_CIRCLE, BASE_STEP } from "../../constants/cycloids";
 
 // We don't care about the return value of the init methods.
 const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
 
 export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
-  private readonly BASE_POINTS_FOR_A_CIRCLE = 550;
-  private readonly BASE_STEP = (Math.PI * 2) / this.BASE_POINTS_FOR_A_CIRCLE;
   private cachedCanvas?: OffscreenCanvas;
 
   drawerData?: DrawerData;
@@ -57,10 +56,9 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
 
     let { cycloids, theta, timeStepScalar, gl: _ } = this.drawerData;
 
-    const step = Math.max(timeStepScalar * this.BASE_STEP, 0.01);
+    const step = Math.max(timeStepScalar * BASE_STEP, 0.01);
 
-    const circlePointsCompensated =
-      this.BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
+    const circlePointsCompensated = BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
     const pointsAmount = Math.floor(
       circlePointsCompensated * (fractional_lcm(scalars) + 1)

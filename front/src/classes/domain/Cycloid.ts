@@ -2,6 +2,7 @@ import { CycloidDirection as CycloidRotationDirection } from "../../types/cycloi
 import BoundingCircle from "./BoundingCircle";
 import Rod from "./Rod";
 import { Vector2 } from "../DTOInterfaces/vector2";
+import { BASE_POINTS_FOR_A_CIRCLE, BASE_STEP } from "../../constants/cycloids";
 
 export default class Cycloid extends BoundingCircle {
   private static allCycloids: Record<string, Cycloid> = {};
@@ -67,10 +68,7 @@ export default class Cycloid extends BoundingCircle {
   };
 
   private animationSpeedAsRadians() {
-    // If animationSpeed is 1, the cycloid will complete 1
-    // rotation around its parent within a second.
-    const step = (Math.PI * 2) / 60;
-    return this.animationSpeed * step;
+    return this.animationSpeed * BASE_STEP;
   }
 
   /*
