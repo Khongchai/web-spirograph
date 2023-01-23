@@ -17,6 +17,11 @@ export default function ResizeBar({
       y: e.y,
     });
   }
+
+  function preventEventPropagation(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    e.stopPropagation();
+  }
+
   return (
     <DragWrapper className=" relative" onDrag={onDrag}>
       <div
@@ -24,6 +29,7 @@ export default function ResizeBar({
         className="bg-purple-vivid w-4 h-full cursor-w-resize z-50 opacity-10 absolute right-1
         transition-opacity hover:opacity-70
       "
+        onClick={preventEventPropagation}
       ></div>
     </DragWrapper>
   );

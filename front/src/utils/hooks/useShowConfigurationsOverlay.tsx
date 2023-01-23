@@ -48,18 +48,19 @@ export default function useShowConfigurationsOverlay(
             {configurations?.controls.map((config, i) => {
               return (
                 <li
+                  className="mb-4"
                   key={configurations?.createdDate[i]}
                   onClick={() => {
                     setCurrentCycloidControls(config);
                   }}
                 >
-                  <p>
-                    This is a temp list:
+                  <p className="mb-2 cursor-pointer">
                     {`${new Date(configurations?.createdDate[i])}`}
                   </p>
                   {/* Don't delete if there's only one left */}
                   {configurations.controls.length != 0 ? (
                     <button
+                      className="py-2 px-4 bg-purple-vivid text-white text-sm font-semibold rounded-md shadow-lg hover:opacity-70 focus:outline-none"
                       onClick={() => {
                         deleteConfiguration(config.databaseId!);
                       }}

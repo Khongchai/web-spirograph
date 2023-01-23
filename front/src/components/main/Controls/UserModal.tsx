@@ -100,6 +100,17 @@ export function UserModal({
   isLoading: boolean;
   type: UserModalType;
 }) {
+  return (<ModalBackground onBgClicked={onBgClicked}>
+    <div>
+      <div className="text-center">
+        <h1 className="text-lg mb-1">This feature used to exist, but not anymore :\</h1>
+      </div>
+      <div>
+        <h1 className="text-lg">"<i>Alles Vergängliche ist nur ein Gleichnis; das Unvergängliche <u><b>Feature</b></u> ist das Wirkliche."</i></h1>
+        <p>Goethe, probably</p>
+      </div>
+    </div>
+  </ModalBackground>);
   if (type === "OtpVerify") {
     return (
       <OtpVerificationModal

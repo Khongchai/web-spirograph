@@ -32,17 +32,11 @@ export default function ModalBackground({
   }, []);
 
   return (
-    <div className="fixed w-full h-full grid place-items-center top-0 left-0">
-      <div className="z-20 w-full h-full grid place-items-center top-0 left-0 pointer-events-none">
+    <div className="fixed w-full h-full grid bg-purple-dark place-items-center top-0 left-0" ref={obj}>
+      <div className="z-20 w-full h-full grid place-items-center top-0 left-0 " onClick={onBgClicked}>
         {children}
       </div>
-      <div
-        ref={obj}
-        className="fixed w-full h-full bg-purple-dark top-0 left-0 z-1
-        transition-opacity duration-500 
-        "
-        onClick={onBgClicked}
-      />
+
     </div>
   );
 }

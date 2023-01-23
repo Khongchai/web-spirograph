@@ -38,7 +38,7 @@ const ControlsOrRelationshipEditor: React.FC<
       )}
       <div className="flex-row flex h-fit items-center gap-4 ">
         <div
-          style={{ height: "fit-content" }}
+          style={{ width: "50px" }}
           className="hover:scale-105 cursor-pointer"
           onClick={() => {
             const isControls = controlsOrRelationshipEditor === "controls";

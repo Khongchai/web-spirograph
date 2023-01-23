@@ -16,6 +16,7 @@ export class CycliodControlsBaseConfigurationMapper {
       scaffold: controls.scaffold,
       showAllCycloids: controls.showAllCycloids,
       traceAllCycloids: controls.traceAllCycloids,
+      databaseId: controls.databaseId,
     });
   }
 

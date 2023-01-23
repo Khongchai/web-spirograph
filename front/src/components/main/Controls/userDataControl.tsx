@@ -23,6 +23,9 @@ export function UserDataControl({
   });
 
   async function onSaveConfigurationClicked() {
+    await ConfigurationsRepository.saveConfiguration(cycloidControls.current);
+    return;
+
     if (user) {
       await ConfigurationsRepository.saveConfiguration(cycloidControls.current);
       alert("Data saved successfully");
@@ -46,15 +49,11 @@ export function UserDataControl({
         <Button
           buttonText="Save Config"
           onClick={onSaveConfigurationClicked}
-        ></Button>
-        {user!! ? (
-          <Button
-            buttonText="Show Saved Configurations"
-            onClick={onShowConfigurationsClicked}
-          />
-        ) : (
-          <></>
-        )}
+        />
+        <Button
+          buttonText="Show Saved Configurations"
+          onClick={onShowConfigurationsClicked}
+        />
       </SettingsContainer>
     </ControlSection>
   );
