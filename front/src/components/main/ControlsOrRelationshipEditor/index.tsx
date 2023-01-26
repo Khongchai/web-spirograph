@@ -26,7 +26,7 @@ const ControlsOrRelationshipEditor: React.FC<
     <div
       ref={wrapperRef}
       onMouseMove={absorbWrapperPointerEvents}
-      className="flex justify-around align-top h-full w-full"
+      className="flex justify-between align-top h-full w-full px-4 gap-4"
     >
       {controlsOrRelationshipEditor === "controls" ? (
         <Controls cycloidControls={cycloidControls} />

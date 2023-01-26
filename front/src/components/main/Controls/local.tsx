@@ -20,7 +20,7 @@ const Local: React.FC<{
   // Update only this component's tree
   const forceUpdate = useForceUpdate();
 
-  const [currentCycloidId, setCurrentCycloidId] = useState(0);
+  const [currentCycloidId, setCurrentCycloidId] = useState(cycloidControls.currentCycloidId);
   // Current cycloid whose parameters are being controlled by the controls below.
   const cycloid = useMemo(() => {
     const c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(currentCycloidId);

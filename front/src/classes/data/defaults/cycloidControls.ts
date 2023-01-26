@@ -38,7 +38,7 @@ const defaultCycloidControls = new CycloidControls({
       boundingColor: colors.purple.light,
     },
   ],
-  globalTimeStepScale: 3,
+  globalTimeStepScale: 6.6,
   currentCycloidId: 2,
   mode: "Animated",
   scaffold: "Showing",

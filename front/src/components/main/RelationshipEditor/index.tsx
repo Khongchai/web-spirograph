@@ -20,8 +20,8 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
     boundingCircle,
     cycloidControlsData,
     {
-      height,
-      width,
+      height: height,
+      width: width / 2,
     },
     30
   );

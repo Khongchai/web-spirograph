@@ -33,7 +33,7 @@ const Controls: React.FC<ControlsProps> = ({ cycloidControls }) => {
       />
       <Global
         cycloidControls={cycloidControls.current}
-        tooltipText="This controls the global values, and unlike the cycloid-specific controls, these do not change with each cycloid."
+        tooltipText="This controls the global values, and unlike the cycloid-specific controls, these do not change with each cycloid. To increase the performance in the instant mode, bump up the global timestep value."
         forceUpdateSettingsUI={forceUpdateSettingsUI}
       />
       <NonCycloidControls
