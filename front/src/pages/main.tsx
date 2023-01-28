@@ -62,7 +62,7 @@ function Main() {
 
   return (
     <div className="text-purple-light h-full w-full">
-      <div className="w-full h-full relative flex md:flex-row sm:flex-col">
+      <div className="w-full h-full relative flex flex-col xl:flex-row">
         <div
           style={{ flex: 0.7 }}
           className="relative canvas-container-flex-wrapper"

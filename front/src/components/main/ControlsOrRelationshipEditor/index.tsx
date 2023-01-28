@@ -26,7 +26,7 @@ const ControlsOrRelationshipEditor: React.FC<
     <div
       ref={wrapperRef}
       onMouseMove={absorbWrapperPointerEvents}
-      className="flex justify-between align-top h-full w-full px-4 gap-4"
+      className="flex justify-evenly xl:justify-between align-top h-full w-full px-4 gap-4"
     >
       {controlsOrRelationshipEditor === "controls" ? (
         <Controls cycloidControls={cycloidControls} />
@@ -36,8 +36,7 @@ const ControlsOrRelationshipEditor: React.FC<
           wrapperRef={wrapperRef}
         />
       )}
-      <div className="flex-row lg:flex-col md:flex-col sm:flex-col lg:flex-initial
-      flex h-fit items-center gap-4 ">
+      <div className="2xl:flex-row xl:flex-col flex h-fit items-center gap-4 ">
         <div
           style={{ width: "50px" }}
           className="hover:scale-105 cursor-pointer"
