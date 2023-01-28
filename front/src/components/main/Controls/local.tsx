@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import CycloidControls from "../../../classes/domain/cycloidControls";
 import CycloidParams from "../../../classes/domain/CycloidParams";
 import { Rerender, RerenderToggle } from "../../../contexts/rerenderToggle";
@@ -17,17 +17,18 @@ const Local: React.FC<{
 }> = ({ cycloidControls: cycloidControls, tooltipText }) => {
   // Update everything.
   const rerenderToggle = useContext(RerenderToggle);
+  const rerender = useContext(Rerender);
   // Update only this component's tree
   const forceUpdate = useForceUpdate();
 
   const [currentCycloidId, setCurrentCycloidId] = useState(cycloidControls.currentCycloidId);
+
   // Current cycloid whose parameters are being controlled by the controls below.
   const cycloid = useMemo(() => {
     const c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(currentCycloidId);
     if (!c) throw Error("The selected cycloid does not exist!");
     return c;
-  }, [currentCycloidId]);
-
+  }, [currentCycloidId, rerender]);
 
   return (
     <ControlSection>

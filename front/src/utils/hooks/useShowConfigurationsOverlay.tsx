@@ -29,7 +29,7 @@ export default function useShowConfigurationsOverlay(
 
   function setCurrentCycloidControls(c: CycloidControls) {
     cycloidControls.current = c;
-    rerenderToggle(RerenderReason.redraw);
+    rerenderToggle(RerenderReason.loadFromSave);
   }
 
   async function deleteConfiguration(id: string) {

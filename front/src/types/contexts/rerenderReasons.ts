@@ -18,8 +18,9 @@ export enum RerenderReason {
   // Life cycle
   appStart = 1 << 11,
   redraw = 1 << 12,
+  loadFromSave= 1 << 13,
   // For values that don't need to be dealt with specially.
-  undefined = 1 << 13,
+  undefined = 1 << 14,
 }
 
 export const CHANGE_SETTINGS_REASON: number =
@@ -31,4 +32,5 @@ export const CHANGE_SETTINGS_REASON: number =
   RerenderReason.addOrRemoveCycloid |
   RerenderReason.timeStep |
   RerenderReason.changedFocusedCycloid |
-  RerenderReason.redraw;
+  RerenderReason.redraw |
+  RerenderReason.loadFromSave;

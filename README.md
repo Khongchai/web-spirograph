@@ -1,62 +1,56 @@
-# This is a work in progress; more info will be added to this readme incrementally.
+# A WebGL-Powered Spirograph Generator
 
-A spirograph generator that allows some wacky params.
+## Foreword
 
-This system allows nested cycloid relationship. With this, you can produce a seemingly random pattern than, despite its superficial
-randomness, is guaranteed to NOT be random, thanks to the base cycloid that is bound by the static circle.
+This is project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirgraph generator, but then stumbled into various (exciting and frustrating) rabbit holes, each hole an entire realm worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors.
 
-# The Architecture
+Nontheless, there are still some cool discoveries I have made that I think are worth being documented.
 
-There are three main cycloid classes, each created to serve different purposes.
-
-1. CycloidControls
-2. DrawNode
-3. Cycloid
-
-We'll gloss over why the three are necessary first, and then we'll look each of these more in detail.
-
-TODO
-
-# The Controls
-
-## Relationship Editor
-
-For generating the tree graph for the relationship editor.
-
-### Positioning
-
-All nodes are iterated over once and stored in a Record inside the DrawNodeLevel instance as a property.
-
-The levels are a list of objects, where each object is a level.
-Using a manager like levels, in which, the nodes are stored in maps.
-is better in that all we can retrieve some information related to any node at almost _O(1)_ time.
-
-For example, we can retrieve all the nodes at level 3 at _O(1)_ time
-to calculate the X position by checking if they have the same parents before we draw them.
-
-With breadth-first, all nodes in the previous levels will have to be traversed to find the nodes at the level we want.
-
-To use BFS, we'd also need to know a node's children, which is not possible with the current implementation.
-The current implementation is modeled after the physical spirograph relationship,
-where the child knows its parent, not vice versa. And this also helps with drawing, as we need to know
-the parent's position to draw the child and whether we should offsetX when there are multiple nodes that
-share the same parent.
-
-#### Drawing
-
-For drawing, the current implementation is capable of drawing both depth-first and breadth-first.
-We are doing breadth-first.
-
-# Examples
+### Some Examples Before We Begin
 
 ![Example 1](example-images/ex1.png)
 ![Example 2](example-images/ex2.png)
 ![Example 3](example-images/ex3.png)
 ![Example 4](example-images/ex4.png)
-![Example 5](example-images/ex5.png)
-![Example 6](example-images/ex6.png)
-![Example 7](example-images/ex7.png)
-![Example 8](example-images/ex8.png)
-![Example 9](example-images/ex9.png)
 
-This project has no dependencies other than React and, regrettably, Tailwind (I hate this crap). The drawing api is just plain html5's canvas api.
+
+## Your childhood's favorite spirograph toy, but beefed up.
+
+This spirograph generator contains 2 modes: 
+
+1. The __animated mode__, which draws n-nested level of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as it really isn't why this project exist. 
+2. The __instant mode__, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for Global Time Scale of around 1, the shape that is drawn will be a complete shape. The algorithm is discussed below, along with other implementation details.
+
+# Parameters
+
+## Local (affects the selected cycloid only)
+
+`rodLengthScale`: 1 means the rod is the same length as the cycloid it belongs to. This rod extends the physical boundary in that in a real spirograph, the position of the rod cannot be farther from the origin than the radius of the circle.
+
+`cycloidSpeedScale`: the ratio of the surface covered as the child cycloid moves around the parent. The value of 1 means there are no sliding (physically accurate).
+
+`moveOutsideOfParent`: whether the curent cyclod is positioned within or outside of its parent cycloid. 
+`radius`: The radius of the current cycloid.
+
+`rotationDirection`: this is not the self-rotation direction, but the direction in which the current cycloid moves around its parent (going left or going right).
+
+`selectedCycloid`: the cycloid whose parameters you would like to change.
+
+## Global (affects every cycloids)
+
+`globalTimeStep`: controls the iterations needed until an image is fully drawn. The higher the value, the lower the iterations...and resolution. However, set the value too low, and the image will take too long to be drawn in the animated mode, and use more power in the instant mode (more iterations).
+
+# The Modes
+
+
+
+## Animated
+
+![Example 5](example-images/animated.gif)
+
+The simplest of modes, this mode numerically integrates every frame based on the current paramters of each cycloids, adding one on top of another. The simplest form of animation.
+
+## Instant
+
+# The Controls
+
