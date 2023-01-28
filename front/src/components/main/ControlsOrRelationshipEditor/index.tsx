@@ -22,6 +22,7 @@ const ControlsOrRelationshipEditor: React.FC<
     e.stopPropagation();
   }
 
+
   return (
     <div
       ref={wrapperRef}

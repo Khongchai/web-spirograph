@@ -162,7 +162,7 @@ class PetiteTransform {
 
     if (managePan) {
       this.#addEventListener("mousedown", (e) => {
-        this.#onmousedown({
+        this.#onpointerdown({
           x: e.x * devicePixelRatio,
           y: e.y * devicePixelRatio,
         });
@@ -175,12 +175,32 @@ class PetiteTransform {
         });
       });
 
-      this.#addEventListener("mouseup", (e) => {
-        this.#onmouseup({
-          x: e.x * devicePixelRatio,
-          y: e.y * devicePixelRatio,
+      this.#addEventListener("mouseup", () => this.#onpointerup());
+
+      this.#addEventListener("touchstart", (e) => {
+        this.#onpointerdown({
+          x: e.touches[0].clientX * devicePixelRatio,
+          y: e.touches[0].clientY * devicePixelRatio,
         });
       });
+
+      this.#addEventListener(
+        "touchmove",
+        (e) => {
+          console.log(e.touches.length);
+          e.preventDefault();
+          this.#onpan({
+            x: e.touches[0].clientX * devicePixelRatio,
+            y: e.touches[0].clientY * devicePixelRatio,
+          });
+        },
+        { passive: false }
+      );
+
+      this.#addEventListener("touchend", () => this.#onpointerup());
+      this.#addEventListener("touchcancel", () => this.#onpointerup());
+      this.#addEventListener("pointerleave", () => this.#onpointerup());
+      this.#addEventListener("pointercancel", () => this.#onpointerup());
     }
 
     if (manageZoom) {
@@ -246,13 +266,13 @@ class PetiteTransform {
   /**
    * @param {{x: number, y: number}} e
    */
-  #onmousedown(e) {
+  #onpointerdown(e) {
     this.#isMouseDown = true;
     this.#panOffset.prev.x = e.x - this.#panOffset.cur.x;
     this.#panOffset.prev.y = e.y - this.#panOffset.cur.y;
   }
 
-  #onmouseup() {
+  #onpointerup() {
     this.#isMouseDown = false;
   }
 
