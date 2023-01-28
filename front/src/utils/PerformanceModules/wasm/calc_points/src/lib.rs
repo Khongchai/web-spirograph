@@ -26,7 +26,7 @@ pub fn fractional_lcm(numbers: &[f64]) -> f64 {
 
     let result = power_of_ten / gcd_of_decimal_numbers_as_ints;
 
-    result
+    result.ceil()
 }
 
 fn gcd(numbers: &[f64]) -> f64 {
@@ -59,11 +59,13 @@ mod tests {
         let value2 = gcd(&[3.0, 10.0, 100.0]);
         let value3 = gcd(&[100.0, 200.0, 5.0]);
         let value4 = gcd(&[100.0, 510.0, 511.0, 200.0]);
+        let value5 = gcd(&[5.0, 5.0]);
 
         assert_eq!(value1, 2.0);
         assert_eq!(value2, 1.0);
         assert_eq!(value3, 5.0);
         assert_eq!(value4, 1.0);
+        assert_eq!(value5, 5.0);
     }
 
     #[test]
@@ -72,11 +74,12 @@ mod tests {
         let value2: f64 = fractional_lcm(&[1.1, 20.5, 2.3, 6.0]);
         let value3: f64 = fractional_lcm(&[1.1, 1.12, 2.23, 1.0]);
         let value4: f64 = fractional_lcm(&[2.56, 3.41, 5.11]);
+        let value5: f64 = fractional_lcm(&[5.0, 5.0]);
 
-        //ToDO need more variety in the test cases.
         assert_eq!(value1, 100.0);
         assert_eq!(value2, 10.0);
         assert_eq!(value3, 100.0);
         assert_eq!(value4, 100.0);
+        assert_eq!(value5, 1.0);
     }
 }
