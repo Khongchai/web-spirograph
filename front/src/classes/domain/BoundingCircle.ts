@@ -20,7 +20,7 @@ export default class BoundingCircle implements BoundingCircleInterface {
     ctx.beginPath();
     ctx.strokeStyle = this.boundingColor;
 
-    ctx.arc(x, y, this.radius, 0, Math.PI * 2);
+    ctx.arc(x, y, Math.abs(this.radius), 0, Math.PI * 2);
 
     ctx.stroke();
   }
