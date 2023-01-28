@@ -1,5 +1,3 @@
-When switching between animated and the instant mode, t te register tab should not move so much.
-
 Figure out how excalidraw do the resize thing while keeping everything in one place.
 
 Write the docs.

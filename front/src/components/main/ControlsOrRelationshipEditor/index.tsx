@@ -36,7 +36,8 @@ const ControlsOrRelationshipEditor: React.FC<
           wrapperRef={wrapperRef}
         />
       )}
-      <div className="flex-row flex h-fit items-center gap-4 ">
+      <div className="flex-row lg:flex-col md:flex-col sm:flex-col lg:flex-initial
+      flex h-fit items-center gap-4 ">
         <div
           style={{ width: "50px" }}
           className="hover:scale-105 cursor-pointer"

@@ -55,32 +55,44 @@ function DragWrapper({
 }) {
   const [blockEvents, setBlockEvents] = useState(false);
 
-  function onMouseUp() {
-    document.removeEventListener("mouseup", onMouseUp);
-    document.removeEventListener("mousemove", onMouseMove);
+  function onPointerUp() {
+    document.removeEventListener("mouseup", onPointerUp);
+    document.removeEventListener("touchend", onPointerUp);
+    document.removeEventListener("mousemove", onPointerMove);
+    document.removeEventListener("touchmove", onPointerMove);
     setBlockEvents(false);
   }
 
-  function onMouseDown() {
-    document.addEventListener("mouseup", onMouseUp);
-    document.addEventListener("mousemove", onMouseMove);
+  function onPointerDown() {
+    document.addEventListener("mouseup", onPointerUp);
+    document.addEventListener("touchend", onPointerUp, { passive: false });
+    document.addEventListener("mousemove", onPointerMove);
+    document.addEventListener("touchmove", onPointerMove, { passive: false });
     setBlockEvents(true);
   }
 
-  function onMouseMove(e: MouseEvent) {
+  function onPointerMove(e: MouseEvent | TouchEvent) {
     e.preventDefault();
     e.stopPropagation();
-    const mousePos = {
-      x: Math.max(0, e.x / window.innerWidth),
-      y: Math.max(0, e.y / window.innerHeight),
-    };
+    let cursorPos = { x: 0, y: 0 };
+    if (e instanceof MouseEvent) {
+      cursorPos = {
+        x: Math.max(0, e.x / window.innerWidth),
+        y: Math.max(0, e.y / window.innerHeight),
+      };
+    } else {
+      cursorPos = {
+        x: Math.max(0, e.touches[0].clientX / window.innerWidth),
+        y: Math.max(0, e.touches[0].clientY / window.innerHeight),
+      }
+    }
 
-    onDrag(mousePos);
+    onDrag(cursorPos);
   }
 
   return (
     <>
-      <div className={className} onMouseDown={onMouseDown}>
+      <div className={className} onPointerDown={onPointerDown}>
         {children}
       </div>
       {
