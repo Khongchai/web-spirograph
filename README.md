@@ -198,12 +198,15 @@ For this set of numbers, if we inspect the graph:
 $$ {\{\frac{1}{2}, \frac{1}{4}, \frac{1}{8}\}} $$
 
 $$ {cos(\frac{1}{2}x)} $$
+
 ![cos(1/2)](example-images/cosine_2x.png)
 
 $$ {cos(\frac{1}{2}x), cos(\frac{1}{4})} $$
+
 ![cos(1/2) and cos(1/4)](example-images/cosine_2x_and_4x.png)
 
 $$ {cos(\frac{1}{2}x), cos(\frac{1}{4})}, cos(\frac{1}{8}) $$
+
 ![cos(1/2), cos(1/4), and cos(1/8)](example-images/cosine_8x.png)
 
 Now, I'm not sure if this is how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator. 
@@ -429,7 +432,7 @@ Those four corners, top, left, button, right, looks really interesting. Would be
 
 ![zooming on ex5](example-images/ex5.gif)
 
-Oh that's right. We could already do that! Unfortunately, walking through the zooming and panning would take too long. This article is already too long! For the zoom and pan, I intended to make a library out of it. A framework-agnostic library that just concerns itself with zoom and pan logic. Nothing else. Should be compatible with webgl, canvas, svg, etc. So far, I think I'm more than half way there and it needs some more work. I'll write a separate article documenting my journey there.
+Oh that's right. We CAN already do that! Unfortunately, walking through the zooming and panning would take too long. This article is already too long! For the zoom and pan, I intended to make a library out of it. A framework-agnostic library that just concerns itself with zoom and pan logic. Nothing else. Should be compatible with webgl, canvas, svg, etc. So far, I think I'm more than half way there and it needs some more work. I'll write a separate article documenting my journey there.
 
 # Relationship Editor
 
@@ -437,7 +440,7 @@ Ok one last thing.
 
 ![relationship editor](example-images/relationship_editor.png)
 
-There is this thing here, which is still a bit (just a bit) buggy, but I'm like screw this, I'm moving on to other projects.
+There is this thing here, which is still a bit (just a bit) buggy, but I was like, screw this, I'm moving on to other projects.
 
 The relationship editor allows you to re-define the parent-child cycloid between each of the cycloid. This definitely called for some kind of tree-like data structres. 
 
