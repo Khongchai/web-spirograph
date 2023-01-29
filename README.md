@@ -240,21 +240,29 @@ And this works for all numbers?? Yes it does!. However, we are doing `gcd` twice
 So if we walk through the calculation.
 
 Give the 2 numbers to the function.
+
 $$ {f(0.5, 0.25, 0.125)} $$
 
 Turn into decimal numbers.
+
 $$ {\frac{0.5 * 10}{10}, \frac{0.25 * 100}{100}, \frac{0.125 * 100}{100}} $$
+
 $$ {\frac{5}{10}, \frac{25}{100}, \frac{125}{1000}} $$
 
 Find the divisor with `gcd` and simplify.
+
 $$ {\frac{1}{2}, \frac{1}{4}, \frac{1}{8}} $$
 
 Then take the `lcm` of the two denominators.
+
 $$ {lcm(2 ,4, 8)} $$
 
 Which is basically
+
 $$ {x_1 = \frac{|2 * 4|}{gcd(2 ,4)}} $$
+
 $$ {x_2 = \frac{|x_1 * 8|}{gcd(x_1 ,8)}} $$
+
 $$ {x_2 = 8} $$
 
 Did you notice something? I didn't. My math genius friend had to point it out to me. In the second steps, we already have all the information we need, after having turned everything into decimals.
@@ -262,16 +270,23 @@ Did you notice something? I didn't. My math genius friend had to point it out to
 The final result is actually just the result of $$ {\frac{1000}{125}} $$
 
 When we had only 0.5 and 0.25, it was 
+
 $$ {\frac{100}{25}} $$
 
 So apparently, it is the result of the one of the max dedcimal place of all numbers divided by some numbers ${x}$ and that ${x}$ issssss:
 
 $$ {f(0.5, 0.25, 0.125)} $$
+
 The max decimal of the 3 is 0.125, so 3 zeros.
+
 $$ {m = 1000} $$
+
 $$ {0.5 * m, 0.25 * m, 0.125 * m} $$
+
 $$ {500, 250, 125} $$
+
 $$ {x = gcd(500, 250, 125)} $$
+
 $$ {x = 125} $$
 
 Then 
@@ -313,7 +328,6 @@ function draw(p) {
 ```
 it will just take forever. We want that smoothness. And this is where WebGL comes in.
 
-
 ## WebGL
 
 I wrote a small custom-made webgl renderer because other options are too generic and would definitely bloat the project. This renderer does nothing but render a bunch of lines with and API that is not too complicated. My rendering use case is very simple, I only need 3 methods:
@@ -328,7 +342,7 @@ export default interface Renderer {
 
 The `render` method is called everytime there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the renderer takes too long. 
 
-With the render method, I would like to use webGL's drawElements or drawArrays to help me draw all the points mentioned previously all at once. This means that I have to put the points into an array and then pass them all to the renderer.
+In the render method, I used webGL's drawElements or drawArrays to help me draw all the lines (2 points) all at once. This means that I have to put the points into an array and then pass them all to the renderer.
 
 ```ts
 const points = [];
@@ -338,6 +352,7 @@ for (let i = 0; i < result; i++) {
   theta += step; 
   let p = sumUpPoints(cycloids);
   points.push(p);
+  // draw(p) << No longer needed
 }
 
 // ...
@@ -396,15 +411,25 @@ arr // return result to JavaScript
 
 Could I have made this feature in JavaScript? Yes! Actually, the feature was made in JavaScript and then I later switched to Rust. JavaScript was actually not slow at all and I'm sure that had I not made the changed, the rendering would appear to the eyes just as fast. But, hey...I learned Rust!
 
-# Notable Mentions
+That concludes all the stuff about rendering our result as fast as possible, and it's very beautiful, I have to admit.
+
+But oh no, our journey does not end here. There was more to do.
+
+# Zooming and Panning
+
+So our drawn spirograph can get very, very big.
+
+
 
 _Stuff that don't have anything to do with rendering the cycloids, but are interesting nontheless._
 
 ## Relationship Editor
 
-
 ## Zooming and Panning
 
 TODO Talk about the webgl part as well
 
+### Wrapping up
+
+So in this rabbit hole journey, I learned Rust TO 
 

@@ -25,8 +25,11 @@ const Local: React.FC<{
 
   // Current cycloid whose parameters are being controlled by the controls below.
   const cycloid = useMemo(() => {
-    const c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(cycloidControls.currentCycloidId);
-    if (!c) throw Error("The selected cycloid does not exist!");
+    let c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(currentCycloidId);
+    if (!c) {
+      c = cycloidControls.cycloidManager.getSingleCycloidParamFromId(cycloidControls.currentCycloidId)!;
+      setCurrentCycloidId(c.id);
+    }
     return c;
   }, [currentCycloidId, rerender]);
 
