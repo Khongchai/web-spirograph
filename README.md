@@ -417,8 +417,11 @@ But oh no, our journey does not end here. There was more to do.
 
 # Zooming and Panning
 
-So our drawn spirograph can get very, very big.
+So our drawn spirograph can get very, very intricate. Sometimes, we just want to be able to zoom in and see stuff!
 
+Like this one.
+
+![intricate](example-images/ex5.png)
 
 
 _Stuff that don't have anything to do with rendering the cycloids, but are interesting nontheless._
