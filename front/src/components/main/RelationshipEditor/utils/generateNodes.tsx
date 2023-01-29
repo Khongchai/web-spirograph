@@ -84,9 +84,10 @@ export default function useGenerateNodes(
       },
     });
 
+    const idAndLevelCache: Record<number, number> = {};
     for (let i = 0; i < cycloidParams.length; i++) {
       const thisCycloid = cycloidParams[i];
-      const currentDrawLevel = getDrawLevel(thisCycloid.id, cycloidControls);
+      const currentDrawLevel = getDrawLevel(thisCycloid.id, cycloidControls, idAndLevelCache);
 
       const nodeRelativePos = {
         x: initialNodePosition.x,

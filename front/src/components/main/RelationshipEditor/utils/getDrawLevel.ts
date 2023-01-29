@@ -3,14 +3,15 @@ import CycloidControls from "../../../../classes/domain/cycloidControls";
 
 export default function getDrawLevel(
   currentId: number,
-  cycloidControls: React.MutableRefObject<CycloidControls>
+  cycloidControls: React.MutableRefObject<CycloidControls>,
+  idAndLevelCache: Record<number, number>
 ) {
   const parentId =
     cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
       currentId
     )!.boundingCircleId;
 
-  const currentDrawLevel = getCurrentDrawLevel(parentId, cycloidControls, 1);
+  const currentDrawLevel = getCurrentDrawLevel(parentId, cycloidControls, 1, currentId, idAndLevelCache);
 
   return currentDrawLevel;
 }
@@ -26,13 +27,23 @@ export default function getDrawLevel(
 function getCurrentDrawLevel(
   parentId: number,
   cycloidControls: React.MutableRefObject<CycloidControls>,
-  levelCounter: number
+  levelCounter: number,
+  currentId: number,
+  cache: Record<number, number>
 ): number {
+  if (cache[parentId]) {
+    return levelCounter + cache[parentId];
+  }
+
   if (levelCounter < 1) {
     throw new Error("levelCounter starts from 1");
   }
 
-  if (parentId === -1) return levelCounter;
+  if (parentId === -1) {
+    cache[currentId] = levelCounter;
+    console.log(cache);
+    return levelCounter;
+  }
 
   let parentParams =
     cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
@@ -52,6 +63,8 @@ function getCurrentDrawLevel(
   return getCurrentDrawLevel(
     grandParentIndex,
     cycloidControls,
-    levelCounter + 1
+    levelCounter + 1,
+    currentId,
+    cache
   );
 }
