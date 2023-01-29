@@ -193,7 +193,7 @@ Let's see, when do you think ${cos(0.5x)}$, ${cos(0.25x)}$, and ${cos(0.125)}$ c
 
 If we look at them as fractions, things become much easier:
 
-For this set of numbers, if we inspect the graph:
+For this set of numbers, if we inspect the graph and compare all of them against $cos(x)$:
 
 $$ {\{\frac{1}{2}, \frac{1}{4}, \frac{1}{8}\}} $$
 
