@@ -421,16 +421,21 @@ So our drawn spirograph can get very, very intricate. Sometimes, we just want to
 
 Like this one.
 
-![intricate](example-images/ex5.png)
+![example5](example-images/ex5.png)
 
+Those four corners, top, left, button, right, looks really interesting. Would be nice if we could do something like this.
 
-_Stuff that don't have anything to do with rendering the cycloids, but are interesting nontheless._
+![zooming on ex5](example-images/ex5.gif)
 
-## Relationship Editor
+Oh that's right. We could already do that! Unfortunately, walking through the zooming and panning would take too long. This article is already too long! For the zoom and pan, I intended to make a library out of it. A framework-agnostic library that just concerns itself with zoom and pan logic. Nothing else. Should be compatible with webgl, canvas, svg, etc. So far, I think I'm more than half way there and it needs some more work. I'll write a separate article documenting my journey there.
 
-## Zooming and Panning
+# Relationship Editor
 
-TODO Talk about the webgl part as well
+Ok one last thing.
+
+![relationship editor](example-images/relationship_editor.png)
+
+There is this thing here, which is still a bit buggy, but I'm like screw this, I'm moving on to other projects.
 
 ### Wrapping up
 
