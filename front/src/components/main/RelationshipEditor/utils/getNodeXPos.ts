@@ -35,18 +35,7 @@ export default function organizeNodesPositionOnLevel(
       key: node.ids.parentId,
     }).pos.x;
 
-    if (!shouldOffsetX) {
-      node.pos = {
-        x: parentXPosition,
-        y: node.pos.y,
-      };
-
-      continue;
-    }
-
-    const parentXOffset = node.pos.x - parentXPosition;
-
-    const xPos = node.pos.x + gap * i - parentXOffset;
+    const xPos = node.pos.x + gap * i
     const xOffset = (gap / 2) * (currentLevelLength - 1);
     const finalX = xPos - xOffset;
 

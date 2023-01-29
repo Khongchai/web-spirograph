@@ -519,8 +519,17 @@ for (let i = 0; i < thisLevelNodeCount; i++) {
   }
 ```
 
+And then we'll just have to make sure that when we place the nodes, each child stays close to their parents so that we can draw a straight line from it to its parent without crossing over other higher-level nodes.
 
+```ts
+  nodesOnLevel.sort((a, b) => (a.parentId ?? -1) - (b.parentId ?? -1));
+```
 
+Now all is good and well, with a lot of nodes, when we traced the lines, they look funny sometimes, but that's good enough for out use case. 
+
+![Nodes weird positioning](example-images/weirdly%20positioned%20nodes.png)
+
+![Nodes ok position](example-images/Ok.png)
 
 ### Placing the Lines
 
