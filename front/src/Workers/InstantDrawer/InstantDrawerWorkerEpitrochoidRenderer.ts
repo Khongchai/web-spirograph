@@ -59,10 +59,12 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
 
     const step = Math.max(timeStepScalar * BASE_STEP, 0.01);
 
+    if (timeStepScalar === Number.POSITIVE_INFINITY) {
+      throw new Error("Division by zero will occur, timeStepScalar is zero");
+    }
     const circlePointsCompensated = BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
     const pointsAmount = circlePointsCompensated * (fractional_lcm(scalars) + 1)
-   
 
     const dataForComputedEpitrochoid = [];
     for (let i = 1; i < cycloids.length; i++) {
@@ -92,9 +94,9 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
     const now = performance.now();
     console.log(
       "For " +
-        pointsAmount +
-        ", this operation took in seconds: " +
-        (now - then) / 1000
+      pointsAmount +
+      ", this operation took in seconds: " +
+      (now - then) / 1000
     );
 
     this.cachedCanvas = this.drawerData.canvas;

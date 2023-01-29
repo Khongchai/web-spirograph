@@ -154,7 +154,7 @@ export default Main;
 
 function useAnimateMenuToggling(
   cycloidControls: React.MutableRefObject<CycloidControls | undefined>,
-  rerender: () => void
+  rerender: () => void,
 ): {
   handleOnControlsToggle: VoidFunction;
   handleOnRelationshipEditorToggle: VoidFunction;
@@ -163,6 +163,11 @@ function useAnimateMenuToggling(
   const originalShowCycloid = useRef<boolean | undefined>(undefined);
 
   const handleOnRelationshipEditorToggle = useCallback(() => {
+    const enableAnimation = cycloidControls.current?.mode === "Animated";
+    if (!enableAnimation) {
+      return;
+    }
+
     cycloidControls.current!.scaffold = "Showing";
 
     let animateSpeed = cycloidControls.current!.globalTimeStepScale;
@@ -192,6 +197,11 @@ function useAnimateMenuToggling(
   }, []);
 
   const handleOnControlsToggle = useCallback(() => {
+    const enableAnimation = cycloidControls.current?.mode === "Animated";
+    if (!enableAnimation) {
+      return;
+    }
+
     cycloidControls.current!.scaffold = "Showing";
 
     /**
