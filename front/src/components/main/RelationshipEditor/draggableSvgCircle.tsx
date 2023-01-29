@@ -145,6 +145,7 @@ export default function DraggableSvgCircle({
     },
     [thisCirclePosition]
   );
+  console.log(color);
 
   return (
     <circle

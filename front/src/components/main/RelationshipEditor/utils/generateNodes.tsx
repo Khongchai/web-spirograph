@@ -130,7 +130,7 @@ function getPositionedNodesAndLines(
   levels.getAllLevels().forEach((l, levelIndex) => {
     organizeNodesPositionOnLevel(levels, levelIndex);
 
-    Object.values(l).forEach((node) => {
+    Object.values(l).forEach((node, i) => {
       const key = `${node.currentDrawLevel}-${node.ids.thisNodeId}`;
 
       // The index for accessing the cycloidParams object directly
@@ -144,6 +144,7 @@ function getPositionedNodesAndLines(
 
       svgCircles.push(
         <DraggableSvgCircle
+          color={cycloidControls.current.currentCycloidId === node.ids.thisNodeId ? colors.yellow : undefined}
           centerPoint={node.pos}
           radius={scaleDrawRadius(node.radius)}
           key={key}
