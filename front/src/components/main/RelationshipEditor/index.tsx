@@ -27,12 +27,15 @@ const RelationShipEditor: React.FC<RelationShipEditorProps> = ({
   );
 
   return (
-    <svg width={width} height={height}>
-      <>
-        {drawnCircles.svgCircles}
-        {drawnCircles.svgLines}
-      </>
-    </svg>
+    <>
+      <svg width={width} height={height}>
+        <>
+          {drawnCircles.svgCircles}
+          {drawnCircles.svgLines}
+        </>
+      </svg>
+      <h2 className="absolute bottom-0 p-4">This mode has some won't-fix bugs, and I probably won't fix them ever. But feel free to play around.</h2>
+    </>
   );
 };
 

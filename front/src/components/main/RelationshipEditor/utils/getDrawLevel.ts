@@ -41,7 +41,6 @@ function getCurrentDrawLevel(
 
   if (parentId === -1) {
     cache[currentId] = levelCounter;
-    console.log(cache);
     return levelCounter;
   }
 
