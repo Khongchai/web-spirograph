@@ -62,7 +62,7 @@ The simplest of modes, this mode adds up the position of the current point every
 
 ![Example 6](example-images/instant1.gif)
 
-This is where most of the work goes. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a custom algorithm to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble. 
+This is where most of the work goes. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble. 
 
 __A brief overview of how it's done__, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available (hopefully not too many points until the heap oveflows :p) in memory, we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
 
@@ -95,7 +95,7 @@ $$ p_{final} = \sum_{i=0}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{p} + r_{c
 
 Where $p_{final}$ represents the final position, either `p.x` or `p.y` of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or -1, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_p$ and $r_c$ are the radii of the parent of the current cycloid and the cycloid itself, respectively. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
 
-Yes I am sounding very pretentious. I should know, because I didn't start with the equation, I just wanted to try typing out LaTeX. The mathy description above was also paraphrased by ChatGPT.  I actually started with this:
+Yes I am sounding very pretentious. I should know, because I didn't start with the equation, I  I actually started with this:
 
 ```ts
   for (let i = 1; i < cycloids.length; i++) {
@@ -170,15 +170,13 @@ So this means that we can just keep looping until we hit ${1}$...right?:
   }
 ```
 
-Of course not. Like, we are doing numerical integration, this means that there is a chance theta + k will never be one, especially when there are a lot of decimal places or when there are more than a few scalars. We NEED to find out ahead of time, and the algorithm must not be _O(n)_, we need something FASTER. 
+Of course not. Like, we are doing numerical integration, this means that there is a chance ${\theta + k}$ will never be equal to one, especially when there are a lot of decimal places and when there are more than a few scalars. We NEED to find out ahead of time, and the algorithm must not be _O(?)_ where ${?}$ is who the hell knows when it'll end. We need something FASTER. 
 
 There are actually two things that could help us here from our elementary math classes: gcd and lcm.
 
 We would like to find out basically when ${n}$ numbers "collide", which is a perfect problem from our two friends! But the question now is...which one do we need?
 
-Looking back at the graphs above, it seems that as our scalars increase, the rate ${x}$ position at which they become synchronized on the graph is lower, and vice versa. Okay...so everything is going backwards, larger number collide faster and smaller numbers slower...which makes sense for trig functions right? Larger scalar means faster oscillations, and smaller, slower. Now, which of those two (gcd and lcm) kind of goes along this line? 
-
-A refresher: lcm returns a number that is divisible by each of the numbers passed as argument, and gcd returns the number that all input numbers are diviible by.
+A refresher: lcm returns a number that is divisible by each of the numbers passed as argument, and gcd returns the number that all input numbers are divisible by.
 
 ```ts
 lcm(8, 12); // 24
@@ -189,37 +187,134 @@ gcd(2, 5, 6); // 1
 gcd(10, 100, 200) // 10
 ```
 
-Clearly, gcd is what we need here. It conforms to our large is small and small is large intuition.
+Let's try to predict when _three_ cosine functions collide. This time, we'll do it with numbers less than one. Reason being...that's how I started.
 
-Let's try to use it to predict when two cosine functions collide. We'll try with integers first, and then move on to decimals, we'll have to modify this upcoming solution a bit to compute the latter.
+Let's see, when do you think ${cos(0.5x)}$, ${cos(0.25x)}$, and ${cos(0.125)}$ collide?
 
-Let's see, when do you think ${cos(10x)}$, ${cos(20x)}$ and ${cos(15x)}$ collide?
+If we look at them as fractions, things become much easier:
 
-__Answer__: gcd(10, 20, 15) => 5
+For this set of numbers, if we inspect the graph:
 
-Yay! It's five! Wait. Five what, like five and then how do I use this "five"? Let's pull up Desmos again.
+$$ {\{\frac{1}{2}, \frac{1}{4}, \frac{1}{8}\}} $$
 
-![cos(10x) cos(20x) cos(15x)](example-images/cosines_equals_5.png)
+$$ {cos(\frac{1}{2}x)} $$
+![cos(1/2)](example-images/cosine_2x.png)
 
-It's ${\frac{2\pi}{5}}$ because our ${2\pi}$ oscillation is now 5 times faster.
+$$ {cos(\frac{1}{2}x), cos(\frac{1}{4})} $$
+![cos(1/2) and cos(1/4)](example-images/cosine_2x_and_4x.png)
 
-This gets us one step closer to our final equation.
+$$ {cos(\frac{1}{2}x), cos(\frac{1}{4})}, cos(\frac{1}{8}) $$
+![cos(1/2), cos(1/4), and cos(1/8)](example-images/cosine_8x.png)
 
-For now, if we were to use what we know and construct a function, we'd get:
+Now, I'm not sure if this is how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator. 
 
 ```ts
-const baseStep = Math.PI * 2 / 60; // 1 rotation in 60 frames.
-const scalars = [...]; // any number of integer scalars
-const finalPoints = findPoints(scalars, baseStep);
+lcm(2, 4); // 4
+lcm(2, 4, 8); // 8
+```
 
-for (let i = 0; i < finalPoints.length; i++) {
-  const p = getPositionOfPoints(finalpoints[i]); // We haven't covered this yet.
+So let's try turning our decimal numbers into fractional number and take the `lcm` of the denominators.
+
+```ts
+const result = lcm(numbers.map((n) => getDenominator(n)));
+
+// https://www.mathsisfun.com/converting-decimals-fractions.html
+function getDenominator(n) {
+  // If an integer, the denominator is one.
+  if (n % 1 === 0) return 1;
+
+  // find out how many decimal place this number has.
+  const decimalPlaceCount = n.toString().split(".")[1];
+  const numerator = Math.pow(10, decimalPlaceCount);
+  const denominator = numerator * n;
+  const divisor = gcd(numerator, denominator);  
+
+  // We don't care about the simplified numerator.
+  denominator /= divisor;         
+  return denominator;
+}
+```
+
+And this works for all numbers?? Yes it does!. However, we are doing `gcd` twice (the `lcd` algorithm includes calculating `gcd`), let's try to make it a bit easier.
+
+So if we walk through the calculation.
+
+Give the 2 numbers to the function.
+$$ {f(0.5, 0.25, 0.125)} $$
+
+Turn into decimal numbers.
+$$ {\frac{0.5 * 10}{10}, \frac{0.25 * 100}{100}, \frac{0.125 * 100}{100}} $$
+$$ {\frac{5}{10}, \frac{25}{100}, \frac{125}{1000}} $$
+
+Find the divisor with `gcd` and simplify.
+$$ {\frac{1}{2}, \frac{1}{4}, \frac{1}{8}} $$
+
+Then take the `lcm` of the two denominators.
+$$ {lcm(2 ,4, 8)} $$
+
+Which is basically
+$$ {x_1 = \frac{|2 * 4|}{gcd(2 ,4)}} $$
+$$ {x_2 = \frac{|x_1 * 8|}{gcd(x_1 ,8)}} $$
+$$ {x_2 = 8} $$
+
+Did you notice something? I didn't. My math genius friend had to point it out to me. In the second steps, we already have all the information we need, after having turned everything into decimals.
+
+The final result is actually just the result of $$ {\frac{1000}{125}} $$
+
+When we had only 0.5 and 0.25, it was 
+$$ {\frac{100}{25}} $$
+
+So apparently, it is the result of the one of the max dedcimal place of all numbers divided by some numbers ${x}$ and that ${x}$ issssss:
+
+$$ {f(0.5, 0.25, 0.125)} $$
+The max decimal of the 3 is 0.125, so 3 zeros.
+$$ {m = 1000} $$
+$$ {0.5 * m, 0.25 * m, 0.125 * m} $$
+$$ {500, 250, 125} $$
+$$ {x = gcd(500, 250, 125)} $$
+$$ {x = 125} $$
+
+Then 
+$$ \text{result} = {m/x} $$
+
+All done!
+
+In short, what we did above was, for all numbers ${n}$, we multiply by ${m}$, and then divide ${m}$ by the `gcd` of those numbers.
+
+$$ \forall n \in \text{numbers}, n \gets n \times m $$
+$$ \text{result} = {m / gcd(numbers)} $$ 
+
+Now we have the number of points we neeed and the way for us to some up the final position of each of the point to be drawn. Now we can just loop over those points like and draw those points!
+
+```ts
+// For a more detailed version, look at calc_points/lib.rs
+
+// We need to compensate a bit, based on how fast, or slow the animation is.
+const times = compensate(result, timeStepScalar);
+let theta = 0;
+for (let i = 0; i < result; i++) {
+  theta += step; 
+  let p = sumUpPoints(cycloids);
   draw(p);
 }
 ```
 
+That looks good and all, but just encountered another problem. Drawing for thousands, tens or hundreds of thousands, or million times is slow...very slow.
 
-### WebGL
+So far, I didn't talk about how we implement the `draw` method. If the `draw` method were to be implemented like this:
+
+```ts
+function draw(p) {
+  ctx.beginPath(p);
+  ctx.moveTo(p.previuos.x, p.previous.y);
+  ctx.lineTo(p.current.x, p.current.y);
+  ctx.stroke();
+}
+```
+it will just take forever. We want that smoothness. And this is where WebGL comes in.
+
+
+## WebGL
 
 I wrote a small custom-made webgl renderer because other options are too generic and would definitely bloat the project. This renderer does nothing but render a bunch of lines with and API that is not too complicated. My rendering use case is very simple, I only need 3 methods:
 
@@ -233,13 +328,71 @@ export default interface Renderer {
 
 The `render` method is called everytime there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the renderer takes too long. 
 
-### WASM
+With the render method, I would like to use webGL's drawElements or drawArrays to help me draw all the points mentioned previously all at once. This means that I have to put the points into an array and then pass them all to the renderer.
+
+```ts
+const points = [];
+const times = compensate(result, timeStepScalar);
+let theta = 0;
+for (let i = 0; i < result; i++) {
+  theta += step; 
+  let p = sumUpPoints(cycloids);
+  points.push(p);
+}
+
+// ...
+
+renderer.render(points)
+
+render(points: Point[]) {
+  // ...
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(points),
+    gl.STATIC_DRAW
+  );
+  const linesCount = points.length / 2;
+  gl.drawArrays(gl.LINES, 0, linesCount);
+}
+```
+
+Now we have reduced the rendering time from seconds to a tenth or a hundredth of milliseconds for most render. That is more than a thousand times faster!
+
+### __But we can do a bit better.__
+
+## WASM
 
 Why Rust-WASM and not just JavaScript?
 
 After having profiled multiple times (like a lot), WASM seems to gives better results when dealing with lower iterations. With larger iterations (~500,000 or more), JavaScript's JIT compiler comes in and steals the victory. With globalTimeStep being an option, and most combinations of cycloidSpeedScale result in iterations less than the limit that I found, I see it fitting that we go with Rust for this small calculation util. Hopefully, future improvements made to WASM will also give this function some performance boost as well.
 
-The wasm modules, as mentioned earlier, are in charged of finding out how many points we need to draw, and the positions for each of the points. 
+The wasm modules can be in charge of finding out how many points we need to draw, and the positions for each of the points. Had we not moved the rendering to WebGL, this wouldn't have been possible, as we would have needed to call a `draw` method within each loop. But now that we don't, we can do this:
+
+```rs
+// shortened version of calc_lines/lib.rs
+
+// ...some set up code
+for _ in 0..points {
+    new_point = compute_epitrochoid(
+      data_for_computation
+    );
+
+    if first_time {
+        first_time = false;
+    } else {
+      arr.push(prev_point[0]);
+      arr.push(prev_point[1]);
+      arr.push(new_point[0]);
+      arr.push(new_point[0]);
+    }
+
+    prev_point = new_point;
+
+    theta += step;
+}
+
+arr // return result to JavaScript
+```
 
 Could I have made this feature in JavaScript? Yes! Actually, the feature was made in JavaScript and then I later switched to Rust. JavaScript was actually not slow at all and I'm sure that had I not made the changed, the rendering would appear to the eyes just as fast. But, hey...I learned Rust!
 

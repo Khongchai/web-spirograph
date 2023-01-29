@@ -9,6 +9,7 @@ import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
 import { Debouncer } from "../../utils/Debouncer";
 import { BASE_POINTS_FOR_A_CIRCLE, BASE_STEP } from "../../constants/cycloids";
+import { fractionalLcm } from "../../utils/math";
 
 // We don't care about the return value of the init methods.
 const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
@@ -60,9 +61,8 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
 
     const circlePointsCompensated = BASE_POINTS_FOR_A_CIRCLE / timeStepScalar;
     const scalars = new Float64Array(cycloids.map((c) => c.thetaScale));
-    const pointsAmount = Math.floor(
-      circlePointsCompensated * (fractional_lcm(scalars) + 1)
-    );
+    const pointsAmount = circlePointsCompensated * (fractional_lcm(scalars) + 1)
+   
 
     const dataForComputedEpitrochoid = [];
     for (let i = 1; i < cycloids.length; i++) {
