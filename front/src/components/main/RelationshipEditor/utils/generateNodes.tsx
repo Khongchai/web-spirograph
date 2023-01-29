@@ -149,7 +149,7 @@ function getPositionedNodesAndLines(
           radius={scaleDrawRadius(node.radius)}
           key={key}
           onPointerEnter={() => {
-            const enterColor = colors.yellow;
+            const enterColor = colors.purple.vivid;
             if (isBoundingCircle) {
               boundingCircle.boundingColor = enterColor;
             } else {
@@ -203,7 +203,7 @@ function getPositionedNodesAndLines(
               );
 
             neighborCycloidParams &&
-              (neighborCycloidParams.boundingColor = colors.yellow);
+              (neighborCycloidParams.boundingColor = colors.purple.vivid);
           }}
           onOverNeighborAndCanceled={(neighbor) => {
             const neighborCycloidParams =
