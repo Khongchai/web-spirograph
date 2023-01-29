@@ -267,7 +267,9 @@ $$ {x_2 = 8} $$
 
 Did you notice something? I didn't. My math genius friend had to point it out to me. In the second steps, we already have all the information we need, after having turned everything into decimals.
 
-The final result is actually just the result of $$ {\frac{1000}{125}} $$
+The final result is actually just the result of 
+
+$$ {\frac{1000}{125}} $$
 
 When we had only 0.5 and 0.25, it was 
 
@@ -435,7 +437,94 @@ Ok one last thing.
 
 ![relationship editor](example-images/relationship_editor.png)
 
-There is this thing here, which is still a bit buggy, but I'm like screw this, I'm moving on to other projects.
+There is this thing here, which is still a bit (just a bit) buggy, but I'm like screw this, I'm moving on to other projects.
+
+The relationship editor allows you to re-define the parent-child cycloid between each of the cycloid. This definitely called for some kind of tree-like data structres. 
+
+_animated mode_
+
+![relationship editor animated mode](example-images/relationship_editor_animated.gif)
+
+_instant mode_
+
+![relationship editor instant mode](example-images/relationship_editor_instant.gif)
+
+
+
+## The UI
+
+I must admit I have made a mistake of drawing it with SVG. This made the interaction difficult to handle because now I have to involve the DOM API and CSS. This introduced some bugs that I didn't bother fixing. 
+
+I have a `generateNode` hook that is called everytime the menu is switched to a relationship editor. Within the hook, I have a sort of a NodeLevel manager that keeps track of the "level" each node resides in. The level is determined by having each node recursively travel up its chain until it meets the base node, the `outerBoundingCircle`.
+ 
+```ts
+// getDrawLevel.ts
+// I removed the error-handling code to make this a bit more readable.
+function getCurrentDrawLevel(
+  parentId: number,
+  cycloidControls: React.MutableRefObject<CycloidControls>,
+  levelCounter: number,
+  currentId: number,
+  cache: Record<number, number> // For memoization
+): number {
+  // If has gone through this parent before, return immediately with the parent's level.
+  if (cache[parentId]) {
+    return levelCounter + cache[parentId];
+  }
+  if (parentId === -1) {
+    cache[currentId] = levelCounter;
+    return levelCounter;
+  }
+  let parentParams =
+    cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
+      parentId
+    );
+  const grandParentIndex = parentParams!.boundingCircleId; 
+
+  return getCurrentDrawLevel(
+    grandParentIndex,
+    cycloidControls,
+    levelCounter + 1,
+    currentId,
+    cache
+  );
+```
+
+Once we know the level of each of the nodes, we specify an arbitrary space between each level, __calculate the positions__, and then we can begin placing them.
+
+## Calculating the Positions
+
+### Placing the Circles
+
+To place the circles like this:
+
+![node positioning](example-images/node_positioning.png)
+
+We first need to be able to do this:
+
+![node positioning simple](example-images/ndoe_position_2.png)
+
+For any ${n}$ level, I have defined the positioning like this
+
+```ts
+for (let i = 0; i < thisLevelNodeCount; i++) {
+    // xPos is just placing the nodes out with nodeMargin * i margin, starting from center.
+    const xPos = nodeCenter.x + nodeMargin * i;
+    // xOffset is the offset we need to do to get the row to be in the center.
+    // It should be half the full span of the row, which is:
+    const xOffset = (nodeMargin / 2) * (thisLevelNodeCount - 1);
+    ctx.beginPath();
+    ctx.arc(xPos - xOffset, nodeCenter.y + someYOffset, someRadius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+```
+
+
+
+
+### Placing the Lines
+
+## Error-Handling
 
 ### Wrapping up
 
