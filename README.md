@@ -533,6 +533,49 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 ### Placing the Lines
 
+Finding out how to draw the lines was surprisingly difficult, but the solution was also face-slappingly simple.
+
+Here's a spoiler of how it's done. 
+
+```ts
+export default function SvgLineFromNodeToParent({
+  node,
+  parentNode,
+}: {
+  node: DrawNode;
+  parentNode: DrawNode;
+}) {
+  const { x: x1, y: y1 } = node.pos;
+  const r1 = node.radius;
+
+  const { x: x2, y: y2 } = parentNode.pos;
+  const r2 = parentNode.radius;
+
+  const xOffsetScale = 5;
+  const xOffset = (x2 - x1) / xOffsetScale;
+
+  const finalX = Math.min(Math.max(x2 - xOffset, x2 - r2), x2 + r2);
+  const k = Math.max(
+    0,
+    Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
+  );
+
+  const finalY = Math.sqrt(k) + y2;
+
+  return (
+    <path
+      d={`M${x1} ${y1 - r1} L${finalX} ${finalY}`}
+      stroke="rgba(191, 134, 252, 99)"
+      strokeWidth={1}
+    />
+  );
+}
+```
+
+As you can see, there is more math, but this math is so simple I didn't see it coming, both because I learned it such a long time ago and I had never thought I'd ever need it.
+
+TODO
+
 ## Error-Handling
 
 ### Wrapping up
