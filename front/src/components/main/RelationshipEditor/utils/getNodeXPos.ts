@@ -29,12 +29,6 @@ export default function organizeNodesPositionOnLevel(
       continue;
     }
 
-    const shouldOffsetX = determineShouldOffsetX(node, nodesOnLevel);
-
-    const parentXPosition = levels.retrieveSingleNode({
-      key: node.ids.parentId,
-    }).pos.x;
-
     const xPos = node.pos.x + gap * i
     const xOffset = (gap / 2) * (currentLevelLength - 1);
     const finalX = xPos - xOffset;
@@ -44,27 +38,4 @@ export default function organizeNodesPositionOnLevel(
       y: node.pos.y,
     };
   }
-}
-
-/**
- *
- * Right now, it's just a simple O(n) algo. We can optimize this later.
- *
- * Check if other nodes on this level have the same parent.
- */
-function determineShouldOffsetX(
-  nodeToCheck: DrawNode,
-  allNodesOnTheSameLevel: DrawNode[]
-): boolean {
-  let amountOfNodesThatHaveTheSameParent = 0;
-
-  const parentToCheck = nodeToCheck.ids.parentId;
-
-  allNodesOnTheSameLevel.forEach((node) => {
-    if (node.ids.parentId === parentToCheck) {
-      amountOfNodesThatHaveTheSameParent++;
-    }
-  });
-
-  return amountOfNodesThatHaveTheSameParent > 1;
 }
