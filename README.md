@@ -88,14 +88,48 @@ __Our solution__ would be to find out how many iterations each shape need.
 
 Let's begin with the formula.
 
+# TODO @khongchai add clarification and animation to go along with each of the steps.
+
+Let's grab a point and make it rotate around an imaginary circle of radius $r$.
+
+```ts
+  draw((theta) => {
+    drawPoint({
+      x: Math.cos(theta) * r,
+      y: Math.sin(theta) *  r
+    });
+  });
+```
+
+Now let's imagine if that radius $r$ is really large.
+
+{here}
+
+And what if that huge circle is not one circle, but actually two circles of radius $r1$ and $r2$ that moves at the exact same speed. 
+
+{here}
+
+With our thinking shifted, the equation becomes 
+
+```ts
+  // ...
+  drawPoint({
+    x: (Math.cos(theta) * (r1 + r2)) 
+    y: (Math.cos(theta) * (r1 + r2)) 
+  }); 
+```
+
+TODO @khongchai continue
+
+
 Right now, we build each circle on top of one another, and each movement of the circle is affected by the product of the scalars of all circles below it. This can be described as:
 
 
-$$ p_{final} = \sum_{i=0}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{p} + r_{c}) $$
+$$ p_{final} = \sum_{i=0}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{i} + r_{i - 1}) $$
 
-Where $p_{final}$ represents the final position, either `p.x` or `p.y` of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or -1, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_p$ and $r_c$ are the radii of the parent of the current cycloid and the cycloid itself, respectively. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
+Where $p_{final}$ represents the final position, either `p.x` or `p.y` of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or -1, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{c_{i - 1}}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
 
-Yes I am sounding very pretentious. I should know, because I didn't start with the equation, I  I actually started with this:
+Yes I am sounding very pretentious. I should know, because I didn't start with the equation, I  I actually started with the code. Here's the full verison.
 
 ```ts
   for (let i = 1; i < cycloids.length; i++) {
@@ -107,7 +141,6 @@ Yes I am sounding very pretentious. I should know, because I didn't start with t
       const isChildArcClockwise =
         thisCycloid.rotationDirection === "clockwise"; // js hack, true is 1, and false is 0
 
-      // We ask the child it needs the parent to scale its theta.
       finalPoint.x +=
         (parentCycloid.radius + childCycloidRadius) *
         Math.cos(
@@ -150,6 +183,7 @@ Okay. Now we know how to sum up the final position of our points. But we still d
 Let's first think about each rotation as just 2 different pair of 2 trig functions ${cos(x)}$ and ${cos(0.5x)}$, and ${cos(2x)}$ and ${cos(3x)}$.
 
 ![cos(x) and cos(0.5x)](./example-images/2cosines.png)
+
 ![cos(2x) and cos(3x)](./example-images/2cosines_number2.png)
 
 In the case of a cosine, the second time $cos(\theta_{1})$ and $cos(\theta_{2})$ equal ${1}$ is the moment we know we need to stop the iteration.
@@ -302,6 +336,7 @@ All done!
 In short, what we did above was, for all numbers ${n}$, we multiply by ${m}$, and then divide ${m}$ by the `gcd` of those numbers.
 
 $$ \forall n \in \text{numbers}, n \gets n \times m $$
+
 $$ \text{result} = {m / gcd(numbers)} $$ 
 
 Now we have the number of points we neeed and the way for us to some up the final position of each of the point to be drawn. Now we can just loop over those points like and draw those points!
@@ -538,7 +573,7 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 Finding out how to draw the lines was surprisingly difficult, but the solution was also face-slappingly simple.
 
-Here's a spoiler of how it's done. 
+Here's a spoiler of how it's done. I'll explain later.
 
 ```ts
 export default function SvgLineFromNodeToParent({
@@ -576,6 +611,28 @@ export default function SvgLineFromNodeToParent({
 ```
 
 As you can see, there is more math, but this math is so simple I didn't see it coming, both because I learned it such a long time ago and I had never thought I'd ever need it.
+
+Let's take a step back and think about how a line from 2 circles, one on top of another can be drawn, given that the x position of the two circles are the same.
+
+```ts
+  const sharedXPos = ... 
+  const topCircle = ...
+  const bottomCircle = {
+    x: sharedXPos,
+    y: topCircle.y + someMargin
+  }
+  const linePos = {
+    start: {
+      x: sharedXPos,
+      y: 
+    },
+    end: {
+
+    }
+  }
+```
+
+Now what if one is a little bit off to the right?
 
 TODO
 
