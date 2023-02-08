@@ -2,43 +2,45 @@
 
 ## Foreword
 
-This is project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirograph generator, but then stumbled into various (exciting and frustrating) rabbit holes, each hole an entire realm worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors.
+This is project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirograph generator, but then stumbled onto various (exciting and frustrating) rabbit holes, each hole an entire universe worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors, of exploratory implementations lacking ample due dilligence 😛.
 
-There are some features that I eventually stopped working on because it's been almost 2 years of me stopping and picking up where I left of like the backend integration(sorry, you only get local storage for now), some fancy UI upgrades and smaller screens support. This project was burning me out and I needed to finish it fast.
+There are some features that I eventually stopped working on because it's been almost 2 years of me just pausing and picking up where I left of, like the backend integration (sorry, you only get local storage for now), some fancy UI upgrades and smaller screens support. This project was burning me out and I needed to finish it fast.
 
-Nontheless, there are still some cool discoveries I have made that I think are worth being documented.
+I am still undecided on why I like spirographs so much. I never grew up with them, nor have I played with a real one. It might be that it is one of not so many things that gives out ridiculously beautiful shapes with so little math. Anyway, enough with the intro, let's see what random stuff I thought worth being documented.
 
 ![Example 1](example-images/ex1.png)
 ![Example 2](example-images/ex2.png)
-![Example 7](example-images/instant2.gif)
+![Example 3](example-images/instant2.gif)
+![Example 4](example-images/ex6.gif)
 
 
 ## Your childhood's favorite spirograph toy, but beefed up.
 
 This spirograph generator contains 2 modes: 
 
-1. The __animated mode__, which draws n-nested level of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as it really isn't why this project exist. 
-2. The __instant mode__, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for Global Time Scale of around 1, the shape that is drawn will be a complete shape. The algorithm is discussed below, along with other implementation details.
+1. The __animated mode__ draws an n-nested levels of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as the allure of this next feature was too strong.
+
+2. The __instant mode__, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for a Global Time Scale of 1 (description below), the drawn shape is guarantee to be a complete closed-shape (ex. an ellipse, not a U-Shaped curvee). The algorithms are explored below, along with other implementation details.
 
 # Parameters
 
 ## Local (affects the selected cycloid only)
 
-`rodLengthScale`: 1 means the rod is the same length as the cycloid it belongs to. This rod extends the physical boundary in that in a real spirograph, the position of the rod cannot be farther from the origin than the radius of the circle.
+`rodLengthScale`: 1 means the rod is the same length as the cycloid it belongs to. This rod extends the physical boundary in that you cannot put your pencil outside of a circle, only inide of it; more precisely, the position of drawn point cannot be farther from the origin than the radius of the circle.
 
 `cycloidSpeedScale`: the ratio of the surface covered as the child cycloid moves around the parent. The value of 1 means there are no sliding (physically accurate).
 
 `moveOutsideOfParent`: whether the curent cyclod is positioned within or outside of its parent cycloid. 
 
-`radius`: The radius of the current cycloid.
+`radius`: the radius of the current cycloid.
 
-`rotationDirection`: this is not the self-rotation direction, but the direction in which the current cycloid moves around its parent (going left or going right).
+`rotationDirection`: orbit direction, left or right.
 
 `selectedCycloid`: the cycloid whose parameters you would like to change.
 
 ## Global (affects every cycloids)
 
-`globalTimeStep`: controls the iterations needed until an image is fully drawn. The higher the value, the lower the iterations...and resolution. However, set the value too low, and the image will take too long to be drawn in the animated mode, and use more power in the instant mode (more iterations).
+`globalTimeStep`: controls the iterations needed until an image is fully drawn. The higher the value, the lower the iterations...and resolution. However, set the value too low, and the image will take too long to be drawn in the animated mode, and use more power in the instant mode (more iterations, so, also longer, but not as long as the animated mode).
 
 `clearTracedPathOnParamsChanged`: whether or not to clear the already-traced paths in animated mode when the paramters are changed.
 
@@ -56,15 +58,15 @@ This spirograph generator contains 2 modes:
 
 ![Example 5](example-images/animated.gif)
 
-The simplest of modes, this mode adds up the position of the current point every frame based on the current parameters of each cycloids, adding one on top of another. Nothing much to mention, I didn't even bother optimizing this and move it to another worker thread. Exciting things happen in the other mode, so let's go there instead.
+The simplest of modes, this mode adds up the position of the current point every frame based on the current parameters of each cycloids, adding one on top of another. Nothing much to mention, I didn't even bother optimizing this and move it to another worker thread. The math behind this is simple, and will be explained in the next part. Exciting things happen there, not here!
 
 ## Instant
 
 ![Example 6](example-images/instant1.gif)
 
-This is where most of the work goes. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble. 
+This is where most of the work went. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble. 
 
-__A brief overview of how it's done__, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available (hopefully not too many points until the heap oveflows :p) in memory, we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
+__A brief overview of how it's done__, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available in memory -- hopefully not too many points until the heap oveflows :p -- we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
 
 ### The Algorithm
 
@@ -78,58 +80,218 @@ if (currentPoint.xy === beginningPoint.xy) {
 }
 ```
 
-every iteration, what's going to happen is that for shapes other than the simple geometric 2d shapes, this will not draw the full shape. Given complex enough shapes, lines will cross and the check will fail.
+every iteration, what's going to happen is that for shapes other than simple geometric 2d shapes, this will not draw the full shape. Given complex parameters, the traced line will cross itself and the check will fail.
 
-Okay, let's say we now just keep drawing for say, a million iterations, that'll for sure get the complete shape, right? Right, but those over-draw will make the lines too thick that we can't really make out the finer details of the shape.
-
-Worse, every shape will just take super long.
+Okay, let's say we now just keep drawing for a million iterations, that'll for sure get the complete shape, right? Right, but we do not want to over draw a shape, because our goal here is to draw complex and beautiful shapes as fast as possible.
 
 __Our solution__ would be to find out how many iterations each shape need.
 
 Let's begin with the formula.
 
-# TODO @khongchai add clarification and animation to go along with each of the steps.
+This is the set up code, anything I show further is implied that it's done within the second script tag. Copy and paste the following snippet in an html file.
 
-Let's grab a point and make it rotate around an imaginary circle of radius $r$.
+Nevermind what they do, we'll only be using two functions, `begin`, and `traceCircle`.
 
-```ts
-  draw((theta) => {
-    drawPoint({
-      x: Math.cos(theta) * r,
-      y: Math.sin(theta) *  r
-    });
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+      html,
+      body {
+          border: 0;
+          padding: 0;
+          margin: 0;
+      }
+
+      canvas {
+          display: block;
+      }
+  </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+<script>
+    const canvas = document.getElementById("canvas");
+    canvas.width = window.innerWidth * devicePixelRatio;
+    canvas.height = window.innerHeight * devicePixelRatio;
+    const ctx = canvas.getContext("2d");
+    const screenCenter = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+    }
+
+    function begin(callback) {
+        requestAnimationFrame((theta) => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            callback(theta * 0.001);
+            begin(callback);
+        });
+    }
+    
+    function traceCircle({ x, y, r }) {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        // Use this to make an entire circle dark.
+        // ctx.fill();
+        ctx.stroke();
+    }
+</script>
+<script>
+   // Stuff below goes here.
+</script>
+</html>
+```
+
+## We'll begin building up the equation bit by bit.
+
+---
+Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle of radius $r_{0}$. $r_{1}$ is not yet used in the equation, but we need it to draw the orbiting circle.
+
+$$ p_{x} = r_{0}cos(\theta) $$
+
+$$ p_{y} = r_{0}sin(\theta) $$
+
+![Circle rotating around another](example-images/circle-rotating-around-another.gif) {gif here}
+
+```js
+  // Create 2 radii, can be of any size, just make the first one 
+  // larger than the second
+  const r0 = 600;
+  const r1 = 50;
+
+  // The set up code provides a simple interface that passes a delta time as the parameter, we'll use it to draw a rotating circle at the center of the screen.
+  begin((theta) => {
+     traceCircle({ x: screenCenter.x + Math.cos(theta) * (r0 + r1), y: screenCenter.y + Math.sin(theta) * (r0 + r1), r: r1 })
+  });
+```
+---
+
+If we draw the base circle, we'll see that the orbiting circle is drawn on top of the edge of the base circle, we have to move it out by its own radius $r_{1}$.
+
+$$ p_{x} = cos(\theta)(r_{0} + r_{1})  $$
+
+$$ p_{y} = sin(\theta)(r_{0} + r_{1})  $$
+
+![Circle rotating around another traced](example-images/circle-moveout.png)
+
+```js
+  const r0 = 600;
+  const r1 = 50;
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+
+  begin((theta) => {
+      // draws the base circle.
+      traceCircle({
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y,
+          r: r0
+      });
+      // now referencing baseCirclePosition
+      traceCircle({ x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1), y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1), r: r1 })
   });
 ```
 
-Now let's imagine if that radius $r$ is really large.
+---
 
-{here}
+Having two is nice, but let's try having 3 levels. I'll reduce the radius of the base circle a bit.
 
-And what if that huge circle is not one circle, but actually two circles of radius $r1$ and $r2$ that moves at the exact same speed. 
+While drawing the second circle, we can imagine a long rod extending from the mid of the base circle to the center of the second circle. With this in mind, we can say that the second circle's position is equal to the base circle's position  (which is just the screen center, or 0) plus the equation above.
 
-{here}
+This means that the third circle's position of radius $r_{2}$ must also be the position of the second circle plus the same formula, but substituting the radii.
 
-With our thinking shifted, the equation becomes 
+$$ p_{x} = \text{secondCirclePosition.x} + cos(\theta)(r_{1} + r_{2})  $$
 
-```ts
-  // ...
-  drawPoint({
-    x: (Math.cos(theta) * (r1 + r2)) 
-    y: (Math.cos(theta) * (r1 + r2)) 
-  }); 
+$$ p_{y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
+
+```js
+  const r0 = 300;
+  const r1 = 50;
+  const r2 = 20;
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+
+  begin((theta) => {
+      // trace inner
+      traceCircle({
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y,
+          r: r0
+      });
+      // trace mid
+      const midCirclePosition = {
+          x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1),
+          y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1),
+      };
+      // trace outer
+      traceCircle({ x: midCirclePosition.x, y: midCirclePosition.y, r: r1 });
+      const outerCirclePos = {
+          x: midCirclePosition.x + Math.cos(theta) * (r1 + r2),
+          y: midCirclePosition.y + Math.sin(theta) * (r1 + r2),
+      };
+      traceCircle({ x: outerCirclePos.x, y: outerCirclePos.y, r: r2 });
+  });
 ```
 
-TODO @khongchai continue
+We now see a recurring pattern and can generalize a bit with a for loop. An example with only p.x
+
+$$ p_{x} = cos(\theta)(r_{0} + r_{1}) + cos(\theta)(r_{1} + r_{2}) + cos(\theta)(r_{r2} + r_{3}) \ldots cos(\theta)(r_{i-1} + r_{i}) $$
+
+$$ p_{x} = \sum_{i=1}^n \cos(\theta)(r_{i-1} + r_{i}) $$
+
+TODO @khongchai example for this.
+
+```js
+  const radii = [300, 50, 20];
+  const r0 = 300;
+  const r1 = 50;
+  const r2 = 20;
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+
+  begin((theta) => {
+      let sum = {
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y
+      };
+
+      // trace the base outside of the loop.
+      traceCircle({
+          x: sum.x,
+          y: sum.y,
+          r: r0,
+      });
+      for (let i = 1; i < radii.length; i++) {
+          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+          traceCircle({
+              x: sum.x,
+              y: sum.y,
+              r: radii[i]
+          });
+      }
+  });
+
+```
+
+---
+
+Now we can think of the center of the outermost circle as the center of our rod that we will be drawing from.
+
+We can make a rod that moves in and out of its bounding circle by making the outermost circle invisible, scaling its radius in and out(into the negatives), draw a straight line to it and then trace out the path its center point draw.
+
+
+TODO @khong continue
+
+---
 
 
 Right now, we build each circle on top of one another, and each movement of the circle is affected by the product of the scalars of all circles below it. This can be described as:
 
 
-$$ p_{final} = \sum_{i=0}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{i} + r_{i - 1}) $$
+$$ p_{x} = \sum_{i=1}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{i-1} + r_{i}) $$
+$$ p_{y} = \sum_{i=1}^{n} \sin(\theta \lambda - \frac{\pi}{2}k)(r_{i-1} + r_{i}) $$
 
-Where $p_{final}$ represents the final position, either `p.x` or `p.y` of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or -1, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{c_{i - 1}}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
-
-Yes I am sounding very pretentious. I should know, because I didn't start with the equation, I  I actually started with the code. Here's the full verison.
+Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{c_{i - 1}}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
 
 ```ts
   for (let i = 1; i < cycloids.length; i++) {
@@ -329,6 +491,7 @@ $$ {x = gcd(500, 250, 125)} $$
 $$ {x = 125} $$
 
 Then 
+
 $$ \text{result} = {m/x} $$
 
 All done!
