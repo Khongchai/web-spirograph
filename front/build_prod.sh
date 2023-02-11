@@ -10,7 +10,7 @@ cd src/utils/PerformanceModules/wasm/calc_lines/calc_lines
 wasm-pack build --target web
 
 # rust wasm module 2
-cd ../calc_points
+cd ../../calc_points
 wasm-pack build --target web
 
 # build react prod
