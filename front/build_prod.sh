@@ -6,7 +6,7 @@ source $HOME/.cargo/env
 curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 # rust wasm module 1
-cd src/utils/PerformanceModules/wasm/calc_lines
+cd src/utils/PerformanceModules/wasm/calc_lines/calc_lines
 wasm-pack build --target web
 
 # rust wasm module 2
