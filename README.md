@@ -2,7 +2,7 @@
 
 ## Foreword
 
-This is project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirograph generator, but then stumbled onto various (exciting and frustrating) rabbit holes, each hole an entire universe worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors, of exploratory implementations lacking ample due dilligence 😛.
+This project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirograph generator, but then stumbled onto various (exciting and frustrating) rabbit holes, each hole an entire universe worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors, of exploratory implementations lacking ample due dilligence 😛.
 
 There are some features that I eventually stopped working on because it's been almost 2 years of me just pausing and picking up where I left of, like the backend integration (sorry, you only get local storage for now), some fancy UI upgrades and smaller screens support. This project was burning me out and I needed to finish it fast.
 
@@ -86,11 +86,13 @@ Okay, let's say we now just keep drawing for a million iterations, that'll for s
 
 __Our solution__ would be to find out how many iterations each shape need.
 
-Let's begin with the formula.
+Let's begin with the formula. I'll be showing both the implementation both in code and math. 
+
+__The math part is what I used for the instant mode and the code for the animated mode.__
 
 This is the set up code, anything I show further is implied that it's done within the second script tag. Copy and paste the following snippet in an html file.
 
-Nevermind what they do, we'll only be using two functions, `begin`, and `traceCircle`.
+Nevermind what they do, we'll only be using two functions, `begin`, and `drawCircle`.
 
 ```html
 <!DOCTYPE html>
@@ -98,13 +100,13 @@ Nevermind what they do, we'll only be using two functions, `begin`, and `traceCi
 <head>
   <style>
       html,
-      body {
+      body,
+      canvas {
           border: 0;
           padding: 0;
           margin: 0;
-      }
-
-      canvas {
+          width: 100%;
+          height: 100%;
           display: block;
       }
   </style>
@@ -122,20 +124,24 @@ Nevermind what they do, we'll only be using two functions, `begin`, and `traceCi
         y: canvas.height / 2,
     }
 
-    function begin(callback) {
+    function begin(callback, clearCanvas = true) {
         requestAnimationFrame((theta) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            callback(theta * 0.001);
-            begin(callback);
+            if (clearCanvas) {
+              callback(theta * 0.001);
+            }
+            begin(callback, clearCanvas);
         });
     }
     
-    function traceCircle({ x, y, r }) {
+    function drawCircle({ x, y, r }, fill = false) {
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
-        // Use this to make an entire circle dark.
-        // ctx.fill();
-        ctx.stroke();
+        if (fill) {
+          ctx.fill();
+        } else {
+          ctx.stroke();
+        }
     }
 </script>
 <script>
@@ -144,16 +150,17 @@ Nevermind what they do, we'll only be using two functions, `begin`, and `traceCi
 </html>
 ```
 
-## We'll begin building up the equation bit by bit.
+## Deriving the Formula
 
 ---
-Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle of radius $r_{0}$. $r_{1}$ is not yet used in the equation, but we need it to draw the orbiting circle.
+Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle of radius $r_{0}$. 
 
-$$ p_{x} = r_{0}cos(\theta) $$
+$r_{1}$ is not yet used in the equation, but we need it to draw the orbiting circle.
 
-$$ p_{y} = r_{0}sin(\theta) $$
+$$ r_{0}cos(\theta) $$
 
-![Circle rotating around another](example-images/circle-rotating-around-another.gif) {gif here}
+$$ r_{0}sin(\theta) $$
+
 
 ```js
   // Create 2 radii, can be of any size, just make the first one 
@@ -163,18 +170,25 @@ $$ p_{y} = r_{0}sin(\theta) $$
 
   // The set up code provides a simple interface that passes a delta time as the parameter, we'll use it to draw a rotating circle at the center of the screen.
   begin((theta) => {
-     traceCircle({ x: screenCenter.x + Math.cos(theta) * (r0 + r1), y: screenCenter.y + Math.sin(theta) * (r0 + r1), r: r1 })
+     drawCircle({ x: screenCenter.x + Math.cos(theta) * (r0 + r1), y: screenCenter.y + Math.sin(theta) * (r0 + r1), r: r1 })
   });
 ```
+### Result
+
+![Circle rotating around another](example-images/circircle-rotating-around-another.gif)
+
 ---
 
 If we draw the base circle, we'll see that the orbiting circle is drawn on top of the edge of the base circle, we have to move it out by its own radius $r_{1}$.
 
-$$ p_{x} = cos(\theta)(r_{0} + r_{1})  $$
-
-$$ p_{y} = sin(\theta)(r_{0} + r_{1})  $$
-
 ![Circle rotating around another traced](example-images/circle-moveout.png)
+
+Then we'll end up with the following equation.
+
+$$ cos(\theta)(r_{0} + r_{1})  $$
+
+$$ sin(\theta)(r_{0} + r_{1})  $$
+
 
 ```js
   const r0 = 600;
@@ -183,15 +197,20 @@ $$ p_{y} = sin(\theta)(r_{0} + r_{1})  $$
 
   begin((theta) => {
       // draws the base circle.
-      traceCircle({
+      drawCircle({
           x: baseCirclePosition.x,
           y: baseCirclePosition.y,
           r: r0
       });
-      // now referencing baseCirclePosition
-      traceCircle({ x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1), y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1), r: r1 })
+      // referencing baseCirclePosition instead of the center of the screen
+      // Math.cos(theta) * r0 is the base circle
+      // Math.cos(theta) * (r0 + r1) is the base circle plus the radius of the rotating circle.
+      drawCircle({ x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1), y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1), r: r1 })
   });
 ```
+
+### Result
+![circle-orbiting-around-another-inner-traced](example-images/circle-orbiting-around-another-inner-traced.gif)
 
 ---
 
@@ -201,9 +220,9 @@ While drawing the second circle, we can imagine a long rod extending from the mi
 
 This means that the third circle's position of radius $r_{2}$ must also be the position of the second circle plus the same formula, but substituting the radii.
 
-$$ p_{x} = \text{secondCirclePosition.x} + cos(\theta)(r_{1} + r_{2})  $$
+$$ \text{thirdCirclePosition.x} = \text{secondCirclePosition.x} + cos(\theta)(r_{1} + r_{2})  $$
 
-$$ p_{y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
+$$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
 
 ```js
   const r0 = 300;
@@ -213,7 +232,7 @@ $$ p_{y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
 
   begin((theta) => {
       // trace inner
-      traceCircle({
+      drawCircle({
           x: baseCirclePosition.x,
           y: baseCirclePosition.y,
           r: r0
@@ -224,28 +243,29 @@ $$ p_{y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
           y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1),
       };
       // trace outer
-      traceCircle({ x: midCirclePosition.x, y: midCirclePosition.y, r: r1 });
+      drawCircle({ x: midCirclePosition.x, y: midCirclePosition.y, r: r1 });
       const outerCirclePos = {
           x: midCirclePosition.x + Math.cos(theta) * (r1 + r2),
           y: midCirclePosition.y + Math.sin(theta) * (r1 + r2),
       };
-      traceCircle({ x: outerCirclePos.x, y: outerCirclePos.y, r: r2 });
+      drawCircle({ x: outerCirclePos.x, y: outerCirclePos.y, r: r2 });
   });
 ```
 
+### Result
+
+![two-circles-rotate-around-1-circle.gif](example-images/two-circles-rotate-around-1-circle.gif)
+
+---
+
 We now see a recurring pattern and can generalize a bit with a for loop. An example with only p.x
 
-$$ p_{x} = cos(\theta)(r_{0} + r_{1}) + cos(\theta)(r_{1} + r_{2}) + cos(\theta)(r_{r2} + r_{3}) \ldots cos(\theta)(r_{i-1} + r_{i}) $$
+$$ cos(\theta)(r_{0} + r_{1}) + cos(\theta)(r_{1} + r_{2}) + cos(\theta)(r_{r2} + r_{3}) \cdots cos(\theta)(r_{i-1} + r_{i}) $$
 
-$$ p_{x} = \sum_{i=1}^n \cos(\theta)(r_{i-1} + r_{i}) $$
-
-TODO @khongchai example for this.
+$$ \sum_{i=1}^n \cos(\theta)(r_{i-1} + r_{i}) $$
 
 ```js
   const radii = [300, 50, 20];
-  const r0 = 300;
-  const r1 = 50;
-  const r2 = 20;
   const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
   begin((theta) => {
@@ -255,7 +275,7 @@ TODO @khongchai example for this.
       };
 
       // trace the base outside of the loop.
-      traceCircle({
+      drawCircle({
           x: sum.x,
           y: sum.y,
           r: r0,
@@ -263,83 +283,183 @@ TODO @khongchai example for this.
       for (let i = 1; i < radii.length; i++) {
           sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
           sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
-          traceCircle({
+          drawCircle({
               x: sum.x,
               y: sum.y,
               r: radii[i]
           });
       }
   });
-
 ```
+
+The result is the same as above.
 
 ---
 
-Now we can think of the center of the outermost circle as the center of our rod that we will be drawing from.
+With our new generalization, adding a new outer level is as simple as adding a new number to the `radii` array.
 
-We can make a rod that moves in and out of its bounding circle by making the outermost circle invisible, scaling its radius in and out(into the negatives), draw a straight line to it and then trace out the path its center point draw.
+```js
+  // 5 levels
+  const radii = [300, 150, 75, 50, 30];
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
+  begin((theta) => {
+      let sum = {
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y
+      };
 
-TODO @khong continue
+      drawCircle({
+          x: sum.x,
+          y: sum.y,
+          r: radii[0],
+      });
+      for (let i = 1; i < radii.length; i++) {
+          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+          drawCircle({
+              x: sum.x,
+              y: sum.y,
+              r: radii[i]
+          });
+      }
+  });
+```
+
+![5-levels](example-images/5-levels.gif)
 
 ---
 
+If we trace out the path of the outermost circle, we'll now have...just a bigger circle, which, honestly, is not exciting.
 
-Right now, we build each circle on top of one another, and each movement of the circle is affected by the product of the scalars of all circles below it. This can be described as:
+With HTML5 Canvas, we can trace the path by having another canvas that we send the draw data to, but that's a bit too much for this demonstration, so we'll just trace only the outermost circle and stop clearing the canvas.
 
+```js
+  const radii = [300, 150, 75, 50, 30];
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-$$ p_{x} = \sum_{i=1}^{n} \cos(\theta \lambda - \frac{\pi}{2}k)(r_{i-1} + r_{i}) $$
-$$ p_{y} = \sum_{i=1}^{n} \sin(\theta \lambda - \frac{\pi}{2}k)(r_{i-1} + r_{i}) $$
+  begin((theta) => {
+      let sum = {
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y
+      };
 
-Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{c_{i - 1}}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda$ is a scalar that determines the speed at which the cycloid moves around its parent.
-
-```ts
-  for (let i = 1; i < cycloids.length; i++) {
-      const parentCycloid = cycloids[i - 1];
-      const thisCycloid = cycloids[i];
-      const childCycloidRadius = thisCycloid.isOutsideOfParent
-        ? thisCycloid.radius
-        : -thisCycloid.radius;
-      const isChildArcClockwise =
-        thisCycloid.rotationDirection === "clockwise"; // js hack, true is 1, and false is 0
-
-      finalPoint.x +=
-        (parentCycloid.radius + childCycloidRadius) *
-        Math.cos(
-          theta * thisCycloid.thetaScale - Math.PI * 0.5 * isChildArcClockwise 
-        );
-      finalPoint.y +=
-        (parentCycloid.radius + childCycloidRadius) *
-        Math.sin(
-          theta * thisCycloid.thetaScale + Math.PI * 0.5 * isChildArcClockwise
-        );
-    }
+      for (let i = 1; i < radii.length; i++) {
+          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+          if (i === radii.length - 1) {
+            drawCircle({
+                x: sum.x,
+                y: sum.y,
+                r: radii[i]
+            });
+          }
+      }
+  // pass false to stop clearing the canvas
+  }, false);
 ```
 
-then I turned it into Rust, with a few optimizations (that are totally not necesary, but did it anyway because it was actually kind of fun):
+### Result
 
-```rs
-pub fn compute_epitrochoid(
-    data: *const [f64; 3],
-    data_len: usize,
-    theta: f64,
-    rod_length: f64,
-    new_point: &mut [f64; 2],
-) {
-    *new_point = [0.0, 0.0];
-    // Don't ask why I used unsafe, I forgot :| Something something with not doing borrow checking.
-    unsafe {
-        for i in 0..data_len {
-            let d = *data.add(i);
-            new_point[0] += d[0] * (theta * d[2] - d[1]).cos();
-            new_point[1] += d[0] * (theta * d[2] + d[1]).sin();
+![outer-only-traced](example-images/outer-circle-only-traced.png)
+
+---
+
+Now for the really exciting part, because the rotating of every circle is now synced. They all share the same theta value. If we multiple different scalars $\lambda_{i}$ to each of the level, we can make them rotate around their parents at different speed. 
+
+$$ \sum_{i=1}^n \cos(\theta\lambda_{i})(r_{i-1} + r_{i}) $$
+
+```js
+  const radii = [300, 150, 75, 50, 30];
+   const lambdas = [1, 2.2, 3.5, 2.234, 4];
+  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+
+  begin((theta) => {
+      let sum = {
+          x: baseCirclePosition.x,
+          y: baseCirclePosition.y
+      };
+
+      for (let i = 1; i < radii.length; i++) {
+          sum.x += Math.cos(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
+          sum.y += Math.sin(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
+          if (i === radii.length - 1) {
+            drawCircle({
+                x: sum.x,
+                y: sum.y,
+                // Make the radii a bit smaller
+                r: 10
+            // pass true to fill instead of stroke
+            }, true);
+          }
+      }
+  // pass false to stop clearing the canvas
+  }, false);
+```
+
+### Result
+
+![circles-different-theta](example-images/circles-different-theta.gif)
+
+![outer-circle-filled](example-images/outer-circle-filled.gif)
+
+---
+
+Now our equation is almost complete! All that's left is to just make sure that our circles can rotate in both directions. Making something rotate in the other direction is simply switching `sin` for `cos` and vice versa for both `x` and `y`. 
+
+But, but, doing it with if and else would be fine, but the difference between a `sin` and a `cos` is only
+$\frac{\pi}{2}$. 
+
+![sin-and-cos-difference](example-images/sin-and-cos-difference.png)
+
+This means that we can just assign a constant $k$ where $ k \in \{ 0, 1\} $
+
+We multiply $\frac{\pi}{2}$ by $k$ and set $k$ to zero or one when we want it to go the opposite direction.
+
+In JavaScript, `true` is 1 and `false` is 0, so we can just have a boolean paramter that determines whether to rotate counterclockwise or clockwise.
+
+```js
+    const radii = [300, 150, 75, 50, 30];
+    const lambdas = [1, 2.2, 3.5, 2.234, 4];
+    const isClockwise = true;
+    const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+
+    begin((theta) => {
+        let sum = {
+            x: baseCirclePosition.x,
+            y: baseCirclePosition.y
+        };
+
+        for (let i = 1; i < radii.length; i++) {
+            sum.x += Math.cos(theta * lambdas[i] - (Math.PI / 2 * isClockwise)) * (radii[i - 1] + radii[i]);
+            sum.y += Math.sin(theta * lambdas[i] - (Math.PI / 2 * isClockwise)) * (radii[i - 1] + radii[i]);
+            if (i === radii.length - 1) {
+                drawCircle({
+                    x: sum.x,
+                    y: sum.y,
+                    r: 10
+                }, true);
+            }
         }
-
-        new_point[0] += rod_length * theta.cos();
-        new_point[1] += rod_length * theta.sin();
-    }
-}
+    }, false);
 ```
+
+Going clockwise or counterclockwise gives out different shapes. Give it a try!
+
+---
+
+With all of our building blocks complete, the equation is now
+
+$$ p_{x} = \sum_{i=1}^{n} \cos(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
+$$ p_{y} = \sum_{i=1}^{n} \sin(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
+
+Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{i - 1}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda_{i}$ is a scalar that determines the speed at which the current cycloid moves around its parent.
+
+And that, essentially, was all there is to formula. It's very simple to derive, and the code is not too complicated (I did the final code in Rust to optimize some stuff, but core idea is still the same).
+
+---
+
+## Calculating the Iterations
 
 Okay. Now we know how to sum up the final position of our points. But we still don't know how many iterations we need. 
 Let's first think about each rotation as just 2 different pair of 2 trig functions ${cos(x)}$ and ${cos(0.5x)}$, and ${cos(2x)}$ and ${cos(3x)}$.
@@ -531,7 +651,7 @@ function draw(p) {
 ```
 it will just take forever. We want that smoothness. And this is where WebGL comes in.
 
-## WebGL
+# WebGL
 
 I wrote a small custom-made webgl renderer because other options are too generic and would definitely bloat the project. This renderer does nothing but render a bunch of lines with and API that is not too complicated. My rendering use case is very simple, I only need 3 methods:
 
@@ -576,9 +696,33 @@ render(points: Point[]) {
 
 Now we have reduced the rendering time from seconds to a tenth or a hundredth of milliseconds for most render. That is more than a thousand times faster!
 
-### __But we can do a bit better.__
+A cool trick I found while building the renderer is that using a debouncer with a delay of 0 will make your animation run smoother as it "silently" discards render calls that comes in too fast. 
 
-## WASM
+```ts
+  async render(): Promise<OffscreenCanvas> {
+    return new Promise((resolve, _) => {
+      // Using deboucing to help discard some of the incoming render calls if they are coming too fast.
+      this.debouncer.debounce(async () => {
+        resolve(await this._render());
+      }, 0);
+    });
+  }
+
+  //debouncer.ts
+ class Debouncer {
+  private _timeoutHandle: any;
+
+  debounce(callback: VoidFunction, milliseconds: number) {
+    clearTimeout(this._timeoutHandle);
+    this._timeoutHandle = setTimeout(callback, milliseconds);
+  }
+}
+
+```
+
+I might be wrong with my assumption. Nontheless, it's actually a neat little trick deserving a place in my head.
+
+# WASM
 
 Why Rust-WASM and not just JavaScript?
 
@@ -803,5 +947,13 @@ TODO
 
 ### Wrapping up
 
-So in this rabbit hole journey, I learned Rust TO 
+So this, as we have seen, is more an exploratory endeavor than anything else. 
+
+I don't think I will be using a lot of what I learned here anywhere. I have to admit that the project itself is so (pointlessly) niche at times.
+
+Nontheless, this journey down rabbit holes have exposed me to several cool ideas and discoveries I would not have otherwise, if ever, stumbled upon.
+
+All the math and the implementation details I talked about could have been left out of this monolithic blog and you will still get the idea, but I like diving deep and deep-diving talks/blogs really tick all my learning boxes, so I figured I'd make one as well.  
+
+I hope this journey has been as enlightening for you as it has been for me.  
 
