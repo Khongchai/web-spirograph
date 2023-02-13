@@ -9,7 +9,6 @@ import { DrawerData } from "./models/DrawerData";
 import WebGLMultiLinesRenderer from "./WebGLRenderer";
 import { Debouncer } from "../../utils/Debouncer";
 import { BASE_POINTS_FOR_A_CIRCLE, BASE_STEP } from "../../constants/cycloids";
-import { fractionalLcm } from "../../utils/math";
 
 // We don't care about the return value of the init methods.
 const wasmModuleInit = Promise.all([calcPointsInit(), calcLinesInit()]);
