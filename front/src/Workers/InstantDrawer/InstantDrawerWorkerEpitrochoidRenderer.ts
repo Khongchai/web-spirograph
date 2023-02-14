@@ -33,8 +33,10 @@ export class InstantDrawerEpitrochoidRenderer extends WebGLMultiLinesRenderer {
   override async render(): Promise<OffscreenCanvas> {
     return new Promise((resolve, _) => {
       // Using deboucing to help discard some of the incoming render calls if they are coming too fast.
-      this.debouncer.debounce(async () => {
-        resolve(await this._render());
+      this.debouncer.debounce(() => {
+        requestAnimationFrame(async () => {
+          resolve(await this._render());
+        });
       }, 0);
     });
   }
