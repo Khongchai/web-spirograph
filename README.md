@@ -95,6 +95,7 @@ This is the set up code, anything I show further is implied that it's done withi
 Nevermind what they do, we'll only be using two functions, `begin`, and `drawCircle`.
 
 ```html
+<!-- Just copy and paste this boilerplate code -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -696,31 +697,63 @@ render(points: Point[]) {
 
 Now we have reduced the rendering time from seconds to a tenth or a hundredth of milliseconds for most render. That is more than a thousand times faster!
 
-A cool trick I found while building the renderer is that using a debouncer with a delay of 0 will make your animation run smoother as it "silently" discards render calls that comes in too fast. 
+## Using Debouncing With an Interval of 0
 
+A cool trick I found while building the renderer is that using a debouncer with a delay of 0 will make your animation run smoother as it "silently" discards render calls that comes in too fast. In other words, a group of consecutive mousemove events are aggregated and trigger the render call just once.
+
+I know deboucning is not new, but I have never thought about how debouncing could be useful when its interval is 0. Literally, the core concept is to postpone (aggregate, whatever) events until after a certain interval. While 0 might sound like we simply never postpone...we actually kind of do. Let's look at some code.
+
+This is the rendering code in a nutshell.
 ```ts
-  async render(): Promise<OffscreenCanvas> {
-    return new Promise((resolve, _) => {
-      // Using deboucing to help discard some of the incoming render calls if they are coming too fast.
-      this.debouncer.debounce(async () => {
-        resolve(await this._render());
-      }, 0);
-    });
+  // In the renderer class.
+
+  timeoutHandle = null;
+
+  /**
+   * If this is our task queue
+   * 
+   * Queue: [mousemove, mousemove, mousemove, mousemove, mousemove]
+   * 
+   * deboucning it with an interval of 0, the queue becomes
+   * 
+   * Queue: [render] (the last one, the one after cancels out the one before)
+   * 
+   * but when we don't debounce, we get.
+   * 
+   * Queue: [render, render, render, render, render] 
+   * 
+  */
+  render() {
+    // Clearing the timeout cancels the previously-registered task.
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(super.render, 0);
   }
-
-  //debouncer.ts
- class Debouncer {
-  private _timeoutHandle: any;
-
-  debounce(callback: VoidFunction, milliseconds: number) {
-    clearTimeout(this._timeoutHandle);
-    this._timeoutHandle = setTimeout(callback, milliseconds);
-  }
-}
-
 ```
 
-I might be wrong with my assumption. Nontheless, it's actually a neat little trick deserving a place in my head.
+When the user moves the cursor too fast, the mousemove events will come in droves. We are rendering every frame for every mouse event, so if we do not aggregate our events, those `x` number of mouse events, where `x` is some relatively beefy numbers like 10, will trigger exactly 10 rendering calls -- really expensive.  If we aggregate, those 10 events become just 1 render call.
+
+This helps a lot with complex shapes as it helps a lot to keep the interaction, like zooming and panning smooth when the `globalTimeStep` is low.
+Instead of rendering every points from `e.x = 10` to `e.x = 20`, the system might render only `e.x = 10` and once again at `e.x = 20`. Let's say each render takes exactly 1 second, the first case means the total render time is 10 seconds, while the second, just 2 seconds. Sure, we missed frames, but the system will fell A LOT more responsive, which is actually (subjectively) more important.
+
+Now, if you're unlucky, some of the events that slipped through `setTimeout` will not be displayed on screen. They will be "rendered", but not "displayed". We need to sync the frame rate of the sreen to the render events. We can do this by buffering each render with `requestAnimationFrame` like so:
+
+```js
+  render() {
+    clearTimeout(this.timeoutHandle);
+    this.timeoutHandle = setTimeout(() => requestAnimationFrame(super.render), 0);
+  }
+```
+ 
+In most cases, this won't happen. We have already debounced a lot of consecutive events, so the ones that slipped through won't really be that big of a deal, but just in case...and it's a good practice anyway to keep your rendering and the refresh rate in sync.
+
+### With Debouncing
+
+![Debounced Render](example-images/debounced_render.png)
+
+### Without Debouncing
+_Notice how those delays cause our events to accumulate, which cause event more delays._
+
+![No Debounce Render](example-images/no_debounce_render.png)
 
 # WASM
 
