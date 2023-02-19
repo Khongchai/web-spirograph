@@ -915,66 +915,6 @@ Finding out how to draw the lines was surprisingly difficult, but the solution w
 
 Here's a spoiler of how it's done. I'll explain later.
 
-```ts
-export default function SvgLineFromNodeToParent({
-  node,
-  parentNode,
-}: {
-  node: DrawNode;
-  parentNode: DrawNode;
-}) {
-  const { x: x1, y: y1 } = node.pos;
-  const r1 = node.radius;
-
-  const { x: x2, y: y2 } = parentNode.pos;
-  const r2 = parentNode.radius;
-
-  const xOffsetScale = 5;
-  const xOffset = (x2 - x1) / xOffsetScale;
-
-  const finalX = Math.min(Math.max(x2 - xOffset, x2 - r2), x2 + r2);
-  const k = Math.max(
-    0,
-    Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
-  );
-
-  const finalY = Math.sqrt(k) + y2;
-
-  return (
-    <path
-      d={`M${x1} ${y1 - r1} L${finalX} ${finalY}`}
-      stroke="rgba(191, 134, 252, 99)"
-      strokeWidth={1}
-    />
-  );
-}
-```
-
-As you can see, there is more math, but this math is so simple I didn't see it coming, both because I learned it such a long time ago and I had never thought I'd ever need it.
-
-Let's take a step back and think about how a line from 2 circles, one on top of another can be drawn, given that the x position of the two circles are the same.
-
-```ts
-  const sharedXPos = ... 
-  const topCircle = ...
-  const bottomCircle = {
-    x: sharedXPos,
-    y: topCircle.y + someMargin
-  }
-  const linePos = {
-    start: {
-      x: sharedXPos,
-      y: 
-    },
-    end: {
-
-    }
-  }
-```
-
-Now what if one is a little bit off to the right?
-
-TODO
 
 ## Error-Handling
 
