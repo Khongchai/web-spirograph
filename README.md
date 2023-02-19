@@ -13,14 +13,13 @@ I am still undecided on why I like spirographs so much. I never grew up with the
 ![Example 3](example-images/instant2.gif)
 ![Example 4](example-images/ex6.gif)
 
-
 ## Your childhood's favorite spirograph toy, but beefed up.
 
-This spirograph generator contains 2 modes: 
+This spirograph generator contains 2 modes:
 
-1. The __animated mode__ draws an n-nested levels of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as the allure of this next feature was too strong.
+1. The **animated mode** draws an n-nested levels of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as the allure of this next feature was too strong.
 
-2. The __instant mode__, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for a Global Time Scale of 1 (description below), the drawn shape is guarantee to be a complete closed-shape (ex. an ellipse, not a U-Shaped curvee). The algorithms are explored below, along with other implementation details.
+2. The **instant mode**, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for a Global Time Scale of 1 (description below), the drawn shape is guarantee to be a complete closed-shape (ex. an ellipse, not a U-Shaped curvee). The algorithms are explored below, along with other implementation details.
 
 # Parameters
 
@@ -30,7 +29,7 @@ This spirograph generator contains 2 modes:
 
 `cycloidSpeedScale`: the ratio of the surface covered as the child cycloid moves around the parent. The value of 1 means there are no sliding (physically accurate).
 
-`moveOutsideOfParent`: whether the curent cyclod is positioned within or outside of its parent cycloid. 
+`moveOutsideOfParent`: whether the curent cyclod is positioned within or outside of its parent cycloid.
 
 `radius`: the radius of the current cycloid.
 
@@ -44,7 +43,7 @@ This spirograph generator contains 2 modes:
 
 `clearTracedPathOnParamsChanged`: whether or not to clear the already-traced paths in animated mode when the paramters are changed.
 
-`outerBoundingCircleRadius`: the radius of the base circle. 
+`outerBoundingCircleRadius`: the radius of the base circle.
 
 `showAllCycloids`: whether or not to show all cycloids (the circles). Works only in animated mode.
 
@@ -64,9 +63,9 @@ The simplest of modes, this mode adds up the position of the current point every
 
 ![Example 6](example-images/instant1.gif)
 
-This is where most of the work went. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble. 
+This is where most of the work went. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble.
 
-__A brief overview of how it's done__, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available in memory -- hopefully not too many points until the heap oveflows :p -- we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
+**A brief overview of how it's done**, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available in memory -- hopefully not too many points until the heap oveflows :p -- we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
 
 ### The Algorithm
 
@@ -76,7 +75,7 @@ Let's say we check
 
 ```ts
 if (currentPoint.xy === beginningPoint.xy) {
-    draw();
+  draw();
 }
 ```
 
@@ -84,11 +83,11 @@ every iteration, what's going to happen is that for shapes other than simple geo
 
 Okay, let's say we now just keep drawing for a million iterations, that'll for sure get the complete shape, right? Right, but we do not want to over draw a shape, because our goal here is to draw complex and beautiful shapes as fast as possible.
 
-__Our solution__ would be to find out how many iterations each shape need.
+**Our solution** would be to find out how many iterations each shape need.
 
-Let's begin with the formula. I'll be showing both the implementation both in code and math. 
+Let's begin with the formula. I'll be showing both the implementation both in code and math.
 
-__The math part is what I used for the instant mode and the code for the animated mode.__
+**The math part is what I used for the instant mode and the code for the animated mode.**
 
 This is the set up code, anything I show further is implied that it's done within the second script tag. Copy and paste the following snippet in an html file.
 
@@ -98,82 +97,87 @@ Nevermind what they do, we'll only be using two functions, `begin`, and `drawCir
 <!-- Just copy and paste this boilerplate code -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <style>
+  <head>
+    <style>
       html,
       body,
       canvas {
-          border: 0;
-          padding: 0;
-          margin: 0;
-          width: 100%;
-          height: 100%;
-          display: block;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
       }
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
     <canvas id="canvas"></canvas>
-</body>
-<script>
+  </body>
+  <script>
     const canvas = document.getElementById("canvas");
     canvas.width = window.innerWidth * devicePixelRatio;
     canvas.height = window.innerHeight * devicePixelRatio;
     const ctx = canvas.getContext("2d");
     const screenCenter = {
-        x: canvas.width / 2,
-        y: canvas.height / 2,
-    }
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+    };
 
     function begin(callback, clearCanvas = true) {
-        requestAnimationFrame((theta) => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (clearCanvas) {
-              callback(theta * 0.001);
-            }
-            begin(callback, clearCanvas);
-        });
-    }
-    
-    function drawCircle({ x, y, r }, fill = false) {
-        ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        if (fill) {
-          ctx.fill();
-        } else {
-          ctx.stroke();
+      requestAnimationFrame((theta) => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (clearCanvas) {
+          callback(theta * 0.001);
         }
+        begin(callback, clearCanvas);
+      });
     }
-</script>
-<script>
-   // Stuff below goes here.
-</script>
+
+    function drawCircle({ x, y, r }, fill = false) {
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      if (fill) {
+        ctx.fill();
+      } else {
+        ctx.stroke();
+      }
+    }
+  </script>
+  <script>
+    // Stuff below goes here.
+  </script>
 </html>
 ```
 
 ## Deriving the Formula
 
 ---
-Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle of radius $r_{0}$. 
+
+Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle of radius $r_{0}$.
 
 $r_{1}$ is not yet used in the equation, but we need it to draw the orbiting circle.
 
-$$ r_{0}cos(\theta) $$
+$$ r\_{0}cos(\theta) $$
 
-$$ r_{0}sin(\theta) $$
-
+$$ r\_{0}sin(\theta) $$
 
 ```js
-  // Create 2 radii, can be of any size, just make the first one 
-  // larger than the second
-  const r0 = 600;
-  const r1 = 50;
+// Create 2 radii, can be of any size, just make the first one
+// larger than the second
+const r0 = 600;
+const r1 = 50;
 
-  // The set up code provides a simple interface that passes a delta time as the parameter, we'll use it to draw a rotating circle at the center of the screen.
-  begin((theta) => {
-     drawCircle({ x: screenCenter.x + Math.cos(theta) * (r0 + r1), y: screenCenter.y + Math.sin(theta) * (r0 + r1), r: r1 })
+// The set up code provides a simple interface that passes a delta time as the parameter, we'll use it to draw a rotating circle at the center of the screen.
+begin((theta) => {
+  drawCircle({
+    x: screenCenter.x + Math.cos(theta) * (r0 + r1),
+    y: screenCenter.y + Math.sin(theta) * (r0 + r1),
+    r: r1,
   });
+});
 ```
+
 ### Result
 
 ![Circle rotating around another](example-images/circircle-rotating-around-another.gif)
@@ -186,71 +190,75 @@ If we draw the base circle, we'll see that the orbiting circle is drawn on top o
 
 Then we'll end up with the following equation.
 
-$$ cos(\theta)(r_{0} + r_{1})  $$
+$$ cos(\theta)(r*{0} + r*{1}) $$
 
-$$ sin(\theta)(r_{0} + r_{1})  $$
-
+$$ sin(\theta)(r*{0} + r*{1}) $$
 
 ```js
-  const r0 = 600;
-  const r1 = 50;
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const r0 = 600;
+const r1 = 50;
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      // draws the base circle.
-      drawCircle({
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y,
-          r: r0
-      });
-      // referencing baseCirclePosition instead of the center of the screen
-      // Math.cos(theta) * r0 is the base circle
-      // Math.cos(theta) * (r0 + r1) is the base circle plus the radius of the rotating circle.
-      drawCircle({ x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1), y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1), r: r1 })
+begin((theta) => {
+  // draws the base circle.
+  drawCircle({
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+    r: r0,
   });
+  // referencing baseCirclePosition instead of the center of the screen
+  // Math.cos(theta) * r0 is the base circle
+  // Math.cos(theta) * (r0 + r1) is the base circle plus the radius of the rotating circle.
+  drawCircle({
+    x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1),
+    y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1),
+    r: r1,
+  });
+});
 ```
 
 ### Result
+
 ![circle-orbiting-around-another-inner-traced](example-images/circle-orbiting-around-another-inner-traced.gif)
 
 ---
 
 Having two is nice, but let's try having 3 levels. I'll reduce the radius of the base circle a bit.
 
-While drawing the second circle, we can imagine a long rod extending from the mid of the base circle to the center of the second circle. With this in mind, we can say that the second circle's position is equal to the base circle's position  (which is just the screen center, or 0) plus the equation above.
+While drawing the second circle, we can imagine a long rod extending from the mid of the base circle to the center of the second circle. With this in mind, we can say that the second circle's position is equal to the base circle's position (which is just the screen center, or 0) plus the equation above.
 
 This means that the third circle's position of radius $r_{2}$ must also be the position of the second circle plus the same formula, but substituting the radii.
 
-$$ \text{thirdCirclePosition.x} = \text{secondCirclePosition.x} + cos(\theta)(r_{1} + r_{2})  $$
+$$ \text{thirdCirclePosition.x} = \text{secondCirclePosition.x} + cos(\theta)(r*{1} + r*{2}) $$
 
-$$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2})  $$
+$$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r*{1} + r*{2}) $$
 
 ```js
-  const r0 = 300;
-  const r1 = 50;
-  const r2 = 20;
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const r0 = 300;
+const r1 = 50;
+const r2 = 20;
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      // trace inner
-      drawCircle({
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y,
-          r: r0
-      });
-      // trace mid
-      const midCirclePosition = {
-          x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1),
-          y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1),
-      };
-      // trace outer
-      drawCircle({ x: midCirclePosition.x, y: midCirclePosition.y, r: r1 });
-      const outerCirclePos = {
-          x: midCirclePosition.x + Math.cos(theta) * (r1 + r2),
-          y: midCirclePosition.y + Math.sin(theta) * (r1 + r2),
-      };
-      drawCircle({ x: outerCirclePos.x, y: outerCirclePos.y, r: r2 });
+begin((theta) => {
+  // trace inner
+  drawCircle({
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+    r: r0,
   });
+  // trace mid
+  const midCirclePosition = {
+    x: baseCirclePosition.x + Math.cos(theta) * (r0 + r1),
+    y: baseCirclePosition.y + Math.sin(theta) * (r0 + r1),
+  };
+  // trace outer
+  drawCircle({ x: midCirclePosition.x, y: midCirclePosition.y, r: r1 });
+  const outerCirclePos = {
+    x: midCirclePosition.x + Math.cos(theta) * (r1 + r2),
+    y: midCirclePosition.y + Math.sin(theta) * (r1 + r2),
+  };
+  drawCircle({ x: outerCirclePos.x, y: outerCirclePos.y, r: r2 });
+});
 ```
 
 ### Result
@@ -261,36 +269,36 @@ $$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r_
 
 We now see a recurring pattern and can generalize a bit with a for loop. An example with only p.x
 
-$$ cos(\theta)(r_{0} + r_{1}) + cos(\theta)(r_{1} + r_{2}) + cos(\theta)(r_{r2} + r_{3}) \cdots cos(\theta)(r_{i-1} + r_{i}) $$
+$$ cos(\theta)(r*{0} + r*{1}) + cos(\theta)(r*{1} + r*{2}) + cos(\theta)(r*{r2} + r*{3}) \cdots cos(\theta)(r*{i-1} + r*{i}) $$
 
-$$ \sum_{i=1}^n \cos(\theta)(r_{i-1} + r_{i}) $$
+$$ \sum*{i=1}^n \cos(\theta)(r*{i-1} + r\_{i}) $$
 
 ```js
-  const radii = [300, 50, 20];
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const radii = [300, 50, 20];
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      let sum = {
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y
-      };
+begin((theta) => {
+  let sum = {
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+  };
 
-      // trace the base outside of the loop.
-      drawCircle({
-          x: sum.x,
-          y: sum.y,
-          r: r0,
-      });
-      for (let i = 1; i < radii.length; i++) {
-          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
-          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
-          drawCircle({
-              x: sum.x,
-              y: sum.y,
-              r: radii[i]
-          });
-      }
+  // trace the base outside of the loop.
+  drawCircle({
+    x: sum.x,
+    y: sum.y,
+    r: r0,
   });
+  for (let i = 1; i < radii.length; i++) {
+    sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+    sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+    drawCircle({
+      x: sum.x,
+      y: sum.y,
+      r: radii[i],
+    });
+  }
+});
 ```
 
 The result is the same as above.
@@ -300,31 +308,31 @@ The result is the same as above.
 With our new generalization, adding a new outer level is as simple as adding a new number to the `radii` array.
 
 ```js
-  // 5 levels
-  const radii = [300, 150, 75, 50, 30];
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+// 5 levels
+const radii = [300, 150, 75, 50, 30];
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      let sum = {
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y
-      };
+begin((theta) => {
+  let sum = {
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+  };
 
-      drawCircle({
-          x: sum.x,
-          y: sum.y,
-          r: radii[0],
-      });
-      for (let i = 1; i < radii.length; i++) {
-          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
-          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
-          drawCircle({
-              x: sum.x,
-              y: sum.y,
-              r: radii[i]
-          });
-      }
+  drawCircle({
+    x: sum.x,
+    y: sum.y,
+    r: radii[0],
   });
+  for (let i = 1; i < radii.length; i++) {
+    sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+    sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+    drawCircle({
+      x: sum.x,
+      y: sum.y,
+      r: radii[i],
+    });
+  }
+});
 ```
 
 ![5-levels](example-images/5-levels.gif)
@@ -336,28 +344,28 @@ If we trace out the path of the outermost circle, we'll now have...just a bigger
 With HTML5 Canvas, we can trace the path by having another canvas that we send the draw data to, but that's a bit too much for this demonstration, so we'll just trace only the outermost circle and stop clearing the canvas.
 
 ```js
-  const radii = [300, 150, 75, 50, 30];
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const radii = [300, 150, 75, 50, 30];
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      let sum = {
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y
-      };
+begin((theta) => {
+  let sum = {
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+  };
 
-      for (let i = 1; i < radii.length; i++) {
-          sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
-          sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
-          if (i === radii.length - 1) {
-            drawCircle({
-                x: sum.x,
-                y: sum.y,
-                r: radii[i]
-            });
-          }
-      }
+  for (let i = 1; i < radii.length; i++) {
+    sum.x += Math.cos(theta) * (radii[i - 1] + radii[i]);
+    sum.y += Math.sin(theta) * (radii[i - 1] + radii[i]);
+    if (i === radii.length - 1) {
+      drawCircle({
+        x: sum.x,
+        y: sum.y,
+        r: radii[i],
+      });
+    }
+  }
   // pass false to stop clearing the canvas
-  }, false);
+}, false);
 ```
 
 ### Result
@@ -366,36 +374,39 @@ With HTML5 Canvas, we can trace the path by having another canvas that we send t
 
 ---
 
-Now for the really exciting part, because the rotating of every circle is now synced. They all share the same theta value. If we multiple different scalars $\lambda_{i}$ to each of the level, we can make them rotate around their parents at different speed. 
+Now for the really exciting part, because the rotating of every circle is now synced. They all share the same theta value. If we multiple different scalars $\lambda_{i}$ to each of the level, we can make them rotate around their parents at different speed.
 
-$$ \sum_{i=1}^n \cos(\theta\lambda_{i})(r_{i-1} + r_{i}) $$
+$$ \sum*{i=1}^n \cos(\theta\lambda*{i})(r*{i-1} + r*{i}) $$
 
 ```js
-  const radii = [300, 150, 75, 50, 30];
-   const lambdas = [1, 2.2, 3.5, 2.234, 4];
-  const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const radii = [300, 150, 75, 50, 30];
+const lambdas = [1, 2.2, 3.5, 2.234, 4];
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-  begin((theta) => {
-      let sum = {
-          x: baseCirclePosition.x,
-          y: baseCirclePosition.y
-      };
+begin((theta) => {
+  let sum = {
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+  };
 
-      for (let i = 1; i < radii.length; i++) {
-          sum.x += Math.cos(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
-          sum.y += Math.sin(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
-          if (i === radii.length - 1) {
-            drawCircle({
-                x: sum.x,
-                y: sum.y,
-                // Make the radii a bit smaller
-                r: 10
-            // pass true to fill instead of stroke
-            }, true);
-          }
-      }
+  for (let i = 1; i < radii.length; i++) {
+    sum.x += Math.cos(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
+    sum.y += Math.sin(theta * lambdas[i]) * (radii[i - 1] + radii[i]);
+    if (i === radii.length - 1) {
+      drawCircle(
+        {
+          x: sum.x,
+          y: sum.y,
+          // Make the radii a bit smaller
+          r: 10,
+          // pass true to fill instead of stroke
+        },
+        true
+      );
+    }
+  }
   // pass false to stop clearing the canvas
-  }, false);
+}, false);
 ```
 
 ### Result
@@ -406,10 +417,10 @@ $$ \sum_{i=1}^n \cos(\theta\lambda_{i})(r_{i-1} + r_{i}) $$
 
 ---
 
-Now our equation is almost complete! All that's left is to just make sure that our circles can rotate in both directions. Making something rotate in the other direction is simply switching `sin` for `cos` and vice versa for both `x` and `y`. 
+Now our equation is almost complete! All that's left is to just make sure that our circles can rotate in both directions. Making something rotate in the other direction is simply switching `sin` for `cos` and vice versa for both `x` and `y`.
 
 But, but, doing it with if and else would be fine, but the difference between a `sin` and a `cos` is only
-$\frac{\pi}{2}$. 
+$\frac{\pi}{2}$.
 
 ![sin-and-cos-difference](example-images/sin-and-cos-difference.png)
 
@@ -420,29 +431,36 @@ We multiply $\frac{\pi}{2}$ by $k$ and set $k$ to zero or one when we want it to
 In JavaScript, `true` is 1 and `false` is 0, so we can just have a boolean paramter that determines whether to rotate counterclockwise or clockwise.
 
 ```js
-    const radii = [300, 150, 75, 50, 30];
-    const lambdas = [1, 2.2, 3.5, 2.234, 4];
-    const isClockwise = true;
-    const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
+const radii = [300, 150, 75, 50, 30];
+const lambdas = [1, 2.2, 3.5, 2.234, 4];
+const isClockwise = true;
+const baseCirclePosition = { x: screenCenter.x, y: screenCenter.y };
 
-    begin((theta) => {
-        let sum = {
-            x: baseCirclePosition.x,
-            y: baseCirclePosition.y
-        };
+begin((theta) => {
+  let sum = {
+    x: baseCirclePosition.x,
+    y: baseCirclePosition.y,
+  };
 
-        for (let i = 1; i < radii.length; i++) {
-            sum.x += Math.cos(theta * lambdas[i] - (Math.PI / 2 * isClockwise)) * (radii[i - 1] + radii[i]);
-            sum.y += Math.sin(theta * lambdas[i] - (Math.PI / 2 * isClockwise)) * (radii[i - 1] + radii[i]);
-            if (i === radii.length - 1) {
-                drawCircle({
-                    x: sum.x,
-                    y: sum.y,
-                    r: 10
-                }, true);
-            }
-        }
-    }, false);
+  for (let i = 1; i < radii.length; i++) {
+    sum.x +=
+      Math.cos(theta * lambdas[i] - (Math.PI / 2) * isClockwise) *
+      (radii[i - 1] + radii[i]);
+    sum.y +=
+      Math.sin(theta * lambdas[i] - (Math.PI / 2) * isClockwise) *
+      (radii[i - 1] + radii[i]);
+    if (i === radii.length - 1) {
+      drawCircle(
+        {
+          x: sum.x,
+          y: sum.y,
+          r: 10,
+        },
+        true
+      );
+    }
+  }
+}, false);
 ```
 
 Going clockwise or counterclockwise gives out different shapes. Give it a try!
@@ -451,8 +469,8 @@ Going clockwise or counterclockwise gives out different shapes. Give it a try!
 
 With all of our building blocks complete, the equation is now
 
-$$ p_{x} = \sum_{i=1}^{n} \cos(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
-$$ p_{y} = \sum_{i=1}^{n} \sin(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
+$$ p*{x} = \sum*{i=1}^{n} \cos(\theta \lambda*{i} - \frac{\pi}{2}k)(r*{i-1} + r*{i}), k \in \{1, 0\} $$
+$$ p*{y} = \sum*{i=1}^{n} \sin(\theta \lambda*{i} - \frac{\pi}{2}k)(r*{i-1} + r*{i}), k \in \{1, 0\} $$
 
 Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{i - 1}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda_{i}$ is a scalar that determines the speed at which the current cycloid moves around its parent.
 
@@ -462,7 +480,7 @@ And that, essentially, was all there is to formula. It's very simple to derive, 
 
 ## Calculating the Iterations
 
-Okay. Now we know how to sum up the final position of our points. But we still don't know how many iterations we need. 
+Okay. Now we know how to sum up the final position of our points. But we still don't know how many iterations we need.
 Let's first think about each rotation as just 2 different pair of 2 trig functions ${cos(x)}$ and ${cos(0.5x)}$, and ${cos(2x)}$ and ${cos(3x)}$.
 
 ![cos(x) and cos(0.5x)](./example-images/2cosines.png)
@@ -474,20 +492,24 @@ In the case of a cosine, the second time $cos(\theta_{1})$ and $cos(\theta_{2})$
 So this means that we can just keep looping until we hit ${1}$...right?:
 
 ```ts
-  const stepsNeededForEachIteration = 60;
-  const k = (Math.PI / 2) / stepsNeededForEachIteration;
-  for (let i = 0; i < Number.Infinity; i++) {
-    const theta = 0.289;
-    const phi = 0.948;
-    const whateverGreekLetterIsNext = 2.99;
-    while(Math.cos(theta) === 1 && Math.cos(phi) === 1 && Math.cos(whateverGreekLetterIsNext) === 1) {
-      draw();
-      theta += k;
-    }
+const stepsNeededForEachIteration = 60;
+const k = Math.PI / 2 / stepsNeededForEachIteration;
+for (let i = 0; i < Number.Infinity; i++) {
+  const theta = 0.289;
+  const phi = 0.948;
+  const whateverGreekLetterIsNext = 2.99;
+  while (
+    Math.cos(theta) === 1 &&
+    Math.cos(phi) === 1 &&
+    Math.cos(whateverGreekLetterIsNext) === 1
+  ) {
+    draw();
+    theta += k;
   }
+}
 ```
 
-Of course not. Like, we are doing numerical integration, this means that there is a chance ${\theta + k}$ will never be equal to one, especially when there are a lot of decimal places and when there are more than a few scalars. We NEED to find out ahead of time, and the algorithm must not be _O(?)_ where ${?}$ is who the hell knows when it'll end. We need something FASTER. 
+Of course not. Like, we are doing numerical integration, this means that there is a chance ${\theta + k}$ will never be equal to one, especially when there are a lot of decimal places and when there are more than a few scalars. We NEED to find out ahead of time, and the algorithm must not be _O(?)_ where ${?}$ is who the hell knows when it'll end. We need something FASTER.
 
 There are actually two things that could help us here from our elementary math classes: gcd and lcm.
 
@@ -498,10 +520,10 @@ A refresher: lcm returns a number that is divisible by each of the numbers passe
 ```ts
 lcm(8, 12); // 24
 lcm(2, 5, 6); // 30
-lcm(10, 100, 200) // 200
+lcm(10, 100, 200); // 200
 gcd(8, 12); // 4
 gcd(2, 5, 6); // 1
-gcd(10, 100, 200) // 10
+gcd(10, 100, 200); // 10
 ```
 
 Let's try to predict when _three_ cosine functions collide. This time, we'll do it with numbers less than one. Reason being...that's how I started.
@@ -526,7 +548,7 @@ $$ {cos(\frac{1}{2}x), cos(\frac{1}{4})}, cos(\frac{1}{8}) $$
 
 ![cos(1/2), cos(1/4), and cos(1/8)](example-images/cosine_8x.png)
 
-Now, I'm not sure if this is how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator. 
+Now, I'm not sure if this is how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator.
 
 ```ts
 lcm(2, 4); // 4
@@ -547,10 +569,10 @@ function getDenominator(n) {
   const decimalPlaceCount = n.toString().split(".")[1];
   const numerator = Math.pow(10, decimalPlaceCount);
   const denominator = numerator * n;
-  const divisor = gcd(numerator, denominator);  
+  const divisor = gcd(numerator, denominator);
 
   // We don't care about the simplified numerator.
-  denominator /= divisor;         
+  denominator /= divisor;
   return denominator;
 }
 ```
@@ -565,7 +587,7 @@ $$ {f(0.5, 0.25, 0.125)} $$
 
 Turn into decimal numbers.
 
-$$ {\frac{0.5 * 10}{10}, \frac{0.25 * 100}{100}, \frac{0.125 * 100}{100}} $$
+$$ {\frac{0.5 _ 10}{10}, \frac{0.25 _ 100}{100}, \frac{0.125 \* 100}{100}} $$
 
 $$ {\frac{5}{10}, \frac{25}{100}, \frac{125}{1000}} $$
 
@@ -579,19 +601,19 @@ $$ {lcm(2 ,4, 8)} $$
 
 Which is basically
 
-$$ {x_1 = \frac{|2 * 4|}{gcd(2 ,4)}} $$
+$$ {x_1 = \frac{|2 \* 4|}{gcd(2 ,4)}} $$
 
-$$ {x_2 = \frac{|x_1 * 8|}{gcd(x_1 ,8)}} $$
+$$ {x_2 = \frac{|x_1 \* 8|}{gcd(x_1 ,8)}} $$
 
 $$ {x_2 = 8} $$
 
 Did you notice something? I didn't. My math genius friend had to point it out to me. In the second steps, we already have all the information we need, after having turned everything into decimals.
 
-The final result is actually just the result of 
+The final result is actually just the result of
 
 $$ {\frac{1000}{125}} $$
 
-When we had only 0.5 and 0.25, it was 
+When we had only 0.5 and 0.25, it was
 
 $$ {\frac{100}{25}} $$
 
@@ -603,7 +625,7 @@ The max decimal of the 3 is 0.125, so 3 zeros.
 
 $$ {m = 1000} $$
 
-$$ {0.5 * m, 0.25 * m, 0.125 * m} $$
+$$ {0.5 _ m, 0.25 _ m, 0.125 \* m} $$
 
 $$ {500, 250, 125} $$
 
@@ -611,7 +633,7 @@ $$ {x = gcd(500, 250, 125)} $$
 
 $$ {x = 125} $$
 
-Then 
+Then
 
 $$ \text{result} = {m/x} $$
 
@@ -621,7 +643,7 @@ In short, what we did above was, for all numbers ${n}$, we multiply by ${m}$, an
 
 $$ \forall n \in \text{numbers}, n \gets n \times m $$
 
-$$ \text{result} = {m / gcd(numbers)} $$ 
+$$ \text{result} = {m / gcd(numbers)} $$
 
 Now we have the number of points we neeed and the way for us to some up the final position of each of the point to be drawn. Now we can just loop over those points like and draw those points!
 
@@ -632,7 +654,7 @@ Now we have the number of points we neeed and the way for us to some up the fina
 const times = compensate(result, timeStepScalar);
 let theta = 0;
 for (let i = 0; i < result; i++) {
-  theta += step; 
+  theta += step;
   let p = sumUpPoints(cycloids);
   draw(p);
 }
@@ -650,6 +672,7 @@ function draw(p) {
   ctx.stroke();
 }
 ```
+
 it will just take forever. We want that smoothness. And this is where WebGL comes in.
 
 # WebGL
@@ -664,7 +687,7 @@ export default interface Renderer {
 }
 ```
 
-The `render` method is called everytime there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the renderer takes too long. 
+The `render` method is called everytime there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the renderer takes too long.
 
 In the render method, I used webGL's drawElements or drawArrays to help me draw all the lines (2 points) all at once. This means that I have to put the points into an array and then pass them all to the renderer.
 
@@ -673,7 +696,7 @@ const points = [];
 const times = compensate(result, timeStepScalar);
 let theta = 0;
 for (let i = 0; i < result; i++) {
-  theta += step; 
+  theta += step;
   let p = sumUpPoints(cycloids);
   points.push(p);
   // draw(p) << No longer needed
@@ -704,6 +727,7 @@ A cool trick I found while building the renderer is that using a debouncer with 
 I know deboucning is not new, but I have never thought about how debouncing could be useful when its interval is 0. Literally, the core concept is to postpone (aggregate, whatever) events until after a certain interval. While 0 might sound like we simply never postpone...we actually kind of do. Let's look at some code.
 
 This is the rendering code in a nutshell.
+
 ```ts
   // In the renderer class.
 
@@ -711,17 +735,17 @@ This is the rendering code in a nutshell.
 
   /**
    * If this is our task queue
-   * 
+   *
    * Queue: [mousemove, mousemove, mousemove, mousemove, mousemove]
-   * 
+   *
    * deboucning it with an interval of 0, the queue becomes
-   * 
+   *
    * Queue: [render] (the last one, the one after cancels out the one before)
-   * 
+   *
    * but when we don't debounce, we get.
-   * 
-   * Queue: [render, render, render, render, render] 
-   * 
+   *
+   * Queue: [render, render, render, render, render]
+   *
   */
   render() {
     // Clearing the timeout cancels the previously-registered task.
@@ -730,7 +754,7 @@ This is the rendering code in a nutshell.
   }
 ```
 
-When the user moves the cursor too fast, the mousemove events will come in droves. We are rendering every frame for every mouse event, so if we do not aggregate our events, those `x` number of mouse events, where `x` is some relatively beefy numbers like 10, will trigger exactly 10 rendering calls -- really expensive.  If we aggregate, those 10 events become just 1 render call.
+When the user moves the cursor too fast, the mousemove events will come in droves. We are rendering every frame for every mouse event, so if we do not aggregate our events, those `x` number of mouse events, where `x` is some relatively beefy numbers like 10, will trigger exactly 10 rendering calls -- really expensive. If we aggregate, those 10 events become just 1 render call.
 
 This helps a lot with complex shapes as it helps a lot to keep the interaction, like zooming and panning smooth when the `globalTimeStep` is low.
 Instead of rendering every points from `e.x = 10` to `e.x = 20`, the system might render only `e.x = 10` and once again at `e.x = 20`. Let's say each render takes exactly 1 second, the first case means the total render time is 10 seconds, while the second, just 2 seconds. Sure, we missed frames, but the system will fell A LOT more responsive, which is actually (subjectively) more important.
@@ -743,7 +767,7 @@ Now, if you're unlucky, some of the events that slipped through `setTimeout` wil
     this.timeoutHandle = setTimeout(() => requestAnimationFrame(super.render), 0);
   }
 ```
- 
+
 In most cases, this won't happen. We have already debounced a lot of consecutive events, so the ones that slipped through won't really be that big of a deal, but just in case...and it's a good practice anyway to keep your rendering and the refresh rate in sync.
 
 ### With Debouncing
@@ -751,6 +775,7 @@ In most cases, this won't happen. We have already debounced a lot of consecutive
 ![Debounced Render](example-images/debounced_render.png)
 
 ### Without Debouncing
+
 _Notice how those delays cause our events to accumulate, which cause event more delays._
 
 ![No Debounce Render](example-images/no_debounce_render.png)
@@ -817,7 +842,7 @@ Ok one last thing.
 
 There is this thing here, which is still a bit (just a bit) buggy, but I was like, screw this, I'm moving on to other projects.
 
-The relationship editor allows you to re-define the parent-child cycloid between each of the cycloid. This definitely called for some kind of tree-like data structres. 
+The relationship editor allows you to re-define the parent-child cycloid between each of the cycloid. This definitely called for some kind of tree-like data structres.
 
 _animated mode_
 
@@ -827,14 +852,12 @@ _instant mode_
 
 ![relationship editor instant mode](example-images/relationship_editor_instant.gif)
 
-
-
 ## The UI
 
-I must admit I have made a mistake of drawing it with SVG. This made the interaction difficult to handle because now I have to involve the DOM API and CSS. This introduced some bugs that I didn't bother fixing. 
+I must admit I have made a mistake of drawing it with SVG. This made the interaction difficult to handle because now I have to involve the DOM API and CSS. This introduced some bugs that I didn't bother fixing.
 
 I have a `generateNode` hook that is called everytime the menu is switched to a relationship editor. Within the hook, I have a sort of a NodeLevel manager that keeps track of the "level" each node resides in. The level is determined by having each node recursively travel up its chain until it meets the base node, the `outerBoundingCircle`.
- 
+
 ```ts
 // getDrawLevel.ts
 // I removed the error-handling code to make this a bit more readable.
@@ -857,7 +880,7 @@ function getCurrentDrawLevel(
     cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
       parentId
     );
-  const grandParentIndex = parentParams!.boundingCircleId; 
+  const grandParentIndex = parentParams!.boundingCircleId;
 
   return getCurrentDrawLevel(
     grandParentIndex,
@@ -868,7 +891,7 @@ function getCurrentDrawLevel(
   );
 ```
 
-Once we know the level of each of the nodes, we specify an arbitrary space between each level, __calculate the positions__, and then we can begin placing them.
+Once we know the level of each of the nodes, we specify an arbitrary space between each level, **calculate the positions**, and then we can begin placing them.
 
 ## Calculating the Positions
 
@@ -886,24 +909,30 @@ For any ${n}$ level, I have defined the positioning like this
 
 ```ts
 for (let i = 0; i < thisLevelNodeCount; i++) {
-    // xPos is just placing the nodes out with nodeMargin * i margin, starting from center.
-    const xPos = nodeCenter.x + nodeMargin * i;
-    // xOffset is the offset we need to do to get the row to be in the center.
-    // It should be half the full span of the row, which is:
-    const xOffset = (nodeMargin / 2) * (thisLevelNodeCount - 1);
-    ctx.beginPath();
-    ctx.arc(xPos - xOffset, nodeCenter.y + someYOffset, someRadius, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  // xPos is just placing the nodes out with nodeMargin * i margin, starting from center.
+  const xPos = nodeCenter.x + nodeMargin * i;
+  // xOffset is the offset we need to do to get the row to be in the center.
+  // It should be half the full span of the row, which is:
+  const xOffset = (nodeMargin / 2) * (thisLevelNodeCount - 1);
+  ctx.beginPath();
+  ctx.arc(
+    xPos - xOffset,
+    nodeCenter.y + someYOffset,
+    someRadius,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
+}
 ```
 
 And then we'll just have to make sure that when we place the nodes, each child stays close to their parents so that we can draw a straight line from it to its parent without crossing over other higher-level nodes.
 
 ```ts
-  nodesOnLevel.sort((a, b) => (a.parentId ?? -1) - (b.parentId ?? -1));
+nodesOnLevel.sort((a, b) => (a.parentId ?? -1) - (b.parentId ?? -1));
 ```
 
-Now all is good and well, with a lot of nodes, when we traced the lines, they look funny sometimes, but that's good enough for out use case. 
+Now all is good and well, with a lot of nodes, when we traced the lines, they look funny sometimes, but that's good enough for out use case.
 
 ![Nodes weird positioning](example-images/weirdly%20positioned%20nodes.png)
 
@@ -911,22 +940,87 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 ### Placing the Lines
 
-Finding out how to draw the lines was surprisingly difficult, but the solution was also face-slappingly simple.
+Let's do another interactive set of examples.
 
-Here's a spoiler of how it's done. I'll explain later.
+Here's the boilerplate, paste this in an html file.
 
+```html
 
-## Error-Handling
+```
+
+The simplest way to trace out a line between each of the nodes would be to draw a line from the bottom of a parent circle to the top of its chilid.
+
+(example-of-line-between-parent-and-child-circle)[TODO]
+
+---
+
+This works, but I don't like the way it looks when the parent node has more than 1 child node.
+
+(example-of-parent-node-having-more-than-1-child-node)[TODO]
+
+---
+
+What I want, is for the line that traces to the children to slowly climb out the sides of the parent circle as the number of children increases.
+
+(example-of-parent-node-having-more-than-1-child-node-with-climb)[TODO]
+
+TODO turn all references into proper markdown format or equations.
+
+---
+
+Let p.x and p.y be the point of the line under the parent and c.x and c.y be the point above our child circle. We can say that the positon of p in both axes is influenced by the x position of c. Let's focus on the x-axis first, as it's the easiest.
+
+---
+
+We have our simple node-placing algorithm that does the x-offset for us. So we can just use that offset information and scale it down by a bit to make sure that the tip of the line (the part that connects the parent node) is always a bit behind. This gives us that "binary tree" look and feel.
+
+(TODO x offset equation)
+
+(example-of-not-offseting-x-position)[TODO]
+(example-of-offseting-x-position)[TODO]
+
+---
+
+Seems good so far, now let's take a look at how we can solve for y.
+
+We need to make sure that the y offset is such, that p.x and p.y is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with
+the curvature of the circle.
+
+This calls for an equation that I never thought I had to use: the circle equation.
+
+(TODO circle equation)
+
+This old friend from elementary school tells describes us the relationship between the center point of a circle (h, k), any point on the circle (x, y), and the circle's radius r.
+
+We already know everything in that equation except y. So let's solve for y...using wolfram alpha.
+
+(equation before and after solving for y)
+
+Then we can plug that into our svg.
+
+(code for svg)
+(result)
+
+---
+
+There is however, one edge case to cover. Because we are using square root at the end, when the value inside becomes negative, the world explodes. This can happen when
+the y offset is big enough that the line crosses one quadrant into another. This sounded like a lot of work and fortunately for me, I did not want it to go over the bottom
+half of the parent circle anyway, so I just clamped it at 0.
+
+(code for clamping it with zero)
+
+And that's it! It's all done.
+
+(Some examples)
 
 ### Wrapping up
 
-So this, as we have seen, is more an exploratory endeavor than anything else. 
+So this, as we have seen, is more an exploratory endeavor than anything else.
 
 I don't think I will be using a lot of what I learned here anywhere. I have to admit that the project itself is so (pointlessly) niche at times.
 
 Nontheless, this journey down rabbit holes have exposed me to several cool ideas and discoveries I would not have otherwise, if ever, stumbled upon.
 
-All the math and the implementation details I talked about could have been left out of this monolithic blog and you will still get the idea, but I like diving deep and deep-diving talks/blogs really tick all my learning boxes, so I figured I'd make one as well.  
+All the math and the implementation details I talked about could have been left out of this monolithic blog and you will still get the idea, but I like diving deep and deep-diving talks/blogs really tick all my learning boxes, so I figured I'd make one as well.
 
-I hope this journey has been as enlightening for you as it has been for me.  
-
+I hope this journey has been as enlightening for you as it has been for me.
