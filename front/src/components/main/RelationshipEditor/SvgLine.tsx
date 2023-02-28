@@ -26,7 +26,7 @@ export default function SvgLineFromNodeToParent({
 
   const k = Math.max(
     0,
-    Math.pow(r2, 2) - Math.pow(finalX, 2) + 2 * x2 * finalX - Math.pow(x2, 2)
+    -Math.pow(x2, 2) + 2 * x2 * finalX + Math.pow(r2, 2) - Math.pow(finalX, 2)
   );
 
   const finalY = Math.sqrt(k) + y2;
