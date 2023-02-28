@@ -940,7 +940,7 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 ### Placing the Lines
 
-Let's do another interactive set of examples.
+Let's do another **interactive** set of examples.
 
 Here's the boilerplate, paste this in an html file.
 
@@ -968,7 +968,7 @@ TODO turn all references into proper markdown format or equations.
 
 ---
 
-Let p.x and p.y be the point of the line under the parent and c.x and c.y be the point above our child circle. We can say that the positon of p in both axes is influenced by the x position of c. Let's focus on the x-axis first, as it's the easiest.
+Let `c.x` and `c.y` be the point of the line under the parent and `p.x` and `p.y` be the point above our child circle. We can say that the positon of `c` in both axes is influenced by the `x` position of `p`. Let's focus on the x-axis first, as it's the easiest.
 
 ---
 
@@ -981,25 +981,41 @@ We have our simple node-placing algorithm that does the x-offset for us. So we c
 
 ---
 
-Seems good so far, now let's take a look at how we can solve for y.
+Seems good so far, now let's take a look at how we can solve for `y`.
 
-We need to make sure that the y offset is such, that p.x and p.y is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with
-the curvature of the circle.
+We need to make sure that the y offset is such, that `c.x` and `c.y` is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with the curvature of the circle.
 
 This calls for an equation that I never thought I had to use: the circle equation.
 
-(TODO circle equation)
+$$ (x − h)^2 + (y − k)^2 = r^2 $$
 
-This old friend from elementary school tells describes us the relationship between the center point of a circle (h, k), any point on the circle (x, y), and the circle's radius r.
+This old friend from elementary school describes the relationship between the center point of a circle `(h, k)`, any point on the circle `(x, y)`, and the circle's radius `r`.
 
-We already know everything in that equation except y. So let's solve for y...using wolfram alpha.
+We already know everything in that equation except y. Let's ask Wolfram Alpha to do the math for us and [solve for y](https://www.wolframalpha.com/input?i=%28x+%E2%88%92+h%29%5E2+%2B+%28y+%E2%88%92+k%29%5E2+%3D+r%5E2+This+equation%2C+but+solve+for+y).
 
-(equation before and after solving for y)
+$$ y = \sqrt{-h^2 + 2 h x + r^2 - x^2} + k $$
+$$ y = k - \sqrt{-h^2 + 2 h x + r^2 - x^2} $$
+
+We have two equations, one for the top half, and the other, the bottom half of the circle. We need the bottom half, but the canvas's `y` axis is flipped, so we'll use the top one.
+
+We have to be careful though, because the value inside the square root will become negative when the tip of the line crosses one half into the other.
+
+This is a bit difficult to visualize, let's take a look at [this desmos demo](https://www.desmos.com/calculator/3zpeziejs7).
+
+![desmos demo](./example-images/desmos-circle-equation.png)
+
+The domain of each of the equation is only defined for half of the circle. If we cross the line without switching the equation, it'll become $\sqrt{-n}$ where $n$ is any positive number.
+
+There might be more elegant math solutions, but for now, we'll just use JavaScript's `Math.max` to help make sure that we stay on the bottom side of the circle.
+
+$$ y = \sqrt{\max(-h^2 + 2 h x + r^2 - x^2, 0)} + k $$
 
 Then we can plug that into our svg.
 
 (code for svg)
 (result)
+
+And that's it! Now the top of the line that connects both circles is guaranteed to be stuck to the edge of the top one.
 
 ---
 
