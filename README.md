@@ -1153,16 +1153,43 @@ What I want now is for the lines to slowly climb along the side of the parent ci
 
 Let `c.x` and `c.y` be the point of the line under the parent and `p.x` and `p.y` be the point above our child circle. We can say that the positon of `c` in both axes is influenced by the `x` position of `p`. Let's focus on the x-axis first, as it's the easiest.
 
-We have our simple node-placing algorithm that does the x-offset for us. So we can just use that offset information and scale it down by a bit to make sure that the tip of the line (the part that connects the parent node) is always a bit behind. This gives us that "binary tree" look and feel.
+For `c.x`, because we want it to be a bit behind at all times, we can say that it is `c.y` times some arbitrary scalar `k`. That scalar is obtained by adding to `x2` the difference at that point between `x1` and `x2` times k.
 
-(TODO x offset equation)
+```js
+// k can be anything. < 0.5 looks nice.
+const k = 0.2;
+top: {
+  x: x2 + (x1 - x2) * 0.2;
+}
+```
 
-(example-of-not-offseting-x-position)[TODO]
-(example-of-offseting-x-position)[TODO]
+![simple-tree-with-scalar](example-images/simple-tree-with-scalar.png)
+
+then we'll clamp the value so that the line never extend beyond the diameter of the parent.
+
+```js
+const k = 0.2;
+const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+const finalX = clamp(x2 + (x1 - x2) * k, x2 - parent.r, x2 + parent.r);
+return {
+  top: {
+    x: finalX,
+    y: y2 + parent.r,
+  },
+  bottom: {
+    x: x1,
+    y: y1 - node.r,
+  },
+};
+```
+
+![simple-tree-with-scalar-clamped](example-images/simple-tree-with-scalar-clamped.png)
+
+Now we have another problem. Because a lot of them spread beyond the diameter of the circle, while only a couple remained inside. With the clamping applied, the connections to the parent look unequally distributed. We'll come back to this later when the problem is more pronouned.
 
 ---
 
-Seems good so far, now let's take a look at how we can solve for `y`.
+Now let's take a look at how we can solve for `y`.
 
 We need to make sure that the y offset is such, that `c.x` and `c.y` is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with the curvature of the circle.
 
@@ -1191,24 +1218,64 @@ There might be more elegant math solutions, but for now, we'll just use JavaScri
 
 $$ y = \sqrt{\max(-h^2 + 2 h x + r^2 - x^2, 0)} + k $$
 
-Then we can plug that into our svg.
+Pluggin that into our code we get:
 
-(code for svg)
-(result)
+```js
+LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
+  const parent = node.parent;
+  const x1 = node.x;
+  const y1 = node.y;
 
-And that's it! Now the top of the line that connects both circles is guaranteed to be stuck to the edge of the top one.
+  const x2 = parent.x;
+  const y2 = parent.y;
+
+  const k = 0.2;
+  const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+  const finalX = clamp(x2 + (x1 - x2) * k, x2 - parent.r, x2 + parent.r);
+
+  // The new part
+  const finalY =
+    Math.sqrt(
+      Math.max(
+        0,
+        -Math.pow(x2, 2) +
+          2 * x2 * finalX +
+          Math.pow(parent.r, 2) -
+          Math.pow(finalX, 2)
+      )
+    ) + y2;
+
+  return {
+    top: {
+      x: finalX,
+      y: finalY,
+    },
+    bottom: {
+      x: x1,
+      y: y1 - node.r,
+    },
+  };
+});
+```
+
+![simple-tree-with-scalar-clamped-xy](example-images/simple-tree-with-scalar-clamped-xy.png)
 
 ---
 
-There is however, one edge case to cover. Because we are using square root at the end, when the value inside becomes negative, the world explodes. This can happen when
-the y offset is big enough that the line crosses one quadrant into another. This sounded like a lot of work and fortunately for me, I did not want it to go over the bottom
-half of the parent circle anyway, so I just clamped it at 0.
+Now it is very clear that the lines that connect to the parent are not evenly distributed with clamping. We need to make their x positions pan out slower. Maybe make it logarithmically slower.
 
-(code for clamping it with zero)
+From this equation, let's extract out `(x1 - x2) * k` and store it somewhere else. We'll scale their result because they are responsible for offsetting the `x` coordinate of the points at the top.
 
-And that's it! It's all done.
+```js
+const offsetX = (x2 - x1) * k; // moved here
+const k = 0.2;
+const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+const finalX = clamp(x2 + offsetX, x2 - parent.r, x2 + parent.r);
+```
 
-(Some examples)
+TODO
+
+---
 
 ### Wrapping up
 
