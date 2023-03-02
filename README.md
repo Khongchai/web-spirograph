@@ -469,8 +469,8 @@ Going clockwise or counterclockwise gives out different shapes. Give it a try!
 
 With all of our building blocks complete, the equation is now
 
-$$ p*{x} = \sum*{i=1}^{n} \cos(\theta \lambda*{i} - \frac{\pi}{2}k)(r*{i-1} + r*{i}), k \in \{1, 0\} $$
-$$ p*{y} = \sum*{i=1}^{n} \sin(\theta \lambda*{i} - \frac{\pi}{2}k)(r*{i-1} + r*{i}), k \in \{1, 0\} $$
+$$ p*{x} = \sum{i=1}^{n} \cos(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
+$$ p*{y} = \sum{i=1}^{n} \sin(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
 
 Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{i - 1}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda_{i}$ is a scalar that determines the speed at which the current cycloid moves around its parent.
 
@@ -942,35 +942,216 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 Let's do another **interactive** set of examples.
 
-Here's the boilerplate, paste this in an html file.
+Here's the **boilerplate**, paste this in an html file.
+
+The boilerplate this time is quite a lot. Ignore them and focus on the _TODO_ section at the bottom. They'll let us focus only on drawing the lines.
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+      html,
+      body,
+      canvas {
+        border: 0;
+        padding: 0;
+        margin: 0;
+      }
 
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div><canvas id="canvas"></canvas></div>
+  </body>
+  <script>
+    let canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+
+    const LevelFactory = {
+      levels: [],
+      newLevel: function () {
+        const level = {
+          nodes: [],
+          addNode: function (args) {
+            const newNode = args?.parent
+              ? { parent: args.parent, x: 0, y: 0 }
+              : { parent: null };
+            newNode.children = [];
+            this.nodes.push(newNode);
+
+            return newNode;
+          },
+        };
+
+        this.levels.push(level);
+
+        return level;
+      },
+
+      config: {
+        center: {
+          x: canvas.width * 0.5,
+          y: canvas.height * 0.1,
+        },
+        margin: {
+          x: 180,
+          y: 200,
+        },
+        radius: 30,
+      },
+
+      buildNodes: (level1Count) => {
+        // lv0
+        const level0 = LevelFactory.newLevel();
+        const rootNode = level0.addNode();
+
+        // lvl1
+        const level1 = LevelFactory.newLevel();
+        for (let i = 0; i < level1Count; i++) {
+          level1.addNode({ parent: rootNode });
+        }
+
+        // Add here for more levels
+      },
+
+      drawNodes: function (count, ctx, lineBuilder) {
+        this.buildNodes(count);
+        const { radius, center, margin } = this.config;
+
+        for (let i = 0; i < this.levels.length; i++) {
+          const level = this.levels[i];
+          for (let j = 0; j < level.nodes.length; j++) {
+            const xPos = center.x + margin.x * j;
+            const xOffset = (margin.x / 2) * (level.nodes.length - 1);
+            const n = level.nodes[j];
+            n.x = xPos - xOffset;
+            n.y = center.y + margin.y * i;
+            n.r = radius;
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (n.parent) {
+              n.parent.children.push(n);
+              const { bottom, top } = lineBuilder(n);
+              ctx.beginPath();
+              ctx.moveTo(bottom.x, bottom.y);
+              ctx.lineTo(top.x, top.y);
+              ctx.strokeStyle = "red";
+              ctx.stroke();
+            }
+          }
+        }
+      },
+    };
+  </script>
+  <!-- Everything above is just a set up code, ignore them. -->
+  <script>
+    let childNodeCount = 1;
+    /**
+     * Node definition.
+     *
+     * Node: {
+     *  parent: Node,
+     *  children: Node[]
+     *  x: number,
+     *  y: number,
+     *  r: number
+     * }
+     */
+    LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
+      // TODO!!!
+      return {
+        top: {
+          x: 0,
+          y: 0,
+        },
+        bottom: {
+          x: 0,
+          y: 0,
+        },
+      };
+    });
+  </script>
+</html>
 ```
 
-The simplest way to trace out a line between each of the nodes would be to draw a line from the bottom of a parent circle to the top of its chilid.
+Open the html file in a browser of your choice and then you should see this.
 
-(example-of-line-between-parent-and-child-circle)[TODO]
-
----
-
-This works, but I don't like the way it looks when the parent node has more than 1 child node.
-
-(example-of-parent-node-having-more-than-1-child-node)[TODO]
+![Two nodes](example-images/two-nodes.png)
 
 ---
 
-What I want, is for the line that traces to the children to slowly climb out the sides of the parent circle as the number of children increases.
+The simplest way to draw a line between the two would be to draw from the center of the parent to the center of the child.
 
-(example-of-parent-node-having-more-than-1-child-node-with-climb)[TODO]
+```js
+LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
+  const parent = node.parent;
+  return {
+    top: {
+      x: parent.x,
+      y: parent.y,
+    },
+    bottom: {
+      x: node.x,
+      y: node.y,
+    },
+  };
+});
+```
 
-TODO turn all references into proper markdown format or equations.
+![example-of-line-between-parent-and-child-circle](example-images/node-child-node-parent-connected.png)
 
 ---
+
+This works, on the web, my nodes will be stroked, not filled (see the pictures above). So I will need to make sure that the lines don't cross the edge of the circle.
+
+```js
+childNodeCount = 8; // so to some number more than 1
+```
+
+![example-of-parent-node-having-more-than-1-child-node](example-images/parent-node-has-more-than-1-child-node.png)
+
+To fix this, we can offset the parent's y by the parent's radius $\text{parent.r}$, and each of the children by negative radius $\text-children.radius$
+
+```js
+LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
+  const parent = node.parent;
+  return {
+    top: {
+      x: parent.x,
+      y: parent.y + parent.r,
+    },
+    bottom: {
+      x: node.x,
+      y: node.y - node.r,
+    },
+  };
+});
+```
+
+![tree-with-correct-offset](example-images/simple-tree.png)
+
+---
+
+What I want now is for the lines to slowly climb along the side of the parent circle as the number of children increases. Right now every single line from each child connects directly to the bottom center of parent. I am not satisfied 😡.
 
 Let `c.x` and `c.y` be the point of the line under the parent and `p.x` and `p.y` be the point above our child circle. We can say that the positon of `c` in both axes is influenced by the `x` position of `p`. Let's focus on the x-axis first, as it's the easiest.
-
----
 
 We have our simple node-placing algorithm that does the x-offset for us. So we can just use that offset information and scale it down by a bit to make sure that the tip of the line (the part that connects the parent node) is always a bit behind. This gives us that "binary tree" look and feel.
 
