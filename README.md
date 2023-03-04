@@ -1285,7 +1285,11 @@ But not so much when we have just a few lines.
 
 ![linear-interpolation](example-images/linear-interpolation-not-good.png)
 
-The points don't look 100% evenly distributed, even though they do, because we're working with a circle and we should have used _slerp_. But even _lerp_ is superfluous, so let's no go further. That is a rabbit hole for another time. I have drawn more lines to show that the points are equally distributed in the x-axis, but the angles of each point, as vectors extending from the center of the circle, are not.
+The points don't look 100% evenly distributed, even though they do, because we're working with a circle and we should have used _slerp_, or interpolated using the angles intead, not the points (and then converted the agles to vectors and then to points). 
+
+But even _lerp_ is superfluous, so let's no go further. That is a rabbit hole for another time. 
+
+I have drawn more lines to show that the points are equally distributed in the x-axis, but the angles of each point, as vectors extending from the center of the circle, are not.
 
 ![lerp-lines-not-even](example-images/linear-interpolation-not-equal.png)
 
