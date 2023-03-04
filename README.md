@@ -469,8 +469,8 @@ Going clockwise or counterclockwise gives out different shapes. Give it a try!
 
 With all of our building blocks complete, the equation is now
 
-$$ p*{x} = \sum{i=1}^{n} \cos(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
-$$ p*{y} = \sum{i=1}^{n} \sin(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
+$$ p{x} = \sum_{i=1}^{n} \cos(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
+$$ p{y} = \sum_{i=1}^{n} \sin(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
 
 Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{i - 1}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda_{i}$ is a scalar that determines the speed at which the current cycloid moves around its parent.
 
@@ -587,7 +587,7 @@ $$ {f(0.5, 0.25, 0.125)} $$
 
 Turn into decimal numbers.
 
-$$ {\frac{0.5 _ 10}{10}, \frac{0.25 _ 100}{100}, \frac{0.125 \* 100}{100}} $$
+$$ {\frac{0.5 _ 10}{10}, \frac{0.25 _ 100}{100}, \frac{0.125 * 100}{100}} $$
 
 $$ {\frac{5}{10}, \frac{25}{100}, \frac{125}{1000}} $$
 
@@ -601,9 +601,9 @@ $$ {lcm(2 ,4, 8)} $$
 
 Which is basically
 
-$$ {x_1 = \frac{|2 \* 4|}{gcd(2 ,4)}} $$
+$$ {x_1 = \frac{|2 * 4|}{gcd(2 ,4)}} $$
 
-$$ {x_2 = \frac{|x_1 \* 8|}{gcd(x_1 ,8)}} $$
+$$ {x_2 = \frac{|x_1 * 8|}{gcd(x_1 ,8)}} $$
 
 $$ {x_2 = 8} $$
 
@@ -625,7 +625,7 @@ The max decimal of the 3 is 0.125, so 3 zeros.
 
 $$ {m = 1000} $$
 
-$$ {0.5 _ m, 0.25 _ m, 0.125 \* m} $$
+$$ {0.5 _ m, 0.25 _ m, 0.125 * m} $$
 
 $$ {500, 250, 125} $$
 
@@ -944,7 +944,7 @@ Let's do another **interactive** set of examples.
 
 Here's the **boilerplate**, paste this in an html file.
 
-The boilerplate this time is quite a lot. Ignore them and focus on the _TODO_ section at the bottom. They'll let us focus only on drawing the lines.
+The boilerplate this time is quite a lot. Ignore them and focus on the _TODO_ section at the bottom. They'll help us focus only on drawing the lines.
 
 ```html
 <!DOCTYPE html>
@@ -1035,7 +1035,7 @@ The boilerplate this time is quite a lot. Ignore them and focus on the _TODO_ se
 
         for (let i = 0; i < this.levels.length; i++) {
           const level = this.levels[i];
-          for (let j = 0; j < level.nodes.length; j++) {
+            for (let j = 0; j < level.nodes.length; j++) {
             const xPos = center.x + margin.x * j;
             const xOffset = (margin.x / 2) * (level.nodes.length - 1);
             const n = level.nodes[j];
@@ -1267,13 +1267,58 @@ Now it is very clear that the lines that connect to the parent are not evenly di
 From this equation, let's extract out `(x1 - x2) * k` and store it somewhere else. We'll scale their result because they are responsible for offsetting the `x` coordinate of the points at the top.
 
 ```js
-const offsetX = (x2 - x1) * k; // moved here
 const k = 0.2;
+const offsetX = (x2 - x1) * k; // moved here
 const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 const finalX = clamp(x2 + offsetX, x2 - parent.r, x2 + parent.r);
 ```
 
-TODO
+There are many approaches we could take for this. We'll look at a few of them.
+
+#### **With Lerp**
+
+With linear interpolation, we can be sure that every single line will have the same amount of space in the x axis between them. This looks good for multiple lines.
+
+![linear-interpolation](example-images/linear-interpolation.png)
+
+But not so much when we have just a few lines.
+
+![linear-interpolation](example-images/linear-interpolation-not-good.png)
+
+The points don't look 100% evenly distributed, even though they do, because we're working with a circle and we should have used _slerp_. But even _lerp_ is superfluous, so let's no go further. That is a rabbit hole for another time. I have drawn more lines to show that the points are equally distributed in the x-axis, but the angles of each point, as vectors extending from the center of the circle, are not.
+
+![lerp-lines-not-even](example-images/linear-interpolation-not-equal.png)
+
+```js
+const k = 0.2;
+let offsetX = (x1 - x2) * k;
+// The underappreciated remap formula :(
+// https://youtu.be/NzjF1pdlK7Y
+const remap = () => {
+  // meta.absoluteMin and meta.absoluteMax are the x position of node n0 and n1 in the current level.
+  // I wrote them just for this linear interpolation demo.
+  const oldMax = meta.absoluteMax;
+  const oldMin = meta.absoluteMin;
+
+  const newMax = x2 + parent.r;
+  const newMin = x2 - parent.r;
+
+  const oldVal = x1;
+
+  const t = (oldVal - oldMin) / (oldMax - oldMin);
+  const newValue = newMin + (newMax - newMin) * t;
+
+  return newValue;
+};
+
+const finalX = remap();
+```
+
+#### **With sqrt, pow, log**
+
+For this project, most of the time, a node won't have more than a few children. The best shapes come from linking all the nodes together into one long chain, not linking all nodes to one parent.
+
+What we want to do is to slow the `offsetX` value. If we can slow it down, they won't be cluttered together in those couple of spots.
 
 ---
 
