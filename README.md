@@ -1,10 +1,10 @@
-# A WebGL-WASM-Powered Spirograph Generator
+# The Rabbit Holes EP 1: A WebGL-WASM-Powered Spirograph Generator
 
 ## Foreword
 
 This project is first and foremost, my playground, where multiple ideas are tried and tested and are fully leveraged elsewhere. I initially wanted to just make a quick spirograph generator, but then stumbled onto various (exciting and frustrating) rabbit holes, each hole an entire universe worth exploring on their own. They result in, dare I say, a cacophony of ideas, of trials and errors, of exploratory implementations lacking ample due dilligence 😛.
 
-There are some features that I eventually stopped working on because it's been almost 2 years of me just pausing and picking up where I left of, like the backend integration (sorry, you only get local storage for now), some fancy UI upgrades and smaller screens support. This project was burning me out and I needed to finish it fast.
+There are some features that I eventually stopped working on because it's been almost two years of me just pausing and picking up where I left of, like the backend integration (sorry, you only get local storage for now), some fancy UI upgrades and smaller screens support. This project was burning me out, and I needed to finish it fast.
 
 I am still undecided on why I like spirographs so much. I never grew up with them, nor have I played with a real one. It might be that it is one of not so many things that gives out ridiculously beautiful shapes with so little math. Anyway, enough with the intro, let's see what random stuff I thought worth being documented.
 
@@ -17,15 +17,15 @@ I am still undecided on why I like spirographs so much. I never grew up with the
 
 This spirograph generator contains 2 modes:
 
-1. The **animated mode** draws an n-nested levels of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your cpu is not very powerful for single-threaded operations. I didn't take time to optimize it as the allure of this next feature was too strong.
+1. The **animated mode** draws an n-nested levels of cycloids at 60fps. This is done on the main thread, so the frames could dip significantly if your CPU is not very powerful for single-threaded operations. I didn't take the time to optimize it as the allure of this next feature was too strong.
 
-2. The **instant mode**, the reason I made this project in the first place. This mode draws very, very fast. It also guarantees that for a Global Time Scale of 1 (description below), the drawn shape is guarantee to be a complete closed-shape (ex. an ellipse, not a U-Shaped curvee). The algorithms are explored below, along with other implementation details.
+2. The **instant mode**, is whehre fun stuff happens. This mode draws very, very fast. It also guarantees that for a Global Time Scale of 1 (description below), the drawn shape is guaranteed to be a complete, closed-shape (ex. an ellipse, not a U-Shaped curve). The algorithms are explored below, along with other implementation details.
 
 # Parameters
 
 ## Local (affects the selected cycloid only)
 
-`rodLengthScale`: 1 means the rod is the same length as the cycloid it belongs to. This rod extends the physical boundary in that you cannot put your pencil outside of a circle, only inide of it; more precisely, the position of drawn point cannot be farther from the origin than the radius of the circle.
+`rodLengthScale`: 1 means the rod is the same length as the cycloid it belongs to. This rod extends the physical boundary in that for a real spirograph, you cannot put your pencil outside of a circle, only inide of it. The position of traced path cannot be more than c.x + c.r or c.y + c.r, where x and y are the circle's origin, and r the radius of the circle.
 
 `cycloidSpeedScale`: the ratio of the surface covered as the child cycloid moves around the parent. The value of 1 means there are no sliding (physically accurate).
 
@@ -39,15 +39,15 @@ This spirograph generator contains 2 modes:
 
 ## Global (affects every cycloids)
 
-`globalTimeStep`: controls the iterations needed until an image is fully drawn. The higher the value, the lower the iterations...and resolution. However, set the value too low, and the image will take too long to be drawn in the animated mode, and use more power in the instant mode (more iterations, so, also longer, but not as long as the animated mode).
+`globalTimeStep`: controls the iterations needed until an image is fully drawn. The higher the value, the lower the iterations...and resolution. However, set the value too low, and the image will take too long to be drawn in the animated mode, and use more processing power in the instant mode (more iterations, so, still  longer, but not as long as the animated mode).
 
-`clearTracedPathOnParamsChanged`: whether or not to clear the already-traced paths in animated mode when the paramters are changed.
+`clearTracedPathOnParamsChanged`: whether or not to clear the already-traced paths in animated mode when the parameters are changed.
 
 `outerBoundingCircleRadius`: the radius of the base circle.
 
-`showAllCycloids`: whether or not to show all cycloids (the circles). Works only in animated mode.
+`showAllCycloids`: whether or not to show all cycloids (the circles). Works only in the animated mode.
 
-`traceAllCycloids`: whether or not to trace the paths of all cycloids. Works only in animated mode.
+`traceAllCycloids`: whether or not to trace the paths of all cycloids. Works only in the animated mode.
 
 `displayedCycloid`: the cycloid whose path is currently being traced.
 
@@ -57,41 +57,41 @@ This spirograph generator contains 2 modes:
 
 ![Example 5](example-images/animated.gif)
 
-The simplest of modes, this mode adds up the position of the current point every frame based on the current parameters of each cycloids, adding one on top of another. Nothing much to mention, I didn't even bother optimizing this and move it to another worker thread. The math behind this is simple, and will be explained in the next part. Exciting things happen there, not here!
+The simplest of the two modes. This mode adds up the position of the current point for every frame based on the current parameters of each cycloid, adding one on top of another. Nothing much to mention, I didn't even bother optimizing this (moving it to another worker thread and whatnot). The math behind this is simple and will be explained in the next part. Fun things happen there, not here!
 
 ## Instant
 
 ![Example 6](example-images/instant1.gif)
 
-This is where most of the work went. The rendering is done in the worker thread with an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, as fast as possble.
+This is where most of the work went. The rendering is done in the worker thread and painted onto an offscreen canvas. Wasm and WebGL are both used here alongside a very interesting algorithm(for me) to help make sure that we get the full, or the contour of the shape, depending on the `globalTimeStep` property, **as fast as possble**.
 
 **A brief overview of how it's done**, more detial below: grab all properties from the main thread, pass them all to the worker thread, the worker thread then sends the parameters to Rust to calculate how many points to draw for a complete shape, then calculates the position for each of the points, again, with Rust, and then pass that back to JavaScript. Now, with the positions of the vertices available in memory -- hopefully not too many points until the heap oveflows :p -- we pass all of that to WebGL's `drawArrays` and all lines are drawn at once.
 
 ### The Algorithm
 
-The problem with numeric methods is that it's long, and you don't know when it'll end, or if the end is really the end?! Too few iterations and the shape won't be complete, and too many means wasting computation time.
+The problem with the numerical method like the one in the animated mode is that it's long, and you don't know when it'll end, or if the end is really the end?! Too few iterations and the shape won't be complete, and too many means wasting computation time.
 
 Let's say we check
 
 ```ts
-if (currentPoint.xy === beginningPoint.xy) {
+if (currentPoint.x === beginningPoint.x && currentPiont.y === beginningPoint.y) {
   draw();
 }
 ```
 
-every iteration, what's going to happen is that for shapes other than simple geometric 2d shapes, this will not draw the full shape. Given complex parameters, the traced line will cross itself and the check will fail.
+every iteration. What will happen is that for shapes other than simple geometric 2D shapes, this will most likely not result in a full shape. Given complex enough parameters, the traced line will cross itself before the shape completes. 
 
-Okay, let's say we now just keep drawing for a million iterations, that'll for sure get the complete shape, right? Right, but we do not want to over draw a shape, because our goal here is to draw complex and beautiful shapes as fast as possible.
+Okay, let's say we now just keep drawing for a million iterations, that'll for sure get the complete shape, right? Right, but we do not want to over draw a shape, because our goal here is to draw complex and beautiful shapes **as fast as possible**.
 
-**Our solution** would be to find out how many iterations each shape need.
+**Our solution** would be to find out how many iterations each shape need based on the existing parameters.
 
-Let's begin with the formula. I'll be showing both the implementation both in code and math.
+Let's begin with the formula. I'll be showing the implementation both in code and math.
 
-**The math part is what I used for the instant mode and the code for the animated mode.**
+---
 
-This is the set up code, anything I show further is implied that it's done within the second script tag. Copy and paste the following snippet in an html file.
+This is the set up code, anything I show further is implied that it's done within the second script tag. Copy and paste the following snippet in an html file if you are interested, else feel free to just read through.
 
-Nevermind what they do, we'll only be using two functions, `begin`, and `drawCircle`.
+Nevermind what they do. We'll only be using two functions, `begin`, and `drawCircle`.
 
 ```html
 <!-- Just copy and paste this boilerplate code -->
@@ -158,13 +158,12 @@ Let's grab a point of size $r_{1}$ and make it rotate around an imaginary circle
 
 $r_{1}$ is not yet used in the equation, but we need it to draw the orbiting circle.
 
-$$ r\_{0}cos(\theta) $$
+$$ r_{0}cos(\theta) $$
 
-$$ r\_{0}sin(\theta) $$
+$$ r_{0}sin(\theta) $$
 
 ```js
-// Create 2 radii, can be of any size, just make the first one
-// larger than the second
+// Create 2 radii, can be of any size, just make the first one larger than the second.
 const r0 = 600;
 const r1 = 50;
 
@@ -184,15 +183,14 @@ begin((theta) => {
 
 ---
 
-If we draw the base circle, we'll see that the orbiting circle is drawn on top of the edge of the base circle, we have to move it out by its own radius $r_{1}$.
+If we draw the base circle, we'll see that the orbiting circle is sliding on the edge the edge of the base circle, rather than _inside_ or _outside_. Let's make it move out for now. 
 
 ![Circle rotating around another traced](example-images/circle-moveout.png)
 
-Then we'll end up with the following equation.
 
-$$ cos(\theta)(r*{0} + r*{1}) $$
+$$ cos(\theta)(r_{0} + r_{1}) $$
 
-$$ sin(\theta)(r*{0} + r*{1}) $$
+$$ sin(\theta)(r_{0} + r_{1}) $$
 
 ```js
 const r0 = 600;
@@ -223,15 +221,15 @@ begin((theta) => {
 
 ---
 
-Having two is nice, but let's try having 3 levels. I'll reduce the radius of the base circle a bit.
+Having two is nice, but let's try having 3 levels. I'll reduce the radius of the base circle a bit as well.
 
-While drawing the second circle, we can imagine a long rod extending from the mid of the base circle to the center of the second circle. With this in mind, we can say that the second circle's position is equal to the base circle's position (which is just the screen center, or 0) plus the equation above.
+While drawing the second circle, we can imagine a long rod extending from the middle of the base circle to the center of the second circle. With this in mind, we can say that the second circle's center is equal to the base circle's position (which is just the screen center, or 0) plus the equation above.
 
 This means that the third circle's position of radius $r_{2}$ must also be the position of the second circle plus the same formula, but substituting the radii.
 
-$$ \text{thirdCirclePosition.x} = \text{secondCirclePosition.x} + cos(\theta)(r*{1} + r*{2}) $$
+$$ \text{thirdCirclePosition.x} = \text{secondCirclePosition.x} + cos(\theta)(r_{1} + r_{2}) $$
 
-$$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r*{1} + r*{2}) $$
+$$ \text{thirdCirclePosition.y} = \text{secondCirclePosition.y} + sin(\theta)(r_{1} + r_{2}) $$
 
 ```js
 const r0 = 300;
@@ -269,9 +267,9 @@ begin((theta) => {
 
 We now see a recurring pattern and can generalize a bit with a for loop. An example with only p.x
 
-$$ cos(\theta)(r*{0} + r*{1}) + cos(\theta)(r*{1} + r*{2}) + cos(\theta)(r*{r2} + r*{3}) \cdots cos(\theta)(r*{i-1} + r*{i}) $$
+$$ cos(\theta)(r_{0} + r_{1}) + cos(\theta)(r_{1} + r_{2}) + cos(\theta)(r_{2} + r_{3}) \cdots cos(\theta)(r_{i-1} + r_{i}) $$
 
-$$ \sum*{i=1}^n \cos(\theta)(r*{i-1} + r\_{i}) $$
+$$ \sum_{i=1}^n \cos(\theta)(r_{i-1} + r_{i}) $$
 
 ```js
 const radii = [300, 50, 20];
@@ -339,9 +337,9 @@ begin((theta) => {
 
 ---
 
-If we trace out the path of the outermost circle, we'll now have...just a bigger circle, which, honestly, is not exciting.
+If we trace out the path of the outermost circle, we'll now have...just a bigger circle. Not very exciting.
 
-With HTML5 Canvas, we can trace the path by having another canvas that we send the draw data to, but that's a bit too much for this demonstration, so we'll just trace only the outermost circle and stop clearing the canvas.
+With HTML5 Canvas, we can trace the path by having another canvas that we send the draw data to, but that's a bit too much for this tiny demonstration, so we'll just trace only the outermost circle and stop clearing the canvas.
 
 ```js
 const radii = [300, 150, 75, 50, 30];
@@ -374,9 +372,9 @@ begin((theta) => {
 
 ---
 
-Now for the really exciting part, because the rotating of every circle is now synced. They all share the same theta value. If we multiple different scalars $\lambda_{i}$ to each of the level, we can make them rotate around their parents at different speed.
+Now for the really exciting part. The rotation of every circle is synced right now. They all share the same theta value. If we use different scalar values $\lambda_{i}$ for of the levels, we can make them rotate around their parents at different speed.
 
-$$ \sum*{i=1}^n \cos(\theta\lambda*{i})(r*{i-1} + r*{i}) $$
+$$ \sum_{i=1}^n \cos(\theta\lambda_{i})(r_{i-1} + r_{i}) $$
 
 ```js
 const radii = [300, 150, 75, 50, 30];
@@ -419,16 +417,13 @@ begin((theta) => {
 
 Now our equation is almost complete! All that's left is to just make sure that our circles can rotate in both directions. Making something rotate in the other direction is simply switching `sin` for `cos` and vice versa for both `x` and `y`.
 
-But, but, doing it with if and else would be fine, but the difference between a `sin` and a `cos` is only
-$\frac{\pi}{2}$.
+The difference between a `sin` and a `cos` is only $\frac{\pi}{2}$.
 
 ![sin-and-cos-difference](example-images/sin-and-cos-difference.png)
 
-This means that we can just assign a constant $k$ where $ k \in \{ 0, 1\} $
+This means that we can just assign a constant $k$ where $ k \in \{ 0, 1\} $ then multiply $\frac{\pi}{2}$ by $k$ and set $k$ to zero or one when we want it to go the opposite direction.
 
-We multiply $\frac{\pi}{2}$ by $k$ and set $k$ to zero or one when we want it to go the opposite direction.
-
-In JavaScript, `true` is 1 and `false` is 0, so we can just have a boolean paramter that determines whether to rotate counterclockwise or clockwise.
+This is made easy by one of JavaScipt's quirks. `true` is 1 and `false` is 0, so we can just multiply the offset by the boolean parameter to have the circle rotate _clockwise_ or _counterclockwise_.
 
 ```js
 const radii = [300, 150, 75, 50, 30];
@@ -469,19 +464,19 @@ Going clockwise or counterclockwise gives out different shapes. Give it a try!
 
 With all of our building blocks complete, the equation is now
 
-$$ p{x} = \sum_{i=1}^{n} \cos(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
-$$ p{y} = \sum_{i=1}^{n} \sin(\theta \lambda{i} - \frac{\pi}{2}k)(r{i-1} + r{i}), k \in \{1, 0\} $$
+$$ p_{x} = \sum_{i=1}^{n} \cos(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
+$$ p_{y} = \sum_{i=1}^{n} \sin(\theta \lambda_{i} - \frac{\pi}{2}k)(r_{i-1} + r_{i}), k \in \{1, 0\} $$
 
 Where $p_{x}$ and $p_{y}$ represent the final positions of the current point. $n$ is the total number of cycloids considered in the calculation. $k$ is a constant with a value of either 1 or 0, used to offset the cosine function and determine whether the cycloid is inside or outside of its parent. $r_{i}$ and $r_{i - 1}$ are the radii of the current cycloid and its parent. $\theta$ is the current angle of the cycloid. And $\lambda_{i}$ is a scalar that determines the speed at which the current cycloid moves around its parent.
 
-And that, essentially, was all there is to formula. It's very simple to derive, and the code is not too complicated (I did the final code in Rust to optimize some stuff, but core idea is still the same).
+Overall, it's very simple to derive, and the code is not too complicated (I did the final code in Rust to optimize some stuff, but core idea is still the same).
 
 ---
 
 ## Calculating the Iterations
 
 Okay. Now we know how to sum up the final position of our points. But we still don't know how many iterations we need.
-Let's first think about each rotation as just 2 different pair of 2 trig functions ${cos(x)}$ and ${cos(0.5x)}$, and ${cos(2x)}$ and ${cos(3x)}$.
+Let's first think about each rotation as just 2 different pairs of 2 trig functions ${cos(x)}$ and ${cos(0.5x)}$, and ${cos(2x)}$ and ${cos(3x)}$.
 
 ![cos(x) and cos(0.5x)](./example-images/2cosines.png)
 
@@ -489,31 +484,29 @@ Let's first think about each rotation as just 2 different pair of 2 trig functio
 
 In the case of a cosine, the second time $cos(\theta_{1})$ and $cos(\theta_{2})$ equal ${1}$ is the moment we know we need to stop the iteration.
 
-So this means that we can just keep looping until we hit ${1}$...right?:
+Does this mean, then, that we can just keep looping until we hit ${1}$?
 
 ```ts
 const stepsNeededForEachIteration = 60;
 const k = Math.PI / 2 / stepsNeededForEachIteration;
-for (let i = 0; i < Number.Infinity; i++) {
-  const theta = 0.289;
-  const phi = 0.948;
-  const whateverGreekLetterIsNext = 2.99;
-  while (
-    Math.cos(theta) === 1 &&
-    Math.cos(phi) === 1 &&
-    Math.cos(whateverGreekLetterIsNext) === 1
-  ) {
-    draw();
-    theta += k;
-  }
+const thetaScale = 0.289;
+const phiScale = 0.948;
+const whateverGreekLetterIsNextScale = 2.99;
+while (
+  Math.cos(theta * thetaScale) !== 1 &&
+  Math.cos(theta * phiScle) !== 1 &&
+  Math.cos(theta * whateverGreekLetterIsNext) !== 1
+) {
+  draw();
+  theta += k;
 }
 ```
 
-Of course not. Like, we are doing numerical integration, this means that there is a chance ${\theta + k}$ will never be equal to one, especially when there are a lot of decimal places and when there are more than a few scalars. We NEED to find out ahead of time, and the algorithm must not be _O(?)_ where ${?}$ is who the hell knows when it'll end. We need something FASTER.
+Of course not. Like, we are doing numerical integration. There is a chance ${\theta + k}$ will never be equal to one, especially when there are a lot of decimal places with multiple scalars. We NEED to find out ahead of time, and the algorithm must not be _$O(\infty)$_. We need something FASTER.
 
 There are actually two things that could help us here from our elementary math classes: gcd and lcm.
 
-We would like to find out basically when ${n}$ numbers "collide", which is a perfect problem from our two friends! But the question now is...which one do we need?
+We would like to find out basically when ${n}$ numbers "collide" -- which is a perfect problem for our two friends! But the question now is...which one to use?
 
 A refresher: lcm returns a number that is divisible by each of the numbers passed as argument, and gcd returns the number that all input numbers are divisible by.
 
@@ -548,7 +541,7 @@ $$ {cos(\frac{1}{2}x), cos(\frac{1}{4})}, cos(\frac{1}{8}) $$
 
 ![cos(1/2), cos(1/4), and cos(1/8)](example-images/cosine_8x.png)
 
-Now, I'm not sure if this is how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator.
+Now, I'm pretty sure this is not how people prove their mathmatical reasoning, but I can clearly see that our base oscillation of ${2\pi}$ is scaled by the `lcm` of the denominator.
 
 ```ts
 lcm(2, 4); // 4
@@ -581,13 +574,13 @@ And this works for all numbers?? Yes it does!. However, we are doing `gcd` twice
 
 So if we walk through the calculation.
 
-Give the 2 numbers to the function.
+Give the numbers to the function.
 
 $$ {f(0.5, 0.25, 0.125)} $$
 
-Turn into decimal numbers.
+Turn into decimals.
 
-$$ {\frac{0.5 _ 10}{10}, \frac{0.25 _ 100}{100}, \frac{0.125 * 100}{100}} $$
+$$ {\frac{0.5 * 10}{10}, \frac{0.25 * 100}{100}, \frac{0.125 * 100}{100}} $$
 
 $$ {\frac{5}{10}, \frac{25}{100}, \frac{125}{1000}} $$
 
@@ -601,11 +594,11 @@ $$ {lcm(2 ,4, 8)} $$
 
 Which is basically
 
-$$ {x_1 = \frac{|2 * 4|}{gcd(2 ,4)}} $$
+$$ {x_{1} = \frac{|2 * 4|}{gcd(2 ,4)}} $$
 
-$$ {x_2 = \frac{|x_1 * 8|}{gcd(x_1 ,8)}} $$
+$$ {x_{2} = \frac{|x_{1} * 8|}{gcd(x_{1} ,8)}} $$
 
-$$ {x_2 = 8} $$
+$$ {x_{2} = 8} $$
 
 Did you notice something? I didn't. My math genius friend had to point it out to me. In the second steps, we already have all the information we need, after having turned everything into decimals.
 
@@ -625,7 +618,7 @@ The max decimal of the 3 is 0.125, so 3 zeros.
 
 $$ {m = 1000} $$
 
-$$ {0.5 _ m, 0.25 _ m, 0.125 * m} $$
+$$ {0.5m, 0.25m, 0.125m} $$
 
 $$ {500, 250, 125} $$
 
@@ -645,7 +638,7 @@ $$ \forall n \in \text{numbers}, n \gets n \times m $$
 
 $$ \text{result} = {m / gcd(numbers)} $$
 
-Now we have the number of points we neeed and the way for us to some up the final position of each of the point to be drawn. Now we can just loop over those points like and draw those points!
+Now we have the number of points we neeed and the way for us to some up the final position of each of the point to be drawn. Now we can just loop over those points and begin drawing!
 
 ```ts
 // For a more detailed version, look at calc_points/lib.rs
@@ -660,9 +653,9 @@ for (let i = 0; i < result; i++) {
 }
 ```
 
-That looks good and all, but just encountered another problem. Drawing for thousands, tens or hundreds of thousands, or million times is slow...very slow.
+That looks good and all, but there is yet another problem. Drawing for thousands, tens or hundreds of thousands, or a million times is slow...very slow.
 
-So far, I didn't talk about how we implement the `draw` method. If the `draw` method were to be implemented like this:
+So far, I didn't talk about how we implement the `draw` method. If it were to be implemented like this:
 
 ```ts
 function draw(p) {
@@ -673,7 +666,7 @@ function draw(p) {
 }
 ```
 
-it will just take forever. We want that smoothness. And this is where WebGL comes in.
+it will just take forever. We need WebGL to help us solve this problem.
 
 # WebGL
 
@@ -687,9 +680,9 @@ export default interface Renderer {
 }
 ```
 
-The `render` method is called everytime there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the renderer takes too long.
+The `render` method is called every time there is a change to the parameters, a resize happens, a transformation is applied to the matrix (zoom, pan), or the focused cycloid has changed. I could have gone with caching the rendered output and added a debounce or throttle wrapper to minimize the rendering time, but doing that would mean losing the ability to see the change animating as the parameters change in real-time. Instead, the `globalTimeStep` property can be used to help improve the performance, when the rendering takes too long.
 
-In the render method, I used webGL's drawElements or drawArrays to help me draw all the lines (2 points) all at once. This means that I have to put the points into an array and then pass them all to the renderer.
+In the `render` method, I used webGL's `drawArrays` to help me draw all the lines (2 points) all at once. This means that I have to put the points into an array and then pass them all to the renderer.
 
 ```ts
 const points = [];
@@ -722,7 +715,7 @@ Now we have reduced the rendering time from seconds to a tenth or a hundredth of
 
 ## Using Debouncing With an Interval of 0
 
-A cool trick I found while building the renderer is that using a debouncer with a delay of 0 will make your animation run smoother as it "silently" discards render calls that comes in too fast. In other words, a group of consecutive mousemove events are aggregated and trigger the render call just once.
+A cool trick I found while building the renderer is that using a debouncer with a delay of 0 will make your animation run smoother as it "silently" discards render calls that comes in too fast. In other words, a group of consecutive mousemove events are aggregated and the `render` method is invoked just once.
 
 I know deboucning is not new, but I have never thought about how debouncing could be useful when its interval is 0. Literally, the core concept is to postpone (aggregate, whatever) events until after a certain interval. While 0 might sound like we simply never postpone...we actually kind of do. Let's look at some code.
 
@@ -1350,12 +1343,12 @@ That was a lot of work for a feature that I didn't even complete (still quite bu
 
 ### Wrapping up
 
-So this, as we have seen, is more an exploratory endeavor than anything else.
+So has been more of an exploratory endeavor than anything else.
 
-I don't think I will be using a lot of what I learned here anywhere. I have to admit that the project itself is so (pointlessly) niche at times.
+I don't think I will be using a lot of what I learned here. I have to admit that the project itself is so (pointlessly) niche at times.
 
-Nontheless, this journey down rabbit holes have exposed me to several cool ideas and discoveries I would not have otherwise, if ever, stumbled upon.
+Nontheless, this journey down rabbit holes have introduced me to several cool tricks and discoveries I would not have otherwise, if ever, stumbled upon.
 
 All the math and the implementation details I talked about could have been left out of this monolithic blog and you will still get the idea, but I like diving deep and deep-diving talks/blogs really tick all my learning boxes, so I figured I'd make one as well.
 
-I hope this journey has been as enlightening for you as it has been for me.
+I hope this journey has been as enlightening for you as it has been for me. See you on the next one.
