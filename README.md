@@ -747,12 +747,13 @@ This is the rendering code in a nutshell.
   }
 ```
 
-When the user moves the cursor too fast, the mousemove events will come in droves. We are rendering every frame for every mouse event, so if we do not aggregate our events, those `x` number of mouse events, where `x` is some relatively beefy numbers like 10, will trigger exactly 10 rendering calls -- really expensive. If we aggregate, those 10 events become just 1 render call.
+When the user moves the cursor too fast, the mousemove events will come in droves. We call the `render` method for every mouse event. If we do not aggregate our events, those `x` number of mouse events, where `x` is some relatively beefy numbers like 10, will trigger exactly 10 rendering calls -- really expensive. If we aggregate, those 10 events can become just 1 render call.
 
-This helps a lot with complex shapes as it helps a lot to keep the interaction, like zooming and panning smooth when the `globalTimeStep` is low.
-Instead of rendering every points from `e.x = 10` to `e.x = 20`, the system might render only `e.x = 10` and once again at `e.x = 20`. Let's say each render takes exactly 1 second, the first case means the total render time is 10 seconds, while the second, just 2 seconds. Sure, we missed frames, but the system will fell A LOT more responsive, which is actually (subjectively) more important.
+This helps a lot with complex shapes as it reduces the total rendering time, especially when the user pans very fast.
 
-Now, if you're unlucky, some of the events that slipped through `setTimeout` will not be displayed on screen. They will be "rendered", but not "displayed". We need to sync the frame rate of the sreen to the render events. We can do this by buffering each render with `requestAnimationFrame` like so:
+Instead of rendering every point from `e.x = 10` to `e.x = 20`, the system might render only `e.x = 10` and once again at `e.x = 20`. Let's say each render takes exactly 1 second, the first case means the total render time is 10 seconds, while the second is just 2 seconds. Sure, we missed frames, but the system will feel A LOT more responsive, which is actually (subjectively) more important.
+
+Now, if you're unlucky, some of the events that slipped through `setTimeout` will not be displayed on screen. They will be "rendered", but not "displayed". We need to sync the frame rate of the screen to the render events. We can do this by buffering each render with `requestAnimationFrame` like so:
 
 ```js
   render() {
@@ -761,7 +762,7 @@ Now, if you're unlucky, some of the events that slipped through `setTimeout` wil
   }
 ```
 
-In most cases, this won't happen. We have already debounced a lot of consecutive events, so the ones that slipped through won't really be that big of a deal, but just in case...and it's a good practice anyway to keep your rendering and the refresh rate in sync.
+In most cases, this won't happen. We have already debounced a lot of the consecutive events, so the ones that slipped through won't really be that big of a deal.
 
 ### With Debouncing
 
@@ -775,11 +776,13 @@ _Notice how those delays cause our events to accumulate, which cause event more 
 
 # WASM
 
-Why Rust-WASM and not just JavaScript?
+Why Rust-WASM and not just JavaScript, you may ask.
 
-After having profiled multiple times (like a lot), WASM seems to gives better results when dealing with lower iterations. With larger iterations (~500,000 or more), JavaScript's JIT compiler comes in and steals the victory. With globalTimeStep being an option, and most combinations of cycloidSpeedScale result in iterations less than the limit that I found, I see it fitting that we go with Rust for this small calculation util. Hopefully, future improvements made to WASM will also give this function some performance boost as well.
+After having profiled multiple times (like a lot), WASM seems to gives better results when dealing with lower iterations. With larger iterations (~500,000 or more), JavaScript's JIT compiler comes in and steals the victory. With globalTimeStep being an option, and most combinations of cycloidSpeedScale result in iterations less than the limit that I found, I see it fitting that we go with Rust for this small calculation util. 
 
-The wasm modules can be in charge of finding out how many points we need to draw, and the positions for each of the points. Had we not moved the rendering to WebGL, this wouldn't have been possible, as we would have needed to call a `draw` method within each loop. But now that we don't, we can do this:
+Hopefully, future improvements made to WASM will also give this function some performance boost as well.
+
+The wasm modules can be in charge of finding out how many points we need to draw, and the positions for each of the points. Had we not moved the rendering to WebGL, this wouldn't have been possible. We would have needed to call a `draw` method within each loop. But now that we don't, we can do this:
 
 ```rs
 // shortened version of calc_lines/lib.rs
@@ -807,17 +810,13 @@ for _ in 0..points {
 arr // return result to JavaScript
 ```
 
-Could I have made this feature in JavaScript? Yes! Actually, the feature was made in JavaScript and then I later switched to Rust. JavaScript was actually not slow at all and I'm sure that had I not made the changed, the rendering would appear to the eyes just as fast. But, hey...I learned Rust!
+Could I have made this feature in JavaScript? Yes! Actually, the feature was made in JavaScript and then I later switched to Rust. JavaScript was actually not slow at all and I'm sure that had I not made the changed, the rendering would appear to the eyes just as fast. But, hey...I learned Rust! (and I get to put WASM in my portfolio :p)
 
-That concludes all the stuff about rendering our result as fast as possible, and it's very beautiful, I have to admit.
-
-But oh no, our journey does not end here. There was more to do.
+Alright, almost at the end. There's a bit more to do.
 
 # Zooming and Panning
 
 So our drawn spirograph can get very, very intricate. Sometimes, we just want to be able to zoom in and see stuff!
-
-Like this one.
 
 ![example5](example-images/ex5.png)
 
@@ -825,7 +824,7 @@ Those four corners, top, left, button, right, looks really interesting. Would be
 
 ![zooming on ex5](example-images/ex5.gif)
 
-Oh that's right. We CAN already do that! Unfortunately, walking through the zooming and panning would take too long. This article is already too long! For the zoom and pan, I intended to make a library out of it. A framework-agnostic library that just concerns itself with zoom and pan logic. Nothing else. Should be compatible with webgl, canvas, svg, etc. So far, I think I'm more than half way there and it needs some more work. I'll write a separate article documenting my journey there.
+Oh that's right. We CAN already do that! I am building another zoom and pan library though. That is a rabbit hole worth exploring on its own. This article is already too long!
 
 # Relationship Editor
 
@@ -833,7 +832,7 @@ Ok one last thing.
 
 ![relationship editor](example-images/relationship_editor.png)
 
-There is this thing here, which is still a bit (just a bit) buggy, but I was like, screw this, I'm moving on to other projects.
+There is this thing buggy feature that I didn't manage to finish. I was so tired of this project and wanted to move on. However, there are some things I think might be worth talking about though.
 
 The relationship editor allows you to re-define the parent-child cycloid between each of the cycloid. This definitely called for some kind of tree-like data structres.
 
@@ -847,9 +846,9 @@ _instant mode_
 
 ## The UI
 
-I must admit I have made a mistake of drawing it with SVG. This made the interaction difficult to handle because now I have to involve the DOM API and CSS. This introduced some bugs that I didn't bother fixing.
+I must admit I have made a mistake of drawing it with SVG. This made the interaction difficult to handle because now I have to involve the DOM API and CSS. This involved another level of complication to the logic + some bugs (that I didn't bother fixing).
 
-I have a `generateNode` hook that is called everytime the menu is switched to a relationship editor. Within the hook, I have a sort of a NodeLevel manager that keeps track of the "level" each node resides in. The level is determined by having each node recursively travel up its chain until it meets the base node, the `outerBoundingCircle`.
+I have a `generateNode` hook that is called everytime the control is switched to a relationship editor. Within the hook, I have a sort of a NodeLevel manager that keeps track of the "level" each node resides in. The level is determined by having each node recursively travel up its chain until it meets the base node, the `outerBoundingCircle`.
 
 ```ts
 // getDrawLevel.ts
@@ -861,14 +860,17 @@ function getCurrentDrawLevel(
   currentId: number,
   cache: Record<number, number> // For memoization
 ): number {
-  // If has gone through this parent before, return immediately with the parent's level.
+  // If has gone through this parent before, return immediately with the parent's level + the counter we got so far.
   if (cache[parentId]) {
     return levelCounter + cache[parentId];
   }
+  // -1 is the base level.
   if (parentId === -1) {
     cache[currentId] = levelCounter;
     return levelCounter;
   }
+
+  // grab parent and grandparent param for the recursive call.
   let parentParams =
     cycloidControls.current.cycloidManager.getSingleCycloidParamFromId(
       parentId
@@ -884,7 +886,7 @@ function getCurrentDrawLevel(
   );
 ```
 
-Once we know the level of each of the nodes, we specify an arbitrary space between each level, **calculate the positions**, and then we can begin placing them.
+Once we know the level of each nodes, we specify an arbitrary space between each level, **calculate the positions**, and then we can begin placing them.
 
 ## Calculating the Positions
 
@@ -898,7 +900,7 @@ We first need to be able to do this:
 
 ![node positioning simple](example-images/ndoe_position_2.png)
 
-For any ${n}$ level, I have defined the positioning like this
+For any ${n}$ level, the position can be defined like this.
 
 ```ts
 for (let i = 0; i < thisLevelNodeCount; i++) {
@@ -925,7 +927,7 @@ And then we'll just have to make sure that when we place the nodes, each child s
 nodesOnLevel.sort((a, b) => (a.parentId ?? -1) - (b.parentId ?? -1));
 ```
 
-Now all is good and well, with a lot of nodes, when we traced the lines, they look funny sometimes, but that's good enough for out use case.
+When we traced the lines with a lot of nodes, they sometimes look funny. But that is good enough for our simple use case.
 
 ![Nodes weird positioning](example-images/weirdly%20positioned%20nodes.png)
 
@@ -933,7 +935,7 @@ Now all is good and well, with a lot of nodes, when we traced the lines, they lo
 
 ### Placing the Lines
 
-Let's do another **interactive** set of examples.
+Let's do another interactive set of examples.
 
 Here's the **boilerplate**, paste this in an html file.
 
@@ -1110,17 +1112,17 @@ LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
 
 ![example-of-line-between-parent-and-child-circle](example-images/node-child-node-parent-connected.png)
 
----
-
-This works, on the web, my nodes will be stroked, not filled (see the pictures above). So I will need to make sure that the lines don't cross the edge of the circle.
-
 ```js
-childNodeCount = 8; // so to some number more than 1
+childNodeCount = 8; // increase it a bit to some number more than 1
 ```
 
 ![example-of-parent-node-having-more-than-1-child-node](example-images/parent-node-has-more-than-1-child-node.png)
 
-To fix this, we can offset the parent's y by the parent's radius $\text{parent.r}$, and each of the children by negative radius $\text-children.radius$
+---
+
+This works. But on the web, my nodes will be stroked, not filled, so, the lines must not cross the edge of the circle. 
+
+We can offset the parent's `y` by the its radius $\text{parent.r}$, and each of the children by negative radius $\text{children.radius}$
 
 ```js
 LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
@@ -1142,23 +1144,25 @@ LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
 
 ---
 
-What I want now is for the lines to slowly climb along the side of the parent circle as the number of children increases. Right now every single line from each child connects directly to the bottom center of parent. I am not satisfied 😡.
+What I want now is for the lines to slowly climb along the side of the parent circle as the number of children increases. Right now every single line from each child connects directly to the bottom center of parent. 
 
-Let `c.x` and `c.y` be the point of the line under the parent and `p.x` and `p.y` be the point above our child circle. We can say that the positon of `c` in both axes is influenced by the `x` position of `p`. Let's focus on the x-axis first, as it's the easiest.
+me.status !== Status.satisfied 😡.
 
-For `c.x`, because we want it to be a bit behind at all times, we can say that it is `c.y` times some arbitrary scalar `k`. That scalar is obtained by adding to `x2` the difference at that point between `x1` and `x2` times k.
+Let `c.x` and `c.y` be the point of the line under the parent and `p.x` and `p.y` be the point above our child circle. We can say that `p` in both axes is influenced by the `x` position of `c`. Let's focus on the x-axis first, as it's the easiest. 
+
+We can begin by lerping the `x` position.
 
 ```js
 // k can be anything. < 0.5 looks nice.
 const k = 0.2;
 top: {
-  x: x2 + (x1 - x2) * 0.2;
+  x: x2 + (x1 - x2) * 0.2; 
 }
 ```
 
 ![simple-tree-with-scalar](example-images/simple-tree-with-scalar.png)
 
-then we'll clamp the value so that the line never extend beyond the diameter of the parent.
+Then clamp the value so that the line never extend beyond the diameter of the parent.
 
 ```js
 const k = 0.2;
@@ -1184,7 +1188,7 @@ Now we have another problem. Because a lot of them spread beyond the diameter of
 
 Now let's take a look at how we can solve for `y`.
 
-We need to make sure that the y offset is such, that `c.x` and `c.y` is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with the curvature of the circle.
+We need to make sure that the y offset is such, that `p.x` and `p.y` is always equal to some point of the parent circle's edge. We need something that will help keep our y-offset in sync with the curvature of the circle.
 
 This calls for an equation that I never thought I had to use: the circle equation.
 
@@ -1192,14 +1196,14 @@ $$ (x − h)^2 + (y − k)^2 = r^2 $$
 
 This old friend from elementary school describes the relationship between the center point of a circle `(h, k)`, any point on the circle `(x, y)`, and the circle's radius `r`.
 
-We already know everything in that equation except y. Let's ask Wolfram Alpha to do the math for us and [solve for y](https://www.wolframalpha.com/input?i=%28x+%E2%88%92+h%29%5E2+%2B+%28y+%E2%88%92+k%29%5E2+%3D+r%5E2+This+equation%2C+but+solve+for+y).
+We already know everything in that equation except `y`. So here's the same equation, but solved for `y`.
 
 $$ y = \sqrt{-h^2 + 2 h x + r^2 - x^2} + k $$
 $$ y = k - \sqrt{-h^2 + 2 h x + r^2 - x^2} $$
 
-We have two equations, one for the top half, and the other, the bottom half of the circle. We need the bottom half, but the canvas's `y` axis is flipped, so we'll use the top one.
+We have two equations, one for the top half, and the other for the bottom half of the circle. What we are doing petains the bottom half, but the canvas's `y` axis is flipped, so we'll use the top one.
 
-We have to be careful though, because the value inside the square root will become negative when the tip of the line crosses one half into the other.
+We have to be careful though; the value inside the square root will become negative when the tip of the line crosses one half into the other.
 
 This is a bit difficult to visualize, let's take a look at [this desmos demo](https://www.desmos.com/calculator/3zpeziejs7).
 
@@ -1211,7 +1215,7 @@ There might be more elegant math solutions, but for now, we'll just use JavaScri
 
 $$ y = \sqrt{\max(-h^2 + 2 h x + r^2 - x^2, 0)} + k $$
 
-Pluggin that into our code we get:
+Plug that into our code we get:
 
 ```js
 LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
@@ -1255,7 +1259,7 @@ LevelFactory.drawNodes(childNodeCount, ctx, (node) => {
 
 ---
 
-Now it is very clear that the lines that connect to the parent are not evenly distributed with clamping. We need to make their x positions pan out slower. Maybe make it logarithmically slower.
+Now it is very clear that the lines that connect to the parent are not evenly distributed with clamping. We need to make their x positions pan out slower.
 
 From this equation, let's extract out `(x1 - x2) * k` and store it somewhere else. We'll scale their result because they are responsible for offsetting the `x` coordinate of the points at the top.
 
@@ -1278,9 +1282,9 @@ But not so much when we have just a few lines.
 
 ![linear-interpolation](example-images/linear-interpolation-not-good.png)
 
-The points don't look 100% evenly distributed, even though they do, because we're working with a circle and we should have used _slerp_, or interpolated using the angles intead, not the points (and then converted the agles to vectors and then to points). 
+The points don't look 100% evenly distributed, even though they do. This because we're working with a circle. In a circle, we have to lerp both x and y.
 
-But even _lerp_ is superfluous, so let's no go further. That is a rabbit hole for another time. 
+But even _lerping_ the x is already superfluous. No one is going to add 16 nodes to the editor. Let's not go further.
 
 I have drawn more lines to show that the points are equally distributed in the x-axis, but the angles of each point, as vectors extending from the center of the circle, are not.
 
@@ -1321,7 +1325,6 @@ What we want to do is to slow the `offsetX` value. If we can slow it down, they 
 
 There are so many options, but what I arbitrarily found to be quite nice is $x^{0.65}$.
 
-
 **And that's it!** 
 
 ```js
@@ -1343,11 +1346,11 @@ That was a lot of work for a feature that I didn't even complete (still quite bu
 
 ### Wrapping up
 
-So has been more of an exploratory endeavor than anything else.
+So, this has been more of an exploratory endeavor than anything else.
 
-I don't think I will be using a lot of what I learned here. I have to admit that the project itself is so (pointlessly) niche at times.
+I don't think I will be using a lot of what I learned here. I have to admit that the many aspects of the project were so niche at times.
 
-Nontheless, this journey down rabbit holes have introduced me to several cool tricks and discoveries I would not have otherwise, if ever, stumbled upon.
+Nontheless, the journey down this rabbit hole have introduced me to several cool tricks and discoveries I would not have otherwise, if ever, stumbled upon.
 
 All the math and the implementation details I talked about could have been left out of this monolithic blog and you will still get the idea, but I like diving deep and deep-diving talks/blogs really tick all my learning boxes, so I figured I'd make one as well.
 
