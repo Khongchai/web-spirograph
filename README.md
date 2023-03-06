@@ -1300,7 +1300,7 @@ let offsetX = (x1 - x2) * k;
 // https://youtu.be/NzjF1pdlK7Y
 const remap = () => {
   // meta.absoluteMin and meta.absoluteMax are the x position of node n0 and n1 in the current level.
-  // I wrote them just for this linear interpolation demo.
+  // I wrote them just for this linear interpolation example.
   const oldMax = meta.absoluteMax;
   const oldMin = meta.absoluteMin;
 
@@ -1320,9 +1320,31 @@ const finalX = remap();
 
 #### **With sqrt, pow, log**
 
-For this project, most of the time, a node won't have more than a few children. The best shapes come from linking all the nodes together into one long chain, not linking all nodes to one parent.
+For this project, most of the time, a node won't have more than a few children. The best shapes come from linking all the nodes together into one long chain, not linking all nodes to one parent. 
 
-What we want to do is to slow the `offsetX` value. If we can slow it down, they won't be cluttered together in those couple of spots.
+What we want to do is to slow the `offsetX` value. If we can slow it down, they won't be cluttered together in those couple of spots. 
+
+![multiple-way-to-increase](example-images/multiple-way-to-increase.png)
+
+There are so many options, but what I arbitrarily found to be quite nice is $x^{0.65}$.
+
+
+**And that's it!** 
+
+```js
+const k = 0.2;
+let xOffset = (x1 - x2) * k;
+let sign = Math.sign(xOffset);
+xOffset = Math.pow(Math.abs(xOffset), 0.65) * sign;
+
+const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+const finalX = clamp(x2 + xOffset, x2 - parent.r, x2 + parent.r);
+```
+
+![](example-images/x_to_the_power_of_zero_point_six_five.png)
+
+That was a lot of work for a feature that I didn't even complete (still quite buggy). But it was a fun little side-project within a side-project.
+
 
 ---
 

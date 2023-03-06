@@ -20,7 +20,7 @@ export default function SvgLineFromNodeToParent({
   const xOffsetScale = 0.2;
   let xOffset = (x2 - x1) * xOffsetScale;
   let sign = Math.sign(xOffset);
-  xOffset = Math.pow(Math.abs(xOffset), 0.7) * sign;
+  xOffset = Math.pow(Math.abs(xOffset), 0.65) * sign;
 
   const finalX = Math.min(Math.max(x2 - xOffset, x2 - r2), x2 + r2);
   // Just the circle equation, but solve for y
