@@ -33,7 +33,6 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(canvas).toBeTruthy();
-    expect(false).toBeTruthy(); // fail on purpose.
   },
   args: {
     cycloidControls: {
