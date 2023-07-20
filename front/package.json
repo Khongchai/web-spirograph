@@ -19,6 +19,7 @@
   },
   "scripts": {
     "start": "set PORT=3001 && react-scripts start",
+    "test-storybook": "test-storybook",
     "build": "sh build_prod.sh",
     "build_react": "react-scripts build",
     "test": "react-scripts test",
@@ -54,6 +55,7 @@
     "@storybook/preset-create-react-app": "^7.1.0",
     "@storybook/react": "^7.1.0",
     "@storybook/react-webpack5": "^7.1.0",
+    "@storybook/test-runner": "^0.11.0",
     "@storybook/testing-library": "^0.2.0",
     "autoprefixer": "^10.4.7",
     "babel-plugin-named-exports-order": "^0.0.2",
