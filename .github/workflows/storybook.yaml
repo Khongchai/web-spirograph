@@ -3,12 +3,14 @@ name: "Storybook ci-cd"
 
 on: push
 
+defaults:
+  run:
+    working-directory: ./front
+
 jobs:
   chromatic-deployment:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./front
+
     steps:
       - uses: actions/checkout@v1
       - name: Install dependencies
