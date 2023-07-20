@@ -1,0 +1,18 @@
+name: Storybook ci-cd
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Run storybook test
+        run: cd front && npx chromatic --project-token=chpt_73f36741ce38855
