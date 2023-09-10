@@ -1,0 +1,21 @@
+# https://www.chromatic.com/docs/github-actions
+name: "Storybook ci-cd"
+
+on: push
+
+defaults:
+  run:
+    working-directory: ./front
+
+jobs:
+  chromatic-deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: npm install
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
+        with:
+          projectToken: chpt_73f36741ce38855
