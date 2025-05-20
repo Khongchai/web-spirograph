@@ -1,3 +1,5 @@
+_I made some wrong math assumptions below. Read with discretion_
+
 # The Rabbit Holes EP 1: A WebGL-WASM-Powered Spirograph Generator
 
 ## Foreword
